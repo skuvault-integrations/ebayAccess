@@ -16,7 +16,7 @@ namespace EbayAccess.Services
 
 		public List<EbayOrder> ParseOrdersResponse(Stream stream)
 		{
-			var orders = new List<EbayOrder>();
+			List<EbayOrder> orders;
 
 			using (var reader = new StreamReader(stream))
 			{
