@@ -51,6 +51,7 @@
     <Compile Include="Models\EbayCredentials.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\EbayGetOrdersResponse.cs" />
     <Compile Include="Models\EbayStandartInput.cs" />
     <Compile Include="Models\EbayStandartOutput.cs" />
     <Compile Include="Models\EbayOrder.cs" />
