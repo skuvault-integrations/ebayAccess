@@ -31,7 +31,7 @@ namespace EbayAccess.Models
 
 		public string Status { get; set; }
 
-		public bool IntegratedMerchantCreditCardEnabled { get; set; }
+		public bool? IntegratedMerchantCreditCardEnabled { get; set; }
 	}
 
 	public class Transaction
@@ -44,7 +44,7 @@ namespace EbayAccess.Models
 
 		public int TransactionId { get; set; }
 
-		public int TransactionPrice { get; set; }
+		public double TransactionPrice { get; set; }
 
 		public string CurrencyId { get; set; }
 
@@ -53,7 +53,7 @@ namespace EbayAccess.Models
 
 	public class Item
 	{
-		public int ItemId { get; set; }
+		public long ItemId { get; set; }
 
 		public string Site { get; set; }
 
