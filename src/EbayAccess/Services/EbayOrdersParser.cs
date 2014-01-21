@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using EbayAccess.Models;
+using Netco.Monads;
 
 namespace EbayAccess.Services
 {
@@ -20,99 +22,111 @@ namespace EbayAccess.Services
 
 		public List<EbayOrder> ParseOrdersResponse(Stream stream)
 		{
-			XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
-			XElement root = XElement.Load(stream);
-
-			var xmlOrders = root.Descendants(ns+"Order");
-
-			var orders = xmlOrders.Select(x =>
+			try
 			{
-				object temp = null;
-				var res = new EbayOrder();
+				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
 
-				if (GetElementValue(x, ref temp, ns, "BuyerUserID"))
-					res.BuyerUserId = (string) temp;
+				XElement root = XElement.Load(stream);
 
-				if (x.Element(ns+"CheckoutStatus") != null)
+				var xmlOrders = root.Descendants(ns + "Order");
+
+				var orders = xmlOrders.Select(x =>
 				{
-					var elCheckoutStatus = x.Element(ns+"CheckoutStatus");
-					var obCheckoutStatus = new CheckoutStatus();
+					object temp = null;
+					var res = new EbayOrder();
 
-					if (GetElementValue(elCheckoutStatus, ref temp, ns, "eBayPaymentStatus"))
-						obCheckoutStatus.EBayPaymentStatus = (string) temp;
+					if (GetElementValue(x, ref temp, ns, "BuyerUserID"))
+						res.BuyerUserId = (string) temp;
 
-					if (GetElementValue(elCheckoutStatus, ref temp, ns, "IntegratedMerchantCreditCardEnabled"))
-						obCheckoutStatus.IntegratedMerchantCreditCardEnabled = bool.Parse((string) temp);
-
-					if (GetElementValue(elCheckoutStatus, ref temp, ns, "LastModifiedTime"))
-						obCheckoutStatus.LastModifiedTime = (DateTime.Parse((string) temp));
-
-					if (GetElementValue(elCheckoutStatus, ref temp, ns, "PaymentMethod"))
-						obCheckoutStatus.PaymentMethod = (string) temp;
-
-					if (GetElementValue(elCheckoutStatus, ref temp, ns, "Status"))
-						obCheckoutStatus.Status = (string) temp;
-
-					res.CheckoutStatus = obCheckoutStatus;
-				}
-
-				if (GetElementValue(x, ref temp, ns, "CreatedTime"))
-					res.CreatedTime = (DateTime.Parse((string) temp));
-
-				if (GetElementValue(x, ref temp, ns, "OrderID"))
-					res.OrderId = (string)temp;
-
-				if (GetElementValue(x, ref temp, ns, "OrderStatus"))
-					res.OrderStatus = (string)temp;
-
-				if (GetElementValue(x, ref temp, ns, "PaymentMethods"))
-					res.PaymentMethods = (string)temp;
-
-
-				var elTransactionArray = x.Element(ns + "TransactionArray");
-				if (elTransactionArray != null)
-				{
-					var transactions = elTransactionArray.Descendants(ns + "Transaction");
-					res.TransactionArray = transactions.Select(transaction =>
+					if (x.Element(ns + "CheckoutStatus") != null)
 					{
-						var resTransaction = new Transaction();
-						var elBuyer = transaction.Element(ns + "Buyer");
-						if (elBuyer != null)
+						var elCheckoutStatus = x.Element(ns + "CheckoutStatus");
+						var obCheckoutStatus = new CheckoutStatus();
+
+						if (GetElementValue(elCheckoutStatus, ref temp, ns, "eBayPaymentStatus"))
+							obCheckoutStatus.EBayPaymentStatus = (string) temp;
+
+						if (GetElementValue(elCheckoutStatus, ref temp, ns, "IntegratedMerchantCreditCardEnabled"))
+							obCheckoutStatus.IntegratedMerchantCreditCardEnabled = bool.Parse((string) temp);
+
+						if (GetElementValue(elCheckoutStatus, ref temp, ns, "LastModifiedTime"))
+							obCheckoutStatus.LastModifiedTime = (DateTime.Parse((string) temp));
+
+						if (GetElementValue(elCheckoutStatus, ref temp, ns, "PaymentMethod"))
+							obCheckoutStatus.PaymentMethod = (string) temp;
+
+						if (GetElementValue(elCheckoutStatus, ref temp, ns, "Status"))
+							obCheckoutStatus.Status = (string) temp;
+
+						res.CheckoutStatus = obCheckoutStatus;
+					}
+
+					if (GetElementValue(x, ref temp, ns, "CreatedTime"))
+						res.CreatedTime = (DateTime.Parse((string) temp));
+
+					if (GetElementValue(x, ref temp, ns, "OrderID"))
+						res.OrderId = (string) temp;
+
+					if (GetElementValue(x, ref temp, ns, "OrderStatus"))
+						res.OrderStatus = (string) temp;
+
+					if (GetElementValue(x, ref temp, ns, "PaymentMethods"))
+						res.PaymentMethods = (string) temp;
+
+
+					var elTransactionArray = x.Element(ns + "TransactionArray");
+					if (elTransactionArray != null)
+					{
+						var transactions = elTransactionArray.Descendants(ns + "Transaction");
+						res.TransactionArray = transactions.Select(transaction =>
 						{
-							resTransaction.Buyer = new Buyer();
-							if (GetElementValue(elBuyer, ref temp, ns, "Email"))
-								resTransaction.Buyer.Email = (string) temp;
-						}
+							var resTransaction = new Transaction();
+							var elBuyer = transaction.Element(ns + "Buyer");
+							if (elBuyer != null)
+							{
+								resTransaction.Buyer = new Buyer();
+								if (GetElementValue(elBuyer, ref temp, ns, "Email"))
+									resTransaction.Buyer.Email = (string) temp;
+							}
 
-						if (GetElementValue(transaction, ref temp, ns, "TransactionPrice"))
-							resTransaction.TransactionPrice = double.Parse(((string)temp).Replace('.',','));
+							if (GetElementValue(transaction, ref temp, ns, "TransactionPrice"))
+								resTransaction.TransactionPrice = double.Parse(((string) temp).Replace('.', ','));
 
-						var elItem = transaction.Element(ns + "Item");
-						if (elItem != null)
-						{
-							resTransaction.Item = new Item();
+							var elItem = transaction.Element(ns + "Item");
+							if (elItem != null)
+							{
+								resTransaction.Item = new Item();
 
-							if (GetElementValue(elItem, ref temp, ns, "ItemID"))
-								resTransaction.Item.ItemId = long.Parse((string)temp);
+								if (GetElementValue(elItem, ref temp, ns, "ItemID"))
+									resTransaction.Item.ItemId = long.Parse((string) temp);
 
-							if (GetElementValue(elItem, ref temp, ns, "Site"))
-								resTransaction.Item.Site = (string)temp;
+								if (GetElementValue(elItem, ref temp, ns, "Site"))
+									resTransaction.Item.Site = (string) temp;
 
-							if (GetElementValue(elItem, ref temp, ns, "Title"))
-								resTransaction.Item.Title = (string)temp;
-						}
+								if (GetElementValue(elItem, ref temp, ns, "Title"))
+									resTransaction.Item.Title = (string) temp;
+							}
 
-						if (GetElementValue(transaction, ref temp, ns, "QuantityPurchased"))
-							resTransaction.QuantityPurchased = int.Parse((string)temp);
+							if (GetElementValue(transaction, ref temp, ns, "QuantityPurchased"))
+								resTransaction.QuantityPurchased = int.Parse((string) temp);
 
-						return resTransaction;
-					}).ToList();
-				}
+							return resTransaction;
+						}).ToList();
+					}
 
-				return res;
-			}).ToList();
+					return res;
+				}).ToList();
 
-			return orders;
+				return orders;
+			}
+			catch (Exception ex)
+			{
+				byte[] buffer = new byte[stream.Length];
+				stream.Read(buffer, 0, (int) stream.Length);
+				var utf8Encoding = new UTF8Encoding();
+				var bufferStr = utf8Encoding.GetString(buffer);
+				throw new Exception("Can't parse: " + bufferStr, ex);
+			}
 		}
 
 		private bool GetElementValue(XElement x, ref object parsedElement, XNamespace ns, params string[] elementName)
@@ -144,16 +158,20 @@ namespace EbayAccess.Services
 
 		public List<EbayOrder> ParseOrdersResponse(WebResponse response)
 		{
-			var stream = response.GetResponseStream();
-			using (var memStream = new MemoryStream())
+			List<EbayOrder> result = null;
+			using (var responseStream = response.GetResponseStream())
 			{
-				if (stream != null)
+				if (responseStream != null)
 				{
-					stream.CopyTo(memStream, 0x100);
+					using (var memStream = new MemoryStream())
+					{
+						responseStream.CopyTo(memStream, 0x100);
+						result = ParseOrdersResponse(memStream);
+					}
 				}
-				var result = ParseOrdersResponse(memStream);
-				return result;
 			}
+
+			return result;
 		}
 	}
 }

@@ -10,7 +10,7 @@ using Netco.Logging;
 
 namespace EbayAccess.Services
 {
-	internal class WebRequestServices
+	public class WebRequestServices
 	{
 		private readonly EbayCredentials _credentials;
 
@@ -42,14 +42,19 @@ namespace EbayAccess.Services
 			var encodedBody = encoding.GetBytes(body);
 
 			var serviceRequest = (HttpWebRequest)WebRequest.Create(serviceUrl);
-			serviceRequest.ContentType = "text/xml";
 			serviceRequest.Method = WebRequestMethods.Http.Post;
+			serviceRequest.ContentType = "text/xml";
 			serviceRequest.ContentLength = encodedBody.Length;
 			serviceRequest.KeepAlive = true;
 
 			foreach (var rawHeader in rawHeaders)
 			{
 				serviceRequest.Headers.Add(rawHeader.Item1,rawHeader.Item2);
+			}
+
+			using (var newStream = serviceRequest.GetRequestStream())
+			{
+				newStream.Write(encodedBody, 0, encodedBody.Length);
 			}
 
 			return serviceRequest;
@@ -65,9 +70,9 @@ namespace EbayAccess.Services
 				IEnumerable<Tuple<string, string>> headers = new List<Tuple<string, string>>
 				{
 					new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"),
-					new Tuple<string, string>("X-EBAY-API-DEV-NAME", "043e8c9e-c735-4e38-a5aa-a0838b3e7230"),
-					new Tuple<string, string>("X-EBAY-API-APP-NAME", "Home69743-2d96-4d33-860f-18fead732ea"),
-					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "f3022b48-2519-4bcd-9c7b-e9b23e213ae7"),
+					new Tuple<string, string>("X-EBAY-API-DEV-NAME", "908b7265-683f-4db1-af12-565f25c3a5f0"),
+					new Tuple<string, string>("X-EBAY-API-APP-NAME", "AgileHar-99ad-4034-9121-56fe988deb85"),
+					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
 					new Tuple<string, string>("X-EBAY-API-SITEID", "0"),
 					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetOrders"),
 				};
@@ -75,13 +80,26 @@ namespace EbayAccess.Services
 				string body =
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo></GetOrdersRequest>​",
-						"AgAAAA**AQAAAA**aAAAAA**iZ3XUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eHpwWdj6x9nY+seQ**n34CAA**AAMAAA**F0+VztfhGOlLeVcIoh12H+/JzvqoKXbSmKxpxtbcHICJ2tus11kKiHCP4Ix0Jz61Bx2iho548FRzDIFNlqbgCFw/KhF2n24RiW+eGMCZW9VT05CU9sXo1o5quudmYCwQyxmoHRj5J8Fx+bOdh7NLc8O7hKY8jeKvBMUCxO1qP4uRH3A0bMaBTDERv+UmatdPGaGq635W/uuIsJMwmjaBwNEBK4ziCHk1ipyZaaVG9QBDw7DeNrxBDUZ9loSkzPuzfjRnom5Wf3CQSuBEDv6qG9uF/u4p+bWe55mLYm4zUmwWZGhdxtBCKTM73RNjrfR0CvBmfIOWD538ff6NO3+BI8x4UFwAK27tZ2cr3rsk/37GcggQ/MrhydXV59qlmlcJG94vyg/dXAe+UL1GkXzhz4owkWUjmVBHPASU9W+T2RNvjaQzhm1k18hiGNBeGXMAFjcBO4IA+T/pj2DS34sXWgzuT1cEY2zRtdQrkIfDSTni1Ra0c8ljBO6PhwUatblScUvMJbl9HKkVzvJeO+5WLgH+aa4Ti3gkg1WBlTLGybMe/ohYDZHUoVA7gMKF0XGfYbNFnkBL7N2GIrhWTwghW3uF003sMMkr1mbwuKwuQhfsSZgCZN7qy8XgpFIcp+kE/XL2ILEthJ17gHhjr6Z6pMK2NEg4IanY/rty2OJtxvTDdIDRfLKuXR+rll7g/sITtWHHsHAfvh+UuZOrKKyhMACoD7rDXc/xISE4bLy32TDgmLsM5GS7nzp8RabsDaA6",
-						"2014-01-16T08:00:00.000Z",
-						"2014-01-16T18:00:00.000Z");
+						"AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R",
+						"2014-01-01T08:00:00.000Z",
+						"2014-01-21T08:00:00.000Z");
 
 				var request = this.CreateServicePostRequest(url, body, headers);
-				using (var response = request.GetResponse())
-					result = new EbayOrdersParser().ParseOrdersResponse(response);
+				using (var response = (HttpWebResponse) request.GetResponse())
+				{
+					using (Stream dataStream = response.GetResponseStream())
+					{
+						result = new EbayOrdersParser().ParseOrdersResponse(dataStream);
+					}
+					//Console.WriteLine(response.StatusDescription);
+					//Stream dataStream = response.GetResponseStream();
+					//StreamReader reader = new StreamReader(dataStream);
+					//string responseFromServer = reader.ReadToEnd();
+					
+					//reader.Close();
+					//dataStream.Close();
+					//response.Close();
+				}
 
 				return result;
 			}
