@@ -9,6 +9,7 @@ using NUnit.Framework;
 namespace EbayAccessTests
 {
 	[TestFixture]
+	//todo: it is an integration tests, move it to correspond place!
 	public class EbayService
 	{
 		[Test]

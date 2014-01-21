@@ -17,32 +17,35 @@ namespace EbayAccess
 		private readonly EbayCredentials _credentials;
 		private readonly string _endPoint;
 
-		public EbayService(EbayCredentials credentials, string endPouint)
+		public EbayService( EbayCredentials credentials, string endPouint )
 		{
-			Condition.Requires(credentials, "credentials").IsNotNull();
-			Condition.Ensures(endPouint, "endPoint").IsNotNullOrEmpty();
+			Condition.Requires( credentials, "credentials" ).IsNotNull();
+			Condition.Ensures( endPouint, "endPoint" ).IsNotNullOrEmpty();
 
-			this._webRequestServices = new WebRequestServices( credentials );
 			this._credentials = credentials;
+			this._webRequestServices = new WebRequestServices( this._credentials );
 			this._endPoint = endPouint;
 		}
 
 		#region Upload
+
 		public IEnumerable< EbayInventoryUploadResponse > InventoryUpload( TeapplixUploadConfig config, Stream file )
 		{
 			//todo: add logic
 			throw new NotImplementedException();
 		}
 
-		public async Task< IEnumerable< EbayInventoryUploadResponse > > InventoryUploadAsync( TeapplixUploadConfig config, Stream stream )
+		public async Task< IEnumerable< EbayInventoryUploadResponse > > InventoryUploadAsync( TeapplixUploadConfig config,
+			Stream stream )
 		{
 			//todo: add logic
 			throw new NotImplementedException();
 		}
-		
+
 		#endregion
 
 		#region Logging
+
 		public void LogReportResponseError()
 		{
 			throw new NotImplementedException();
@@ -54,16 +57,17 @@ namespace EbayAccess
 			throw new NotImplementedException();
 			//this.Log().Error( "Failed to upload item with SKU '{0}'. Status code:'{1}', message: {2}", response.Sku, response.Status, response.Message );
 		}
+
 		#endregion
 
-		public IEnumerable<EbayOrder> GetOrders(DateTime dateFrom, DateTime dateTo)
+		public IEnumerable< EbayOrder > GetOrders( DateTime dateFrom, DateTime dateTo )
 		{
-			var orders = new List<EbayOrder>();
+			var orders = new List< EbayOrder >();
 
-			ActionPolicies.Get.Do(() =>
+			ActionPolicies.Get.Do( () =>
 			{
-				orders = this._webRequestServices.GetOrders(_endPoint,dateFrom,dateTo);
-			});
+				orders = this._webRequestServices.GetOrders( _endPoint, dateFrom, dateTo );
+			} );
 
 			return orders;
 		}
