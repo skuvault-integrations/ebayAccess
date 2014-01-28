@@ -104,6 +104,51 @@ namespace EbayAccess.Services
 			}
 		}
 
+
+		// todo: convert strings to constants or variables
+		public List<EbayGetSellerListItem> GetItems(string url, DateTime dateFrom, DateTime dateTo)
+		{
+			try
+			{
+				List<EbayGetSellerListItem> result;
+
+				IEnumerable<Tuple<string, string>> headers = new List<Tuple<string, string>>
+				{
+					new Tuple< string, string >( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" ),
+					new Tuple< string, string >( "X-EBAY-API-DEV-NAME", "908b7265-683f-4db1-af12-565f25c3a5f0" ),
+					new Tuple< string, string >( "X-EBAY-API-APP-NAME", "AgileHar-99ad-4034-9121-56fe988deb85" ),
+					new Tuple< string, string >( "X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3" ),
+					new Tuple< string, string >( "X-EBAY-API-SITEID", "0" ),
+					new Tuple< string, string >( "X-EBAY-API-CALL-NAME", "GetSellerList" ),
+				};
+
+				string body =
+					string.Format(
+						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
+						this._credentials.Token,
+						dateFrom.ToString("O").Substring(0, 23) + "Z",
+						dateTo.ToString("O").Substring(0, 23) + "Z",
+						10,
+						1);
+
+				var request = this.CreateServicePostRequest(url, body, headers);
+				using (var response = (HttpWebResponse)request.GetResponse())
+				{
+					using (Stream dataStream = response.GetResponseStream())
+					{
+						result = new EbayItemsParser().ParseGetSallerListResponse(dataStream);
+					}
+				}
+
+				return result;
+			}
+			catch (WebException exc)
+			{
+				// todo: log some exceptions
+				throw;
+			}
+		}
+
 		#region logging
 
 		private void LogParseReportError( MemoryStream stream )
