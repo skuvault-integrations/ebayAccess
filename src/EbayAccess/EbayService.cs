@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Misc;
 using EbayAccess.Models;
+using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Services;
 using Netco.Logging;
 
@@ -60,9 +61,9 @@ namespace EbayAccess
 
 		#endregion
 
-		public IEnumerable< EbayOrder > GetOrders( DateTime dateFrom, DateTime dateTo )
+		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo )
 		{
-			var orders = new List< EbayOrder >();
+			var orders = new List< Order >();
 
 			ActionPolicies.Get.Do( () =>
 			{

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Models
 {
@@ -22,7 +23,7 @@ namespace EbayAccess.Models
 
 		public int TotalNumberOfEntries { get; set; }
 
-		public List<EbayOrder> OrderArray { get; set; }
+		public List<Order> OrderArray { get; set; }
 
 		public int OrdersPerPage { get; set; }
 

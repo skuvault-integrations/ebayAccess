@@ -6,18 +6,21 @@ using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using EbayAccess.Models;
+using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.GetSellerListResponse;
+using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services
 {
 	public class EbayItemsParser
 	{
-		public List<EbayOrder> ParseGetSallerListResponse(String str)
+		public List<Order> ParseGetSallerListResponse(String str)
 		{
 			//todo: make parser
 			throw new NotImplementedException();
 		}
 
-		public List<EbayGetSellerListItem> ParseGetSallerListResponse(Stream stream)
+		public List<Item> ParseGetSallerListResponse(Stream stream)
 		{
 			try
 			{
@@ -30,7 +33,7 @@ namespace EbayAccess.Services
 				var orders = xmlItems.Select(x =>
 				{
 					object temp = null;
-					var res = new EbayGetSellerListItem();
+					var res = new Item();
 
 					if (GetElementValue(x, ref temp, ns, "AutoPay"))
 						res.AutoPay = bool.Parse((string) temp);
@@ -170,9 +173,9 @@ namespace EbayAccess.Services
 			return parsedElement;
 		}
 
-		public List<EbayGetSellerListItem> ParseGetSallerListResponse(WebResponse response)
+		public List<Item> ParseGetSallerListResponse(WebResponse response)
 		{
-			List<EbayGetSellerListItem> result = null;
+			List<Item> result = null;
 			using (var responseStream = response.GetResponseStream())
 			{
 				if (responseStream != null)

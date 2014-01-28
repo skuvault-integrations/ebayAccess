@@ -8,19 +8,20 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using EbayAccess.Models;
+using EbayAccess.Models.GetOrdersResponse;
 using Netco.Monads;
 
 namespace EbayAccess.Services
 {
 	public class EbayOrdersParser
 	{
-		public List<EbayOrder> ParseOrdersResponse(String str)
+		public List<Order> ParseOrdersResponse(String str)
 		{
 			//todo: make parser
 			throw new NotImplementedException();
 		}
 
-		public List<EbayOrder> ParseOrdersResponse(Stream stream)
+		public List<Order> ParseOrdersResponse(Stream stream)
 		{
 			try
 			{
@@ -33,7 +34,7 @@ namespace EbayAccess.Services
 				var orders = xmlOrders.Select(x =>
 				{
 					object temp = null;
-					var res = new EbayOrder();
+					var res = new Order();
 
 					if (GetElementValue(x, ref temp, ns, "BuyerUserID"))
 						res.BuyerUserId = (string) temp;
@@ -156,9 +157,9 @@ namespace EbayAccess.Services
 			return parsedElement;
 		}
 
-		public List<EbayOrder> ParseOrdersResponse(WebResponse response)
+		public List<Order> ParseOrdersResponse(WebResponse response)
 		{
-			List<EbayOrder> result = null;
+			List<Order> result = null;
 			using (var responseStream = response.GetResponseStream())
 			{
 				if (responseStream != null)

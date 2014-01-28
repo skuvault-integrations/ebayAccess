@@ -7,7 +7,10 @@ using System.Net;
 using System.Text;
 using CuttingEdge.Conditions;
 using EbayAccess.Models;
+using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.GetSellerListResponse;
 using Netco.Logging;
+using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services
 {
@@ -63,11 +66,11 @@ namespace EbayAccess.Services
 		}
 
 		// todo: convert strings to constants or variables
-		public List< EbayOrder > GetOrders( string url, DateTime dateFrom, DateTime dateTo )
+		public List< Order > GetOrders( string url, DateTime dateFrom, DateTime dateTo )
 		{
 			try
 			{
-				List< EbayOrder > result;
+				List< Order > result;
 
 				IEnumerable< Tuple< string, string > > headers = new List< Tuple< string, string > >
 				{
@@ -106,11 +109,11 @@ namespace EbayAccess.Services
 
 
 		// todo: convert strings to constants or variables
-		public List<EbayGetSellerListItem> GetItems(string url, DateTime dateFrom, DateTime dateTo)
+		public List<Item> GetItems(string url, DateTime dateFrom, DateTime dateTo)
 		{
 			try
 			{
-				List<EbayGetSellerListItem> result;
+				List<Item> result;
 
 				IEnumerable<Tuple<string, string>> headers = new List<Tuple<string, string>>
 				{

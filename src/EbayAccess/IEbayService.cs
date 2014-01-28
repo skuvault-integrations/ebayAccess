@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using EbayAccess.Models;
+using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Services;
 
 namespace EbayAccess
@@ -12,7 +13,7 @@ namespace EbayAccess
 		//todo: declare and realise it
 		IEnumerable<EbayInventoryUploadResponse> InventoryUpload(TeapplixUploadConfig config, Stream stream);
 		Task<IEnumerable<EbayInventoryUploadResponse>> InventoryUploadAsync(TeapplixUploadConfig config, Stream stream);
-		IEnumerable<EbayOrder> GetOrders(DateTime dateFrom, DateTime dateTo);
+		IEnumerable<Order> GetOrders(DateTime dateFrom, DateTime dateTo);
 	}
 
 	public class TeapplixUploadConfig
