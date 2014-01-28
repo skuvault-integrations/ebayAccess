@@ -152,6 +152,27 @@ namespace EbayAccess.Services
 			}
 		}
 
+
+
+		// todo: convert strings to constants or variables
+		public WebRequest GetItemsSmart(string url, IList<Tuple<string, string>> headers, string body)
+		{
+			try
+			{
+				headers.Add(new Tuple< string, string >( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" ));
+				headers.Add(new Tuple< string, string >( "X-EBAY-API-DEV-NAME", "908b7265-683f-4db1-af12-565f25c3a5f0" ));
+				headers.Add(new Tuple< string, string >( "X-EBAY-API-APP-NAME", "AgileHar-99ad-4034-9121-56fe988deb85" ));
+				headers.Add(new Tuple< string, string >( "X-EBAY-API-SITEID", "0" ));
+
+				return CreateServicePostRequest(url, body, headers);
+			}
+			catch (WebException exc)
+			{
+				// todo: log some exceptions
+				throw;
+			}
+		}
+
 		#region logging
 
 		private void LogParseReportError( MemoryStream stream )

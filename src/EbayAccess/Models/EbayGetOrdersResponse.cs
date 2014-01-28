@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.BaseResponse;
 
 namespace EbayAccess.Models
 {
@@ -15,20 +14,5 @@ namespace EbayAccess.Models
 		public string Build { get; set; }
 
 		public PaginationResult PaginationResult { get; set; }
-	}
-
-	public class PaginationResult
-	{
-		public int TotalNumberOfPages { get; set; }
-
-		public int TotalNumberOfEntries { get; set; }
-
-		public List<Order> OrderArray { get; set; }
-
-		public int OrdersPerPage { get; set; }
-
-		public int PageNumber { get; set; }
-
-		public int ReturnedOrderCountActual { get; set; }
 	}
 }

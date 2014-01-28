@@ -49,6 +49,7 @@
     <Compile Include="EbayService.cs" />
     <Compile Include="IEbayService.cs" />
     <Compile Include="Misc\ActionPolicies.cs" />
+    <Compile Include="Models\BaseResponse\PaginationResult.cs" />
     <Compile Include="Models\EbayCredentials.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -66,6 +67,7 @@
     <Compile Include="Services\EbayItemsParser.cs" />
     <Compile Include="Services\EbayInventoryUploadResponse.cs" />
     <Compile Include="Services\EbayOrdersParser.cs" />
+    <Compile Include="Services\EbayPagesParser.cs" />
     <Compile Include="Services\WebRequestServices.cs">
       <SubType>Code</SubType>
     </Compile>
