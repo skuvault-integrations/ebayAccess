@@ -9,6 +9,7 @@ using CuttingEdge.Conditions;
 using EbayAccess.Models;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListResponse;
+using Netco.Extensions;
 using Netco.Logging;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
@@ -159,10 +160,24 @@ namespace EbayAccess.Services
 		{
 			try
 			{
-				headers.Add(new Tuple< string, string >( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" ));
-				headers.Add(new Tuple< string, string >( "X-EBAY-API-DEV-NAME", "908b7265-683f-4db1-af12-565f25c3a5f0" ));
-				headers.Add(new Tuple< string, string >( "X-EBAY-API-APP-NAME", "AgileHar-99ad-4034-9121-56fe988deb85" ));
-				headers.Add(new Tuple< string, string >( "X-EBAY-API-SITEID", "0" ));
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-COMPATIBILITY-LEVEL"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"));
+				}
+
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-DEV-NAME"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-DEV-NAME", "908b7265-683f-4db1-af12-565f25c3a5f0"));
+				}
+
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-APP-NAME"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-APP-NAME", "AgileHar-99ad-4034-9121-56fe988deb85"));
+				}
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-SITEID"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-SITEID", "0"));
+				}
 
 				return CreateServicePostRequest(url, body, headers);
 			}

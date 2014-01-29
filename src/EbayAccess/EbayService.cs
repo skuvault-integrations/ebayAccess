@@ -80,14 +80,9 @@ namespace EbayAccess
 			List<Item> orders = new List<Item>();
 			PaginationResult pagination;
 
-			var headers = new List<Tuple<string, string>>
-			{
-				new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetSellerList"),
-			};
-
 			int totalRecords = 0;
 			int alreadyReadRecords = 0;
-			int recordsPerPage = 50;
+			int recordsPerPage = 1;
 			int pageNumber = 1;
 			do
 			{
@@ -99,6 +94,11 @@ namespace EbayAccess
 						dateTo.ToString("O").Substring(0, 23) + "Z",
 						recordsPerPage,
 						pageNumber);
+
+				var headers = new List<Tuple<string, string>>
+				{
+					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetSellerList"),
+				};
 
 				ActionPolicies.Get.Do(() =>
 				{
