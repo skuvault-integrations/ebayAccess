@@ -1,9 +1,8 @@
 ﻿using System;
-using EbayAccess.Models.BaseResponse;
 
-namespace EbayAccess.Models
+namespace EbayAccess.Models.BaseResponse
 {
-	public class EbayGetOrdersResponse
+	public class EbayBaseResponse
 	{
 		public DateTime Timestamp { get; set; }
 

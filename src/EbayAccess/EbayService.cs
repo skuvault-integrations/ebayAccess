@@ -16,18 +16,27 @@ namespace EbayAccess
 {
 	public sealed class EbayService : IEbayService
 	{
-		private readonly WebRequestServices _webRequestServices;
+		private readonly IWebRequestServices _webRequestServices;
 		private readonly EbayCredentials _credentials;
 		private readonly string _endPoint;
+		private readonly int _itemsPerPage;
 
-		public EbayService(EbayCredentials credentials, string endPouint)
+		public EbayService(EbayCredentials credentials, string endPouint, IWebRequestServices webRequestServices, int itemsPerPage = 50)
 		{
 			Condition.Requires(credentials, "credentials").IsNotNull();
 			Condition.Ensures(endPouint, "endPoint").IsNotNullOrEmpty();
+			Condition.Requires(webRequestServices, "webRequestServices").IsNotNull();
 
 			this._credentials = credentials;
-			this._webRequestServices = new WebRequestServices(this._credentials);
+			this._webRequestServices = webRequestServices;
 			this._endPoint = endPouint;
+
+			_itemsPerPage = itemsPerPage;
+		}
+
+		public EbayService(EbayCredentials credentials, string endPouint, int itemsPerPage = 50)
+			: this(credentials, endPouint, new WebRequestServices(credentials))
+		{
 		}
 
 		#region Upload
@@ -75,14 +84,14 @@ namespace EbayAccess
 			return orders;
 		}
 
-		public IEnumerable<Item> GetItemsSmart(DateTime dateFrom, DateTime dateTo)
+		public IEnumerable<Item> GetItemsSmart(DateTime startTimeFrom, DateTime startTimeTo)
 		{
 			List<Item> orders = new List<Item>();
 			PaginationResult pagination;
 
 			int totalRecords = 0;
 			int alreadyReadRecords = 0;
-			int recordsPerPage = 1;
+			int recordsPerPage = _itemsPerPage;
 			int pageNumber = 1;
 			do
 			{
@@ -90,8 +99,8 @@ namespace EbayAccess
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
 						this._credentials.Token,
-						dateFrom.ToString("O").Substring(0, 23) + "Z",
-						dateTo.ToString("O").Substring(0, 23) + "Z",
+						startTimeFrom.ToString("O").Substring(0, 23) + "Z",
+						startTimeTo.ToString("O").Substring(0, 23) + "Z",
 						recordsPerPage,
 						pageNumber);
 
@@ -119,28 +128,6 @@ namespace EbayAccess
 							alreadyReadRecords += tempOrders.Count;
 						}
 					}
-
-					//using (var response = (HttpWebResponse) webRequest.GetResponse())
-					//{
-					//	using (Stream dataStream = response.GetResponseStream())
-					//	{
-					//		using (var memoryStream = CopyToMemoryStream(dataStream))
-					//		{
-					//			pagination = new EbayPagesParser().ParsePaginationResultResponse(memoryStream);
-					//			if (pagination != null)
-					//			{
-					//				totalRecords = pagination.TotalNumberOfEntries;
-					//			}
-
-					//			var tempOrders = new EbayItemsParser().ParseGetSallerListResponse(memoryStream);
-					//			if (tempOrders != null)
-					//			{
-					//				orders.AddRange(tempOrders);
-					//				alreadyReadRecords += tempOrders.Count;
-					//			}
-					//		}
-					//	}
-					//}
 				});
 
 				pageNumber++;
