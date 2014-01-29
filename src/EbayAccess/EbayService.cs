@@ -104,28 +104,46 @@ namespace EbayAccess
 				{
 					var webRequest = this._webRequestServices.GetItemsSmart(_endPoint, headers, body);
 
-					using (var response = (HttpWebResponse) webRequest.GetResponse())
+					using (var memStream = _webRequestServices.GetResponseStream(webRequest))
 					{
-						using (Stream dataStream = response.GetResponseStream())
+						pagination = new EbayPagesParser().ParsePaginationResultResponse(memStream);
+						if (pagination != null)
 						{
-							using (var memoryStream = CopyToMemoryStream(dataStream))
-							{
-								pagination = new EbayPagesParser().ParsePaginationResultResponse(memoryStream);
-								if (pagination != null)
-								{
-									totalRecords = pagination.TotalNumberOfEntries;
-								}
+							totalRecords = pagination.TotalNumberOfEntries;
+						}
 
-								var tempOrders = new EbayItemsParser().ParseGetSallerListResponse(memoryStream);
-								if (tempOrders != null)
-								{
-									orders.AddRange(tempOrders);
-									alreadyReadRecords += tempOrders.Count;
-								}
-							}
+						var tempOrders = new EbayItemsParser().ParseGetSallerListResponse(memStream);
+						if (tempOrders != null)
+						{
+							orders.AddRange(tempOrders);
+							alreadyReadRecords += tempOrders.Count;
 						}
 					}
+
+					//using (var response = (HttpWebResponse) webRequest.GetResponse())
+					//{
+					//	using (Stream dataStream = response.GetResponseStream())
+					//	{
+					//		using (var memoryStream = CopyToMemoryStream(dataStream))
+					//		{
+					//			pagination = new EbayPagesParser().ParsePaginationResultResponse(memoryStream);
+					//			if (pagination != null)
+					//			{
+					//				totalRecords = pagination.TotalNumberOfEntries;
+					//			}
+
+					//			var tempOrders = new EbayItemsParser().ParseGetSallerListResponse(memoryStream);
+					//			if (tempOrders != null)
+					//			{
+					//				orders.AddRange(tempOrders);
+					//				alreadyReadRecords += tempOrders.Count;
+					//			}
+					//		}
+					//	}
+					//}
 				});
+
+				pageNumber++;
 			} while (alreadyReadRecords < totalRecords);
 
 			return orders;
