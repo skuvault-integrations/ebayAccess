@@ -10,7 +10,7 @@ namespace EbayAccess.Services
 {
 	public class EbayPagesParser
 	{
-		public PaginationResult ParsePaginationResultResponse(Stream stream)
+		public PaginationResult ParsePaginationResultResponse(Stream stream, bool keepStremPosition = true)
 		{
 			try
 			{
@@ -34,6 +34,11 @@ namespace EbayAccess.Services
 						res.TotalNumberOfEntries = int.Parse((string) temp);
 				}
 
+				if (keepStremPosition)
+				{
+					stream.Position = 0;
+				}
+				
 				return res;
 			}
 			catch (Exception ex)

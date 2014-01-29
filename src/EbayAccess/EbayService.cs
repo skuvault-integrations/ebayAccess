@@ -108,17 +108,20 @@ namespace EbayAccess
 					{
 						using (Stream dataStream = response.GetResponseStream())
 						{
-							pagination = new EbayPagesParser().ParsePaginationResultResponse(dataStream);
-							if (pagination != null)
+							using (var memoryStream = CopyToMemoryStream(dataStream))
 							{
-								totalRecords = pagination.TotalNumberOfEntries;
-							}
+								pagination = new EbayPagesParser().ParsePaginationResultResponse(memoryStream);
+								if (pagination != null)
+								{
+									totalRecords = pagination.TotalNumberOfEntries;
+								}
 
-							var tempOrders = new EbayItemsParser().ParseGetSallerListResponse(dataStream);
-							if (tempOrders != null)
-							{
-								orders.AddRange(tempOrders);
-								alreadyReadRecords += tempOrders.Count;
+								var tempOrders = new EbayItemsParser().ParseGetSallerListResponse(memoryStream);
+								if (tempOrders != null)
+								{
+									orders.AddRange(tempOrders);
+									alreadyReadRecords += tempOrders.Count;
+								}
 							}
 						}
 					}
@@ -126,6 +129,14 @@ namespace EbayAccess
 			} while (alreadyReadRecords < totalRecords);
 
 			return orders;
+		}
+
+		private Stream CopyToMemoryStream(Stream source)
+		{
+			var memoryStrem = new MemoryStream();
+			source.CopyTo(memoryStrem, 0x100);
+			memoryStrem.Position = 0;
+			return memoryStrem;
 		}
 	}
 }
