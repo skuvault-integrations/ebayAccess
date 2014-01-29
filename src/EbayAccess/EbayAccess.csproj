@@ -68,6 +68,7 @@
     <Compile Include="Services\EbayInventoryUploadResponse.cs" />
     <Compile Include="Services\EbayOrdersParser.cs" />
     <Compile Include="Services\EbayPagesParser.cs" />
+    <Compile Include="Services\IWebRequestServices.cs" />
     <Compile Include="Services\WebRequestServices.cs">
       <SubType>Code</SubType>
     </Compile>
