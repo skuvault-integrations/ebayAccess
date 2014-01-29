@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.ReviseInventoryStatusRequest;
 
 namespace EbayAccess.Services
 {

@@ -9,6 +9,7 @@ using CuttingEdge.Conditions;
 using EbayAccess.Models;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListResponse;
+using EbayAccess.Models.ReviseInventoryStatusRequest;
 using Netco.Extensions;
 using Netco.Logging;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
@@ -215,6 +216,5 @@ namespace EbayAccess.Services
 				}
 			}
 		}
-
 	}
 }

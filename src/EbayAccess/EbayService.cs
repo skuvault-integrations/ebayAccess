@@ -9,6 +9,7 @@ using EbayAccess.Misc;
 using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
@@ -35,19 +36,19 @@ namespace EbayAccess
 		}
 
 		public EbayService(EbayCredentials credentials, string endPouint, int itemsPerPage = 50)
-			: this(credentials, endPouint, new WebRequestServices(credentials))
+			: this(credentials, endPouint, new WebRequestServices(credentials), itemsPerPage)
 		{
 		}
 
 		#region Upload
 
-		public IEnumerable<EbayInventoryUploadResponse> InventoryUpload(TeapplixUploadConfig config, Stream file)
+		public IEnumerable<EbayInventoryUploadResponse> InventoryUpload(EbayUploadConfig config, Stream file)
 		{
 			//todo: add logic
 			throw new NotImplementedException();
 		}
 
-		public async Task<IEnumerable<EbayInventoryUploadResponse>> InventoryUploadAsync(TeapplixUploadConfig config,
+		public async Task<IEnumerable<EbayInventoryUploadResponse>> InventoryUploadAsync(EbayUploadConfig config,
 			Stream stream)
 		{
 			//todo: add logic
@@ -134,6 +135,31 @@ namespace EbayAccess
 			} while (alreadyReadRecords < totalRecords);
 
 			return orders;
+		}
+
+		public InventoryStatus ReviseInventoryStatus(InventoryStatus inventoryStatus)
+		{
+			var headers = new List<Tuple<string, string>>
+			{
+				new Tuple<string, string>("X-EBAY-API-CALL-NAME", "ReviseInventoryStatus"),
+				new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+			};
+
+			string body = string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><InventoryStatus ComplexType=\"InventoryStatusType\">{1}{2}{3}</InventoryStatus></ReviseInventoryStatusRequest>",
+				this._credentials.Token,
+				inventoryStatus.ItemID.HasValue? string.Format( "<ItemID>{0}</ItemID>",inventoryStatus.ItemID.Value):string.Empty,
+				inventoryStatus.Quantity.HasValue? string.Format( "<Quantity>{0}</Quantity>",inventoryStatus.Quantity.Value):string.Empty,
+				string.IsNullOrWhiteSpace(inventoryStatus.SKU)? string.Format( "<SKU>{0}</SKU>",inventoryStatus.SKU):string.Empty
+				);
+
+			var request = _webRequestServices.GetItemsSmart(_endPoint, headers, body);
+
+			using (var memStream = _webRequestServices.GetResponseStream(request))
+			{
+				var inventoryStatusResponse = new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse(memStream);
+				return inventoryStatusResponse;
+			}
 		}
 
 		private Stream CopyToMemoryStream(Stream source)
