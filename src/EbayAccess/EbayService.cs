@@ -60,11 +60,53 @@ namespace EbayAccess
 		public IEnumerable<Order> GetOrders(DateTime dateFrom, DateTime dateTo)
 		{
 			var orders = new List<Order>();
+			PaginationResult pagination;
 
-			ActionPolicies.Get.Do(() =>
+			int totalRecords = 0;
+			int alreadyReadRecords = 0;
+			int recordsPerPage = _itemsPerPage;
+			int pageNumber = 1;
+			
+			do
 			{
-				orders = this._webRequestServices.GetOrders(_endPoint, dateFrom, dateTo);
-			});
+				var headers = new List<Tuple<string, string>>
+				{
+					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetOrders"),
+				};
+
+				string body =
+					string.Format(
+						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
+						this._credentials.Token,
+						dateFrom.ToString("O").Substring(0, 23) + "Z",
+						dateTo.ToString("O").Substring(0, 23) + "Z",
+						recordsPerPage,
+						pageNumber);
+
+				ActionPolicies.Get.Do(() =>
+				{
+					var webRequest = this._webRequestServices.CreateEbayStandartPostRequest(_endPoint, headers, body);
+
+					using (var memStream = _webRequestServices.GetResponseStream(webRequest))
+					{
+						pagination = new EbayPagesParser().ParsePaginationResultResponse(memStream);
+						if (pagination != null)
+						{
+							totalRecords = pagination.TotalNumberOfEntries;
+						}
+
+						var tempOrders = new EbayOrdersParser().ParseOrdersResponse(memStream);
+						if (tempOrders != null)
+						{
+							orders.AddRange(tempOrders);
+							alreadyReadRecords += tempOrders.Count;
+						}
+					}
+				});
+
+				pageNumber++;
+			} while (orders.Count < totalRecords);
 
 			return orders;
 		}
@@ -72,11 +114,53 @@ namespace EbayAccess
 		public async Task<IEnumerable<Order>> GetOrdersAsync(DateTime dateFrom, DateTime dateTo)
 		{
 			var orders = new List<Order>();
+			PaginationResult pagination = null;
 
-			await ActionPolicies.GetAsync.Do(async () =>
+			int totalRecords = 0;
+			int alreadyReadRecords = 0;
+			int recordsPerPage = _itemsPerPage;
+			int pageNumber = 1;
+
+			do
 			{
-				orders = await this._webRequestServices.GetOrdersAsync(_endPoint, dateFrom, dateTo);
-			});
+				var headers = new List<Tuple<string, string>>
+				{
+					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetOrders"),
+				};
+
+				string body =
+					string.Format(
+						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
+						this._credentials.Token,
+						dateFrom.ToString("O").Substring(0, 23) + "Z",
+						dateTo.ToString("O").Substring(0, 23) + "Z",
+						recordsPerPage,
+						pageNumber);
+
+				await ActionPolicies.GetAsync.Do(async () =>
+				{
+					var webRequest = await _webRequestServices.CreateEbayStandartPostRequestAsync(_endPoint, headers, body);
+
+					using (var memStream = await _webRequestServices.GetResponseStreamAsync(webRequest))
+					{
+						pagination = new EbayPagesParser().ParsePaginationResultResponse(memStream);
+						if (pagination != null)
+						{
+							totalRecords = pagination.TotalNumberOfEntries;
+						}
+
+						var tempOrders = new EbayOrdersParser().ParseOrdersResponse(memStream);
+						if (tempOrders != null)
+						{
+							orders.AddRange(tempOrders);
+							alreadyReadRecords += tempOrders.Count;
+						}
+					}
+				});
+
+				pageNumber++;
+			} while ((pagination != null) ? pagination.TotalNumberOfPages < pageNumber : false);
 
 			return orders;
 		}
