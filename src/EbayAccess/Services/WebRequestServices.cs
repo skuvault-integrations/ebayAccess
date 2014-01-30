@@ -203,6 +203,45 @@ namespace EbayAccess.Services
 			}
 		}
 
+		public async Task<List<Order>> GetOrdersAsync(string url, DateTime dateFrom, DateTime dateTo)
+		{
+			try
+			{
+				List<Order> result;
+
+				IEnumerable<Tuple<string, string>> headers = new List<Tuple<string, string>>
+				{
+					new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"),
+					new Tuple<string, string>("X-EBAY-API-DEV-NAME", "908b7265-683f-4db1-af12-565f25c3a5f0"),
+					new Tuple<string, string>("X-EBAY-API-APP-NAME", "AgileHar-99ad-4034-9121-56fe988deb85"),
+					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+					new Tuple<string, string>("X-EBAY-API-SITEID", "0"),
+					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetOrders"),
+				};
+
+				string body =
+					string.Format(
+						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo></GetOrdersRequest>​",
+						this._credentials.Token,
+						dateFrom.ToString("O").Substring(0, 23) + "Z",
+						dateTo.ToString("O").Substring(0, 23) + "Z");
+
+				var request = await this.CreateServicePostRequestAsync(url, body, headers);
+
+				using (var memStream = await this.GetResponseStreamAsync(request))
+				{
+					result = new EbayOrdersParser().ParseOrdersResponse(memStream);
+				}
+
+				return result;
+			}
+			catch (WebException exc)
+			{
+				// todo: log some exceptions
+				throw;
+			}
+		}
+
 		public List<Item> GetItems(string url, DateTime dateFrom, DateTime dateTo)
 		{
 			try
@@ -294,6 +333,7 @@ namespace EbayAccess.Services
 				}
 			}
 		}
+
 		#endregion
 	}
 }

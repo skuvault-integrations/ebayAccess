@@ -19,5 +19,7 @@ namespace EbayAccess.Services
 		Stream GetResponseStream(WebRequest webRequest);
 
 		Task<Stream> GetResponseStreamAsync(WebRequest webRequest);
+
+		Task<List<Order>> GetOrdersAsync(string url, DateTime dateFrom, DateTime dateTo);
 	}
 }

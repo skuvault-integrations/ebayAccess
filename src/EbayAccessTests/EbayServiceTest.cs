@@ -6,6 +6,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Models;
 using EbayAccess.Models.GetOrdersResponse;
@@ -39,6 +40,23 @@ namespace EbayAccessTests
 		}
 
 		[Test]
+		public async Task EbayServiceWithExistingOrders_GetOrdersAsync_HookInOrders()
+		{
+			EbayCredentials ebayCredentials = new EbayCredentials()
+			{
+				AccountName = null,
+				Token =
+					"AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
+			};
+			var webRequestServices = new WebRequestServices(ebayCredentials);
+
+			var orders = await webRequestServices.GetOrdersAsync("https://api.sandbox.ebay.com/ws/api.dll",
+				new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 21, 10, 0, 0));
+
+			orders.Count().Should().Be(2, "because on site there is 2 orders");
+		}
+
+		[Test]
 		public void EbayServiceWithNotExistingOrders_GetOrders_EmptyOrdersCollection()
 		{
 			EbayCredentials ebayCredentials = new EbayCredentials()
@@ -50,6 +68,23 @@ namespace EbayAccessTests
 			var webRequestServices = new WebRequestServices(ebayCredentials);
 
 			var orders = webRequestServices.GetOrders("https://api.sandbox.ebay.com/ws/api.dll",
+				new DateTime(1999, 1, 1, 0, 0, 0), new DateTime(1999, 1, 21, 10, 0, 0));
+
+			orders.Count().Should().Be(0, "because on site there is no orders in specified time");
+		}
+
+		[Test]
+		public async Task EbayServiceWithNotExistingOrders_GetOrdersAsync_EmptyOrdersCollection()
+		{
+			EbayCredentials ebayCredentials = new EbayCredentials()
+			{
+				AccountName = null,
+				Token =
+					"AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
+			};
+			var webRequestServices = new WebRequestServices(ebayCredentials);
+
+			var orders = await webRequestServices.GetOrdersAsync("https://api.sandbox.ebay.com/ws/api.dll",
 				new DateTime(1999, 1, 1, 0, 0, 0), new DateTime(1999, 1, 21, 10, 0, 0));
 
 			orders.Count().Should().Be(0, "because on site there is no orders in specified time");
@@ -71,6 +106,30 @@ namespace EbayAccessTests
 
 			orders.Count().Should().BeGreaterThan(0, "because on site there are items started in specified time");
 		}
+
+		[Test]
+		public async Task EbayServiceExistingItems_GetItemsAsync_NotEmptyItemsCollection()
+		{
+			//A
+			EbayCredentials ebayCredentials = new EbayCredentials()
+			{
+				AccountName = null,
+				Token =
+					"AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
+			};
+			var webRequestServices = new WebRequestServices(ebayCredentials);
+
+			var ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
+
+			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+
+			//A
+			var orders = await ebayService.GetItemsAsync(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 28, 10, 0, 0));
+
+			//A
+			orders.Count().Should().BeGreaterThan(0, "because on site there are items started in specified time");
+		}
+
 
 		[Test]
 		public void EbayServiceExistingItems_GetItemsSmart_NotEmptyItemsCollection()
@@ -152,7 +211,34 @@ namespace EbayAccessTests
 			var inventoryStat = ebayService.ReviseInventoryStatus(new InventoryStatus() {ItemID = 110136942332, Quantity = 300});
 
 			inventoryStat.Quantity.Should().Be(301, "because 1 item sold, added 300.");
+		}
 
+		[Test]
+		public async Task EbayServiceWithExistingInventoryItem_UpdateItemQuantityAsync_QuantityUpdated()
+		{
+			//A
+			EbayCredentials ebayCredentials = new EbayCredentials
+			{
+				AccountName = null,
+				Token = "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
+			};
+
+			var ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
+
+			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+
+			const int qty1 = 100;
+
+			const int qty2 = 200;
+
+			const long itemId = 110136942332;
+
+			//A
+			var inventoryStat1 = await ebayService.ReviseInventoryStatusAsync(new InventoryStatus() { ItemID = itemId, Quantity = qty1 });
+			var inventoryStat2 = await ebayService.ReviseInventoryStatusAsync(new InventoryStatus() { ItemID = itemId, Quantity = qty2 });
+
+			//A
+			(inventoryStat1.Quantity - inventoryStat2.Quantity).Should().Be(qty1 - qty2, String.Format("because we set 1 qty {0}, then set 2 qty{1}", qty1, qty2));
 		}
 	}
 }

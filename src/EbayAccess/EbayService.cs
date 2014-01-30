@@ -73,6 +73,7 @@ namespace EbayAccess
 
 		#endregion
 
+		#region GetOrders
 		public IEnumerable<Order> GetOrders(DateTime dateFrom, DateTime dateTo)
 		{
 			var orders = new List<Order>();
@@ -84,6 +85,21 @@ namespace EbayAccess
 
 			return orders;
 		}
+
+		public async Task<IEnumerable<Order>> GetOrdersAsync(DateTime dateFrom, DateTime dateTo)
+		{
+			var orders = new List<Order>();
+
+			await ActionPolicies.GetAsync.Do(async () =>
+			{
+				orders = await this._webRequestServices.GetOrdersAsync(_endPoint, dateFrom, dateTo);
+			});
+
+			return orders;
+		}
+		#endregion
+
+		#region GetItems
 
 		//for get only actual lists, specivy startTimeFrom = curentDate,startTimeTo = curentDate+3 month
 		public IEnumerable<Item> GetItems(DateTime startTimeFrom, DateTime startTimeTo)
@@ -138,7 +154,61 @@ namespace EbayAccess
 			return orders;
 		}
 
-		 #region Upload
+		public async Task<IEnumerable<Item>> GetItemsAsync(DateTime startTimeFrom, DateTime startTimeTo)
+		{
+			List<Item> orders = new List<Item>();
+			PaginationResult pagination = null;
+
+			int totalRecords = 0;
+			int alreadyReadRecords = 0;
+			int recordsPerPage = _itemsPerPage;
+			int pageNumber = 1;
+			do
+			{
+				string body =
+					string.Format(
+						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
+						this._credentials.Token,
+						startTimeFrom.ToString("O").Substring(0, 23) + "Z",
+						startTimeTo.ToString("O").Substring(0, 23) + "Z",
+						recordsPerPage,
+						pageNumber);
+
+				var headers = new List<Tuple<string, string>>
+				{
+					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetSellerList"),
+				};
+
+				await ActionPolicies.GetAsync.Do(async () =>
+				{
+					var webRequest = await this._webRequestServices.CreateEbayStandartPostRequestAsync(_endPoint, headers, body);
+
+					using (var memStream = await _webRequestServices.GetResponseStreamAsync(webRequest))
+					{
+						pagination = new EbayPagesParser().ParsePaginationResultResponse(memStream);
+						if (pagination != null)
+						{
+							totalRecords = pagination.TotalNumberOfEntries;
+						}
+
+						var tempOrders = new EbayItemsParser().ParseGetSallerListResponse(memStream);
+						if (tempOrders != null)
+						{
+							orders.AddRange(tempOrders);
+							alreadyReadRecords += tempOrders.Count;
+						}
+					}
+				});
+
+				pageNumber++;
+			} while ((pagination != null) ? pagination.TotalNumberOfPages < pageNumber : false);
+
+			return orders;
+		}
+
+		#endregion
+		
+		#region Upload
 		public InventoryStatus ReviseInventoryStatus(InventoryStatus inventoryStatus)
 		{
 			var headers = new List<Tuple<string, string>>
