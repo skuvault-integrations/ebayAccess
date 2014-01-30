@@ -160,7 +160,7 @@ namespace EbayAccess
 				});
 
 				pageNumber++;
-			} while ((pagination != null) ? pagination.TotalNumberOfPages < pageNumber : false);
+			} while ((pagination != null) && pagination.TotalNumberOfPages > pageNumber);
 
 			return orders;
 		}
