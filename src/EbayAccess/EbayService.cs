@@ -40,23 +40,6 @@ namespace EbayAccess
 		{
 		}
 
-		#region Upload
-
-		public IEnumerable<EbayInventoryUploadResponse> InventoryUpload(EbayUploadConfig config, Stream file)
-		{
-			//todo: add logic
-			throw new NotImplementedException();
-		}
-
-		public async Task<IEnumerable<EbayInventoryUploadResponse>> InventoryUploadAsync(EbayUploadConfig config,
-			Stream stream)
-		{
-			//todo: add logic
-			throw new NotImplementedException();
-		}
-
-		#endregion
-
 		#region Logging
 
 		public void LogReportResponseError()

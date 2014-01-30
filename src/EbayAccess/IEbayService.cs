@@ -6,22 +6,22 @@ using EbayAccess.Models;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
+using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess
 {
 	public interface IEbayService
 	{
-		//todo: declare and realise it
-		IEnumerable<EbayInventoryUploadResponse> InventoryUpload(EbayUploadConfig config, Stream stream);
-
-		Task<IEnumerable<EbayInventoryUploadResponse>> InventoryUploadAsync(EbayUploadConfig config, Stream stream);
-
 		IEnumerable<Order> GetOrders(DateTime dateFrom, DateTime dateTo);
 
-		InventoryStatus ReviseInventoryStatus(InventoryStatus inventoryStatus);
-	}
+		Task<IEnumerable<Order>> GetOrdersAsync(DateTime dateFrom, DateTime dateTo);
 
-	public class EbayUploadConfig
-	{
+		InventoryStatus ReviseInventoryStatus(InventoryStatus inventoryStatus);
+
+		Task<InventoryStatus> ReviseInventoryStatusAsync(InventoryStatus inventoryStatus);
+
+		IEnumerable<Item> GetItems(DateTime startTimeFrom, DateTime startTimeTo);
+
+		Task<IEnumerable<Item>> GetItemsAsync(DateTime startTimeFrom, DateTime startTimeTo);
 	}
 }

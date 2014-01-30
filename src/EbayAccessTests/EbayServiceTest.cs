@@ -130,7 +130,6 @@ namespace EbayAccessTests
 			orders.Count().Should().BeGreaterThan(0, "because on site there are items started in specified time");
 		}
 
-
 		[Test]
 		public void EbayServiceExistingItems_GetItemsSmart_NotEmptyItemsCollection()
 		{
