@@ -12,7 +12,7 @@ namespace EbayAccessTests.Services
 		public void FileStreamWithCorrectXml_ParseItemsResponse_HookupCorrectDeserializedObject()
 		{
 			//A
-			using (var fs = new FileStream(@".\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml", FileMode.Open,FileAccess.Read))
+			using (var fs = new FileStream(@".\Files\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml", FileMode.Open,FileAccess.Read))
 			{
 				//A
 				var orders = new EbayItemsParser().ParseGetSallerListResponse(fs);

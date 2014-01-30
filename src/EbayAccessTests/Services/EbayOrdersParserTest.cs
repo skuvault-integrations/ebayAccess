@@ -11,7 +11,7 @@ namespace EbayAccessTests.Services
 		[Test]
 		public void FileStreamWithCorrectXml_ParseOrdersResponse_HookupCorrectDeserializedObject()
 		{
-			using (var fs = new FileStream(@".\EbayServiceGetOrdersResponseWithItems.xml", FileMode.Open, FileAccess.Read))
+			using (var fs = new FileStream(@".\FIles\EbayServiceGetOrdersResponseWithItems.xml", FileMode.Open, FileAccess.Read))
 			{
 				var parser = new EbayOrdersParser();
 				var orders = parser.ParseOrdersResponse(fs);
