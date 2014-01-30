@@ -113,7 +113,7 @@ namespace EbayAccess
 
 				ActionPolicies.Get.Do(() =>
 				{
-					var webRequest = this._webRequestServices.GetItemsSmart(_endPoint, headers, body);
+					var webRequest = this._webRequestServices.CreateEbayStandartPostRequest(_endPoint, headers, body);
 
 					using (var memStream = _webRequestServices.GetResponseStream(webRequest))
 					{
@@ -138,6 +138,7 @@ namespace EbayAccess
 			return orders;
 		}
 
+		 #region Upload
 		public InventoryStatus ReviseInventoryStatus(InventoryStatus inventoryStatus)
 		{
 			var headers = new List<Tuple<string, string>>
@@ -154,7 +155,7 @@ namespace EbayAccess
 				string.IsNullOrWhiteSpace(inventoryStatus.SKU)? string.Format( "<SKU>{0}</SKU>",inventoryStatus.SKU):string.Empty
 				);
 
-			var request = _webRequestServices.GetItemsSmart(_endPoint, headers, body);
+			var request = _webRequestServices.CreateEbayStandartPostRequest(_endPoint, headers, body);
 
 			using (var memStream = _webRequestServices.GetResponseStream(request))
 			{
@@ -179,14 +180,15 @@ namespace EbayAccess
 				string.IsNullOrWhiteSpace(inventoryStatus.SKU) ? string.Format("<SKU>{0}</SKU>", inventoryStatus.SKU) : string.Empty
 				);
 
-			var request = await _webRequestServices.GetItemsSmartAsync(_endPoint, headers, body);
+			var request = await _webRequestServices.CreateEbayStandartPostRequestAsync(_endPoint, headers, body);
 
-			using (var memStream = await _webRequestServices.GetResponseStream(request))
+			using (var memStream = await _webRequestServices.GetResponseStreamAsync(request))
 			{
 				var inventoryStatusResponse = new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse(memStream);
 				return inventoryStatusResponse;
 			}
 		}
+		#endregion
 
 		private Stream CopyToMemoryStream(Stream source)
 		{

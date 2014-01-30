@@ -120,7 +120,7 @@ namespace EbayAccessTests
 				ms.Position = 0;
 				return ms;
 			}).Callback(() => stubCallCounter++);
-			stub.Setup(x => x.GetItemsSmart(It.IsAny<string>(), It.IsAny<List<Tuple<string, string>>>(), It.IsAny<string>())).Returns(() =>
+			stub.Setup(x => x.CreateEbayStandartPostRequest(It.IsAny<string>(), It.IsAny<List<Tuple<string, string>>>(), It.IsAny<string>())).Returns(() =>
 			{
 				return null;
 			});

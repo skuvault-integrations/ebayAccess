@@ -96,7 +96,8 @@ namespace EbayAccess.Services
 		}
 		#endregion
 
-		public async Task<WebRequest> GetItemsSmartAsync(string url, IList<Tuple<string, string>> headers, string body)
+		#region EbayStandartRequest
+		public async Task<WebRequest> CreateEbayStandartPostRequestAsync(string url, IList<Tuple<string, string>> headers, string body)
 		{
 			try
 			{
@@ -128,7 +129,7 @@ namespace EbayAccess.Services
 			}
 		}
 
-		public WebRequest GetItemsSmart(string url, IList<Tuple<string, string>> headers, string body)
+		public WebRequest CreateEbayStandartPostRequest(string url, IList<Tuple<string, string>> headers, string body)
 		{
 			try
 			{
@@ -159,6 +160,7 @@ namespace EbayAccess.Services
 				throw;
 			}
 		}
+		#endregion
 
 		public List<Order> GetOrders(string url, DateTime dateFrom, DateTime dateTo)
 		{
