@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Models;
 using EbayAccess.Models.GetOrdersResponse;
@@ -16,6 +17,7 @@ using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services
 {
+	// todo: convert strings to constants or variables
 	public class WebRequestServices : IWebRequestServices
 	{
 		private readonly EbayCredentials _credentials;
@@ -27,6 +29,7 @@ namespace EbayAccess.Services
 			this._credentials = credentials;
 		}
 
+		#region BaseRequests
 		private WebRequest CreateServiceGetRequest(string serviceUrl, IEnumerable<Tuple<string, string>> rawUrlParameters)
 		{
 			string parametrizedServiceUrl = serviceUrl;
@@ -48,7 +51,7 @@ namespace EbayAccess.Services
 			var encoding = new UTF8Encoding();
 			var encodedBody = encoding.GetBytes(body);
 
-			var serviceRequest = (HttpWebRequest) WebRequest.Create(serviceUrl);
+			var serviceRequest = (HttpWebRequest)WebRequest.Create(serviceUrl);
 			serviceRequest.Method = WebRequestMethods.Http.Post;
 			serviceRequest.ContentType = "text/xml";
 			serviceRequest.ContentLength = encodedBody.Length;
@@ -67,7 +70,96 @@ namespace EbayAccess.Services
 			return serviceRequest;
 		}
 
-		// todo: convert strings to constants or variables
+		private async Task<WebRequest> CreateServicePostRequestAsync(string serviceUrl, string body,
+			IEnumerable<Tuple<string, string>> rawHeaders)
+		{
+			var encoding = new UTF8Encoding();
+			var encodedBody = encoding.GetBytes(body);
+
+			var serviceRequest = (HttpWebRequest)WebRequest.Create(serviceUrl);
+			serviceRequest.Method = WebRequestMethods.Http.Post;
+			serviceRequest.ContentType = "text/xml";
+			serviceRequest.ContentLength = encodedBody.Length;
+			serviceRequest.KeepAlive = true;
+
+			foreach (var rawHeader in rawHeaders)
+			{
+				serviceRequest.Headers.Add(rawHeader.Item1, rawHeader.Item2);
+			}
+
+			using (var newStream = await serviceRequest.GetRequestStreamAsync())
+			{
+				newStream.Write(encodedBody, 0, encodedBody.Length);
+			}
+
+			return serviceRequest;
+		}
+		#endregion
+
+		public async Task<WebRequest> GetItemsSmartAsync(string url, IList<Tuple<string, string>> headers, string body)
+		{
+			try
+			{
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-COMPATIBILITY-LEVEL"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"));
+				}
+
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-DEV-NAME"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-DEV-NAME", "908b7265-683f-4db1-af12-565f25c3a5f0"));
+				}
+
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-APP-NAME"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-APP-NAME", "AgileHar-99ad-4034-9121-56fe988deb85"));
+				}
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-SITEID"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-SITEID", "0"));
+				}
+
+				return await CreateServicePostRequestAsync(url, body, headers);
+			}
+			catch (WebException exc)
+			{
+				// todo: log some exceptions
+				throw;
+			}
+		}
+
+		public WebRequest GetItemsSmart(string url, IList<Tuple<string, string>> headers, string body)
+		{
+			try
+			{
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-COMPATIBILITY-LEVEL"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"));
+				}
+
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-DEV-NAME"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-DEV-NAME", "908b7265-683f-4db1-af12-565f25c3a5f0"));
+				}
+
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-APP-NAME"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-APP-NAME", "AgileHar-99ad-4034-9121-56fe988deb85"));
+				}
+				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-SITEID"))
+				{
+					headers.Add(new Tuple<string, string>("X-EBAY-API-SITEID", "0"));
+				}
+
+				return CreateServicePostRequest(url, body, headers);
+			}
+			catch (WebException exc)
+			{
+				// todo: log some exceptions
+				throw;
+			}
+		}
+
 		public List<Order> GetOrders(string url, DateTime dateFrom, DateTime dateTo)
 		{
 			try
@@ -109,7 +201,6 @@ namespace EbayAccess.Services
 			}
 		}
 
-		// todo: convert strings to constants or variables
 		public List<Item> GetItems(string url, DateTime dateFrom, DateTime dateTo)
 		{
 			try
@@ -153,39 +244,6 @@ namespace EbayAccess.Services
 			}
 		}
 
-		// todo: convert strings to constants or variables
-		public WebRequest GetItemsSmart(string url, IList<Tuple<string, string>> headers, string body)
-		{
-			try
-			{
-				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-COMPATIBILITY-LEVEL"))
-				{
-					headers.Add(new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"));
-				}
-
-				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-DEV-NAME"))
-				{
-					headers.Add(new Tuple<string, string>("X-EBAY-API-DEV-NAME", "908b7265-683f-4db1-af12-565f25c3a5f0"));
-				}
-
-				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-APP-NAME"))
-				{
-					headers.Add(new Tuple<string, string>("X-EBAY-API-APP-NAME", "AgileHar-99ad-4034-9121-56fe988deb85"));
-				}
-				if (!headers.Exists(tuple => tuple.Item1 == "X-EBAY-API-SITEID"))
-				{
-					headers.Add(new Tuple<string, string>("X-EBAY-API-SITEID", "0"));
-				}
-
-				return CreateServicePostRequest(url, body, headers);
-			}
-			catch (WebException exc)
-			{
-				// todo: log some exceptions
-				throw;
-			}
-		}
-
 		#region logging
 
 		private void LogParseReportError(MemoryStream stream)
@@ -202,6 +260,7 @@ namespace EbayAccess.Services
 
 		#endregion
 
+		#region ResponseHanding
 		public Stream GetResponseStream(WebRequest webRequest)
 		{
 			MemoryStream memoryStream;
@@ -217,5 +276,22 @@ namespace EbayAccess.Services
 			}
 		}
 
+		public async Task<Stream> GetResponseStreamAsync(WebRequest webRequest)
+		{
+			MemoryStream memoryStream;
+			using (var response = (HttpWebResponse) await webRequest.GetResponseAsync())
+			{
+				//using (Stream dataStream = response.GetResponseStream() )
+				//using (Stream dataStream = await Task<Stream>.Run(() => { return response.GetResponseStream(); }) )
+				using (Stream dataStream = await new TaskFactory<Stream>().StartNew(() => { return response.GetResponseStream(); }) )
+				{
+					memoryStream = new MemoryStream();
+					await dataStream.CopyToAsync(memoryStream, 0x100);
+					memoryStream.Position = 0;
+					return memoryStream;
+				}
+			}
+		}
+		#endregion
 	}
 }

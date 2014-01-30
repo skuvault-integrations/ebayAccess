@@ -85,7 +85,8 @@ namespace EbayAccess
 			return orders;
 		}
 
-		public IEnumerable<Item> GetItemsSmart(DateTime startTimeFrom, DateTime startTimeTo)
+		//for get only actual lists, specivy startTimeFrom = curentDate,startTimeTo = curentDate+3 month
+		public IEnumerable<Item> GetItems(DateTime startTimeFrom, DateTime startTimeTo)
 		{
 			List<Item> orders = new List<Item>();
 			PaginationResult pagination;
@@ -156,6 +157,31 @@ namespace EbayAccess
 			var request = _webRequestServices.GetItemsSmart(_endPoint, headers, body);
 
 			using (var memStream = _webRequestServices.GetResponseStream(request))
+			{
+				var inventoryStatusResponse = new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse(memStream);
+				return inventoryStatusResponse;
+			}
+		}
+
+		public async Task<InventoryStatus> ReviseInventoryStatusAsync(InventoryStatus inventoryStatus)
+		{
+			var headers = new List<Tuple<string, string>>
+			{
+				new Tuple<string, string>("X-EBAY-API-CALL-NAME", "ReviseInventoryStatus"),
+				new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+			};
+
+			string body = string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><InventoryStatus ComplexType=\"InventoryStatusType\">{1}{2}{3}</InventoryStatus></ReviseInventoryStatusRequest>",
+				this._credentials.Token,
+				inventoryStatus.ItemID.HasValue ? string.Format("<ItemID>{0}</ItemID>", inventoryStatus.ItemID.Value) : string.Empty,
+				inventoryStatus.Quantity.HasValue ? string.Format("<Quantity>{0}</Quantity>", inventoryStatus.Quantity.Value) : string.Empty,
+				string.IsNullOrWhiteSpace(inventoryStatus.SKU) ? string.Format("<SKU>{0}</SKU>", inventoryStatus.SKU) : string.Empty
+				);
+
+			var request = await _webRequestServices.GetItemsSmartAsync(_endPoint, headers, body);
+
+			using (var memStream = await _webRequestServices.GetResponseStream(request))
 			{
 				var inventoryStatusResponse = new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse(memStream);
 				return inventoryStatusResponse;

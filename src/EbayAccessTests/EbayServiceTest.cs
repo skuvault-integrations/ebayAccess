@@ -85,7 +85,7 @@ namespace EbayAccessTests
 
 			EbayService ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
 
-			var orders = ebayService.GetItemsSmart(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 28, 10, 0, 0));
+			var orders = ebayService.GetItems(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 28, 10, 0, 0));
 
 			orders.Count().Should().BeGreaterThan(0, "because on site there are items started in specified time");
 		}
@@ -128,7 +128,7 @@ namespace EbayAccessTests
 			EbayService ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint, stub.Object);
 
 			//A
-			var orders = ebayService.GetItemsSmart(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 28, 10, 0, 0));
+			var orders = ebayService.GetItems(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 28, 10, 0, 0));
 
 			//A
 			orders.Count().Should().Be(3, "because sutb gives 3 pages, 1 item per page");
