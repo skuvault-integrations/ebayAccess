@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
@@ -41,7 +42,6 @@ namespace EbayAccess
 		}
 
 		#region Logging
-
 		public void LogReportResponseError()
 		{
 			throw new NotImplementedException();
@@ -53,7 +53,6 @@ namespace EbayAccess
 			throw new NotImplementedException();
 			//this.Log().Error( "Failed to upload item with SKU '{0}'. Status code:'{1}', message: {2}", response.Sku, response.Status, response.Message );
 		}
-
 		#endregion
 
 		#region GetOrders
@@ -167,7 +166,6 @@ namespace EbayAccess
 		#endregion
 
 		#region GetItems
-
 		//for get only actual lists, specivy startTimeFrom = curentDate,startTimeTo = curentDate+3 month
 		public IEnumerable<Item> GetItems(DateTime startTimeFrom, DateTime startTimeTo)
 		{
@@ -272,7 +270,6 @@ namespace EbayAccess
 
 			return orders;
 		}
-
 		#endregion
 		
 		#region Upload
@@ -325,14 +322,33 @@ namespace EbayAccess
 				return inventoryStatusResponse;
 			}
 		}
-		#endregion
 
-		private Stream CopyToMemoryStream(Stream source)
+		public IEnumerable<InventoryStatus> ReviseInventoriesStatus(IEnumerable<InventoryStatus> inventoryStatuses)
 		{
-			var memoryStrem = new MemoryStream();
-			source.CopyTo(memoryStrem, 0x100);
-			memoryStrem.Position = 0;
-			return memoryStrem;
+			return
+				inventoryStatuses.Select(
+					productToUpdate => ActionPolicies.Submit.Get(() => this.ReviseInventoryStatus(productToUpdate)))
+					.Where(productUpdated => productUpdated != null)
+					.ToList();
 		}
+
+		public async Task<IEnumerable<InventoryStatus>> ReviseInventoriesStatusAsync(IEnumerable<InventoryStatus> inventoryStatuses)
+		{
+			//foreach (var inventoryStatus in inventoryStatuses)
+			//{
+			//	var productToUpdate = inventoryStatus;
+			//	await ActionPolicies.SubmitAsync.Do(async () => await this.ReviseInventoryStatusAsync(productToUpdate));
+			//}
+
+			return await new TaskFactory<IEnumerable<InventoryStatus>>().StartNew(() => ReviseInventoriesStatus(inventoryStatuses));
+
+			//{
+			//	return inventoryStatuses.Select(
+			//		productToUpdate => ActionPolicies.Submit.Get(() => this.ReviseInventoryStatus(productToUpdate)))
+			//		.Where(productUpdated => productUpdated != null)
+			//		.ToList();
+			//});
+		}
+		#endregion
 	}
 }

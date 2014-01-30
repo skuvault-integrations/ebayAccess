@@ -32,13 +32,13 @@ namespace EbayAccessTests
 
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
 
 			//A
-			var orders = ebayService.GetOrders(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 21, 10, 0, 0));
+			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
 
 			//A
-			orders.Count().Should().Be(2, "because on site there is 2 orders");
+			orders.Count().Should().Be( 2, "because on site there is 2 orders" );
 		}
 
 		[Test]
@@ -54,13 +54,13 @@ namespace EbayAccessTests
 
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
 
 			//A
-			var orders = await ebayService.GetOrdersAsync(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 21, 10, 0, 0));
+			var orders = await ebayService.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
 
 			//A
-			orders.Count().Should().Be(2, "because on site there is 2 orders");
+			orders.Count().Should().Be( 2, "because on site there is 2 orders" );
 		}
 
 		[Test]
@@ -76,13 +76,13 @@ namespace EbayAccessTests
 
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
 
 			//A
-			var orders = ebayService.GetOrders(new DateTime(1999, 1, 1, 0, 0, 0), new DateTime(1999, 1, 21, 10, 0, 0));
+			var orders = ebayService.GetOrders( new DateTime( 1999, 1, 1, 0, 0, 0 ), new DateTime( 1999, 1, 21, 10, 0, 0 ) );
 
 			//A
-			orders.Count().Should().Be(0, "because on site there is no orders in specified time");
+			orders.Count().Should().Be( 0, "because on site there is no orders in specified time" );
 		}
 
 		[Test]
@@ -98,13 +98,13 @@ namespace EbayAccessTests
 
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
 
 			//A
-			var orders = await ebayService.GetOrdersAsync(new DateTime(1999, 1, 1, 0, 0, 0), new DateTime(1999, 1, 21, 10, 0, 0));
+			var orders = await ebayService.GetOrdersAsync( new DateTime( 1999, 1, 1, 0, 0, 0 ), new DateTime( 1999, 1, 21, 10, 0, 0 ) );
 
 			//A
-			orders.Count().Should().Be(0, "because on site there is no orders in specified time");
+			orders.Count().Should().Be( 0, "because on site there is no orders in specified time" );
 		}
 
 		[Test]
@@ -114,7 +114,8 @@ namespace EbayAccessTests
 			var ebayCredentials = new EbayCredentials
 			{
 				AccountName = null,
-				Token = "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
+				Token =
+					"AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
 			};
 
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
@@ -127,27 +128,27 @@ namespace EbayAccessTests
 			};
 
 			var stub = new Mock<IWebRequestServices>();
-			stub.Setup(x => x.GetResponseStream(It.IsAny<WebRequest>())).Returns(() =>
+			stub.Setup( x => x.GetResponseStream( It.IsAny<WebRequest>() ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
 				var encoding = new UTF8Encoding();
-				byte[] buf = encoding.GetBytes(serverResponsePages[stubCallCounter]);
-				ms.Write(buf, 0, buf.Length);
+				byte[] buf = encoding.GetBytes( serverResponsePages[ stubCallCounter ] );
+				ms.Write( buf, 0, buf.Length );
 				ms.Position = 0;
 				return ms;
-			}).Callback(() => stubCallCounter++);
+			} ).Callback( () => stubCallCounter++ );
 			stub.Setup(
 				x =>
-					x.CreateEbayStandartPostRequest(It.IsAny<string>(), It.IsAny<List<Tuple<string, string>>>(), It.IsAny<string>()))
-				.Returns(() => null);
+					x.CreateEbayStandartPostRequest( It.IsAny<string>(), It.IsAny<List<Tuple<string, string>>>(), It.IsAny<string>() ) )
+				.Returns( () => null );
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint, stub.Object);
-
-			//A
-			var orders = ebayService.GetOrders(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 28, 10, 0, 0));
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint, stub.Object );
 
 			//A
-			orders.Count().Should().Be(2, "because stub gives 2 pages, 1 item per page");
+			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ) );
+
+			//A
+			orders.Count().Should().Be( 2, "because stub gives 2 pages, 1 item per page" );
 		}
 
 		[Test]
@@ -163,13 +164,13 @@ namespace EbayAccessTests
 
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
 
 			//A
-			var orders = ebayService.GetItems(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 28, 10, 0, 0));
+			var orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ) );
 
 			//A
-			orders.Count().Should().BeGreaterThan(0, "because on site there are items started in specified time");
+			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
 		}
 
 		[Test]
@@ -185,13 +186,13 @@ namespace EbayAccessTests
 
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
 
 			//A
-			var orders = await ebayService.GetItemsAsync(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 28, 10, 0, 0));
+			var orders = await ebayService.GetItemsAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ) );
 
 			//A
-			orders.Count().Should().BeGreaterThan(0, "because on site there are items started in specified time");
+			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
 		}
 
 		[Test]
@@ -206,13 +207,13 @@ namespace EbayAccessTests
 			};
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
 
 			//A
-			var orders = ebayService.GetItems(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 28, 10, 0, 0));
+			var orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ) );
 
 			//A
-			orders.Count().Should().BeGreaterThan(0, "because on site there are items started in specified time");
+			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
 		}
 
 		[Test]
@@ -222,7 +223,8 @@ namespace EbayAccessTests
 			var ebayCredentials = new EbayCredentials
 			{
 				AccountName = null,
-				Token = "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
+				Token =
+					"AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
 			};
 
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
@@ -236,27 +238,27 @@ namespace EbayAccessTests
 			};
 
 			var stub = new Mock<IWebRequestServices>();
-			stub.Setup(x => x.GetResponseStream(It.IsAny<WebRequest>())).Returns(() =>
+			stub.Setup( x => x.GetResponseStream( It.IsAny<WebRequest>() ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
 				var encoding = new UTF8Encoding();
-				byte[] buf = encoding.GetBytes(serverResponsePages[stubCallCounter]);
-				ms.Write(buf, 0, buf.Length);
+				byte[] buf = encoding.GetBytes( serverResponsePages[ stubCallCounter ] );
+				ms.Write( buf, 0, buf.Length );
 				ms.Position = 0;
 				return ms;
-			}).Callback(() => stubCallCounter++);
+			} ).Callback( () => stubCallCounter++ );
 			stub.Setup(
 				x =>
-					x.CreateEbayStandartPostRequest(It.IsAny<string>(), It.IsAny<List<Tuple<string, string>>>(), It.IsAny<string>()))
-				.Returns(() => null);
+					x.CreateEbayStandartPostRequest( It.IsAny<string>(), It.IsAny<List<Tuple<string, string>>>(), It.IsAny<string>() ) )
+				.Returns( () => null );
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint, stub.Object);
-
-			//A
-			var orders = ebayService.GetItems(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 28, 10, 0, 0));
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint, stub.Object );
 
 			//A
-			orders.Count().Should().Be(3, "because stub gives 3 pages, 1 item per page");
+			var orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ) );
+
+			//A
+			orders.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );
 		}
 
 		[Test]
@@ -266,12 +268,13 @@ namespace EbayAccessTests
 			var ebayCredentials = new EbayCredentials
 			{
 				AccountName = null,
-				Token = "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
+				Token =
+					"AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
 			};
 
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
 
 			const int qty1 = 100;
 
@@ -280,11 +283,91 @@ namespace EbayAccessTests
 			const long itemId = 110136942332;
 
 			//A
-			var inventoryStat1 = ebayService.ReviseInventoryStatus(new InventoryStatus { ItemID = itemId, Quantity = qty1 });
-			var inventoryStat2 = ebayService.ReviseInventoryStatus(new InventoryStatus { ItemID = itemId, Quantity = qty2 });
+			var inventoryStat1 = ebayService.ReviseInventoryStatus( new InventoryStatus { ItemID = itemId, Quantity = qty1 } );
+			var inventoryStat2 = ebayService.ReviseInventoryStatus( new InventoryStatus { ItemID = itemId, Quantity = qty2 } );
 
 			//A
-			(inventoryStat1.Quantity - inventoryStat2.Quantity).Should().Be(qty1 - qty2, String.Format("because we set 1 qty {0}, then set 2 qty{1}", qty1, qty2));
+			( inventoryStat1.Quantity - inventoryStat2.Quantity ).Should()
+				.Be( qty1 - qty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", qty1, qty2 ) );
+		}
+
+		[Test]
+		public void EbayServiceWithExistingInventoryItesm_UpdateItemsQuantity_QuantityUpdatedForAll()
+		{
+			//A
+			var ebayCredentials = new EbayCredentials
+			{
+				AccountName = null,
+				Token =
+					"AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
+			};
+
+			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
+
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
+
+			const int itemsQty1 = 100;
+			const int itemsQty2 = 200;
+			const long item1Id = 110136942332;
+			const long item2Id = 110137091582;
+
+			//A
+			var inventoryStat1 =
+				ebayService.ReviseInventoriesStatus( new List<InventoryStatus>
+				{
+					new InventoryStatus {ItemID = item1Id, Quantity = itemsQty1},
+					new InventoryStatus {ItemID = item2Id, Quantity = itemsQty1}
+				} ).ToArray();
+			var inventoryStat2 = ebayService.ReviseInventoriesStatus( new List<InventoryStatus>
+			{
+				new InventoryStatus {ItemID = item1Id, Quantity = itemsQty2},
+				new InventoryStatus {ItemID = item2Id, Quantity = itemsQty2}
+			} ).ToArray();
+
+			//A
+			( inventoryStat1[ 0 ].Quantity - inventoryStat2[ 0 ].Quantity ).Should()
+				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", itemsQty1, itemsQty2 ) );
+			( inventoryStat1[ 1 ].Quantity - inventoryStat2[ 1 ].Quantity ).Should()
+				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", itemsQty1, itemsQty2 ) );
+		}
+
+		[Test]
+		public async Task EbayServiceWithExistingInventoryItesm_UpdateItemsQuantityAsync_QuantityUpdatedForAll()
+		{
+			//A
+			var ebayCredentials = new EbayCredentials
+			{
+				AccountName = null,
+				Token =
+					"AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
+			};
+
+			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
+
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
+
+			const int itemsQty1 = 100;
+			const int itemsQty2 = 200;
+			const long item1Id = 110136942332;
+			const long item2Id = 110137091582;
+
+			//A
+			var inventoryStat1 = ( await ebayService.ReviseInventoriesStatusAsync( new List<InventoryStatus>
+			{
+				new InventoryStatus {ItemID = item1Id, Quantity = itemsQty1},
+				new InventoryStatus {ItemID = item2Id, Quantity = itemsQty1}
+			} ) ).ToArray();
+			var inventoryStat2 = ( await ebayService.ReviseInventoriesStatusAsync( new List<InventoryStatus>
+			{
+				new InventoryStatus {ItemID = item1Id, Quantity = itemsQty2},
+				new InventoryStatus {ItemID = item2Id, Quantity = itemsQty2}
+			} ) ).ToArray();
+
+			//A
+			( inventoryStat1[ 0 ].Quantity - inventoryStat2[ 0 ].Quantity ).Should()
+				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", itemsQty1, itemsQty2 ) );
+			( inventoryStat1[ 1 ].Quantity - inventoryStat2[ 1 ].Quantity ).Should()
+				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", itemsQty1, itemsQty2 ) );
 		}
 
 		[Test]
@@ -294,12 +377,13 @@ namespace EbayAccessTests
 			var ebayCredentials = new EbayCredentials
 			{
 				AccountName = null,
-				Token = "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
+				Token =
+					"AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R"
 			};
 
 			const string ebayServiceEndpoint = "https://api.sandbox.ebay.com/ws/api.dll";
 
-			var ebayService = new EbayService(ebayCredentials, ebayServiceEndpoint);
+			var ebayService = new EbayService( ebayCredentials, ebayServiceEndpoint );
 
 			const int qty1 = 100;
 
@@ -308,11 +392,14 @@ namespace EbayAccessTests
 			const long itemId = 110136942332;
 
 			//A
-			var inventoryStat1 = await ebayService.ReviseInventoryStatusAsync(new InventoryStatus { ItemID = itemId, Quantity = qty1 });
-			var inventoryStat2 = await ebayService.ReviseInventoryStatusAsync(new InventoryStatus { ItemID = itemId, Quantity = qty2 });
+			var inventoryStat1 =
+				await ebayService.ReviseInventoryStatusAsync( new InventoryStatus { ItemID = itemId, Quantity = qty1 } );
+			var inventoryStat2 =
+				await ebayService.ReviseInventoryStatusAsync( new InventoryStatus { ItemID = itemId, Quantity = qty2 } );
 
 			//A
-			(inventoryStat1.Quantity - inventoryStat2.Quantity).Should().Be(qty1 - qty2, String.Format("because we set 1 qty {0}, then set 2 qty{1}", qty1, qty2));
+			( inventoryStat1.Quantity - inventoryStat2.Quantity ).Should()
+				.Be( qty1 - qty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", qty1, qty2 ) );
 		}
 	}
 }
