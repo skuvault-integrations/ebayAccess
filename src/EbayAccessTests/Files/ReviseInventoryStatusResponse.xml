@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
+
 <ReviseInventoryStatusResponse xmlns="urn:ebay:apis:eBLBaseComponents">
 	<Timestamp>2014-01-29T21:32:30.284Z</Timestamp>
 	<Ack>Success</Ack>

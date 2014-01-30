@@ -2,8 +2,8 @@
 {
 	public class EbayCredentials
 	{
-		public object AccountName	 { get; set; }
+		public object AccountName { get; set; }
 
-		public string Token	 { get; set; }
+		public string Token { get; set; }
 	}
 }

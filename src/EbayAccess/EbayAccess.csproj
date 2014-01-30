@@ -67,7 +67,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EbayInventoryStatusParser.cs" />
     <Compile Include="Services\EbayItemsParser.cs" />
-    <Compile Include="Services\EbayInventoryUploadResponse.cs" />
     <Compile Include="Services\EbayOrdersParser.cs" />
     <Compile Include="Services\EbayPagesParser.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />

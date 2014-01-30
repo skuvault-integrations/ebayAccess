@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using EbayAccess.Models.GetOrdersResponse;
-
-namespace EbayAccess.Models.BaseResponse
+﻿namespace EbayAccess.Models.BaseResponse
 {
 	public class PaginationResult
 	{

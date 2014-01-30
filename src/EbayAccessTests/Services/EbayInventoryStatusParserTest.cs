@@ -14,19 +14,19 @@ namespace EbayAccessTests.Services
 			CorrectReviseInventoryStatusResponseWithInventory_ParseInventoryStatusResponse_HookupCorrectDeserializedObject()
 		{
 			//A
-			using (var fs = new FileStream(@".\Files\ReviseInventoryStatusResponse.xml", FileMode.Open, FileAccess.Read))
+			using( var fs = new FileStream( @".\Files\ReviseInventoryStatusResponse.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				//A
-				var inventoryStatus = new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse(fs);
+				InventoryStatus inventoryStatus = new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse( fs );
 
 				//A
-				inventoryStatus.ShouldBeEquivalentTo(new InventoryStatus
+				inventoryStatus.ShouldBeEquivalentTo( new InventoryStatus
 				{
-					ItemID = 110136942332,
+					ItemId = 110136942332,
 					StartPrice = 1.0,
 					Quantity = 101,
-					SKU = string.Empty
-				}, "because in source file there this data");
+					Sku = string.Empty
+				}, "because in source file there this data" );
 			}
 		}
 	}

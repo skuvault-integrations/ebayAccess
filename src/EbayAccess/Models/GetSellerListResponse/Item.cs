@@ -10,7 +10,7 @@
 
 		public string Currency { get; set; }
 
-		public long ItemID { get; set; }
+		public long ItemId { get; set; }
 
 		public ListingDetails ListingDetails { get; set; }
 

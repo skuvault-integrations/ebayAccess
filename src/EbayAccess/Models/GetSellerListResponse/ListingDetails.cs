@@ -22,12 +22,12 @@ namespace EbayAccess.Models.GetSellerListResponse
 
 		public DateTime EndTime { get; set; }
 
-		public string ViewItemURL { get; set; }
+		public string ViewItemUrl { get; set; }
 
 		public bool HasUnansweredQuestions { get; set; }
 
 		public bool HasPublicMessages { get; set; }
 
-		public string ViewItemURLForNaturalSearch { get; set; }
+		public string ViewItemUrlForNaturalSearch { get; set; }
 	}
 }

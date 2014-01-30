@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
+
 <GetOrdersResponse xmlns="urn:ebay:apis:eBLBaseComponents">
 	<Timestamp>2014-01-20T16:50:23.400Z</Timestamp>
 	<Ack>Success</Ack>
