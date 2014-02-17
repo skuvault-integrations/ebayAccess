@@ -4,7 +4,7 @@ using LINQtoCSV;
 
 namespace EbayAccessTests
 {
-	internal class TestCredentials
+	public class TestCredentials
 	{
 		private readonly FlatCsvLine _flatCsvLine;
 

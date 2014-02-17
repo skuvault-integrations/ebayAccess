@@ -18,7 +18,6 @@ using Item = EbayAccess.Models.GetSellerListResponse.Item;
 namespace EbayAccessTests
 {
 	[TestFixture]
-	//todo: there are an integration tests here, move they to correspond place!
 	public class EbayServiceTest
 	{
 		private TestCredentials _credentials;
@@ -46,16 +45,15 @@ namespace EbayAccessTests
 			stub.Setup( x => x.GetResponseStream( It.IsAny<WebRequest>() ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
-				var encoding = new UTF8Encoding();
-				byte[] buf = encoding.GetBytes( serverResponsePages[ stubCallCounter ] );
+				byte[] buf = new UTF8Encoding().GetBytes( serverResponsePages[ stubCallCounter ] );
 				ms.Write( buf, 0, buf.Length );
 				ms.Position = 0;
 				return ms;
 			} ).Callback( () => stubCallCounter++ );
 			stub.Setup(
 				x =>
-					x.CreateEbayStandartPostRequest( It.IsAny<string>(), It.IsAny<List<Tuple<string, string>>>(), It.IsAny<string>() ) )
-				.Returns( () => null );
+					x.CreateEbayStandartPostRequest(It.IsAny<string>(), It.IsAny<List<Tuple<string, string>>>(), It.IsAny<string>()))
+				.Returns(() => null);
 
 			var ebayService = new EbayService( _credentials.GetEbayCredentials(), _credentials.GetEbayEndPoint(), stub.Object );
 
@@ -65,48 +63,6 @@ namespace EbayAccessTests
 
 			//A
 			orders.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );
-		}
-
-		[Test]
-		public async Task EbayServiceExistingItems_GetItemsAsync_NotEmptyItemsCollection()
-		{
-			//A
-			var ebayService = new EbayService( _credentials.GetEbayCredentials(), _credentials.GetEbayEndPoint() );
-
-			//A
-			IEnumerable<Item> orders =
-				await ebayService.GetItemsAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ) );
-
-			//A
-			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
-		}
-
-		[Test]
-		public void EbayServiceExistingItems_GetItemsSmart_NotEmptyItemsCollection()
-		{
-			//A
-			var ebayService = new EbayService( _credentials.GetEbayCredentials(), _credentials.GetEbayEndPoint() );
-
-			//A
-			IEnumerable<Item> orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
-
-			//A
-			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
-		}
-
-		[Test]
-		public void EbayServiceExistingItems_GetItems_NotEmptyItemsCollection()
-		{
-			//A
-			var ebayService = new EbayService( _credentials.GetEbayCredentials(), _credentials.GetEbayEndPoint() );
-
-			//A
-			IEnumerable<Item> orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
-
-			//A
-			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
 		}
 
 		[Test]
@@ -250,61 +206,5 @@ namespace EbayAccessTests
 				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", itemsQty1, itemsQty2 ) );
 		}
 
-		[Test]
-		public async Task EbayServiceWithExistingOrders_GetOrdersAsync_HookInOrders()
-		{
-			//A
-
-			var ebayService = new EbayService( _credentials.GetEbayCredentials(), _credentials.GetEbayEndPoint() );
-
-			//A
-			IEnumerable<Order> orders =
-				await ebayService.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
-
-			//A
-			orders.Count().Should().Be( 2, "because on site there is 2 orders" );
-		}
-
-		[Test]
-		public void EbayServiceWithExistingOrders_GetOrders_HookInOrders()
-		{
-			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayEndPoint());
-
-			//A
-			IEnumerable<Order> orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 21, 10, 0, 0 ) );
-
-			//A
-			orders.Count().Should().Be( 2, "because on site there is 2 orders" );
-		}
-
-		[Test]
-		public async Task EbayServiceWithNotExistingOrders_GetOrdersAsync_EmptyOrdersCollection()
-		{
-			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayEndPoint());
-
-			//A
-			IEnumerable<Order> orders =
-				await ebayService.GetOrdersAsync( new DateTime( 1999, 1, 1, 0, 0, 0 ), new DateTime( 1999, 1, 21, 10, 0, 0 ) );
-
-			//A
-			orders.Count().Should().Be( 0, "because on site there is no orders in specified time" );
-		}
-
-		[Test]
-		public void EbayServiceWithNotExistingOrders_GetOrders_EmptyOrdersCollection()
-		{
-			//A
-			var ebayService = new EbayService( _credentials.GetEbayCredentials(), _credentials.GetEbayEndPoint() );
-
-			//A
-			IEnumerable<Order> orders = ebayService.GetOrders( new DateTime( 1999, 1, 1, 0, 0, 0 ),
-				new DateTime( 1999, 1, 21, 10, 0, 0 ) );
-
-			//A
-			orders.Count().Should().Be( 0, "because on site there is no orders in specified time" );
-		}
 	}
 }

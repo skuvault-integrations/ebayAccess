@@ -15,10 +15,10 @@ namespace EbayAccess.Services
 
 		List<Order> GetOrders( string url, DateTime dateFrom, DateTime dateTo );
 
+		Task<List<Order>> GetOrdersAsync( string url, DateTime dateFrom, DateTime dateTo );
+
 		Stream GetResponseStream( WebRequest webRequest );
 
 		Task<Stream> GetResponseStreamAsync( WebRequest webRequest );
-
-		Task<List<Order>> GetOrdersAsync( string url, DateTime dateFrom, DateTime dateTo );
 	}
 }
