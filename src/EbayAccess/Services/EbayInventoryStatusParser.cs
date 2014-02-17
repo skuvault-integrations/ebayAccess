@@ -17,25 +17,6 @@ namespace EbayAccess.Services
 			throw new NotImplementedException();
 		}
 
-		private bool IsResponseContainsError(Stream stream)
-		{
-			bool res = false;
-			try
-			{
-				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
-
-				XElement root = XElement.Load(stream);
-
-				ResponseError error = null;
-			}
-			catch (Exception)
-			{
-				
-				throw;
-			}
-			return res;
-		}
-
 		public InventoryStatus ParseReviseInventoryStatusResponse( Stream stream )
 		{
 			try

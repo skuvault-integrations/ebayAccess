@@ -320,9 +320,7 @@ namespace EbayAccess
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><InventoryStatus ComplexType=\"InventoryStatusType\">{1}{2}{3}</InventoryStatus></ReviseInventoryStatusRequest>",
 				_credentials.Token,
 				inventoryStatus.ItemId.HasValue ? string.Format( "<ItemID>{0}</ItemID>", inventoryStatus.ItemId.Value ) : string.Empty,
-				inventoryStatus.Quantity.HasValue
-					? string.Format( "<Quantity>{0}</Quantity>", inventoryStatus.Quantity.Value )
-					: string.Empty,
+				inventoryStatus.Quantity.HasValue ? string.Format( "<Quantity>{0}</Quantity>", inventoryStatus.Quantity.Value ) : string.Empty,
 				string.IsNullOrWhiteSpace( inventoryStatus.Sku ) ? string.Format( "<SKU>{0}</SKU>", inventoryStatus.Sku ) : string.Empty
 				);
 
