@@ -17,6 +17,25 @@ namespace EbayAccess.Services
 			throw new NotImplementedException();
 		}
 
+		private bool IsResponseContainsError(Stream stream)
+		{
+			bool res = false;
+			try
+			{
+				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
+
+				XElement root = XElement.Load(stream);
+
+				ResponseError error = null;
+			}
+			catch (Exception)
+			{
+				
+				throw;
+			}
+			return res;
+		}
+
 		public InventoryStatus ParseReviseInventoryStatusResponse( Stream stream )
 		{
 			try
@@ -26,6 +45,11 @@ namespace EbayAccess.Services
 				XElement root = XElement.Load( stream );
 
 				InventoryStatus inventoryStatus = null;
+
+				if (ResponseContainsErrors(root, ns))
+				{
+					return inventoryStatus = new InventoryStatus { Error = this.ResponseError };
+				}
 
 				XElement elInventoryStatus = root.Element( ns + "InventoryStatus" );
 				if( elInventoryStatus != null )
@@ -77,6 +101,56 @@ namespace EbayAccess.Services
 			}
 		}
 
+		private bool ResponseContainsErrors(XElement root, XNamespace ns)
+		{
+			XElement isSuccess = root.Element(ns + "Ack");
+			if (isSuccess != null && isSuccess.Value == "Failure")
+			{
+				this.ResponseError = new ResponseError();
+				object temp = null;
+
+				if (GetElementValue(root, ref temp, ns, "Errors", "ShortMessage"))
+				{
+					ResponseError.ShortMessage = (string) temp;
+				}
+
+				if (GetElementValue(root, ref temp, ns, "Errors", "LongMessage"))
+				{
+					ResponseError.LongMessage = (string) temp;
+				}
+
+				if (GetElementValue(root, ref temp, ns, "Errors", "ErrorCode"))
+				{
+					ResponseError.ErrorCode = (string) temp;
+				}
+
+				if (GetElementValue(root, ref temp, ns, "Errors", "UserDisplayHint"))
+				{
+					ResponseError.UserDisplayHint = (string) temp;
+				}
+
+				if (GetElementValue(root, ref temp, ns, "Errors", "ServerityCode"))
+				{
+					ResponseError.ServerityCode = (string) temp;
+				}
+
+				if (GetElementValue(root, ref temp, ns, "Errors", "ErrorClassification"))
+				{
+					ResponseError.ErrorClassification = (string) temp;
+				}
+
+				if (GetElementValue(root, ref temp, ns, "Errors", "ErrorParameters"))
+				{
+					ResponseError.ErrorParameters = (string) temp;
+				}
+
+				return true;
+			}
+			return false;
+		}
+
+		public ResponseError ResponseError { get; protected set; }
+
 		private bool GetElementValue( XElement x, ref object parsedElement, XNamespace ns, params string[] elementName )
 		{
 			if( elementName.Length > 0 )
@@ -118,5 +192,16 @@ namespace EbayAccess.Services
 
 			return result;
 		}
+	}
+
+	public class ResponseError
+	{
+		public string ShortMessage { get; set; }
+		public string LongMessage { get; set; }
+		public string ErrorCode { get; set; }
+		public string UserDisplayHint { get; set; }
+		public string ServerityCode { get; set; }
+		public string ErrorClassification { get; set; }
+		public string ErrorParameters { get; set; }
 	}
 }
