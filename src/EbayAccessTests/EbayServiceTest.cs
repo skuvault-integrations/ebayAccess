@@ -102,5 +102,36 @@ namespace EbayAccessTests
 			orders.Count().Should().Be( 2, "because stub gives 2 pages, 1 item per page" );
 		}
 
+		[Test]
+		public async Task EbayServiceReturnsErrorOnReviseInventoriesStatusReqest_InvokeReviseInventoriesStatusAsync_HaveErrorMessageFromEbayServerInResult()
+		{
+			//A
+			const int itemsQty1 = 100;
+			const long item1Id = 110136942332;
+			const long item2Id = 110137091582;
+			const string serverResponse = "<ReviseInventoryStatusResponse xmlns=\"urn:ebay:apis:eBLBaseComponents\"><Timestamp>2014-02-17T18:49:00.346Z</Timestamp><Ack>Failure</Ack><Errors><ShortMessage>FixedPrice item ended.</ShortMessage><LongMessage>You are not allowed to revise an ended item \"110136942332\".</LongMessage><ErrorCode>21916750</ErrorCode><SeverityCode>Error</SeverityCode><ErrorParameters ParamID=\"0\"><Value>110136942332</Value></ErrorParameters><ErrorClassification>RequestError</ErrorClassification></Errors><Version>859</Version><Build>E859_UNI_API5_16675060_R1</Build></ReviseInventoryStatusResponse>";
+
+			var stub = new Mock<IWebRequestServices>();
+			stub.Setup(x => x.GetResponseStream(It.IsAny<WebRequest>())).Returns(() =>
+			{
+				var ms = new MemoryStream();
+				byte[] buf = new UTF8Encoding().GetBytes(serverResponse);
+				ms.Write(buf, 0, buf.Length);
+				ms.Position = 0;
+				return ms;
+			});
+
+			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayEndPoint(), stub.Object);
+
+			//A
+			InventoryStatus[] inventoryStat1 = (await ebayService.ReviseInventoriesStatusAsync(new List<InventoryStatus>
+			{
+				new InventoryStatus {ItemId = item1Id, Quantity = itemsQty1},
+				new InventoryStatus {ItemId = item2Id, Quantity = itemsQty1}
+			})).ToArray();
+
+			//A
+			inventoryStat1[0].Error.ErrorCode.Should().NotBeNullOrWhiteSpace();
+		}
 	}
 }
