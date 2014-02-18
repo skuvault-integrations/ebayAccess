@@ -43,7 +43,7 @@ namespace EbayAccessTests.Integration
 
 			const int itemsQty1 = 100;
 			const int itemsQty2 = 200;
-			const long item1Id = 110136942332;
+			const long item1Id = 110137920730;
 			const long item2Id = 110137091582;
 
 			//A
@@ -93,7 +93,7 @@ namespace EbayAccessTests.Integration
 
 			const int itemsQty1 = 100;
 			const int itemsQty2 = 200;
-			const long item1Id = 110136942332;
+			const long item1Id = 110137920730;
 			const long item2Id = 110137091582;
 
 			//A
