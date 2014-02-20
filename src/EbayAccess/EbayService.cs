@@ -23,24 +23,24 @@ namespace EbayAccess
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
 
-		public EbayService(EbayUserCredentials credentials, string endPouint, IWebRequestServices webRequestServices,
+		public EbayService(EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, string endPouint, IWebRequestServices webRequestServices,
 			int itemsPerPage = 50 )
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();
 			Condition.Ensures( endPouint, "endPoint" ).IsNotNullOrEmpty();
-			Condition.Requires( webRequestServices, "webRequestServices" ).IsNotNull();
+			Condition.Requires(webRequestServices, "webRequestServices").IsNotNull();
+			Condition.Requires(ebayDevCredentials, "ebayDevCredentials").IsNotNull();
 
 			_userCredentials = credentials;
 			_webRequestServices = webRequestServices;
 			_endPoint = endPouint;
 			_itemsPerPage = itemsPerPage;
+			_ebayDevCredentials = ebayDevCredentials;
 		}
 
 		public EbayService(EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endPouint, int itemsPerPage = 50)
-			: this( userCredentials, endPouint, new WebRequestServices( userCredentials,ebayDevCredentials ), itemsPerPage )
+			: this(userCredentials, ebayDevCredentials, endPouint, new WebRequestServices(userCredentials, ebayDevCredentials), itemsPerPage)
 		{
-			Condition.Requires(ebayDevCredentials, "ebayDevCredentials").IsNotNull();
-			_ebayDevCredentials = ebayDevCredentials;
 		}
 
 		#region Logging
