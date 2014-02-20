@@ -40,7 +40,7 @@ namespace EbayAccessTests.Integration
 		public async Task EbayServiceWithExistingInventoryItesm_UpdateItemsQuantityAsync_QuantityUpdatedForAll()
 		{
 			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
 
 			const int itemsQty1 = 100;
 			const int itemsQty2 = 200;
@@ -70,7 +70,7 @@ namespace EbayAccessTests.Integration
 		public void EbayServiceWithExistingInventoryItesm_UpdateItemQuantity_QuantityUpdated()
 		{
 			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayDevCredentials(),_credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(),_credentials.GetEbayEndPoint());
 			const int qty1 = 100;
 			const int qty2 = 200;
 			const long itemId = 110137091582;
@@ -90,7 +90,7 @@ namespace EbayAccessTests.Integration
 		public void EbayServiceWithExistingInventoryItesm_UpdateItemsQuantity_QuantityUpdatedForAll()
 		{
 			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
 
 			const int itemsQty1 = 100;
 			const int itemsQty2 = 200;
@@ -121,7 +121,7 @@ namespace EbayAccessTests.Integration
 		public async Task EbayServiceExistingItems_GetItemsAsync_NotEmptyItemsCollection()
 		{
 			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
 
 			//A
 			IEnumerable<Item> orders =
@@ -135,7 +135,7 @@ namespace EbayAccessTests.Integration
 		public void EbayServiceExistingItems_GetItemsSmart_NotEmptyItemsCollection()
 		{
 			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
 
 			//A
 			IEnumerable<Item> orders = ebayService.GetItems(new DateTime(2014, 1, 1, 0, 0, 0),
@@ -149,7 +149,7 @@ namespace EbayAccessTests.Integration
 		public void EbayServiceExistingItems_GetItems_NotEmptyItemsCollection()
 		{
 			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
 
 			//A
 			IEnumerable<Item> orders = ebayService.GetItems(new DateTime(2014, 1, 1, 0, 0, 0),
@@ -164,7 +164,7 @@ namespace EbayAccessTests.Integration
 		{
 			//A
 
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
 
 			//A
 			IEnumerable<Order> orders =
@@ -178,7 +178,7 @@ namespace EbayAccessTests.Integration
 		public void EbayServiceWithExistingOrders_GetOrders_HookInOrders()
 		{
 			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
 
 			//A
 			IEnumerable<Order> orders = ebayService.GetOrders(new DateTime(2014, 1, 1, 0, 0, 0),
@@ -192,7 +192,7 @@ namespace EbayAccessTests.Integration
 		public async Task EbayServiceWithNotExistingOrders_GetOrdersAsync_EmptyOrdersCollection()
 		{
 			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
 
 			//A
 			IEnumerable<Order> orders =
@@ -206,7 +206,7 @@ namespace EbayAccessTests.Integration
 		public void EbayServiceWithNotExistingOrders_GetOrders_EmptyOrdersCollection()
 		{
 			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
 
 			//A
 			IEnumerable<Order> orders = ebayService.GetOrders(new DateTime(1999, 1, 1, 0, 0, 0),
@@ -220,7 +220,7 @@ namespace EbayAccessTests.Integration
 		public async Task EbayServiceWithExistingInventoryItem_UpdateItemQuantityAsync_QuantityChanged()
 		{
 			//A
-			var ebayService = new EbayService(_credentials.GetEbayCredentials(),_credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(),_credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint());
 			const int qty1 = 100;
 			const int qty2 = 200;
 			const long itemId = 110137091582;

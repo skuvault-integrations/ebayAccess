@@ -5,14 +5,14 @@ namespace EbayAccess
 {
 	public interface IEbayFactory
 	{
-		IEbayService CreateService(EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials);
+		IEbayService CreateService(EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endpoint);
 	}
 
 	public sealed class EbayFactory:IEbayFactory
 	{
-		public IEbayService CreateService(EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials)
+		public IEbayService CreateService(EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endpoint)
 		{
-			return new EbayService(userCredentials, ebayDevCredentials, "https://api.sandbox.ebay.com/ws/api.dll");
+			return new EbayService(userCredentials, ebayDevCredentials, endpoint);
 		}
 	}
 }

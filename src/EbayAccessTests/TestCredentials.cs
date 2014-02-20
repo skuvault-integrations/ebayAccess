@@ -17,7 +17,7 @@ namespace EbayAccessTests
 			this._flatDevCredentialCsvLine = cc.Read<FlatDevCredentialCsvLine>(devCredentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true }).FirstOrDefault();
 		}
 
-		public EbayUserCredentials GetEbayCredentials()
+		public EbayUserCredentials GetEbayUserCredentials()
 		{
 			return new EbayUserCredentials {AccountName = _flatCsvLine.AccountName, Token = _flatCsvLine.Token};
 		}

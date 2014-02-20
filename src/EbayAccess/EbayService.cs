@@ -18,7 +18,7 @@ namespace EbayAccess
 	public sealed class EbayService: IEbayService
 	{
 		private readonly EbayUserCredentials _userCredentials;
-		private EbayDevCredentials _ebayDevCredentials;
+		private readonly EbayDevCredentials _ebayDevCredentials;
 		private readonly string _endPoint;
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
