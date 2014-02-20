@@ -56,7 +56,7 @@ namespace EbayAccessTests
 					x.CreateEbayStandartPostRequest(It.IsAny<string>(), It.IsAny<List<Tuple<string, string>>>(), It.IsAny<string>()))
 				.Returns(() => null);
 
-			var ebayService = new EbayService( _credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint(), stub.Object );
+			var ebayService = new EbayService( _credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), stub.Object, _credentials.GetEbayEndPoint());
 
 			//A
 			IEnumerable<Item> orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ),
@@ -93,7 +93,7 @@ namespace EbayAccessTests
 				x => x.CreateEbayStandartPostRequest( It.IsAny<string>(), It.IsAny<List<Tuple<string, string>>>(), It.IsAny<string>() ) )
 				.Returns( () => null );
 
-			var ebayService = new EbayService( _credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint(), stub.Object);
+			var ebayService = new EbayService( _credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), stub.Object, _credentials.GetEbayEndPoint());
 
 			//A
 			IEnumerable<Order> orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
@@ -122,7 +122,7 @@ namespace EbayAccessTests
 				return ms;
 			});
 
-			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), _credentials.GetEbayEndPoint(), stub.Object);
+			var ebayService = new EbayService(_credentials.GetEbayUserCredentials(), _credentials.GetEbayDevCredentials(), stub.Object, _credentials.GetEbayEndPoint());
 
 			//A
 			InventoryStatus[] inventoryStat1 = (await ebayService.ReviseInventoriesStatusAsync(new List<InventoryStatus>

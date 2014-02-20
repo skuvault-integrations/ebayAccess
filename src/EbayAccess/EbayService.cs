@@ -23,8 +23,7 @@ namespace EbayAccess
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
 
-		public EbayService(EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, string endPouint, IWebRequestServices webRequestServices,
-			int itemsPerPage = 50 )
+		public EbayService(EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50)
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();
 			Condition.Ensures( endPouint, "endPoint" ).IsNotNullOrEmpty();
@@ -38,8 +37,8 @@ namespace EbayAccess
 			_ebayDevCredentials = ebayDevCredentials;
 		}
 
-		public EbayService(EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endPouint, int itemsPerPage = 50)
-			: this(userCredentials, ebayDevCredentials, endPouint, new WebRequestServices(userCredentials, ebayDevCredentials), itemsPerPage)
+		public EbayService(EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50)
+			: this(userCredentials, ebayDevCredentials, new WebRequestServices(userCredentials, ebayDevCredentials), endPouint, itemsPerPage)
 		{
 		}
 

@@ -29,7 +29,7 @@ namespace EbayAccessTests
 
 		public string GetEbayEndPoint()
 		{
-			return _flatCsvLine.EndPoint;
+			return "https://api.sandbox.ebay.com/ws/api.dll";
 		}
 
 		internal class FlatCsvLine
@@ -43,9 +43,6 @@ namespace EbayAccessTests
 
 			[CsvColumn(Name = "Token", FieldIndex = 2)]
 			public string Token { get; set; }
-
-			[CsvColumn(Name = "EndPoint", FieldIndex = 3)]
-			public string EndPoint { get; set; }
 		}
 
 		internal class FlatDevCredentialCsvLine
