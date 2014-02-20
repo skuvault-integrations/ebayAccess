@@ -26,7 +26,8 @@ namespace EbayAccessTests
 		public void Init()
 		{
 			const string credentialsFilePath = @"..\..\Files\ebay_test_credentials.csv";
-			_credentials = new TestCredentials(credentialsFilePath);
+			const string devCredentialsFilePath = @"..\..\Files\ebay_test_devcredentials.csv";
+			_credentials = new TestCredentials(credentialsFilePath, devCredentialsFilePath);
 		}
 
 		[Test]

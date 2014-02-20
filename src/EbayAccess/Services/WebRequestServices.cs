@@ -19,12 +19,13 @@ namespace EbayAccess.Services
 		private readonly EbayCredentials _credentials;
 		private readonly EbayDevCredentials _ebayDevCredentials;
 
-		public WebRequestServices( EbayCredentials credentials )
+		public WebRequestServices( EbayCredentials credentials, EbayDevCredentials ebayDevCredentials)
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();
+			Condition.Requires(ebayDevCredentials, "ebayDevCredentials").IsNotNull();
 
 			_credentials = credentials;
-			_ebayDevCredentials = new EbayDevCredentials();
+			_ebayDevCredentials = ebayDevCredentials;
 		}
 
 		#region BaseRequests
@@ -110,12 +111,12 @@ namespace EbayAccess.Services
 
 				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-DEV-NAME" ) )
 				{
-					headers.Add( new Tuple<string, string>( "X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevNameCredentials ) );
+					headers.Add( new Tuple<string, string>( "X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevName ) );
 				}
 
 				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-APP-NAME" ) )
 				{
-					headers.Add( new Tuple<string, string>( "X-EBAY-API-APP-NAME", _ebayDevCredentials.AppNameCredentials ) );
+					headers.Add( new Tuple<string, string>( "X-EBAY-API-APP-NAME", _ebayDevCredentials.AppName ) );
 				}
 				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-SITEID" ) )
 				{
@@ -142,12 +143,12 @@ namespace EbayAccess.Services
 
 				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-DEV-NAME" ) )
 				{
-					headers.Add( new Tuple<string, string>( "X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevNameCredentials ) );
+					headers.Add( new Tuple<string, string>( "X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevName ) );
 				}
 
 				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-APP-NAME" ) )
 				{
-					headers.Add( new Tuple<string, string>( "X-EBAY-API-APP-NAME", _ebayDevCredentials.AppNameCredentials ) );
+					headers.Add( new Tuple<string, string>( "X-EBAY-API-APP-NAME", _ebayDevCredentials.AppName ) );
 				}
 				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-SITEID" ) )
 				{
@@ -174,8 +175,8 @@ namespace EbayAccess.Services
 				IEnumerable<Tuple<string, string>> headers = new List<Tuple<string, string>>
 				{
 					new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"),
-					new Tuple<string, string>("X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevNameCredentials),
-					new Tuple<string, string>("X-EBAY-API-APP-NAME", _ebayDevCredentials.AppNameCredentials),
+					new Tuple<string, string>("X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevName),
+					new Tuple<string, string>("X-EBAY-API-APP-NAME", _ebayDevCredentials.AppName),
 					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
 					new Tuple<string, string>("X-EBAY-API-SITEID", "0"),
 					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetOrders"),
@@ -215,8 +216,8 @@ namespace EbayAccess.Services
 				IEnumerable<Tuple<string, string>> headers = new List<Tuple<string, string>>
 				{
 					new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"),
-					new Tuple<string, string>("X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevNameCredentials),
-					new Tuple<string, string>("X-EBAY-API-APP-NAME", _ebayDevCredentials.AppNameCredentials),
+					new Tuple<string, string>("X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevName),
+					new Tuple<string, string>("X-EBAY-API-APP-NAME", _ebayDevCredentials.AppName),
 					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
 					new Tuple<string, string>("X-EBAY-API-SITEID", "0"),
 					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetOrders"),
@@ -254,8 +255,8 @@ namespace EbayAccess.Services
 				IEnumerable<Tuple<string, string>> headers = new List<Tuple<string, string>>
 				{
 					new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"),
-					new Tuple<string, string>("X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevNameCredentials),
-					new Tuple<string, string>("X-EBAY-API-APP-NAME", _ebayDevCredentials.AppNameCredentials),
+					new Tuple<string, string>("X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevName),
+					new Tuple<string, string>("X-EBAY-API-APP-NAME", _ebayDevCredentials.AppName),
 					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
 					new Tuple<string, string>("X-EBAY-API-SITEID", "0"),
 					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetSellerList"),

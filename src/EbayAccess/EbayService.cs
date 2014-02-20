@@ -22,7 +22,7 @@ namespace EbayAccess
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
 
-		public EbayService( EbayCredentials credentials, string endPouint, IWebRequestServices webRequestServices,
+		public EbayService(EbayCredentials credentials, string endPouint, IWebRequestServices webRequestServices,
 			int itemsPerPage = 50 )
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();
@@ -36,9 +36,10 @@ namespace EbayAccess
 			_itemsPerPage = itemsPerPage;
 		}
 
-		public EbayService( EbayCredentials credentials, string endPouint, int itemsPerPage = 50 )
-			: this( credentials, endPouint, new WebRequestServices( credentials ), itemsPerPage )
+		public EbayService(EbayCredentials credentials, EbayDevCredentials ebayDevCredentials, string endPouint, int itemsPerPage = 50)
+			: this( credentials, endPouint, new WebRequestServices( credentials,ebayDevCredentials ), itemsPerPage )
 		{
+			Condition.Requires(ebayDevCredentials, "ebayDevCredentials").IsNotNull();
 		}
 
 		#region Logging
