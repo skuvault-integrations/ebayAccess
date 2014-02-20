@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EbayFactory.cs" />
     <Compile Include="EbayService.cs" />
     <Compile Include="IEbayService.cs" />
     <Compile Include="Misc\ActionPolicies.cs" />
