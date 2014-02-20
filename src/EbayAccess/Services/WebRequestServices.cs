@@ -16,15 +16,15 @@ namespace EbayAccess.Services
 	// todo: convert strings to constants or variables
 	public class WebRequestServices: IWebRequestServices
 	{
-		private readonly EbayCredentials _credentials;
+		private readonly EbayUserCredentials _userCredentials;
 		private readonly EbayDevCredentials _ebayDevCredentials;
 
-		public WebRequestServices( EbayCredentials credentials, EbayDevCredentials ebayDevCredentials)
+		public WebRequestServices( EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials)
 		{
-			Condition.Requires( credentials, "credentials" ).IsNotNull();
+			Condition.Requires(userCredentials, "userCredentials").IsNotNull();
 			Condition.Requires(ebayDevCredentials, "ebayDevCredentials").IsNotNull();
 
-			_credentials = credentials;
+			_userCredentials = userCredentials;
 			_ebayDevCredentials = ebayDevCredentials;
 		}
 
@@ -185,7 +185,7 @@ namespace EbayAccess.Services
 				string body =
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo></GetOrdersRequest>​",
-						_credentials.Token,
+						_userCredentials.Token,
 						dateFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						dateTo.ToString( "O" ).Substring( 0, 23 ) + "Z" );
 
@@ -226,7 +226,7 @@ namespace EbayAccess.Services
 				string body =
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo></GetOrdersRequest>​",
-						_credentials.Token,
+						_userCredentials.Token,
 						dateFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						dateTo.ToString( "O" ).Substring( 0, 23 ) + "Z" );
 
@@ -265,7 +265,7 @@ namespace EbayAccess.Services
 				string body =
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
-						_credentials.Token,
+						_userCredentials.Token,
 						dateFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						dateTo.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						10,

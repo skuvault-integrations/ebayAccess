@@ -52,7 +52,7 @@
     <Compile Include="Misc\ActionPolicies.cs" />
     <Compile Include="Models\BaseResponse\EbayBaseResponse.cs" />
     <Compile Include="Models\BaseResponse\PaginationResult.cs" />
-    <Compile Include="Models\EbayCredentials.cs">
+    <Compile Include="Models\EbayUserCredentials.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\GetOrdersResponse\Buyer.cs" />

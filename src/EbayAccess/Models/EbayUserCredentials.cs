@@ -1,6 +1,6 @@
 ﻿namespace EbayAccess.Models
 {
-	public class EbayCredentials
+	public class EbayUserCredentials
 	{
 		public object AccountName { get; set; }
 

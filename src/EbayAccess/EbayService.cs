@@ -17,27 +17,27 @@ namespace EbayAccess
 {
 	public sealed class EbayService: IEbayService
 	{
-		private readonly EbayCredentials _credentials;
+		private readonly EbayUserCredentials _userCredentials;
 		private readonly string _endPoint;
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
 
-		public EbayService(EbayCredentials credentials, string endPouint, IWebRequestServices webRequestServices,
+		public EbayService(EbayUserCredentials credentials, string endPouint, IWebRequestServices webRequestServices,
 			int itemsPerPage = 50 )
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();
 			Condition.Ensures( endPouint, "endPoint" ).IsNotNullOrEmpty();
 			Condition.Requires( webRequestServices, "webRequestServices" ).IsNotNull();
 
-			_credentials = credentials;
+			_userCredentials = credentials;
 			_webRequestServices = webRequestServices;
 			_endPoint = endPouint;
 
 			_itemsPerPage = itemsPerPage;
 		}
 
-		public EbayService(EbayCredentials credentials, EbayDevCredentials ebayDevCredentials, string endPouint, int itemsPerPage = 50)
-			: this( credentials, endPouint, new WebRequestServices( credentials,ebayDevCredentials ), itemsPerPage )
+		public EbayService(EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endPouint, int itemsPerPage = 50)
+			: this( userCredentials, endPouint, new WebRequestServices( userCredentials,ebayDevCredentials ), itemsPerPage )
 		{
 			Condition.Requires(ebayDevCredentials, "ebayDevCredentials").IsNotNull();
 		}
@@ -81,7 +81,7 @@ namespace EbayAccess
 				string body =
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
-						_credentials.Token,
+						_userCredentials.Token,
 						dateFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						dateTo.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						recordsPerPage,
@@ -135,7 +135,7 @@ namespace EbayAccess
 				string body =
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
-						_credentials.Token,
+						_userCredentials.Token,
 						dateFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						dateTo.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						recordsPerPage,
@@ -187,7 +187,7 @@ namespace EbayAccess
 				string body =
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
-						_credentials.Token,
+						_userCredentials.Token,
 						startTimeFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						startTimeTo.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						recordsPerPage,
@@ -239,7 +239,7 @@ namespace EbayAccess
 				string body =
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
-						_credentials.Token,
+						_userCredentials.Token,
 						startTimeFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						startTimeTo.ToString( "O" ).Substring( 0, 23 ) + "Z",
 						recordsPerPage,
@@ -291,7 +291,7 @@ namespace EbayAccess
 
 			string body = string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><InventoryStatus ComplexType=\"InventoryStatusType\">{1}{2}{3}</InventoryStatus></ReviseInventoryStatusRequest>",
-				_credentials.Token,
+				_userCredentials.Token,
 				inventoryStatus.ItemId.HasValue ? string.Format( "<ItemID>{0}</ItemID>", inventoryStatus.ItemId.Value ) : string.Empty,
 				inventoryStatus.Quantity.HasValue
 					? string.Format( "<Quantity>{0}</Quantity>", inventoryStatus.Quantity.Value )
@@ -319,7 +319,7 @@ namespace EbayAccess
 
 			string body = string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><InventoryStatus ComplexType=\"InventoryStatusType\">{1}{2}{3}</InventoryStatus></ReviseInventoryStatusRequest>",
-				_credentials.Token,
+				_userCredentials.Token,
 				inventoryStatus.ItemId.HasValue ? string.Format( "<ItemID>{0}</ItemID>", inventoryStatus.ItemId.Value ) : string.Empty,
 				inventoryStatus.Quantity.HasValue ? string.Format( "<Quantity>{0}</Quantity>", inventoryStatus.Quantity.Value ) : string.Empty,
 				string.IsNullOrWhiteSpace( inventoryStatus.Sku ) ? string.Format( "<SKU>{0}</SKU>", inventoryStatus.Sku ) : string.Empty
