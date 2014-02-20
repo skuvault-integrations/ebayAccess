@@ -177,7 +177,7 @@ namespace EbayAccess.Services
 					new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"),
 					new Tuple<string, string>("X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevName),
 					new Tuple<string, string>("X-EBAY-API-APP-NAME", _ebayDevCredentials.AppName),
-					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+					new Tuple<string, string>("X-EBAY-API-CERT-NAME", _ebayDevCredentials.CertName),
 					new Tuple<string, string>("X-EBAY-API-SITEID", "0"),
 					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetOrders"),
 				};
@@ -218,7 +218,7 @@ namespace EbayAccess.Services
 					new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"),
 					new Tuple<string, string>("X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevName),
 					new Tuple<string, string>("X-EBAY-API-APP-NAME", _ebayDevCredentials.AppName),
-					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+					new Tuple<string, string>("X-EBAY-API-CERT-NAME", _ebayDevCredentials.CertName),
 					new Tuple<string, string>("X-EBAY-API-SITEID", "0"),
 					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetOrders"),
 				};
@@ -257,7 +257,7 @@ namespace EbayAccess.Services
 					new Tuple<string, string>("X-EBAY-API-COMPATIBILITY-LEVEL", "853"),
 					new Tuple<string, string>("X-EBAY-API-DEV-NAME", _ebayDevCredentials.DevName),
 					new Tuple<string, string>("X-EBAY-API-APP-NAME", _ebayDevCredentials.AppName),
-					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+					new Tuple<string, string>("X-EBAY-API-CERT-NAME", _ebayDevCredentials.CertName),
 					new Tuple<string, string>("X-EBAY-API-SITEID", "0"),
 					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetSellerList"),
 				};

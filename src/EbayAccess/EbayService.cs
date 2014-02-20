@@ -18,6 +18,7 @@ namespace EbayAccess
 	public sealed class EbayService: IEbayService
 	{
 		private readonly EbayUserCredentials _userCredentials;
+		private EbayDevCredentials _ebayDevCredentials;
 		private readonly string _endPoint;
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
@@ -32,7 +33,6 @@ namespace EbayAccess
 			_userCredentials = credentials;
 			_webRequestServices = webRequestServices;
 			_endPoint = endPouint;
-
 			_itemsPerPage = itemsPerPage;
 		}
 
@@ -40,6 +40,7 @@ namespace EbayAccess
 			: this( userCredentials, endPouint, new WebRequestServices( userCredentials,ebayDevCredentials ), itemsPerPage )
 		{
 			Condition.Requires(ebayDevCredentials, "ebayDevCredentials").IsNotNull();
+			_ebayDevCredentials = ebayDevCredentials;
 		}
 
 		#region Logging
@@ -74,7 +75,7 @@ namespace EbayAccess
 			{
 				var headers = new List<Tuple<string, string>>
 				{
-					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+					new Tuple<string, string>("X-EBAY-API-CERT-NAME", _ebayDevCredentials.CertName),
 					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetOrders"),
 				};
 
@@ -128,7 +129,7 @@ namespace EbayAccess
 			{
 				var headers = new List<Tuple<string, string>>
 				{
-					new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+					new Tuple<string, string>("X-EBAY-API-CERT-NAME", _ebayDevCredentials.CertName),
 					new Tuple<string, string>("X-EBAY-API-CALL-NAME", "GetOrders"),
 				};
 
@@ -286,7 +287,7 @@ namespace EbayAccess
 			var headers = new List<Tuple<string, string>>
 			{
 				new Tuple<string, string>("X-EBAY-API-CALL-NAME", "ReviseInventoryStatus"),
-				new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+				new Tuple<string, string>("X-EBAY-API-CERT-NAME", _ebayDevCredentials.CertName),
 			};
 
 			string body = string.Format(
@@ -314,7 +315,7 @@ namespace EbayAccess
 			var headers = new List<Tuple<string, string>>
 			{
 				new Tuple<string, string>("X-EBAY-API-CALL-NAME", "ReviseInventoryStatus"),
-				new Tuple<string, string>("X-EBAY-API-CERT-NAME", "d1ee4c9c-0425-43d0-857a-a9fc36e6e6b3"),
+				new Tuple<string, string>("X-EBAY-API-CERT-NAME", _ebayDevCredentials.CertName),
 			};
 
 			string body = string.Format(

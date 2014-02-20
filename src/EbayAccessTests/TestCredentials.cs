@@ -24,7 +24,7 @@ namespace EbayAccessTests
 		
 		public EbayDevCredentials GetEbayDevCredentials()
 		{
-			return new EbayDevCredentials { AppName = _flatDevCredentialCsvLine.AppName, DevName = _flatDevCredentialCsvLine.DevName };
+			return new EbayDevCredentials { AppName = _flatDevCredentialCsvLine.AppName, DevName = _flatDevCredentialCsvLine.DevName, CertName = _flatDevCredentialCsvLine.CertName};
 		}
 
 		public string GetEbayEndPoint()
@@ -59,6 +59,9 @@ namespace EbayAccessTests
 
 			[CsvColumn(Name = "DevName", FieldIndex = 2)]
 			public string DevName { get; set; }
+
+			[CsvColumn(Name = "CertName", FieldIndex = 3)]
+			public string CertName { get; set; }
 		}
 	}
 
