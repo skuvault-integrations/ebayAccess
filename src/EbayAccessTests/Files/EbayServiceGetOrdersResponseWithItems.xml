@@ -48,20 +48,31 @@
 			<SellerEmail>slav-facilitator@agileharbor.com</SellerEmail>
 			<ShippingAddress>
 				<Name>
+					name
 				</Name>
+				<Country>
+					US
+				</Country>
 				<Street1>
+					street 1
 				</Street1>
 				<Street2>
+					street 2
 				</Street2>
 				<CityName>
+					City
 				</CityName>
 				<StateOrProvince>
+					KY
 				</StateOrProvince>
 				<CountryName>
+					US
 				</CountryName>
 				<Phone>
+					123456
 				</Phone>
 				<PostalCode>
+					12345
 				</PostalCode>
 				<ExternalAddressID>
 				</ExternalAddressID>

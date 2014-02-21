@@ -57,6 +57,30 @@ namespace EbayAccess.Services
 
 						res.CheckoutStatus = obCheckoutStatus;
 					}
+					
+					if( x.Element( ns + "ShippingAddress" ) != null )
+					{
+						var shipToAddress = x.Element( ns + "ShippingAddress" );
+						var address = new ShippingAddress();
+
+						if( GetElementValue( shipToAddress, ref temp, ns, "Country" ) )
+							address.Country = ( string )temp;
+
+						if( GetElementValue( shipToAddress, ref temp, ns, "CityName" ) )
+							address.City = ( string )temp;
+
+						if( GetElementValue( shipToAddress, ref temp, ns, "PostalCode" ) )
+							address.PostalCode = ( string )temp;
+
+						if( GetElementValue( shipToAddress, ref temp, ns, "StateOrProvince" ) )
+							address.State = ( string )temp;
+
+						if( GetElementValue( shipToAddress, ref temp, ns, "Street1" ) )
+							address.Street1 = ( string )temp;
+
+						if( GetElementValue( shipToAddress, ref temp, ns, "Street2" ) )
+							address.Street2 = ( string )temp;
+					}
 
 					if( GetElementValue( x, ref temp, ns, "CreatedTime" ) )
 						res.CreatedTime = ( DateTime.Parse( ( string )temp ) );
@@ -135,7 +159,7 @@ namespace EbayAccess.Services
 				{
 					if( elementName.Length > 1 )
 						return GetElementValue( element, ref parsedElement, ns, elementName.Skip( 1 ).ToArray() );
-					parsedElement = element.Value;
+					parsedElement = element.Value.Trim();
 					return true;
 				}
 			}

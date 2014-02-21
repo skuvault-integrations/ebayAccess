@@ -18,6 +18,8 @@ namespace EbayAccess.Models.GetOrdersResponse
 		public List< Transaction > TransactionArray { get; set; }
 
 		public string BuyerUserId { get; set; }
+
+		public ShippingAddress ShippingAddress { get; set; }
 	}
 
 	public enum EbayOrderStatusEnum
