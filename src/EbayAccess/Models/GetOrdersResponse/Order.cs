@@ -7,7 +7,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 	{
 		public string OrderId { get; set; }
 
-		public OrderStatus Status { get; set; }
+		public EbayOrderStatusEnum Status { get; set; }
 
 		public CheckoutStatus CheckoutStatus { get; set; }
 
@@ -20,7 +20,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 		public string BuyerUserId { get; set; }
 	}
 
-	public enum OrderStatus
+	public enum EbayOrderStatusEnum
 	{
 		Undefined,
 		Active,

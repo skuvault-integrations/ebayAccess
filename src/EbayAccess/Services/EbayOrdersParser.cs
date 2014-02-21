@@ -65,7 +65,7 @@ namespace EbayAccess.Services
 						res.OrderId = ( string )temp;
 
 					if( GetElementValue( x, ref temp, ns, "OrderStatus" ) )
-						res.Status = ( OrderStatus )Enum.Parse( typeof( OrderStatus ), ( string )temp );
+						res.Status = ( EbayOrderStatusEnum )Enum.Parse( typeof( EbayOrderStatusEnum ), ( string )temp );
 
 					if( GetElementValue( x, ref temp, ns, "PaymentMethods" ) )
 						res.PaymentMethods = ( string )temp;
