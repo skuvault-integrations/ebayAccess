@@ -18,7 +18,7 @@ namespace EbayAccessTests.Services
 				var parser = new EbayOrdersParser();
 				List<Order> orders = parser.ParseOrdersResponse( fs );
 				orders.Should().HaveCount( 1, "because in source file there is {0} order", 1 );
-				orders[ 0 ].OrderStatus.ShouldBeEquivalentTo( OrderStatus.Active );
+				orders[ 0 ].Status.ShouldBeEquivalentTo( OrderStatus.Active );
 			}
 		}
 	}
