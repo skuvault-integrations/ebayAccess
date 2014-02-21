@@ -7,7 +7,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 	{
 		public string OrderId { get; set; }
 
-		public OrderStatus OrderStatus { get; set; }
+		public OrderStatus Status { get; set; }
 
 		public CheckoutStatus CheckoutStatus { get; set; }
 
