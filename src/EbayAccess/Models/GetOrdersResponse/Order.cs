@@ -7,7 +7,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 	{
 		public string OrderId { get; set; }
 
-		public string OrderStatus { get; set; }
+		public OrderStatus OrderStatus { get; set; }
 
 		public CheckoutStatus CheckoutStatus { get; set; }
 
@@ -15,8 +15,18 @@ namespace EbayAccess.Models.GetOrdersResponse
 
 		public string PaymentMethods { get; set; }
 
-		public List<Transaction> TransactionArray { get; set; }
+		public List< Transaction > TransactionArray { get; set; }
 
 		public string BuyerUserId { get; set; }
+	}
+
+	public enum OrderStatus
+	{
+		Undefined,
+		Active,
+		Cancelled,
+		Completed,
+		Inactive,
+		Shipped
 	}
 }
