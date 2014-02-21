@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using EbayAccess.Models;
-using EbayAccess.Services;
 using LINQtoCSV;
 
 namespace EbayAccessTests
@@ -10,21 +9,21 @@ namespace EbayAccessTests
 		private readonly FlatCsvLine _flatCsvLine;
 		private readonly FlatDevCredentialCsvLine _flatDevCredentialCsvLine;
 
-		public TestCredentials(string credentialsFilePath, string devCredentialsFilePath)
+		public TestCredentials( string credentialsFilePath, string devCredentialsFilePath )
 		{
 			var cc = new CsvContext();
-			this._flatCsvLine = cc.Read<FlatCsvLine>(credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true }).FirstOrDefault();
-			this._flatDevCredentialCsvLine = cc.Read<FlatDevCredentialCsvLine>(devCredentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true }).FirstOrDefault();
+			this._flatCsvLine = cc.Read< FlatCsvLine >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ).FirstOrDefault();
+			this._flatDevCredentialCsvLine = cc.Read< FlatDevCredentialCsvLine >( devCredentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ).FirstOrDefault();
 		}
 
 		public EbayUserCredentials GetEbayUserCredentials()
 		{
-			return new EbayUserCredentials {AccountName = _flatCsvLine.AccountName, Token = _flatCsvLine.Token};
+			return new EbayUserCredentials( _flatCsvLine.AccountName, _flatCsvLine.Token );
 		}
-		
+
 		public EbayDevCredentials GetEbayDevCredentials()
 		{
-			return new EbayDevCredentials { AppName = _flatDevCredentialCsvLine.AppName, DevName = _flatDevCredentialCsvLine.DevName, CertName = _flatDevCredentialCsvLine.CertName};
+			return new EbayDevCredentials( _flatDevCredentialCsvLine.AppName, _flatDevCredentialCsvLine.DevName, _flatDevCredentialCsvLine.CertName );
 		}
 
 		public string GetEbayEndPoint()
@@ -38,10 +37,10 @@ namespace EbayAccessTests
 			{
 			}
 
-			[CsvColumn(Name = "AccountName", FieldIndex = 1)]
+			[ CsvColumn( Name = "AccountName", FieldIndex = 1 ) ]
 			public string AccountName { get; set; }
 
-			[CsvColumn(Name = "Token", FieldIndex = 2)]
+			[ CsvColumn( Name = "Token", FieldIndex = 2 ) ]
 			public string Token { get; set; }
 		}
 
@@ -51,13 +50,13 @@ namespace EbayAccessTests
 			{
 			}
 
-			[CsvColumn(Name = "AppName", FieldIndex = 1)]
+			[ CsvColumn( Name = "AppName", FieldIndex = 1 ) ]
 			public string AppName { get; set; }
 
-			[CsvColumn(Name = "DevName", FieldIndex = 2)]
+			[ CsvColumn( Name = "DevName", FieldIndex = 2 ) ]
 			public string DevName { get; set; }
 
-			[CsvColumn(Name = "CertName", FieldIndex = 3)]
+			[ CsvColumn( Name = "CertName", FieldIndex = 3 ) ]
 			public string CertName { get; set; }
 		}
 	}
