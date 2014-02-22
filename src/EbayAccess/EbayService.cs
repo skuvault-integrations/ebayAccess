@@ -8,6 +8,7 @@ using CuttingEdge.Conditions;
 using EbayAccess.Misc;
 using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
+using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;

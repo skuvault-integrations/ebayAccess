@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Models;
+using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
 using Netco.Extensions;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;

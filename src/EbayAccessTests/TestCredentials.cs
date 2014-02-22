@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using EbayAccess.Models;
+using EbayAccess.Models.Credentials;
 using LINQtoCSV;
 
 namespace EbayAccessTests

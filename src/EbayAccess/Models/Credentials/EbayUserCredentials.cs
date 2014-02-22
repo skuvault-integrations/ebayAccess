@@ -1,6 +1,6 @@
 ﻿using CuttingEdge.Conditions;
 
-namespace EbayAccess.Models
+namespace EbayAccess.Models.Credentials
 {
 	public class EbayUserCredentials
 	{
