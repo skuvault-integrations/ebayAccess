@@ -11,124 +11,123 @@ namespace EbayAccess.Services
 {
 	public class EbayOrdersParser
 	{
-		public List<Order> ParseOrdersResponse( String str )
+		public List< Order > ParseOrdersResponse( String str )
 		{
 			//todo: make parser
 			throw new NotImplementedException();
 		}
 
-		public List<Order> ParseOrdersResponse( Stream stream )
+		public List< Order > ParseOrdersResponse( Stream stream )
 		{
 			try
 			{
 				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
 
-				XElement root = XElement.Load( stream );
+				var root = XElement.Load( stream );
 
-				IEnumerable<XElement> xmlOrders = root.Descendants( ns + "Order" );
+				var xmlOrders = root.Descendants( ns + "Order" );
 
-				List<Order> orders = xmlOrders.Select( x =>
+				var orders = xmlOrders.Select( x =>
 				{
 					object temp = null;
 					var res = new Order();
 
-					if( GetElementValue( x, ref temp, ns, "BuyerUserID" ) )
+					if( this.GetElementValue( x, ref temp, ns, "BuyerUserID" ) )
 						res.BuyerUserId = ( string )temp;
 
 					if( x.Element( ns + "CheckoutStatus" ) != null )
 					{
-						XElement elCheckoutStatus = x.Element( ns + "CheckoutStatus" );
+						var elCheckoutStatus = x.Element( ns + "CheckoutStatus" );
 						var obCheckoutStatus = new CheckoutStatus();
 
-						if( GetElementValue( elCheckoutStatus, ref temp, ns, "eBayPaymentStatus" ) )
+						if( this.GetElementValue( elCheckoutStatus, ref temp, ns, "eBayPaymentStatus" ) )
 							obCheckoutStatus.EBayPaymentStatus = ( string )temp;
 
-						if( GetElementValue( elCheckoutStatus, ref temp, ns, "IntegratedMerchantCreditCardEnabled" ) )
+						if( this.GetElementValue( elCheckoutStatus, ref temp, ns, "IntegratedMerchantCreditCardEnabled" ) )
 							obCheckoutStatus.IntegratedMerchantCreditCardEnabled = bool.Parse( ( string )temp );
 
-						if( GetElementValue( elCheckoutStatus, ref temp, ns, "LastModifiedTime" ) )
+						if( this.GetElementValue( elCheckoutStatus, ref temp, ns, "LastModifiedTime" ) )
 							obCheckoutStatus.LastModifiedTime = ( DateTime.Parse( ( string )temp ) );
 
-						if( GetElementValue( elCheckoutStatus, ref temp, ns, "PaymentMethod" ) )
+						if( this.GetElementValue( elCheckoutStatus, ref temp, ns, "PaymentMethod" ) )
 							obCheckoutStatus.PaymentMethod = ( string )temp;
 
-						if( GetElementValue( elCheckoutStatus, ref temp, ns, "Status" ) )
+						if( this.GetElementValue( elCheckoutStatus, ref temp, ns, "Status" ) )
 							obCheckoutStatus.Status = ( string )temp;
 
 						res.CheckoutStatus = obCheckoutStatus;
 					}
-					
+
 					if( x.Element( ns + "ShippingAddress" ) != null )
 					{
 						var shipToAddress = x.Element( ns + "ShippingAddress" );
 						var address = new ShippingAddress();
 
-						if( GetElementValue( shipToAddress, ref temp, ns, "Country" ) )
+						if( this.GetElementValue( shipToAddress, ref temp, ns, "Country" ) )
 							address.Country = ( string )temp;
 
-						if( GetElementValue( shipToAddress, ref temp, ns, "CityName" ) )
+						if( this.GetElementValue( shipToAddress, ref temp, ns, "CityName" ) )
 							address.City = ( string )temp;
 
-						if( GetElementValue( shipToAddress, ref temp, ns, "PostalCode" ) )
+						if( this.GetElementValue( shipToAddress, ref temp, ns, "PostalCode" ) )
 							address.PostalCode = ( string )temp;
 
-						if( GetElementValue( shipToAddress, ref temp, ns, "StateOrProvince" ) )
+						if( this.GetElementValue( shipToAddress, ref temp, ns, "StateOrProvince" ) )
 							address.State = ( string )temp;
 
-						if( GetElementValue( shipToAddress, ref temp, ns, "Street1" ) )
+						if( this.GetElementValue( shipToAddress, ref temp, ns, "Street1" ) )
 							address.Street1 = ( string )temp;
 
-						if( GetElementValue( shipToAddress, ref temp, ns, "Street2" ) )
+						if( this.GetElementValue( shipToAddress, ref temp, ns, "Street2" ) )
 							address.Street2 = ( string )temp;
 					}
 
-					if( GetElementValue( x, ref temp, ns, "CreatedTime" ) )
+					if( this.GetElementValue( x, ref temp, ns, "CreatedTime" ) )
 						res.CreatedTime = ( DateTime.Parse( ( string )temp ) );
 
-					if( GetElementValue( x, ref temp, ns, "OrderID" ) )
+					if( this.GetElementValue( x, ref temp, ns, "OrderID" ) )
 						res.OrderId = ( string )temp;
 
-					if( GetElementValue( x, ref temp, ns, "OrderStatus" ) )
+					if( this.GetElementValue( x, ref temp, ns, "OrderStatus" ) )
 						res.Status = ( EbayOrderStatusEnum )Enum.Parse( typeof( EbayOrderStatusEnum ), ( string )temp );
 
-					if( GetElementValue( x, ref temp, ns, "PaymentMethods" ) )
+					if( this.GetElementValue( x, ref temp, ns, "PaymentMethods" ) )
 						res.PaymentMethods = ( string )temp;
 
-
-					XElement elTransactionArray = x.Element( ns + "TransactionArray" );
+					var elTransactionArray = x.Element( ns + "TransactionArray" );
 					if( elTransactionArray != null )
 					{
-						IEnumerable<XElement> transactions = elTransactionArray.Descendants( ns + "Transaction" );
+						var transactions = elTransactionArray.Descendants( ns + "Transaction" );
 						res.TransactionArray = transactions.Select( transaction =>
 						{
 							var resTransaction = new Transaction();
-							XElement elBuyer = transaction.Element( ns + "Buyer" );
+							var elBuyer = transaction.Element( ns + "Buyer" );
 							if( elBuyer != null )
 							{
 								resTransaction.Buyer = new Buyer();
-								if( GetElementValue( elBuyer, ref temp, ns, "Email" ) )
+								if( this.GetElementValue( elBuyer, ref temp, ns, "Email" ) )
 									resTransaction.Buyer.Email = ( string )temp;
 							}
 
-							if( GetElementValue( transaction, ref temp, ns, "TransactionPrice" ) )
+							if( this.GetElementValue( transaction, ref temp, ns, "TransactionPrice" ) )
 								resTransaction.TransactionPrice = double.Parse( ( ( string )temp ).Replace( '.', ',' ) );
 
-							XElement elItem = transaction.Element( ns + "Item" );
+							var elItem = transaction.Element( ns + "Item" );
 							if( elItem != null )
 							{
 								resTransaction.Item = new Item();
 
-								if( GetElementValue( elItem, ref temp, ns, "ItemID" ) )
+								if( this.GetElementValue( elItem, ref temp, ns, "ItemID" ) )
 									resTransaction.Item.ItemId = long.Parse( ( string )temp );
 
-								if( GetElementValue( elItem, ref temp, ns, "Site" ) )
+								if( this.GetElementValue( elItem, ref temp, ns, "Site" ) )
 									resTransaction.Item.Site = ( string )temp;
 
-								if( GetElementValue( elItem, ref temp, ns, "Title" ) )
+								if( this.GetElementValue( elItem, ref temp, ns, "Title" ) )
 									resTransaction.Item.Title = ( string )temp;
 							}
 
-							if( GetElementValue( transaction, ref temp, ns, "QuantityPurchased" ) )
+							if( this.GetElementValue( transaction, ref temp, ns, "QuantityPurchased" ) )
 								resTransaction.QuantityPurchased = int.Parse( ( string )temp );
 
 							return resTransaction;
@@ -145,7 +144,7 @@ namespace EbayAccess.Services
 				var buffer = new byte[ stream.Length ];
 				stream.Read( buffer, 0, ( int )stream.Length );
 				var utf8Encoding = new UTF8Encoding();
-				string bufferStr = utf8Encoding.GetString( buffer );
+				var bufferStr = utf8Encoding.GetString( buffer );
 				throw new Exception( "Can't parse: " + bufferStr, ex );
 			}
 		}
@@ -154,11 +153,11 @@ namespace EbayAccess.Services
 		{
 			if( elementName.Length > 0 )
 			{
-				XElement element = x.Element( ns + elementName[ 0 ] );
+				var element = x.Element( ns + elementName[ 0 ] );
 				if( element != null )
 				{
 					if( elementName.Length > 1 )
-						return GetElementValue( element, ref parsedElement, ns, elementName.Skip( 1 ).ToArray() );
+						return this.GetElementValue( element, ref parsedElement, ns, elementName.Skip( 1 ).ToArray() );
 					parsedElement = element.Value.Trim();
 					return true;
 				}
@@ -170,14 +169,14 @@ namespace EbayAccess.Services
 		private object GetElementValue( XElement x, XNamespace ns, params string[] elementName )
 		{
 			object parsedElement = null;
-			GetElementValue( x, ref parsedElement, ns, elementName );
+			this.GetElementValue( x, ref parsedElement, ns, elementName );
 			return parsedElement;
 		}
 
-		public List<Order> ParseOrdersResponse( WebResponse response )
+		public List< Order > ParseOrdersResponse( WebResponse response )
 		{
-			List<Order> result = null;
-			using( Stream responseStream = response.GetResponseStream() )
+			List< Order > result = null;
+			using( var responseStream = response.GetResponseStream() )
 			{
 				if( responseStream != null )
 				{

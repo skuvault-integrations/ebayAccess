@@ -24,26 +24,24 @@ namespace EbayAccess.Services
 
 				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
 
-				XElement root = XElement.Load( stream );
+				var root = XElement.Load( stream );
 
 				object temp = null;
 
-				XElement paginationResultElement = root.Element( ns + "PaginationResult" );
+				var paginationResultElement = root.Element( ns + "PaginationResult" );
 				if( paginationResultElement != null )
 				{
 					res = new PaginationResult();
 
-					if( GetElementValue( paginationResultElement, ref temp, ns, "TotalNumberOfPages" ) )
+					if( this.GetElementValue( paginationResultElement, ref temp, ns, "TotalNumberOfPages" ) )
 						res.TotalNumberOfPages = int.Parse( ( string )temp );
 
-					if( GetElementValue( paginationResultElement, ref temp, ns, "TotalNumberOfEntries" ) )
+					if( this.GetElementValue( paginationResultElement, ref temp, ns, "TotalNumberOfEntries" ) )
 						res.TotalNumberOfEntries = int.Parse( ( string )temp );
 				}
 
 				if( keepStremPosition )
-				{
 					stream.Position = 0;
-				}
 
 				return res;
 			}
@@ -52,7 +50,7 @@ namespace EbayAccess.Services
 				var buffer = new byte[ stream.Length ];
 				stream.Read( buffer, 0, ( int )stream.Length );
 				var utf8Encoding = new UTF8Encoding();
-				string bufferStr = utf8Encoding.GetString( buffer );
+				var bufferStr = utf8Encoding.GetString( buffer );
 				throw new Exception( "Can't parse: " + bufferStr, ex );
 			}
 		}
@@ -61,11 +59,11 @@ namespace EbayAccess.Services
 		{
 			if( elementName.Length > 0 )
 			{
-				XElement element = x.Element( ns + elementName[ 0 ] );
+				var element = x.Element( ns + elementName[ 0 ] );
 				if( element != null )
 				{
 					if( elementName.Length > 1 )
-						return GetElementValue( element, ref parsedElement, ns, elementName.Skip( 1 ).ToArray() );
+						return this.GetElementValue( element, ref parsedElement, ns, elementName.Skip( 1 ).ToArray() );
 					parsedElement = element.Value;
 					return true;
 				}
@@ -77,14 +75,14 @@ namespace EbayAccess.Services
 		private object GetElementValue( XElement x, XNamespace ns, params string[] elementName )
 		{
 			object parsedElement = null;
-			GetElementValue( x, ref parsedElement, ns, elementName );
+			this.GetElementValue( x, ref parsedElement, ns, elementName );
 			return parsedElement;
 		}
 
 		public PaginationResult ParsePaginationResultResponse( WebResponse response )
 		{
 			PaginationResult result = null;
-			using( Stream responseStream = response.GetResponseStream() )
+			using( var responseStream = response.GetResponseStream() )
 			{
 				if( responseStream != null )
 				{

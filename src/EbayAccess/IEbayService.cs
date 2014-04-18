@@ -9,16 +9,16 @@ namespace EbayAccess
 {
 	public interface IEbayService
 	{
-		IEnumerable<Order> GetOrders( DateTime dateFrom, DateTime dateTo );
+		IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo );
 
-		Task<IEnumerable<Order>> GetOrdersAsync( DateTime dateFrom, DateTime dateTo );
+		Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo );
 
 		InventoryStatus ReviseInventoryStatus( InventoryStatus inventoryStatus );
 
-		Task<InventoryStatus> ReviseInventoryStatusAsync( InventoryStatus inventoryStatus );
+		Task< InventoryStatus > ReviseInventoryStatusAsync( InventoryStatus inventoryStatus );
 
-		IEnumerable<Item> GetItems( DateTime startTimeFrom, DateTime startTimeTo );
+		IEnumerable< Item > GetItems( DateTime startTimeFrom, DateTime startTimeTo );
 
-		Task<IEnumerable<Item>> GetItemsAsync( DateTime startTimeFrom, DateTime startTimeTo );
+		Task< IEnumerable< Item > > GetItemsAsync( DateTime startTimeFrom, DateTime startTimeTo );
 	}
 }
