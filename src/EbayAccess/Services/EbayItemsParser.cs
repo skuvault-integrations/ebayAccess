@@ -31,89 +31,86 @@ namespace EbayAccess.Services
 
 				var orders = xmlItems.Select( x =>
 				{
-					object temp = null;
+					string temp;
 					var res = new Item();
 
-					if( this.GetElementValue( x, ref temp, ns, "AutoPay" ) )
-						res.AutoPay = bool.Parse( ( string )temp );
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "AutoPay" ) ) )
+						res.AutoPay = bool.Parse( temp );
 
-					if( this.GetElementValue( x, ref temp, ns, "BuyItNowPrice" ) )
-						res.BuyItNowPrice = decimal.Parse( ( ( string )temp ).Replace( '.', ',' ) );
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "BuyItNowPrice" ) ) )
+						res.BuyItNowPrice = decimal.Parse( temp.Replace( '.', ',' ) );
 
-					if( this.GetElementValue( x, ref temp, ns, "Country" ) )
-						res.Country = ( string )temp;
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "Country" ) ) )
+						res.Country = temp;
 
-					if( this.GetElementValue( x, ref temp, ns, "Currency" ) )
-						res.Currency = ( string )temp;
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "Currency" ) ) )
+						res.Currency = temp;
 
-					if( this.GetElementValue( x, ref temp, ns, "HideFromSearch" ) )
-						res.HideFromSearch = bool.Parse( ( string )temp );
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "HideFromSearch" ) ) )
+						res.HideFromSearch = bool.Parse( temp );
 
-					if( this.GetElementValue( x, ref temp, ns, "ItemID" ) )
-						res.ItemId = long.Parse( ( string )temp );
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ItemID" ) ) )
+						res.ItemId = long.Parse( temp );
 
-					if( this.GetElementValue( x, ref temp, ns, "ListingType" ) )
-					{
-						ListingType tempListingType;
-						if( Enum.TryParse( ( string )temp, out tempListingType ) )
-							res.ListingType = tempListingType;
-					}
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingType" ) ) )
+						res.ListingType = ( ListingType )Enum.Parse( typeof( ListingType ), temp );
 
-					if( this.GetElementValue( x, ref temp, ns, "Quantity" ) )
-						res.Quantity = long.Parse( ( string )temp );
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "Quantity" ) ) )
+						res.Quantity = long.Parse( temp );
 
-					if( this.GetElementValue( x, ref temp, ns, "ReservePrice" ) )
-						res.ReservePrice = decimal.Parse( ( ( string )temp ).Replace( '.', ',' ) );
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ReservePrice" ) ) )
+						//todo: replace "replace" to parser parameter in whol sol
+						res.ReservePrice = decimal.Parse( temp.Replace( '.', ',' ) );
 
-					if( this.GetElementValue( x, ref temp, ns, "Site" ) )
-						res.Site = ( string )temp;
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "Site" ) ) )
+						res.Site = temp;
 
-					if( this.GetElementValue( x, ref temp, ns, "Title" ) )
-						res.Title = ( string )temp;
+					if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "Title" ) ) )
+						res.Title = temp;
 
 					var listingDetails = x.Element( ns + "ListingDetails" );
 					if( listingDetails != null )
 					{
 						res.ListingDetails = new ListingDetails();
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "Adult" ) )
-							res.ListingDetails.Adult = bool.Parse( ( string )temp );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "Adult" ) ) )
+							res.ListingDetails.Adult = bool.Parse( temp );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "BindingAuction" ) )
-							res.ListingDetails.BindingAuction = bool.Parse( ( string )temp );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "BindingAuction" ) ) )
+							res.ListingDetails.BindingAuction = bool.Parse( temp );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "CheckoutEnabled" ) )
-							res.ListingDetails.CheckoutEnabled = bool.Parse( ( string )temp );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "CheckoutEnabled" ) ) )
+							res.ListingDetails.CheckoutEnabled = bool.Parse( temp );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "ConvertedBuyItNowPrice" ) )
-							res.ListingDetails.ConvertedBuyItNowPrice = decimal.Parse( ( ( string )temp ).Replace( '.', ',' ) );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "ConvertedBuyItNowPrice" ) ) )
+							res.ListingDetails.ConvertedBuyItNowPrice = decimal.Parse( temp.Replace( '.', ',' ) );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "ConvertedReservePrice" ) )
-							res.ListingDetails.ConvertedReservePrice = decimal.Parse( ( ( string )temp ).Replace( '.', ',' ) );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "ConvertedReservePrice" ) ) )
+							res.ListingDetails.ConvertedReservePrice = decimal.Parse( temp.Replace( '.', ',' ) );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "ConvertedStartPrice" ) )
-							res.ListingDetails.ConvertedStartPrice = decimal.Parse( ( ( string )temp ).Replace( '.', ',' ) );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "ConvertedStartPrice" ) ) )
+							res.ListingDetails.ConvertedStartPrice = decimal.Parse( temp.Replace( '.', ',' ) );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "EndTime" ) )
-							res.ListingDetails.EndTime = ( DateTime.Parse( ( string )temp ) );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "EndTime" ) ) )
+							res.ListingDetails.EndTime = ( DateTime.Parse( temp ) );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "HasPublicMessages" ) )
-							res.ListingDetails.HasPublicMessages = bool.Parse( ( string )temp );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "HasPublicMessages" ) ) )
+							res.ListingDetails.HasPublicMessages = bool.Parse( temp );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "HasReservePrice" ) )
-							res.ListingDetails.HasReservePrice = bool.Parse( ( string )temp );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "HasReservePrice" ) ) )
+							res.ListingDetails.HasReservePrice = bool.Parse( temp );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "HasUnansweredQuestions" ) )
-							res.ListingDetails.HasUnansweredQuestions = bool.Parse( ( string )temp );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "HasUnansweredQuestions" ) ) )
+							res.ListingDetails.HasUnansweredQuestions = bool.Parse( temp );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "StartTime" ) )
-							res.ListingDetails.StartTime = ( DateTime.Parse( ( string )temp ) );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "StartTime" ) ) )
+							res.ListingDetails.StartTime = ( DateTime.Parse( temp ) );
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "ViewItemURL" ) )
-							res.ListingDetails.ViewItemUrl = ( string )temp;
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "ViewItemURL" ) ) )
+							res.ListingDetails.ViewItemUrl = temp;
 
-						if( this.GetElementValue( x, ref temp, ns, "ListingDetails", "ViewItemURLForNaturalSearch" ) )
-							res.ListingDetails.ViewItemUrlForNaturalSearch = ( string )temp;
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "ListingDetails", "ViewItemURLForNaturalSearch" ) ) )
+							res.ListingDetails.ViewItemUrlForNaturalSearch = temp;
 					}
 
 					var primaryCategory = x.Element( ns + "PrimaryCategory" );
@@ -121,11 +118,11 @@ namespace EbayAccess.Services
 					{
 						res.PrimaryCategory = new Category();
 
-						if( this.GetElementValue( x, ref temp, ns, "PrimaryCategory", "CategoryID" ) )
-							res.PrimaryCategory.CategoryId = long.Parse( ( string )temp );
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "PrimaryCategory", "CategoryID" ) ) )
+							res.PrimaryCategory.CategoryId = long.Parse( temp );
 
-						if( this.GetElementValue( x, ref temp, ns, "PrimaryCategory", "CategoryName" ) )
-							res.PrimaryCategory.CategoryName = ( string )temp;
+						if( !string.IsNullOrWhiteSpace( temp = this.GetElementValue( x, ns, "PrimaryCategory", "CategoryName" ) ) )
+							res.PrimaryCategory.CategoryName = temp;
 					}
 
 					return res;
@@ -143,28 +140,18 @@ namespace EbayAccess.Services
 			}
 		}
 
-		private bool GetElementValue( XElement x, ref object parsedElement, XNamespace ns, params string[] elementName )
+		private string GetElementValue( XElement x, XNamespace ns, params string[] elementName )
 		{
-			if( elementName.Length > 0 )
-			{
-				var element = x.Element( ns + elementName[ 0 ] );
-				if( element != null )
-				{
-					if( elementName.Length > 1 )
-						return this.GetElementValue( element, ref parsedElement, ns, elementName.Skip( 1 ).ToArray() );
-					parsedElement = element.Value;
-					return true;
-				}
-			}
+			var parsedElement = string.Empty;
 
-			return false;
-		}
+			if( elementName.Length <= 0 )
+				return parsedElement;
 
-		private object GetElementValue( XElement x, XNamespace ns, params string[] elementName )
-		{
-			object parsedElement = null;
-			this.GetElementValue( x, ref parsedElement, ns, elementName );
-			return parsedElement;
+			var element = x.Element( ns + elementName[ 0 ] );
+			if( element == null )
+				return parsedElement;
+
+			return elementName.Length > 1 ? this.GetElementValue( element, ns, elementName.Skip( 1 ).ToArray() ) : element.Value;
 		}
 
 		public List< Item > ParseGetSallerListResponse( WebResponse response )
