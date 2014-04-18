@@ -9,6 +9,7 @@ using CuttingEdge.Conditions;
 using EbayAccess.Infrastructure;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Services.Parsers;
 using Netco.Extensions;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 

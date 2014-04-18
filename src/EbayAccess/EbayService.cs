@@ -10,6 +10,7 @@ using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
+using EbayAccess.Services.Parsers;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess

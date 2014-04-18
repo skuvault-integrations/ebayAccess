@@ -6,7 +6,7 @@ using System.Text;
 using System.Xml.Linq;
 using EbayAccess.Models.BaseResponse;
 
-namespace EbayAccess.Services
+namespace EbayAccess.Services.Parsers
 {
 	public class EbayPagesParser
 	{
@@ -89,7 +89,7 @@ namespace EbayAccess.Services
 					using( var memStream = new MemoryStream() )
 					{
 						responseStream.CopyTo( memStream, 0x100 );
-						result = ParsePaginationResultResponse( memStream );
+						result = this.ParsePaginationResultResponse( memStream );
 					}
 				}
 			}

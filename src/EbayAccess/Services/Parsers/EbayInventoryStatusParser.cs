@@ -7,7 +7,7 @@ using System.Text;
 using System.Xml.Linq;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 
-namespace EbayAccess.Services
+namespace EbayAccess.Services.Parsers
 {
 	public class EbayInventoryStatusParser
 	{
@@ -144,7 +144,7 @@ namespace EbayAccess.Services
 					using( var memStream = new MemoryStream() )
 					{
 						responseStream.CopyTo( memStream, 0x100 );
-						result = ParseReviseInventoryStatusResponse( memStream );
+						result = this.ParseReviseInventoryStatusResponse( memStream );
 					}
 				}
 			}

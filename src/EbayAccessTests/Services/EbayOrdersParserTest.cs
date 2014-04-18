@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Services;
+using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
 

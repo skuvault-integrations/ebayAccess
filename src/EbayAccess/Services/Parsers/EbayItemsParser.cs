@@ -9,7 +9,7 @@ using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListResponse;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
-namespace EbayAccess.Services
+namespace EbayAccess.Services.Parsers
 {
 	public class EbayItemsParser
 	{
@@ -164,7 +164,7 @@ namespace EbayAccess.Services
 					using( var memStream = new MemoryStream() )
 					{
 						responseStream.CopyTo( memStream, 0x100 );
-						result = ParseGetSallerListResponse( memStream );
+						result = this.ParseGetSallerListResponse( memStream );
 					}
 				}
 			}
