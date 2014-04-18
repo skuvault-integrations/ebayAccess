@@ -34,6 +34,10 @@
     <Reference Include="FluentAssertions">
       <HintPath>..\packages\FluentAssertions.2.2.0.0\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="LINQtoCSV, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\LINQtoCSV.1.3.0.0\lib\net35\LINQtoCSV.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
     </Reference>
@@ -51,6 +55,7 @@
   <ItemGroup>
     <Compile Include="EbayServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestCredentials.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
