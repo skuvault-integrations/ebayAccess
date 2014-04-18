@@ -47,9 +47,9 @@ namespace EbayAccessTests.Integration
 
 			//A
 			( inventoryStat1[ 0 ].Quantity - inventoryStat2[ 0 ].Quantity ).Should()
-				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", itemsQty1, itemsQty2 ) );
+				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", itemsQty1, itemsQty2 ) );
 			( inventoryStat1[ 1 ].Quantity - inventoryStat2[ 1 ].Quantity ).Should()
-				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", itemsQty1, itemsQty2 ) );
+				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", itemsQty1, itemsQty2 ) );
 		}
 
 		[ Test ]
@@ -69,7 +69,7 @@ namespace EbayAccessTests.Integration
 
 			//A
 			( inventoryStat1.Quantity - inventoryStat2.Quantity ).Should()
-				.Be( qty1 - qty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", qty1, qty2 ) );
+				.Be( qty1 - qty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", qty1, qty2 ) );
 		}
 
 		[ Test ]
@@ -97,9 +97,9 @@ namespace EbayAccessTests.Integration
 
 			//A
 			( inventoryStat1[ 0 ].Quantity - inventoryStat2[ 0 ].Quantity ).Should()
-				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", itemsQty1, itemsQty2 ) );
+				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", itemsQty1, itemsQty2 ) );
 			( inventoryStat1[ 1 ].Quantity - inventoryStat2[ 1 ].Quantity ).Should()
-				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", itemsQty1, itemsQty2 ) );
+				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", itemsQty1, itemsQty2 ) );
 		}
 
 		[ Test ]
@@ -218,7 +218,7 @@ namespace EbayAccessTests.Integration
 
 			//A
 			( inventoryStat1.Quantity - inventoryStat2.Quantity ).Should()
-				.Be( qty1 - qty2, String.Format( "because we set 1 qty {0}, then set 2 qty{1}", qty1, qty2 ) );
+				.Be( qty1 - qty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", qty1, qty2 ) );
 		}
 	}
 }
