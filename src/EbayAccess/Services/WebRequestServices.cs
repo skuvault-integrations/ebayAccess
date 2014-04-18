@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
+using EbayAccess.Infrastructure;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
 using Netco.Extensions;
@@ -162,8 +163,8 @@ namespace EbayAccess.Services
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo></GetOrdersRequest>​",
 						this._userCredentials.Token,
-						dateFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
-						dateTo.ToString( "O" ).Substring( 0, 23 ) + "Z" );
+						dateFrom.ToStringUtcIso8601(),
+						dateTo.ToStringUtcIso8601() );
 
 				var request = this.CreateServicePostRequest( url, body, headers );
 				using( var response = ( HttpWebResponse )request.GetResponse() )
@@ -199,8 +200,8 @@ namespace EbayAccess.Services
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo></GetOrdersRequest>​",
 						this._userCredentials.Token,
-						dateFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
-						dateTo.ToString( "O" ).Substring( 0, 23 ) + "Z" );
+						dateFrom.ToStringUtcIso8601(),
+						dateTo.ToStringUtcIso8601() );
 
 				var request = await this.CreateServicePostRequestAsync( url, body, headers );
 
@@ -236,8 +237,8 @@ namespace EbayAccess.Services
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
 						this._userCredentials.Token,
-						dateFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
-						dateTo.ToString( "O" ).Substring( 0, 23 ) + "Z",
+						dateFrom.ToStringUtcIso8601(),
+						dateTo.ToStringUtcIso8601(),
 						10,
 						1 );
 
@@ -287,8 +288,6 @@ namespace EbayAccess.Services
 		{
 			MemoryStream memoryStream;
 			using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync() )
-				//using (Stream dataStream = response.GetResponseStream() )
-				//using (Stream dataStream = await Task<Stream>.Run(() => { return response.GetResponseStream(); }) )
 			using( var dataStream = await new TaskFactory< Stream >().StartNew( () =>
 			{
 				return response.GetResponseStream();

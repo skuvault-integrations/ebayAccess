@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using EbayAccess.Models.GetSellerListResponse;
+﻿using System.IO;
 using EbayAccess.Services;
 using FluentAssertions;
 using NUnit.Framework;
 
 namespace EbayAccessTests.Services
 {
-	[TestFixture]
+	[ TestFixture ]
 	public class EbayItemsParserTest
 	{
-		[Test]
+		[ Test ]
 		public void FileStreamWithCorrectXml_ParseItemsResponse_HookupCorrectDeserializedObject()
 		{
 			//A
@@ -19,7 +17,7 @@ namespace EbayAccessTests.Services
 					FileAccess.Read ) )
 			{
 				//A
-				List<Item> orders = new EbayItemsParser().ParseGetSallerListResponse( fs );
+				var orders = new EbayItemsParser().ParseGetSallerListResponse( fs );
 
 				//A
 				orders.Should().HaveCount( 3, "because in source file there is {0} items", 3 );

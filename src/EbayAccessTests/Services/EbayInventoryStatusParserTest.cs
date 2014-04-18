@@ -6,10 +6,10 @@ using NUnit.Framework;
 
 namespace EbayAccessTests.Services
 {
-	[TestFixture]
+	[ TestFixture ]
 	public class EbayInventoryStatusParserTest
 	{
-		[Test]
+		[ Test ]
 		public void
 			CorrectReviseInventoryStatusResponseWithInventory_ParseInventoryStatusResponse_HookupCorrectDeserializedObject()
 		{
@@ -17,7 +17,7 @@ namespace EbayAccessTests.Services
 			using( var fs = new FileStream( @".\Files\ReviseInventoryStatusResponse.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				//A
-				InventoryStatus inventoryStatus = new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse( fs );
+				var inventoryStatus = new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse( fs );
 
 				//A
 				inventoryStatus.ShouldBeEquivalentTo( new InventoryStatus

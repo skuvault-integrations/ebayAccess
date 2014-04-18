@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
+using EbayAccess.Infrastructure;
 using EbayAccess.Misc;
 using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.Credentials;
@@ -77,8 +78,8 @@ namespace EbayAccess
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
 						this._userCredentials.Token,
-						dateFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
-						dateTo.ToString( "O" ).Substring( 0, 23 ) + "Z",
+						dateFrom.ToStringUtcIso8601(),
+						dateTo.ToStringUtcIso8601(),
 						recordsPerPage,
 						pageNumber );
 
@@ -129,8 +130,8 @@ namespace EbayAccess
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
 						this._userCredentials.Token,
-						dateFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
-						dateTo.ToString( "O" ).Substring( 0, 23 ) + "Z",
+						dateFrom.ToStringUtcIso8601(),
+						dateTo.ToStringUtcIso8601(),
 						recordsPerPage,
 						pageNumber );
 
@@ -177,8 +178,8 @@ namespace EbayAccess
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
 						this._userCredentials.Token,
-						startTimeFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
-						startTimeTo.ToString( "O" ).Substring( 0, 23 ) + "Z",
+						startTimeFrom.ToStringUtcIso8601(),
+						startTimeTo.ToStringUtcIso8601(),
 						recordsPerPage,
 						pageNumber );
 
@@ -227,8 +228,8 @@ namespace EbayAccess
 					string.Format(
 						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
 						this._userCredentials.Token,
-						startTimeFrom.ToString( "O" ).Substring( 0, 23 ) + "Z",
-						startTimeTo.ToString( "O" ).Substring( 0, 23 ) + "Z",
+						startTimeFrom.ToStringUtcIso8601(),
+						startTimeTo.ToStringUtcIso8601(),
 						recordsPerPage,
 						pageNumber );
 
