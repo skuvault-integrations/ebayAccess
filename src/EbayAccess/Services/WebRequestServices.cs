@@ -46,31 +46,7 @@ namespace EbayAccess.Services
 			return serviceRequest;
 		}
 
-		private WebRequest CreateServicePostRequest( string serviceUrl, string body,
-			Dictionary< string, string > rawHeaders )
-		{
-			var encoding = new UTF8Encoding();
-			var encodedBody = encoding.GetBytes( body );
-
-			var serviceRequest = ( HttpWebRequest )WebRequest.Create( serviceUrl );
-			serviceRequest.Method = WebRequestMethods.Http.Post;
-			serviceRequest.ContentType = "text/xml";
-			serviceRequest.ContentLength = encodedBody.Length;
-			serviceRequest.KeepAlive = true;
-
-			foreach( var rawHeadersKey in rawHeaders.Keys )
-			{
-				serviceRequest.Headers.Add( rawHeadersKey, rawHeaders[ rawHeadersKey ] );
-			}
-
-			using( var newStream = serviceRequest.GetRequestStream() )
-				newStream.Write( encodedBody, 0, encodedBody.Length );
-
-			return serviceRequest;
-		}
-
-		private async Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body,
-			Dictionary< string, string > rawHeaders )
+		private async Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders )
 		{
 			var encoding = new UTF8Encoding();
 			var encodedBody = encoding.GetBytes( body );
@@ -94,8 +70,7 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region EbayStandartRequest
-		public async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers,
-			string body )
+		public async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body )
 		{
 			try
 			{
@@ -122,21 +97,19 @@ namespace EbayAccess.Services
 
 		public WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body )
 		{
+			var resultTask = this.CreateEbayStandartPostRequestAsync( url, headers, body );
+			resultTask.Wait();
+			return resultTask.Result;
+		}
+
+		public async Task< WebRequest > CreateEbayStandartPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body )
+		{
 			try
 			{
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-COMPATIBILITY-LEVEL" ) )
-					headers.Add( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-CERT-NAME" ) )
+					headers.Add( "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName );
 
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-DEV-NAME" ) )
-					headers.Add( "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName );
-
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-APP-NAME" ) )
-					headers.Add( "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName );
-
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-SITEID" ) )
-					headers.Add( "X-EBAY-API-SITEID", "0" );
-
-				return this.CreateServicePostRequest( url, body, headers );
+				return await this.CreateEbayStandartPostRequestAsync( url, headers, body ).ConfigureAwait( false );
 			}
 			catch( WebException exc )
 			{
@@ -145,36 +118,11 @@ namespace EbayAccess.Services
 			}
 		}
 
-		public async Task<WebRequest> CreateEbayStandartPostRequestWithCertAsync(string url, Dictionary<string, string> headers, string body)
+		public WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body )
 		{
-			try
-			{
-				if (!headers.Exists(keyValuePair => keyValuePair.Key == "X-EBAY-API-CERT-NAME"))
-					headers.Add("X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName);
-
-				return await this.CreateEbayStandartPostRequestAsync(url, headers, body).ConfigureAwait(false);
-			}
-			catch (WebException exc)
-			{
-				// todo: log some exceptions
-				throw;
-			}
-		}
-
-		public WebRequest CreateEbayStandartPostRequestWithCert(string url, Dictionary<string, string> headers, string body)
-		{
-			try
-			{
-				if (!headers.Exists(keyValuePair => keyValuePair.Key ==  "X-EBAY-API-CERT-NAME"))
-					headers.Add( "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName);
-
-				return this.CreateEbayStandartPostRequest(url, headers, body );
-			}
-			catch (WebException exc)
-			{
-				// todo: log some exceptions
-				throw;
-			}
+			var requestTask = this.CreateEbayStandartPostRequestWithCertAsync( url, headers, body );
+			requestTask.Wait();
+			return requestTask.Result;
 		}
 		#endregion
 
@@ -228,7 +176,7 @@ namespace EbayAccess.Services
 						dateFrom.ToStringUtcIso8601(),
 						dateTo.ToStringUtcIso8601() );
 
-				var request = await this.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait(false);
+				var request = await this.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
 
 				using( var memStream = await this.GetResponseStreamAsync( request ) )
 					result = new EbayGetOrdersResponseParser().Parse( memStream );
@@ -262,7 +210,7 @@ namespace EbayAccess.Services
 						10,
 						1 );
 
-				var request = this.CreateEbayStandartPostRequestWithCert(url, headers, body);
+				var request = this.CreateEbayStandartPostRequestWithCert( url, headers, body );
 				using( var response = ( HttpWebResponse )request.GetResponse() )
 				using( var dataStream = response.GetResponseStream() )
 					result = new EbayGetSallerListResponseParser().Parse( dataStream );
