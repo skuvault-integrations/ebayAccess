@@ -124,7 +124,7 @@ namespace EbayAccessTests
 			{
 				new InventoryStatus { ItemId = item1Id, Quantity = itemsQty1 },
 				new InventoryStatus { ItemId = item2Id, Quantity = itemsQty1 }
-			} ) ).ToArray();
+			} ).ConfigureAwait( false ) ).ToArray();
 
 			//A
 			inventoryStat1[ 0 ].Error.ErrorCode.Should().NotBeNullOrWhiteSpace();

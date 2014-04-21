@@ -62,7 +62,7 @@ namespace EbayAccess.Services
 				serviceRequest.Headers.Add( rawHeadersKey, rawHeaders[ rawHeadersKey ] );
 			}
 
-			using( var newStream = await serviceRequest.GetRequestStreamAsync() )
+			using( var newStream = await serviceRequest.GetRequestStreamAsync().ConfigureAwait( false ) )
 				newStream.Write( encodedBody, 0, encodedBody.Length );
 
 			return serviceRequest;
@@ -86,7 +86,7 @@ namespace EbayAccess.Services
 				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-SITEID" ) )
 					headers.Add( "X-EBAY-API-SITEID", "0" );
 
-				return await this.CreateServicePostRequestAsync( url, body, headers );
+				return await this.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
 			}
 			catch( WebException exc )
 			{
@@ -178,7 +178,7 @@ namespace EbayAccess.Services
 
 				var request = await this.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
 
-				using( var memStream = await this.GetResponseStreamAsync( request ) )
+				using( var memStream = await this.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
 					result = new EbayGetOrdersResponseParser().Parse( memStream );
 
 				return result;
@@ -255,14 +255,14 @@ namespace EbayAccess.Services
 		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest )
 		{
 			MemoryStream memoryStream;
-			using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync() )
+			using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync().ConfigureAwait( false ) )
 			using( var dataStream = await new TaskFactory< Stream >().StartNew( () =>
 			{
 				return response.GetResponseStream();
-			} ) )
+			} ).ConfigureAwait( false ) )
 			{
 				memoryStream = new MemoryStream();
-				await dataStream.CopyToAsync( memoryStream, 0x100 );
+				await dataStream.CopyToAsync( memoryStream, 0x100 ).ConfigureAwait( false );
 				memoryStream.Position = 0;
 				return memoryStream;
 			}

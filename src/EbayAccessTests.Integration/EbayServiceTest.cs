@@ -110,7 +110,7 @@ namespace EbayAccessTests.Integration
 
 			//A
 			var orders =
-				await ebayService.GetItemsAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ) );
+				await ebayService.GetItemsAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ) ).ConfigureAwait( false );
 
 			//A
 			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
@@ -153,7 +153,7 @@ namespace EbayAccessTests.Integration
 
 			//A
 			var orders =
-				await ebayService.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
+				await ebayService.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) ).ConfigureAwait( false );
 
 			//A
 			orders.Count().Should().Be( 2, "because on site there is 2 orders" );
@@ -181,7 +181,7 @@ namespace EbayAccessTests.Integration
 
 			//A
 			var orders =
-				await ebayService.GetOrdersAsync( new DateTime( 1999, 1, 1, 0, 0, 0 ), new DateTime( 1999, 1, 21, 10, 0, 0 ) );
+				await ebayService.GetOrdersAsync( new DateTime( 1999, 1, 1, 0, 0, 0 ), new DateTime( 1999, 1, 21, 10, 0, 0 ) ).ConfigureAwait( false );
 
 			//A
 			orders.Count().Should().Be( 0, "because on site there is no orders in specified time" );
@@ -212,9 +212,9 @@ namespace EbayAccessTests.Integration
 
 			//A
 			var inventoryStat1 =
-				await ebayService.ReviseInventoryStatusAsync( new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = qty1 } );
+				await ebayService.ReviseInventoryStatusAsync( new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = qty1 } ).ConfigureAwait( false );
 			var inventoryStat2 =
-				await ebayService.ReviseInventoryStatusAsync( new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = qty2 } );
+				await ebayService.ReviseInventoryStatusAsync( new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = qty2 } ).ConfigureAwait( false );
 
 			//A
 			( inventoryStat1.Quantity - inventoryStat2.Quantity ).Should()

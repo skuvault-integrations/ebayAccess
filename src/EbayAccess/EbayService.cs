@@ -138,9 +138,9 @@ namespace EbayAccess
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this._webRequestServices.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body );
+					var webRequest = await this._webRequestServices.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
 					{
 						pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
@@ -153,7 +153,7 @@ namespace EbayAccess
 							alreadyReadRecords += tempOrders.Count;
 						}
 					}
-				} );
+				} ).ConfigureAwait( false );
 
 				pageNumber++;
 			} while( ( pagination != null ) && pagination.TotalNumberOfPages > pageNumber );
@@ -241,9 +241,9 @@ namespace EbayAccess
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this._webRequestServices.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body );
+					var webRequest = await this._webRequestServices.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
 					{
 						pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
@@ -256,7 +256,7 @@ namespace EbayAccess
 							alreadyReadRecords += tempOrders.Count;
 						}
 					}
-				} );
+				} ).ConfigureAwait( false );
 
 				pageNumber++;
 			} while( ( pagination != null ) ? pagination.TotalNumberOfPages < pageNumber : false );
@@ -310,9 +310,9 @@ namespace EbayAccess
 				string.IsNullOrWhiteSpace( inventoryStatus.Sku ) ? string.Format( "<SKU>{0}</SKU>", inventoryStatus.Sku ) : string.Empty
 				);
 
-			var request = await this._webRequestServices.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body );
+			var request = await this._webRequestServices.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
-			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ) )
+			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
 			{
 				var inventoryStatusResponse =
 					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
@@ -335,11 +335,11 @@ namespace EbayAccess
 			//foreach (var inventoryStatus in inventoryStatuses)
 			//{
 			//	var productToUpdate = inventoryStatus;
-			//	await ActionPolicies.SubmitAsync.Do(async () => await this.ReviseInventoryStatusAsync(productToUpdate));
+			//	await ActionPolicies.SubmitAsync.Do(async () => await this.ReviseInventoryStatusAsync(productToUpdate).ConfigureAwait(false));
 			//}
 
 			return
-				await new TaskFactory< IEnumerable< InventoryStatus > >().StartNew( () => this.ReviseInventoriesStatus( inventoryStatuses ) );
+				await new TaskFactory< IEnumerable< InventoryStatus > >().StartNew( () => this.ReviseInventoriesStatus( inventoryStatuses ) ).ConfigureAwait( false );
 
 			//{
 			//	return inventoryStatuses.Select(
