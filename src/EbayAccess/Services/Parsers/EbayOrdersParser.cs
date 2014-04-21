@@ -9,7 +9,7 @@ using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayOrdersParser
+	public class EbayOrdersParser : AbstractXmlParser
 	{
 		public List< Order > ParseOrdersResponse( String str )
 		{
@@ -29,31 +29,27 @@ namespace EbayAccess.Services.Parsers
 
 				var orders = xmlOrders.Select( x =>
 				{
-					object temp = null;
+					string temp = null;
 					var res = new Order();
 
-					if( this.GetElementValue( x, ref temp, ns, "BuyerUserID" ) )
-						res.BuyerUserId = ( string )temp;
+					res.BuyerUserId = GetElementValue( x, ns, "BuyerUserID" );
 
 					if( x.Element( ns + "CheckoutStatus" ) != null )
 					{
 						var elCheckoutStatus = x.Element( ns + "CheckoutStatus" );
 						var obCheckoutStatus = new CheckoutStatus();
 
-						if( this.GetElementValue( elCheckoutStatus, ref temp, ns, "eBayPaymentStatus" ) )
-							obCheckoutStatus.EBayPaymentStatus = ( string )temp;
+						obCheckoutStatus.EBayPaymentStatus = GetElementValue( elCheckoutStatus, ns, "eBayPaymentStatus" );
 
-						if( this.GetElementValue( elCheckoutStatus, ref temp, ns, "IntegratedMerchantCreditCardEnabled" ) )
-							obCheckoutStatus.IntegratedMerchantCreditCardEnabled = bool.Parse( ( string )temp );
+						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( elCheckoutStatus, ns, "IntegratedMerchantCreditCardEnabled" ) ) )
+							obCheckoutStatus.IntegratedMerchantCreditCardEnabled = bool.Parse( temp );
 
-						if( this.GetElementValue( elCheckoutStatus, ref temp, ns, "LastModifiedTime" ) )
-							obCheckoutStatus.LastModifiedTime = ( DateTime.Parse( ( string )temp ) );
+						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( elCheckoutStatus, ns, "LastModifiedTime" ) ) )
+							obCheckoutStatus.LastModifiedTime = ( DateTime.Parse( temp ) );
 
-						if( this.GetElementValue( elCheckoutStatus, ref temp, ns, "PaymentMethod" ) )
-							obCheckoutStatus.PaymentMethod = ( string )temp;
+						obCheckoutStatus.PaymentMethod = GetElementValue( elCheckoutStatus, ns, "PaymentMethod" );
 
-						if( this.GetElementValue( elCheckoutStatus, ref temp, ns, "Status" ) )
-							obCheckoutStatus.Status = ( string )temp;
+						obCheckoutStatus.Status = GetElementValue( elCheckoutStatus, ns, "Status" );
 
 						res.CheckoutStatus = obCheckoutStatus;
 					}
@@ -63,36 +59,28 @@ namespace EbayAccess.Services.Parsers
 						var shipToAddress = x.Element( ns + "ShippingAddress" );
 						var address = new ShippingAddress();
 
-						if( this.GetElementValue( shipToAddress, ref temp, ns, "Country" ) )
-							address.Country = ( string )temp;
+						address.Country = GetElementValue( shipToAddress, ns, "Country" );
 
-						if( this.GetElementValue( shipToAddress, ref temp, ns, "CityName" ) )
-							address.City = ( string )temp;
+						address.City = GetElementValue( shipToAddress, ns, "CityName" );
 
-						if( this.GetElementValue( shipToAddress, ref temp, ns, "PostalCode" ) )
-							address.PostalCode = ( string )temp;
+						address.PostalCode = GetElementValue( shipToAddress, ns, "PostalCode" );
 
-						if( this.GetElementValue( shipToAddress, ref temp, ns, "StateOrProvince" ) )
-							address.State = ( string )temp;
+						address.State = GetElementValue( shipToAddress, ns, "StateOrProvince" );
 
-						if( this.GetElementValue( shipToAddress, ref temp, ns, "Street1" ) )
-							address.Street1 = ( string )temp;
+						address.Street1 = GetElementValue( shipToAddress, ns, "Street1" );
 
-						if( this.GetElementValue( shipToAddress, ref temp, ns, "Street2" ) )
-							address.Street2 = ( string )temp;
+						address.Street2 = GetElementValue( shipToAddress, ns, "Street2" );
 					}
 
-					if( this.GetElementValue( x, ref temp, ns, "CreatedTime" ) )
-						res.CreatedTime = ( DateTime.Parse( ( string )temp ) );
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "CreatedTime" ) ) )
+						res.CreatedTime = ( DateTime.Parse( temp ) );
 
-					if( this.GetElementValue( x, ref temp, ns, "OrderID" ) )
-						res.OrderId = ( string )temp;
+					res.OrderId = GetElementValue( x, ns, "OrderID" );
 
-					if( this.GetElementValue( x, ref temp, ns, "OrderStatus" ) )
-						res.Status = ( EbayOrderStatusEnum )Enum.Parse( typeof( EbayOrderStatusEnum ), ( string )temp );
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "OrderStatus" ) ) )
+						res.Status = ( EbayOrderStatusEnum )Enum.Parse( typeof( EbayOrderStatusEnum ), temp );
 
-					if( this.GetElementValue( x, ref temp, ns, "PaymentMethods" ) )
-						res.PaymentMethods = ( string )temp;
+					res.PaymentMethods = GetElementValue( x, ns, "PaymentMethods" );
 
 					var elTransactionArray = x.Element( ns + "TransactionArray" );
 					if( elTransactionArray != null )
@@ -105,30 +93,27 @@ namespace EbayAccess.Services.Parsers
 							if( elBuyer != null )
 							{
 								resTransaction.Buyer = new Buyer();
-								if( this.GetElementValue( elBuyer, ref temp, ns, "Email" ) )
-									resTransaction.Buyer.Email = ( string )temp;
+								resTransaction.Buyer.Email = GetElementValue( elBuyer, ns, "Email" );
 							}
 
-							if( this.GetElementValue( transaction, ref temp, ns, "TransactionPrice" ) )
-								resTransaction.TransactionPrice = double.Parse( ( ( string )temp ).Replace( '.', ',' ) );
+							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( transaction, ns, "TransactionPrice" ) ) )
+								resTransaction.TransactionPrice = double.Parse( temp.Replace( '.', ',' ) );
 
 							var elItem = transaction.Element( ns + "Item" );
 							if( elItem != null )
 							{
 								resTransaction.Item = new Item();
 
-								if( this.GetElementValue( elItem, ref temp, ns, "ItemID" ) )
-									resTransaction.Item.ItemId = long.Parse( ( string )temp );
+								if( !string.IsNullOrWhiteSpace( temp = GetElementValue( elItem, ns, "ItemID" ) ) )
+									resTransaction.Item.ItemId = long.Parse( temp );
 
-								if( this.GetElementValue( elItem, ref temp, ns, "Site" ) )
-									resTransaction.Item.Site = ( string )temp;
+								resTransaction.Item.Site = GetElementValue( elItem, ns, "Site" );
 
-								if( this.GetElementValue( elItem, ref temp, ns, "Title" ) )
-									resTransaction.Item.Title = ( string )temp;
+								resTransaction.Item.Title = GetElementValue( elItem, ns, "Title" );
 							}
 
-							if( this.GetElementValue( transaction, ref temp, ns, "QuantityPurchased" ) )
-								resTransaction.QuantityPurchased = int.Parse( ( string )temp );
+							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( transaction, ns, "QuantityPurchased" ) ) )
+								resTransaction.QuantityPurchased = int.Parse( temp );
 
 							return resTransaction;
 						} ).ToList();
@@ -147,30 +132,6 @@ namespace EbayAccess.Services.Parsers
 				var bufferStr = utf8Encoding.GetString( buffer );
 				throw new Exception( "Can't parse: " + bufferStr, ex );
 			}
-		}
-
-		private bool GetElementValue( XElement x, ref object parsedElement, XNamespace ns, params string[] elementName )
-		{
-			if( elementName.Length > 0 )
-			{
-				var element = x.Element( ns + elementName[ 0 ] );
-				if( element != null )
-				{
-					if( elementName.Length > 1 )
-						return this.GetElementValue( element, ref parsedElement, ns, elementName.Skip( 1 ).ToArray() );
-					parsedElement = element.Value.Trim();
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		private object GetElementValue( XElement x, XNamespace ns, params string[] elementName )
-		{
-			object parsedElement = null;
-			this.GetElementValue( x, ref parsedElement, ns, elementName );
-			return parsedElement;
 		}
 
 		public List< Order > ParseOrdersResponse( WebResponse response )
