@@ -246,7 +246,7 @@ namespace EbayAccess.Services
 				var request = this.CreateServicePostRequest( url, body, headers );
 				using( var response = ( HttpWebResponse )request.GetResponse() )
 				using( var dataStream = response.GetResponseStream() )
-					result = new EbayItemsParser().ParseGetSallerListResponse( dataStream );
+					result = EbayItemsParser.ParseGetSallerListResponse( dataStream );
 
 				return result;
 			}

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml.Linq;
@@ -9,7 +8,7 @@ using EbayAccess.Models.ReviseInventoryStatusRequest;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayInventoryStatusParser
+	public class EbayInventoryStatusParser : AbstractXmlParser
 	{
 		public InventoryStatus ParseReviseInventoryStatusResponse( string str )
 		{
@@ -33,31 +32,30 @@ namespace EbayAccess.Services.Parsers
 				var elInventoryStatus = root.Element( ns + "InventoryStatus" );
 				if( elInventoryStatus != null )
 				{
-					object temp = null;
+					string temp = null;
 
 					inventoryStatus = new InventoryStatus();
 
-					if( this.GetElementValue( elInventoryStatus, ref temp, ns, "SKU" ) )
-						inventoryStatus.Sku = ( string )temp;
+					inventoryStatus.Sku = GetElementValue( elInventoryStatus, ns, "SKU" );
 
-					if( this.GetElementValue( elInventoryStatus, ref temp, ns, "ItemID" ) )
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( elInventoryStatus, ns, "ItemID" ) ) )
 					{
 						long tempRes;
-						if( long.TryParse( ( string )temp, out tempRes ) )
+						if( long.TryParse( temp, out tempRes ) )
 							inventoryStatus.ItemId = tempRes;
 					}
 
-					if( this.GetElementValue( elInventoryStatus, ref temp, ns, "Quantity" ) )
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( elInventoryStatus, ns, "Quantity" ) ) )
 					{
 						long tempRes;
-						if( long.TryParse( ( string )temp, out tempRes ) )
+						if( long.TryParse( temp, out tempRes ) )
 							inventoryStatus.Quantity = tempRes;
 					}
 
-					if( this.GetElementValue( elInventoryStatus, ref temp, ns, "StartPrice" ) )
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( elInventoryStatus, ns, "StartPrice" ) ) )
 					{
 						double tempRes;
-						if( double.TryParse( ( string )temp, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out tempRes ) )
+						if( double.TryParse( temp, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out tempRes ) )
 							inventoryStatus.StartPrice = tempRes;
 					}
 				}
@@ -80,28 +78,28 @@ namespace EbayAccess.Services.Parsers
 			if( isSuccess != null && isSuccess.Value == "Failure" )
 			{
 				this.ResponseError = new ResponseError();
-				object temp = null;
+				string temp = null;
 
-				if( this.GetElementValue( root, ref temp, ns, "Errors", "ShortMessage" ) )
-					this.ResponseError.ShortMessage = ( string )temp;
+				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "Errors", "ShortMessage" ) ) )
+					this.ResponseError.ShortMessage = temp;
 
-				if( this.GetElementValue( root, ref temp, ns, "Errors", "LongMessage" ) )
-					this.ResponseError.LongMessage = ( string )temp;
+				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "Errors", "LongMessage" ) ) )
+					this.ResponseError.LongMessage = temp;
 
-				if( this.GetElementValue( root, ref temp, ns, "Errors", "ErrorCode" ) )
-					this.ResponseError.ErrorCode = ( string )temp;
+				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "Errors", "ErrorCode" ) ) )
+					this.ResponseError.ErrorCode = temp;
 
-				if( this.GetElementValue( root, ref temp, ns, "Errors", "UserDisplayHint" ) )
-					this.ResponseError.UserDisplayHint = ( string )temp;
+				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "Errors", "UserDisplayHint" ) ) )
+					this.ResponseError.UserDisplayHint = temp;
 
-				if( this.GetElementValue( root, ref temp, ns, "Errors", "ServerityCode" ) )
-					this.ResponseError.ServerityCode = ( string )temp;
+				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "Errors", "ServerityCode" ) ) )
+					this.ResponseError.ServerityCode = temp;
 
-				if( this.GetElementValue( root, ref temp, ns, "Errors", "ErrorClassification" ) )
-					this.ResponseError.ErrorClassification = ( string )temp;
+				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "Errors", "ErrorClassification" ) ) )
+					this.ResponseError.ErrorClassification = temp;
 
-				if( this.GetElementValue( root, ref temp, ns, "Errors", "ErrorParameters" ) )
-					this.ResponseError.ErrorParameters = ( string )temp;
+				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "Errors", "ErrorParameters" ) ) )
+					this.ResponseError.ErrorParameters = temp;
 
 				return true;
 			}
@@ -109,30 +107,6 @@ namespace EbayAccess.Services.Parsers
 		}
 
 		public ResponseError ResponseError { get; protected set; }
-
-		private bool GetElementValue( XElement x, ref object parsedElement, XNamespace ns, params string[] elementName )
-		{
-			if( elementName.Length > 0 )
-			{
-				var element = x.Element( ns + elementName[ 0 ] );
-				if( element != null )
-				{
-					if( elementName.Length > 1 )
-						return this.GetElementValue( element, ref parsedElement, ns, elementName.Skip( 1 ).ToArray() );
-					parsedElement = element.Value;
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		private object GetElementValue( XElement x, XNamespace ns, params string[] elementName )
-		{
-			object parsedElement = null;
-			this.GetElementValue( x, ref parsedElement, ns, elementName );
-			return parsedElement;
-		}
 
 		public InventoryStatus ParseReviseInventoryStatusResponse( WebResponse response )
 		{
