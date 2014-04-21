@@ -1,15 +1,14 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using EbayAccess.Models.BaseResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayPaginationResultResponseParser : AbstractXmlParser
+	public class EbayPaginationResultResponseParser : AbstractXmlParser< PaginationResult >
 	{
-		public PaginationResult Parse( Stream stream, bool keepStremPosition = true )
+		public override PaginationResult Parse( Stream stream, bool keepStremPosition = true )
 		{
 			try
 			{
@@ -45,24 +44,6 @@ namespace EbayAccess.Services.Parsers
 				var bufferStr = utf8Encoding.GetString( buffer );
 				throw new Exception( "Can't parse: " + bufferStr, ex );
 			}
-		}
-
-		public PaginationResult Parse( WebResponse response )
-		{
-			PaginationResult result = null;
-			using( var responseStream = response.GetResponseStream() )
-			{
-				if( responseStream != null )
-				{
-					using( var memStream = new MemoryStream() )
-					{
-						responseStream.CopyTo( memStream, 0x100 );
-						result = this.Parse( memStream );
-					}
-				}
-			}
-
-			return result;
 		}
 	}
 }

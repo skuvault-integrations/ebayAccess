@@ -2,26 +2,21 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayGetOrdersResponseParser : AbstractXmlParser
+	public class EbayGetOrdersResponseParser : AbstractXmlParser< List< Order > >
 	{
-		public List< Order > Parse( String str )
-		{
-			//todo: make parser
-			throw new NotImplementedException();
-		}
-
-		public List< Order > Parse( Stream stream )
+		public override List< Order > Parse( Stream stream, bool keepStremPosition = true )
 		{
 			try
 			{
 				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
+
+				var streamStartPos = stream.Position;
 
 				var root = XElement.Load( stream );
 
@@ -119,6 +114,9 @@ namespace EbayAccess.Services.Parsers
 						} ).ToList();
 					}
 
+					if( keepStremPosition )
+						stream.Position = streamStartPos;
+
 					return res;
 				} ).ToList();
 
@@ -132,24 +130,6 @@ namespace EbayAccess.Services.Parsers
 				var bufferStr = utf8Encoding.GetString( buffer );
 				throw new Exception( "Can't parse: " + bufferStr, ex );
 			}
-		}
-
-		public List< Order > Parse( WebResponse response )
-		{
-			List< Order > result = null;
-			using( var responseStream = response.GetResponseStream() )
-			{
-				if( responseStream != null )
-				{
-					using( var memStream = new MemoryStream() )
-					{
-						responseStream.CopyTo( memStream, 0x100 );
-						result = this.Parse( memStream );
-					}
-				}
-			}
-
-			return result;
 		}
 	}
 }

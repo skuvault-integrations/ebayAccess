@@ -8,15 +8,9 @@ using EbayAccess.Models.ReviseInventoryStatusRequest;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayReviseInventoryStatusResponseParser : AbstractXmlParser
+	public class EbayReviseInventoryStatusResponseParser : AbstractXmlParser< InventoryStatus >
 	{
 		public ResponseError ResponseError { get; protected set; }
-
-		public InventoryStatus Parse( string str )
-		{
-			//todo: make parser
-			throw new NotImplementedException();
-		}
 
 		public InventoryStatus Parse( Stream stream )
 		{
@@ -73,7 +67,7 @@ namespace EbayAccess.Services.Parsers
 				throw new Exception( "Can't parse: " + bufferStr, ex );
 			}
 		}
-
+		
 		private bool ResponseContainsErrors( XElement root, XNamespace ns )
 		{
 			var isSuccess = root.Element( ns + "Ack" );
@@ -106,24 +100,6 @@ namespace EbayAccess.Services.Parsers
 				return true;
 			}
 			return false;
-		}
-
-		public InventoryStatus Parse( WebResponse response )
-		{
-			InventoryStatus result = null;
-			using( var responseStream = response.GetResponseStream() )
-			{
-				if( responseStream != null )
-				{
-					using( var memStream = new MemoryStream() )
-					{
-						responseStream.CopyTo( memStream, 0x100 );
-						result = this.Parse( memStream );
-					}
-				}
-			}
-
-			return result;
 		}
 	}
 

@@ -199,7 +199,7 @@ namespace EbayAccess
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var tempOrders = EbayItemsParser.ParseGetSallerListResponse( memStream );
+						var tempOrders = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( tempOrders != null )
 						{
 							orders.AddRange( tempOrders );
@@ -249,7 +249,7 @@ namespace EbayAccess
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var tempOrders = EbayItemsParser.ParseGetSallerListResponse( memStream );
+						var tempOrders = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( tempOrders != null )
 						{
 							orders.AddRange( tempOrders );

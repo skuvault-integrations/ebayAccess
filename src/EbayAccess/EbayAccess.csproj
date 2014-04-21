@@ -72,7 +72,7 @@
     <Compile Include="Services\IWebRequestServices.cs" />
     <Compile Include="Services\Parsers\AbstractXmlParser.cs" />
     <Compile Include="Services\Parsers\EbayReviseInventoryStatusResponseParser.cs" />
-    <Compile Include="Services\Parsers\EbayItemsParser.cs" />
+    <Compile Include="Services\Parsers\EbayGetSallerListResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetOrdersResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayPaginationResultResponseParser.cs" />
     <Compile Include="Services\WebRequestServices.cs">
