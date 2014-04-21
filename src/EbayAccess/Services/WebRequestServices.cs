@@ -47,7 +47,7 @@ namespace EbayAccess.Services
 		}
 
 		private WebRequest CreateServicePostRequest( string serviceUrl, string body,
-			IEnumerable< Tuple< string, string > > rawHeaders )
+			Dictionary< string, string > rawHeaders )
 		{
 			var encoding = new UTF8Encoding();
 			var encodedBody = encoding.GetBytes( body );
@@ -58,9 +58,9 @@ namespace EbayAccess.Services
 			serviceRequest.ContentLength = encodedBody.Length;
 			serviceRequest.KeepAlive = true;
 
-			foreach( var rawHeader in rawHeaders )
+			foreach( var rawHeadersKey in rawHeaders.Keys )
 			{
-				serviceRequest.Headers.Add( rawHeader.Item1, rawHeader.Item2 );
+				serviceRequest.Headers.Add( rawHeadersKey, rawHeaders[ rawHeadersKey ] );
 			}
 
 			using( var newStream = serviceRequest.GetRequestStream() )
@@ -70,7 +70,7 @@ namespace EbayAccess.Services
 		}
 
 		private async Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body,
-			IEnumerable< Tuple< string, string > > rawHeaders )
+			Dictionary< string, string > rawHeaders )
 		{
 			var encoding = new UTF8Encoding();
 			var encodedBody = encoding.GetBytes( body );
@@ -81,9 +81,9 @@ namespace EbayAccess.Services
 			serviceRequest.ContentLength = encodedBody.Length;
 			serviceRequest.KeepAlive = true;
 
-			foreach( var rawHeader in rawHeaders )
+			foreach( var rawHeadersKey in rawHeaders.Keys )
 			{
-				serviceRequest.Headers.Add( rawHeader.Item1, rawHeader.Item2 );
+				serviceRequest.Headers.Add( rawHeadersKey, rawHeaders[ rawHeadersKey ] );
 			}
 
 			using( var newStream = await serviceRequest.GetRequestStreamAsync() )
@@ -94,21 +94,22 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region EbayStandartRequest
-		public async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, IList< Tuple< string, string > > headers,
+		public async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers,
 			string body )
 		{
 			try
 			{
-				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-COMPATIBILITY-LEVEL" ) )
-					headers.Add( new Tuple< string, string >( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" ) );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-COMPATIBILITY-LEVEL" ) )
+					headers.Add( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" );
 
-				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-DEV-NAME" ) )
-					headers.Add( new Tuple< string, string >( "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName ) );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-DEV-NAME" ) )
+					headers.Add( "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName );
 
-				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-APP-NAME" ) )
-					headers.Add( new Tuple< string, string >( "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName ) );
-				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-SITEID" ) )
-					headers.Add( new Tuple< string, string >( "X-EBAY-API-SITEID", "0" ) );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-APP-NAME" ) )
+					headers.Add( "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName );
+
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-SITEID" ) )
+					headers.Add( "X-EBAY-API-SITEID", "0" );
 
 				return await this.CreateServicePostRequestAsync( url, body, headers );
 			}
@@ -119,20 +120,21 @@ namespace EbayAccess.Services
 			}
 		}
 
-		public WebRequest CreateEbayStandartPostRequest( string url, IList< Tuple< string, string > > headers, string body )
+		public WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body )
 		{
 			try
 			{
-				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-COMPATIBILITY-LEVEL" ) )
-					headers.Add( new Tuple< string, string >( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" ) );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-COMPATIBILITY-LEVEL" ) )
+					headers.Add( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" );
 
-				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-DEV-NAME" ) )
-					headers.Add( new Tuple< string, string >( "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName ) );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-DEV-NAME" ) )
+					headers.Add( "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName );
 
-				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-APP-NAME" ) )
-					headers.Add( new Tuple< string, string >( "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName ) );
-				if( !headers.Exists( tuple => tuple.Item1 == "X-EBAY-API-SITEID" ) )
-					headers.Add( new Tuple< string, string >( "X-EBAY-API-SITEID", "0" ) );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-APP-NAME" ) )
+					headers.Add( "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName );
+
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-SITEID" ) )
+					headers.Add( "X-EBAY-API-SITEID", "0" );
 
 				return this.CreateServicePostRequest( url, body, headers );
 			}
@@ -150,14 +152,14 @@ namespace EbayAccess.Services
 			{
 				List< Order > result;
 
-				IEnumerable< Tuple< string, string > > headers = new List< Tuple< string, string > >
+				var headers = new Dictionary< string, string >
 				{
-					new Tuple< string, string >( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" ),
-					new Tuple< string, string >( "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName ),
-					new Tuple< string, string >( "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName ),
-					new Tuple< string, string >( "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName ),
-					new Tuple< string, string >( "X-EBAY-API-SITEID", "0" ),
-					new Tuple< string, string >( "X-EBAY-API-CALL-NAME", "GetOrders" ),
+					{ "X-EBAY-API-COMPATIBILITY-LEVEL", "853" },
+					{ "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName },
+					{ "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName },
+					{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
+					{ "X-EBAY-API-SITEID", "0" },
+					{ "X-EBAY-API-CALL-NAME", "GetOrders" },
 				};
 
 				var body =
@@ -187,14 +189,14 @@ namespace EbayAccess.Services
 			{
 				List< Order > result;
 
-				IEnumerable< Tuple< string, string > > headers = new List< Tuple< string, string > >
+				var headers = new Dictionary< string, string >
 				{
-					new Tuple< string, string >( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" ),
-					new Tuple< string, string >( "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName ),
-					new Tuple< string, string >( "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName ),
-					new Tuple< string, string >( "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName ),
-					new Tuple< string, string >( "X-EBAY-API-SITEID", "0" ),
-					new Tuple< string, string >( "X-EBAY-API-CALL-NAME", "GetOrders" ),
+					{ "X-EBAY-API-COMPATIBILITY-LEVEL", "853" },
+					{ "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName },
+					{ "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName },
+					{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
+					{ "X-EBAY-API-SITEID", "0" },
+					{ "X-EBAY-API-CALL-NAME", "GetOrders" },
 				};
 
 				var body =
@@ -224,14 +226,14 @@ namespace EbayAccess.Services
 			{
 				List< Item > result;
 
-				IEnumerable< Tuple< string, string > > headers = new List< Tuple< string, string > >
+				var headers = new Dictionary< string, string >
 				{
-					new Tuple< string, string >( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" ),
-					new Tuple< string, string >( "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName ),
-					new Tuple< string, string >( "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName ),
-					new Tuple< string, string >( "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName ),
-					new Tuple< string, string >( "X-EBAY-API-SITEID", "0" ),
-					new Tuple< string, string >( "X-EBAY-API-CALL-NAME", "GetSellerList" ),
+					{ "X-EBAY-API-COMPATIBILITY-LEVEL", "853" },
+					{ "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName },
+					{ "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName },
+					{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
+					{ "X-EBAY-API-SITEID", "0" },
+					{ "X-EBAY-API-CALL-NAME", "GetSellerList" },
 				};
 
 				var body =

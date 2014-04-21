@@ -9,9 +9,9 @@ namespace EbayAccess.Services
 {
 	public interface IWebRequestServices
 	{
-		WebRequest CreateEbayStandartPostRequest( string url, IList< Tuple< string, string > > headers, string body );
+		WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body );
 
-		Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, IList< Tuple< string, string > > headers, string body );
+		Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body );
 
 		List< Order > GetOrders( string url, DateTime dateFrom, DateTime dateTo );
 

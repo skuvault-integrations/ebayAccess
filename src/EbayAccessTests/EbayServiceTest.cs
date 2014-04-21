@@ -48,7 +48,7 @@ namespace EbayAccessTests
 			} ).Callback( () => stubCallCounter++ );
 			stubWebRequestService.Setup(
 				x =>
-					x.CreateEbayStandartPostRequest( It.IsAny< string >(), It.IsAny< List< Tuple< string, string > > >(), It.IsAny< string >() ) )
+					x.CreateEbayStandartPostRequest( It.IsAny< string >(), It.IsAny< Dictionary< string, string > >(), It.IsAny< string >() ) )
 				.Returns( () => null );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
@@ -85,7 +85,7 @@ namespace EbayAccessTests
 			} ).Callback( () => stubCallCounter++ );
 
 			stubWebRequestService.Setup(
-				x => x.CreateEbayStandartPostRequest( It.IsAny< string >(), It.IsAny< List< Tuple< string, string > > >(), It.IsAny< string >() ) )
+				x => x.CreateEbayStandartPostRequest( It.IsAny< string >(), It.IsAny< Dictionary< string, string > >(), It.IsAny< string >() ) )
 				.Returns( () => null );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );

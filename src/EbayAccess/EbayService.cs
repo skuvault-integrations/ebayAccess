@@ -69,10 +69,10 @@ namespace EbayAccess
 
 			do
 			{
-				var headers = new List< Tuple< string, string > >
+				var headers = new Dictionary< string, string >
 				{
-					new Tuple< string, string >( "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName ),
-					new Tuple< string, string >( "X-EBAY-API-CALL-NAME", "GetOrders" ),
+					{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
+					{ "X-EBAY-API-CALL-NAME", "GetOrders" },
 				};
 
 				var body =
@@ -121,10 +121,10 @@ namespace EbayAccess
 
 			do
 			{
-				var headers = new List< Tuple< string, string > >
+				var headers = new Dictionary< string, string >
 				{
-					new Tuple< string, string >( "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName ),
-					new Tuple< string, string >( "X-EBAY-API-CALL-NAME", "GetOrders" ),
+					{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
+					{ "X-EBAY-API-CALL-NAME", "GetOrders" },
 				};
 
 				var body =
@@ -184,9 +184,9 @@ namespace EbayAccess
 						recordsPerPage,
 						pageNumber );
 
-				var headers = new List< Tuple< string, string > >
+				var headers = new Dictionary< string, string >
 				{
-					new Tuple< string, string >( "X-EBAY-API-CALL-NAME", "GetSellerList" ),
+					{ "X-EBAY-API-CALL-NAME", "GetSellerList" },
 				};
 
 				ActionPolicies.Get.Do( () =>
@@ -234,9 +234,9 @@ namespace EbayAccess
 						recordsPerPage,
 						pageNumber );
 
-				var headers = new List< Tuple< string, string > >
+				var headers = new Dictionary< string, string >
 				{
-					new Tuple< string, string >( "X-EBAY-API-CALL-NAME", "GetSellerList" ),
+					{ "X-EBAY-API-CALL-NAME", "GetSellerList" },
 				};
 
 				await ActionPolicies.GetAsync.Do( async () =>
@@ -268,10 +268,10 @@ namespace EbayAccess
 		#region Upload
 		public InventoryStatus ReviseInventoryStatus( InventoryStatus inventoryStatus )
 		{
-			var headers = new List< Tuple< string, string > >
+			var headers = new Dictionary< string, string >
 			{
-				new Tuple< string, string >( "X-EBAY-API-CALL-NAME", "ReviseInventoryStatus" ),
-				new Tuple< string, string >( "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName ),
+				{ "X-EBAY-API-CALL-NAME", "ReviseInventoryStatus" },
+				{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
 			};
 
 			var body = string.Format(
@@ -296,10 +296,10 @@ namespace EbayAccess
 
 		public async Task< InventoryStatus > ReviseInventoryStatusAsync( InventoryStatus inventoryStatus )
 		{
-			var headers = new List< Tuple< string, string > >
+			var headers = new Dictionary< string, string >
 			{
-				new Tuple< string, string >( "X-EBAY-API-CALL-NAME", "ReviseInventoryStatus" ),
-				new Tuple< string, string >( "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName ),
+				{ "X-EBAY-API-CALL-NAME", "ReviseInventoryStatus" },
+				{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
 			};
 
 			var body = string.Format(
