@@ -8,7 +8,7 @@ using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayGetOrdersResponseParser : AbstractXmlParser< List< Order > >
+	public class EbayGetOrdersResponseParser : EbayXmlParser< List< Order > >
 	{
 		public override List< Order > Parse( Stream stream, bool keepStremPosition = true )
 		{

@@ -7,7 +7,7 @@ using EbayAccess.Models.ReviseInventoryStatusRequest;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayReviseInventoryStatusResponseParser : AbstractXmlParser< InventoryStatus >
+	public class EbayReviseInventoryStatusResponseParser : EbayXmlParser< InventoryStatus >
 	{
 		public ResponseError ResponseError { get; protected set; }
 

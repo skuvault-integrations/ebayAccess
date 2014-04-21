@@ -70,7 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Credentials\EbayDevCredentials.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />
-    <Compile Include="Services\Parsers\AbstractXmlParser.cs" />
+    <Compile Include="Services\Parsers\EbayXmlParser.cs" />
     <Compile Include="Services\Parsers\EbayReviseInventoryStatusResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetSallerListResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetOrdersResponseParser.cs" />

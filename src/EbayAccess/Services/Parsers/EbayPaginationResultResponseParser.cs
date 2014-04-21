@@ -6,7 +6,7 @@ using EbayAccess.Models.BaseResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayPaginationResultResponseParser : AbstractXmlParser< PaginationResult >
+	public class EbayPaginationResultResponseParser : EbayXmlParser< PaginationResult >
 	{
 		public override PaginationResult Parse( Stream stream, bool keepStremPosition = true )
 		{

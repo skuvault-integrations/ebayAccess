@@ -21,6 +21,7 @@ namespace EbayAccess
 		private readonly string _endPoint;
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
+		private const string XEbayApiCallName = "X-EBAY-API-CALL-NAME";
 
 		public EbayService( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
 		{
@@ -71,7 +72,7 @@ namespace EbayAccess
 		{
 			return new Dictionary< string, string >
 			{
-				{ "X-EBAY-API-CALL-NAME", "GetOrders" },
+				{ XEbayApiCallName, "GetOrders" },
 			};
 		}
 
@@ -150,12 +151,11 @@ namespace EbayAccess
 		#endregion
 
 		#region GetItems
-		//for get only actual lists, specivy startTimeFrom = curentDate,startTimeTo = curentDate+3 month
 		private static Dictionary< string, string > CreateGetItemsRequestHeadersWithApiCallName()
 		{
 			return new Dictionary< string, string >
 			{
-				{ "X-EBAY-API-CALL-NAME", "GetSellerList" },
+				{ XEbayApiCallName, "GetSellerList" },
 			};
 		}
 
@@ -269,7 +269,7 @@ namespace EbayAccess
 		{
 			return new Dictionary< string, string >
 			{
-				{ "X-EBAY-API-CALL-NAME", "ReviseInventoryStatus" },
+				{ XEbayApiCallName, "ReviseInventoryStatus" },
 			};
 		}
 

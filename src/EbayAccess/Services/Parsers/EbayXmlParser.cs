@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class AbstractXmlParser< TParseResult >
+	public class EbayXmlParser< TParseResult >
 	{
 		public static string GetElementValue( XElement x, XNamespace ns, params string[] elementName )
 		{
@@ -40,15 +40,23 @@ namespace EbayAccess.Services.Parsers
 			return result;
 		}
 
+		public TParseResult Parse( String str )
+		{
+			var stream = new MemoryStream();
+			var streamWriter = new StreamWriter(stream);
+			streamWriter.Write( str );
+			streamWriter.Flush();
+			stream.Position = 0;
+
+			using (stream)
+			{
+				return Parse(stream);
+			}
+		}
+
 		public virtual TParseResult Parse( Stream stream, bool keepStremPosition = true )
 		{
 			return default( TParseResult );
-		}
-
-		public virtual TParseResult Parse( String str )
-		{
-			//todo: make parser
-			throw new NotImplementedException();
 		}
 	}
 }

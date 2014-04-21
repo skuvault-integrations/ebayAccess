@@ -15,11 +15,11 @@ using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services
 {
-	// todo: convert strings to constants or variables
 	public class WebRequestServices : IWebRequestServices
 	{
 		private readonly EbayUserCredentials _userCredentials;
 		private readonly EbayDevCredentials _ebayDevCredentials;
+		private const string XEbayApiCallName = "X-EBAY-API-CALL-NAME";
 
 		public WebRequestServices( EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials )
 		{
@@ -74,17 +74,21 @@ namespace EbayAccess.Services
 		{
 			try
 			{
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-COMPATIBILITY-LEVEL" ) )
-					headers.Add( "X-EBAY-API-COMPATIBILITY-LEVEL", "853" );
+				const string xEbayApiCompatibilityLevel = "X-EBAY-API-COMPATIBILITY-LEVEL";
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiCompatibilityLevel ) )
+					headers.Add( xEbayApiCompatibilityLevel, "853" );
 
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-DEV-NAME" ) )
-					headers.Add( "X-EBAY-API-DEV-NAME", this._ebayDevCredentials.DevName );
+				const string xEbayApiDevName = "X-EBAY-API-DEV-NAME";
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiDevName ) )
+					headers.Add( xEbayApiDevName, this._ebayDevCredentials.DevName );
 
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-APP-NAME" ) )
-					headers.Add( "X-EBAY-API-APP-NAME", this._ebayDevCredentials.AppName );
+				const string xEbayApiAppName = "X-EBAY-API-APP-NAME";
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiAppName ) )
+					headers.Add( xEbayApiAppName, this._ebayDevCredentials.AppName );
 
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-SITEID" ) )
-					headers.Add( "X-EBAY-API-SITEID", "0" );
+				const string xEbayApiSiteid = "X-EBAY-API-SITEID";
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiSiteid ) )
+					headers.Add( xEbayApiSiteid, "0" );
 
 				return await this.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
 			}
@@ -106,8 +110,9 @@ namespace EbayAccess.Services
 		{
 			try
 			{
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == "X-EBAY-API-CERT-NAME" ) )
-					headers.Add( "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName );
+				const string xEbayApiCertName = "X-EBAY-API-CERT-NAME";
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiCertName ) )
+					headers.Add( xEbayApiCertName, this._ebayDevCredentials.CertName );
 
 				return await this.CreateEbayStandartPostRequestAsync( url, headers, body ).ConfigureAwait( false );
 			}
@@ -134,7 +139,7 @@ namespace EbayAccess.Services
 
 				var headers = new Dictionary< string, string >
 				{
-					{ "X-EBAY-API-CALL-NAME", "GetOrders" },
+					{ XEbayApiCallName, "GetOrders" },
 				};
 
 				var body =
@@ -166,7 +171,7 @@ namespace EbayAccess.Services
 
 				var headers = new Dictionary< string, string >
 				{
-					{ "X-EBAY-API-CALL-NAME", "GetOrders" },
+					{ XEbayApiCallName, "GetOrders" },
 				};
 
 				var body =
@@ -198,7 +203,7 @@ namespace EbayAccess.Services
 
 				var headers = new Dictionary< string, string >
 				{
-					{ "X-EBAY-API-CALL-NAME", "GetSellerList" },
+					{ XEbayApiCallName, "GetSellerList" },
 				};
 
 				var body =

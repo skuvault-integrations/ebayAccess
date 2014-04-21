@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using EbayAccess.Infrastructure;
 using EbayAccess.Models.GetSellerListResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayGetSallerListResponseParser : AbstractXmlParser< List< Item > >
+	public class EbayGetSallerListResponseParser : EbayXmlParser< List< Item > >
 	{
 		public override List< Item > Parse( Stream stream, bool keepStremPosition = true )
 		{
@@ -50,8 +51,7 @@ namespace EbayAccess.Services.Parsers
 						res.Quantity = long.Parse( temp );
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ReservePrice" ) ) )
-						//todo: replace "replace" to parser parameter in whol sol
-						res.ReservePrice = decimal.Parse( temp.Replace( '.', ',' ) );
+						res.ReservePrice = temp.ToDecimalDotOrComaSeparated();
 
 					res.Site = GetElementValue( x, ns, "Site" );
 
