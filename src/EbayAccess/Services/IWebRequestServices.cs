@@ -13,10 +13,6 @@ namespace EbayAccess.Services
 
 		Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body );
 
-		List< Order > GetOrders( string url, DateTime dateFrom, DateTime dateTo );
-
-		Task< List< Order > > GetOrdersAsync( string url, DateTime dateFrom, DateTime dateTo );
-
 		Stream GetResponseStream( WebRequest webRequest );
 
 		Task< Stream > GetResponseStreamAsync( WebRequest webRequest );

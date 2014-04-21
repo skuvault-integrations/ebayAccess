@@ -19,7 +19,6 @@ namespace EbayAccess.Services
 	{
 		private readonly EbayUserCredentials _userCredentials;
 		private readonly EbayDevCredentials _ebayDevCredentials;
-		private const string XEbayApiCallName = "X-EBAY-API-CALL-NAME";
 
 		public WebRequestServices( EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials )
 		{
@@ -130,104 +129,6 @@ namespace EbayAccess.Services
 			return requestTask.Result;
 		}
 		#endregion
-
-		public List< Order > GetOrders( string url, DateTime dateFrom, DateTime dateTo )
-		{
-			try
-			{
-				List< Order > result;
-
-				var headers = new Dictionary< string, string >
-				{
-					{ XEbayApiCallName, "GetOrders" },
-				};
-
-				var body =
-					string.Format(
-						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo></GetOrdersRequest>​",
-						this._userCredentials.Token,
-						dateFrom.ToStringUtcIso8601(),
-						dateTo.ToStringUtcIso8601() );
-
-				var request = this.CreateEbayStandartPostRequestWithCert( url, headers, body );
-				using( var response = ( HttpWebResponse )request.GetResponse() )
-				using( var dataStream = response.GetResponseStream() )
-					result = new EbayGetOrdersResponseParser().Parse( dataStream );
-
-				return result;
-			}
-			catch( WebException exc )
-			{
-				// todo: log some exceptions
-				throw;
-			}
-		}
-
-		public async Task< List< Order > > GetOrdersAsync( string url, DateTime dateFrom, DateTime dateTo )
-		{
-			try
-			{
-				List< Order > result;
-
-				var headers = new Dictionary< string, string >
-				{
-					{ XEbayApiCallName, "GetOrders" },
-				};
-
-				var body =
-					string.Format(
-						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo></GetOrdersRequest>​",
-						this._userCredentials.Token,
-						dateFrom.ToStringUtcIso8601(),
-						dateTo.ToStringUtcIso8601() );
-
-				var request = await this.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
-
-				using( var memStream = await this.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
-					result = new EbayGetOrdersResponseParser().Parse( memStream );
-
-				return result;
-			}
-			catch( WebException exc )
-			{
-				// todo: log some exceptions
-				throw;
-			}
-		}
-
-		public List< Item > GetItems( string url, DateTime dateFrom, DateTime dateTo )
-		{
-			try
-			{
-				List< Item > result;
-
-				var headers = new Dictionary< string, string >
-				{
-					{ XEbayApiCallName, "GetSellerList" },
-				};
-
-				var body =
-					string.Format(
-						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
-						this._userCredentials.Token,
-						dateFrom.ToStringUtcIso8601(),
-						dateTo.ToStringUtcIso8601(),
-						10,
-						1 );
-
-				var request = this.CreateEbayStandartPostRequestWithCert( url, headers, body );
-				using( var response = ( HttpWebResponse )request.GetResponse() )
-				using( var dataStream = response.GetResponseStream() )
-					result = new EbayGetSallerListResponseParser().Parse( dataStream );
-
-				return result;
-			}
-			catch( WebException exc )
-			{
-				// todo: log some exceptions
-				throw;
-			}
-		}
 
 		#region logging
 		private void LogParseReportError( MemoryStream stream )
