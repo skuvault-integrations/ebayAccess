@@ -71,7 +71,6 @@ namespace EbayAccess
 			{
 				var headers = new Dictionary< string, string >
 				{
-					{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
 					{ "X-EBAY-API-CALL-NAME", "GetOrders" },
 				};
 
@@ -86,7 +85,7 @@ namespace EbayAccess
 
 				ActionPolicies.Get.Do( () =>
 				{
-					var webRequest = this._webRequestServices.CreateEbayStandartPostRequest( this._endPoint, headers, body );
+					var webRequest = this._webRequestServices.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
 					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
 					{
@@ -123,7 +122,6 @@ namespace EbayAccess
 			{
 				var headers = new Dictionary< string, string >
 				{
-					{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
 					{ "X-EBAY-API-CALL-NAME", "GetOrders" },
 				};
 
@@ -138,7 +136,7 @@ namespace EbayAccess
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this._webRequestServices.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+					var webRequest = await this._webRequestServices.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
 					{
@@ -271,7 +269,6 @@ namespace EbayAccess
 			var headers = new Dictionary< string, string >
 			{
 				{ "X-EBAY-API-CALL-NAME", "ReviseInventoryStatus" },
-				{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
 			};
 
 			var body = string.Format(
@@ -284,7 +281,7 @@ namespace EbayAccess
 				string.IsNullOrWhiteSpace( inventoryStatus.Sku ) ? string.Format( "<SKU>{0}</SKU>", inventoryStatus.Sku ) : string.Empty
 				);
 
-			var request = this._webRequestServices.CreateEbayStandartPostRequest( this._endPoint, headers, body );
+			var request = this._webRequestServices.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
 			using( var memStream = this._webRequestServices.GetResponseStream( request ) )
 			{
@@ -299,7 +296,6 @@ namespace EbayAccess
 			var headers = new Dictionary< string, string >
 			{
 				{ "X-EBAY-API-CALL-NAME", "ReviseInventoryStatus" },
-				{ "X-EBAY-API-CERT-NAME", this._ebayDevCredentials.CertName },
 			};
 
 			var body = string.Format(
@@ -310,7 +306,7 @@ namespace EbayAccess
 				string.IsNullOrWhiteSpace( inventoryStatus.Sku ) ? string.Format( "<SKU>{0}</SKU>", inventoryStatus.Sku ) : string.Empty
 				);
 
-			var request = await this._webRequestServices.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+			var request = await this._webRequestServices.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
 			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
 			{

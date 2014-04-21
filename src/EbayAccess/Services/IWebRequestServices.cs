@@ -20,5 +20,7 @@ namespace EbayAccess.Services
 		Stream GetResponseStream( WebRequest webRequest );
 
 		Task< Stream > GetResponseStreamAsync( WebRequest webRequest );
+		Task< WebRequest > CreateEbayStandartPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body );
+		WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body );
 	}
 }
