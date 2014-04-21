@@ -57,6 +57,25 @@ namespace EbayAccess
 		#endregion
 
 		#region GetOrders
+		private string CreateGetOrdersRequestBody( DateTime dateFrom, DateTime dateTo, int recordsPerPage, int pageNumber )
+		{
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
+				this._userCredentials.Token,
+				dateFrom.ToStringUtcIso8601(),
+				dateTo.ToStringUtcIso8601(),
+				recordsPerPage,
+				pageNumber );
+		}
+
+		private static Dictionary< string, string > CreateEbayGetOrdersRequestHeadersWithApiCallName()
+		{
+			return new Dictionary< string, string >
+			{
+				{ "X-EBAY-API-CALL-NAME", "GetOrders" },
+			};
+		}
+
 		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo )
 		{
 			var orders = new List< Order >();
@@ -69,19 +88,9 @@ namespace EbayAccess
 
 			do
 			{
-				var headers = new Dictionary< string, string >
-				{
-					{ "X-EBAY-API-CALL-NAME", "GetOrders" },
-				};
+				var headers = CreateEbayGetOrdersRequestHeadersWithApiCallName();
 
-				var body =
-					string.Format(
-						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
-						this._userCredentials.Token,
-						dateFrom.ToStringUtcIso8601(),
-						dateTo.ToStringUtcIso8601(),
-						recordsPerPage,
-						pageNumber );
+				var body = this.CreateGetOrdersRequestBody( dateFrom, dateTo, recordsPerPage, pageNumber );
 
 				ActionPolicies.Get.Do( () =>
 				{
@@ -120,19 +129,9 @@ namespace EbayAccess
 
 			do
 			{
-				var headers = new Dictionary< string, string >
-				{
-					{ "X-EBAY-API-CALL-NAME", "GetOrders" },
-				};
+				var headers = CreateEbayGetOrdersRequestHeadersWithApiCallName();
 
-				var body =
-					string.Format(
-						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
-						this._userCredentials.Token,
-						dateFrom.ToStringUtcIso8601(),
-						dateTo.ToStringUtcIso8601(),
-						recordsPerPage,
-						pageNumber );
+				var body = this.CreateGetOrdersRequestBody(dateFrom, dateTo, recordsPerPage, pageNumber);
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
@@ -162,6 +161,25 @@ namespace EbayAccess
 
 		#region GetItems
 		//for get only actual lists, specivy startTimeFrom = curentDate,startTimeTo = curentDate+3 month
+		private static Dictionary< string, string > CreateGetItemsRequestHeadersWithApiCallName()
+		{
+			return new Dictionary< string, string >
+			{
+				{ "X-EBAY-API-CALL-NAME", "GetSellerList" },
+			};
+		}
+
+		private string CreateGetItemsRequestBody( DateTime startTimeFrom, DateTime startTimeTo, int recordsPerPage, int pageNumber )
+		{
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
+				this._userCredentials.Token,
+				startTimeFrom.ToStringUtcIso8601(),
+				startTimeTo.ToStringUtcIso8601(),
+				recordsPerPage,
+				pageNumber );
+		}
+
 		public IEnumerable< Item > GetItems( DateTime startTimeFrom, DateTime startTimeTo )
 		{
 			var orders = new List< Item >();
@@ -173,19 +191,9 @@ namespace EbayAccess
 			var pageNumber = 1;
 			do
 			{
-				var body =
-					string.Format(
-						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
-						this._userCredentials.Token,
-						startTimeFrom.ToStringUtcIso8601(),
-						startTimeTo.ToStringUtcIso8601(),
-						recordsPerPage,
-						pageNumber );
+				var body = this.CreateGetItemsRequestBody( startTimeFrom, startTimeTo, recordsPerPage, pageNumber );
 
-				var headers = new Dictionary< string, string >
-				{
-					{ "X-EBAY-API-CALL-NAME", "GetSellerList" },
-				};
+				var headers = CreateGetItemsRequestHeadersWithApiCallName();
 
 				ActionPolicies.Get.Do( () =>
 				{
@@ -223,19 +231,9 @@ namespace EbayAccess
 			var pageNumber = 1;
 			do
 			{
-				var body =
-					string.Format(
-						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
-						this._userCredentials.Token,
-						startTimeFrom.ToStringUtcIso8601(),
-						startTimeTo.ToStringUtcIso8601(),
-						recordsPerPage,
-						pageNumber );
+				var body = this.CreateGetItemsRequestBody(startTimeFrom, startTimeTo, recordsPerPage, pageNumber);
 
-				var headers = new Dictionary< string, string >
-				{
-					{ "X-EBAY-API-CALL-NAME", "GetSellerList" },
-				};
+				var headers = CreateGetItemsRequestHeadersWithApiCallName();
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
@@ -264,22 +262,38 @@ namespace EbayAccess
 		#endregion
 
 		#region Upload
-		public InventoryStatus ReviseInventoryStatus( InventoryStatus inventoryStatus )
+		private string CreateReviseInventoryStatusRequestBody( long? itemIdMonad, long? quantityMonad, string skuMonad )
 		{
-			var headers = new Dictionary< string, string >
-			{
-				{ "X-EBAY-API-CALL-NAME", "ReviseInventoryStatus" },
-			};
+			var itemIdElement = itemIdMonad.HasValue ? string.Format( "<ItemID>{0}</ItemID>", itemIdMonad.Value ) : string.Empty;
+			var quantityElement = quantityMonad.HasValue
+				? string.Format( "<Quantity>{0}</Quantity>", quantityMonad.Value )
+				: string.Empty;
+
+			var skuElement = string.IsNullOrWhiteSpace( skuMonad ) ? string.Format( "<SKU>{0}</SKU>", skuMonad ) : string.Empty;
 
 			var body = string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><InventoryStatus ComplexType=\"InventoryStatusType\">{1}{2}{3}</InventoryStatus></ReviseInventoryStatusRequest>",
 				this._userCredentials.Token,
-				inventoryStatus.ItemId.HasValue ? string.Format( "<ItemID>{0}</ItemID>", inventoryStatus.ItemId.Value ) : string.Empty,
-				inventoryStatus.Quantity.HasValue
-					? string.Format( "<Quantity>{0}</Quantity>", inventoryStatus.Quantity.Value )
-					: string.Empty,
-				string.IsNullOrWhiteSpace( inventoryStatus.Sku ) ? string.Format( "<SKU>{0}</SKU>", inventoryStatus.Sku ) : string.Empty
+				itemIdElement,
+				quantityElement,
+				skuElement
 				);
+			return body;
+		}
+
+		private static Dictionary< string, string > CreateReviseInventoryStatusHeadersWithApiCallName()
+		{
+			return new Dictionary< string, string >
+			{
+				{ "X-EBAY-API-CALL-NAME", "ReviseInventoryStatus" },
+			};
+		}
+
+		public InventoryStatus ReviseInventoryStatus( InventoryStatus inventoryStatus )
+		{
+			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
+
+			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatus.ItemId, inventoryStatus.Quantity, inventoryStatus.Sku );
 
 			var request = this._webRequestServices.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
@@ -293,22 +307,13 @@ namespace EbayAccess
 
 		public async Task< InventoryStatus > ReviseInventoryStatusAsync( InventoryStatus inventoryStatus )
 		{
-			var headers = new Dictionary< string, string >
-			{
-				{ "X-EBAY-API-CALL-NAME", "ReviseInventoryStatus" },
-			};
+			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
 
-			var body = string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><InventoryStatus ComplexType=\"InventoryStatusType\">{1}{2}{3}</InventoryStatus></ReviseInventoryStatusRequest>",
-				this._userCredentials.Token,
-				inventoryStatus.ItemId.HasValue ? string.Format( "<ItemID>{0}</ItemID>", inventoryStatus.ItemId.Value ) : string.Empty,
-				inventoryStatus.Quantity.HasValue ? string.Format( "<Quantity>{0}</Quantity>", inventoryStatus.Quantity.Value ) : string.Empty,
-				string.IsNullOrWhiteSpace( inventoryStatus.Sku ) ? string.Format( "<SKU>{0}</SKU>", inventoryStatus.Sku ) : string.Empty
-				);
+			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatus.ItemId, inventoryStatus.Quantity, inventoryStatus.Sku );
 
 			var request = await this._webRequestServices.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
-			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
+			using (var memStream = await this._webRequestServices.GetResponseStreamAsync(request).ConfigureAwait(false))
 			{
 				var inventoryStatusResponse =
 					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
@@ -325,24 +330,15 @@ namespace EbayAccess
 					.ToList();
 		}
 
-		public async Task< IEnumerable< InventoryStatus > > ReviseInventoriesStatusAsync(
-			IEnumerable< InventoryStatus > inventoryStatuses )
+		public async Task< IEnumerable< InventoryStatus > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatus > inventoryStatuses )
 		{
-			//foreach (var inventoryStatus in inventoryStatuses)
-			//{
-			//	var productToUpdate = inventoryStatus;
-			//	await ActionPolicies.SubmitAsync.Do(async () => await this.ReviseInventoryStatusAsync(productToUpdate).ConfigureAwait(false));
-			//}
+			var reviseInventoryTasks =
+				inventoryStatuses.Select(
+					productToUpdate => ActionPolicies.Submit.Get( async () => await this.ReviseInventoryStatusAsync( productToUpdate ).ConfigureAwait(false) ) )
+					.Where( productUpdated => productUpdated != null )
+					.ToList();
 
-			return
-				await new TaskFactory< IEnumerable< InventoryStatus > >().StartNew( () => this.ReviseInventoriesStatus( inventoryStatuses ) ).ConfigureAwait( false );
-
-			//{
-			//	return inventoryStatuses.Select(
-			//		productToUpdate => ActionPolicies.Submit.Get(() => this.ReviseInventoryStatus(productToUpdate)))
-			//		.Where(productUpdated => productUpdated != null)
-			//		.ToList();
-			//});
+			return await Task.WhenAll( reviseInventoryTasks ).ConfigureAwait( false );
 		}
 		#endregion
 	}
