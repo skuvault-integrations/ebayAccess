@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Infrastructure;
 using EbayAccess.Misc;
-using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
@@ -79,10 +78,8 @@ namespace EbayAccess
 		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo )
 		{
 			var orders = new List< Order >();
-			PaginationResult pagination;
 
 			var totalRecords = 0;
-			var alreadyReadRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
 			var pageNumber = 1;
 
@@ -98,16 +95,13 @@ namespace EbayAccess
 
 					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
 					{
-						pagination = new EbayPaginationResultResponseParser().Parse( memStream );
+						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
 						var tempOrders = new EbayGetOrdersResponseParser().Parse( memStream );
 						if( tempOrders != null )
-						{
 							orders.AddRange( tempOrders );
-							alreadyReadRecords += tempOrders.Count;
-						}
 					}
 				} );
 
@@ -120,10 +114,8 @@ namespace EbayAccess
 		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
 		{
 			var orders = new List< Order >();
-			PaginationResult pagination = null;
 
 			var totalRecords = 0;
-			var alreadyReadRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
 			var pageNumber = 1;
 
@@ -131,7 +123,7 @@ namespace EbayAccess
 			{
 				var headers = CreateEbayGetOrdersRequestHeadersWithApiCallName();
 
-				var body = this.CreateGetOrdersRequestBody(dateFrom, dateTo, recordsPerPage, pageNumber);
+				var body = this.CreateGetOrdersRequestBody( dateFrom, dateTo, recordsPerPage, pageNumber );
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
@@ -139,21 +131,19 @@ namespace EbayAccess
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
 					{
-						pagination = new EbayPaginationResultResponseParser().Parse( memStream );
+						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
 						var tempOrders = new EbayGetOrdersResponseParser().Parse( memStream );
 						if( tempOrders != null )
-						{
 							orders.AddRange( tempOrders );
-							alreadyReadRecords += tempOrders.Count;
-						}
 					}
 				} ).ConfigureAwait( false );
 
 				pageNumber++;
-			} while( ( pagination != null ) && pagination.TotalNumberOfPages > pageNumber );
+				//} while( ( pagination != null ) && pagination.TotalNumberOfPages > pageNumber );
+			} while( totalRecords > orders.Count() );
 
 			return orders;
 		}
@@ -183,7 +173,6 @@ namespace EbayAccess
 		public IEnumerable< Item > GetItems( DateTime startTimeFrom, DateTime startTimeTo )
 		{
 			var orders = new List< Item >();
-			PaginationResult pagination;
 
 			var totalRecords = 0;
 			var alreadyReadRecords = 0;
@@ -201,7 +190,7 @@ namespace EbayAccess
 
 					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
 					{
-						pagination = new EbayPaginationResultResponseParser().Parse( memStream );
+						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
@@ -223,15 +212,13 @@ namespace EbayAccess
 		public async Task< IEnumerable< Item > > GetItemsAsync( DateTime startTimeFrom, DateTime startTimeTo )
 		{
 			var orders = new List< Item >();
-			PaginationResult pagination = null;
 
 			var totalRecords = 0;
-			var alreadyReadRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
 			var pageNumber = 1;
 			do
 			{
-				var body = this.CreateGetItemsRequestBody(startTimeFrom, startTimeTo, recordsPerPage, pageNumber);
+				var body = this.CreateGetItemsRequestBody( startTimeFrom, startTimeTo, recordsPerPage, pageNumber );
 
 				var headers = CreateGetItemsRequestHeadersWithApiCallName();
 
@@ -241,21 +228,18 @@ namespace EbayAccess
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
 					{
-						pagination = new EbayPaginationResultResponseParser().Parse( memStream );
+						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
 						var tempOrders = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( tempOrders != null )
-						{
 							orders.AddRange( tempOrders );
-							alreadyReadRecords += tempOrders.Count;
-						}
 					}
 				} ).ConfigureAwait( false );
 
 				pageNumber++;
-			} while( ( pagination != null ) ? pagination.TotalNumberOfPages < pageNumber : false );
+			} while( orders.Count < totalRecords );
 
 			return orders;
 		}
@@ -313,7 +297,7 @@ namespace EbayAccess
 
 			var request = await this._webRequestServices.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
-			using (var memStream = await this._webRequestServices.GetResponseStreamAsync(request).ConfigureAwait(false))
+			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
 			{
 				var inventoryStatusResponse =
 					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
@@ -334,7 +318,7 @@ namespace EbayAccess
 		{
 			var reviseInventoryTasks =
 				inventoryStatuses.Select(
-					productToUpdate => ActionPolicies.Submit.Get( async () => await this.ReviseInventoryStatusAsync( productToUpdate ).ConfigureAwait(false) ) )
+					productToUpdate => ActionPolicies.Submit.Get( async () => await this.ReviseInventoryStatusAsync( productToUpdate ).ConfigureAwait( false ) ) )
 					.Where( productUpdated => productUpdated != null )
 					.ToList();
 
