@@ -90,11 +90,11 @@ namespace EbayAccess
 
 					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
 					{
-						pagination = new EbayPagesParser().ParsePaginationResultResponse( memStream );
+						pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var tempOrders = new EbayOrdersParser().ParseOrdersResponse( memStream );
+						var tempOrders = new EbayGetOrdersResponseParser().Parse( memStream );
 						if( tempOrders != null )
 						{
 							orders.AddRange( tempOrders );
@@ -142,11 +142,11 @@ namespace EbayAccess
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ) )
 					{
-						pagination = new EbayPagesParser().ParsePaginationResultResponse( memStream );
+						pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var tempOrders = new EbayOrdersParser().ParseOrdersResponse( memStream );
+						var tempOrders = new EbayGetOrdersResponseParser().Parse( memStream );
 						if( tempOrders != null )
 						{
 							orders.AddRange( tempOrders );
@@ -195,7 +195,7 @@ namespace EbayAccess
 
 					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
 					{
-						pagination = new EbayPagesParser().ParsePaginationResultResponse( memStream );
+						pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
@@ -245,7 +245,7 @@ namespace EbayAccess
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ) )
 					{
-						pagination = new EbayPagesParser().ParsePaginationResultResponse( memStream );
+						pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
@@ -289,7 +289,7 @@ namespace EbayAccess
 			using( var memStream = this._webRequestServices.GetResponseStream( request ) )
 			{
 				var inventoryStatusResponse =
-					new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse( memStream );
+					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
 				return inventoryStatusResponse;
 			}
 		}
@@ -315,7 +315,7 @@ namespace EbayAccess
 			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ) )
 			{
 				var inventoryStatusResponse =
-					new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse( memStream );
+					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
 				return inventoryStatusResponse;
 			}
 		}

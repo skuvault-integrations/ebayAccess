@@ -7,9 +7,9 @@ using EbayAccess.Models.BaseResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayPagesParser : AbstractXmlParser
+	public class EbayPaginationResultResponseParser : AbstractXmlParser
 	{
-		public PaginationResult ParsePaginationResultResponse( Stream stream, bool keepStremPosition = true )
+		public PaginationResult Parse( Stream stream, bool keepStremPosition = true )
 		{
 			try
 			{
@@ -47,7 +47,7 @@ namespace EbayAccess.Services.Parsers
 			}
 		}
 
-		public PaginationResult ParsePaginationResultResponse( WebResponse response )
+		public PaginationResult Parse( WebResponse response )
 		{
 			PaginationResult result = null;
 			using( var responseStream = response.GetResponseStream() )
@@ -57,7 +57,7 @@ namespace EbayAccess.Services.Parsers
 					using( var memStream = new MemoryStream() )
 					{
 						responseStream.CopyTo( memStream, 0x100 );
-						result = this.ParsePaginationResultResponse( memStream );
+						result = this.Parse( memStream );
 					}
 				}
 			}

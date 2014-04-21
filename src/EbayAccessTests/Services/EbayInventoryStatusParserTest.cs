@@ -18,7 +18,7 @@ namespace EbayAccessTests.Services
 			using( var fs = new FileStream( @".\Files\ReviseInventoryStatusResponse.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				//A
-				var inventoryStatus = new EbayInventoryStatusParser().ParseReviseInventoryStatusResponse( fs );
+				var inventoryStatus = new EbayReviseInventoryStatusResponseParser().Parse( fs );
 
 				//A
 				inventoryStatus.ShouldBeEquivalentTo( new InventoryStatus

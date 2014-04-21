@@ -71,10 +71,10 @@
     <Compile Include="Models\Credentials\EbayDevCredentials.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />
     <Compile Include="Services\Parsers\AbstractXmlParser.cs" />
-    <Compile Include="Services\Parsers\EbayInventoryStatusParser.cs" />
+    <Compile Include="Services\Parsers\EbayReviseInventoryStatusResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayItemsParser.cs" />
-    <Compile Include="Services\Parsers\EbayOrdersParser.cs" />
-    <Compile Include="Services\Parsers\EbayPagesParser.cs" />
+    <Compile Include="Services\Parsers\EbayGetOrdersResponseParser.cs" />
+    <Compile Include="Services\Parsers\EbayPaginationResultResponseParser.cs" />
     <Compile Include="Services\WebRequestServices.cs">
       <SubType>Code</SubType>
     </Compile>

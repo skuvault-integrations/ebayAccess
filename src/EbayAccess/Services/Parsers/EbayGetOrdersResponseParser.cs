@@ -9,15 +9,15 @@ using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayOrdersParser : AbstractXmlParser
+	public class EbayGetOrdersResponseParser : AbstractXmlParser
 	{
-		public List< Order > ParseOrdersResponse( String str )
+		public List< Order > Parse( String str )
 		{
 			//todo: make parser
 			throw new NotImplementedException();
 		}
 
-		public List< Order > ParseOrdersResponse( Stream stream )
+		public List< Order > Parse( Stream stream )
 		{
 			try
 			{
@@ -134,7 +134,7 @@ namespace EbayAccess.Services.Parsers
 			}
 		}
 
-		public List< Order > ParseOrdersResponse( WebResponse response )
+		public List< Order > Parse( WebResponse response )
 		{
 			List< Order > result = null;
 			using( var responseStream = response.GetResponseStream() )
@@ -144,7 +144,7 @@ namespace EbayAccess.Services.Parsers
 					using( var memStream = new MemoryStream() )
 					{
 						responseStream.CopyTo( memStream, 0x100 );
-						result = this.ParseOrdersResponse( memStream );
+						result = this.Parse( memStream );
 					}
 				}
 			}

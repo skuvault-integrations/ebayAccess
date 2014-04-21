@@ -170,7 +170,7 @@ namespace EbayAccess.Services
 				var request = this.CreateServicePostRequest( url, body, headers );
 				using( var response = ( HttpWebResponse )request.GetResponse() )
 				using( var dataStream = response.GetResponseStream() )
-					result = new EbayOrdersParser().ParseOrdersResponse( dataStream );
+					result = new EbayGetOrdersResponseParser().Parse( dataStream );
 
 				return result;
 			}
@@ -207,7 +207,7 @@ namespace EbayAccess.Services
 				var request = await this.CreateServicePostRequestAsync( url, body, headers );
 
 				using( var memStream = await this.GetResponseStreamAsync( request ) )
-					result = new EbayOrdersParser().ParseOrdersResponse( memStream );
+					result = new EbayGetOrdersResponseParser().Parse( memStream );
 
 				return result;
 			}

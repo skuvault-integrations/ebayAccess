@@ -19,7 +19,7 @@ namespace EbayAccessTests.Services
 				const int pagesCount = 4;
 
 				//A
-				var orders = new EbayPagesParser().ParsePaginationResultResponse( fs );
+				var orders = new EbayPaginationResultResponseParser().Parse( fs );
 
 				//A
 				orders.TotalNumberOfEntries.Should().Be( itemCount, "because source file contains record about {0} items", itemCount );
