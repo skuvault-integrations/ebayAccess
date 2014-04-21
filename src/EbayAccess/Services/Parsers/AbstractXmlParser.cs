@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
-using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class AbstractXmlParser<TParseResult>
+	public class AbstractXmlParser< TParseResult >
 	{
 		public static string GetElementValue( XElement x, XNamespace ns, params string[] elementName )
 		{
@@ -24,17 +22,17 @@ namespace EbayAccess.Services.Parsers
 			return elementName.Length > 1 ? GetElementValue( element, ns, elementName.Skip( 1 ).ToArray() ) : element.Value;
 		}
 
-		public TParseResult Parse(WebResponse response)
+		public TParseResult Parse( WebResponse response )
 		{
-			TParseResult result = default( TParseResult );
-			using (var responseStream = response.GetResponseStream())
+			var result = default( TParseResult );
+			using( var responseStream = response.GetResponseStream() )
 			{
-				if (responseStream != null)
+				if( responseStream != null )
 				{
-					using (var memStream = new MemoryStream())
+					using( var memStream = new MemoryStream() )
 					{
-						responseStream.CopyTo(memStream, 0x100);
-						result = this.Parse(memStream);
+						responseStream.CopyTo( memStream, 0x100 );
+						result = this.Parse( memStream );
 					}
 				}
 			}
@@ -44,10 +42,10 @@ namespace EbayAccess.Services.Parsers
 
 		public virtual TParseResult Parse( Stream stream, bool keepStremPosition = true )
 		{
-			return default(TParseResult);
+			return default( TParseResult );
 		}
 
-		public virtual TParseResult Parse(String str)
+		public virtual TParseResult Parse( String str )
 		{
 			//todo: make parser
 			throw new NotImplementedException();

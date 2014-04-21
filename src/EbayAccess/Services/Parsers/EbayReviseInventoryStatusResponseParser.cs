@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
@@ -67,7 +66,7 @@ namespace EbayAccess.Services.Parsers
 				throw new Exception( "Can't parse: " + bufferStr, ex );
 			}
 		}
-		
+
 		private bool ResponseContainsErrors( XElement root, XNamespace ns )
 		{
 			var isSuccess = root.Element( ns + "Ack" );

@@ -1,5 +1,4 @@
-﻿using EbayAccess.Services;
-using EbayAccess.Services.Parsers;
+﻿using EbayAccess.Services.Parsers;
 
 namespace EbayAccess.Models.ReviseInventoryStatusRequest
 {

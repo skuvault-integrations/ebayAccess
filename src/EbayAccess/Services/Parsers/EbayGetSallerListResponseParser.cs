@@ -4,9 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListResponse;
-using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services.Parsers
 {

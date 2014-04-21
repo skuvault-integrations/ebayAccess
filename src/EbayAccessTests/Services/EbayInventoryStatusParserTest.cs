@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
-using EbayAccess.Services;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
