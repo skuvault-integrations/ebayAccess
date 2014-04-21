@@ -55,6 +55,7 @@
     <Compile Include="Services\EbayInventoryStatusParserTest.cs" />
     <Compile Include="Services\EbayItemsParserTest.cs" />
     <Compile Include="Services\EbayOrdersParserTest.cs" />
+    <Compile Include="Services\EbayPagesParserTest.cs" />
     <Compile Include="TestEmptyCredentials.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +71,9 @@
     <Content Include="Files\EbayServiceGetOrdersResponseWithItems.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Files\EbayServiceGetSellerListResponseWith1PageOf4Contains1Item.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
