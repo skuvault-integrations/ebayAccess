@@ -46,10 +46,6 @@ namespace EbayAccessTests
 				ms.Position = 0;
 				return ms;
 			} ).Callback( () => stubCallCounter++ );
-			stubWebRequestService.Setup(
-				x =>
-					x.CreateEbayStandartPostRequest( It.IsAny< string >(), It.IsAny< Dictionary< string, string > >(), It.IsAny< string >() ) )
-				.Returns( () => null );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
 
@@ -84,10 +80,6 @@ namespace EbayAccessTests
 				return ms;
 			} ).Callback( () => stubCallCounter++ );
 
-			stubWebRequestService.Setup(
-				x => x.CreateEbayStandartPostRequest( It.IsAny< string >(), It.IsAny< Dictionary< string, string > >(), It.IsAny< string >() ) )
-				.Returns( () => null );
-
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
 
 			//A
@@ -117,8 +109,6 @@ namespace EbayAccessTests
 					ms.Position = 0;
 					return Task.FromResult( ( Stream )ms );
 				} );
-			stubWebRequestService.Setup( x => x.CreateEbayStandartPostRequestWithCertAsync( It.IsAny< string >(), It.IsAny< Dictionary< string, string > >(), It.IsAny< string >() ) ).Returns(
-				Task.FromResult( WebRequest.Create( "http://DoesNotMetter/" ) ) );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
 

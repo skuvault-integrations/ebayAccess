@@ -3,22 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Services
 {
 	public interface IWebRequestServices
 	{
-		WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body );
-
-		Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body );
-
 		Stream GetResponseStream( WebRequest webRequest );
 
 		Task< Stream > GetResponseStreamAsync( WebRequest webRequest );
-		
-		Task< WebRequest > CreateEbayStandartPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body );
-		
-		WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body );
+
+		WebRequest CreateServiceGetRequest( string serviceUrl, IEnumerable< Tuple< string, string > > rawUrlParameters );
+
+		Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders );
 	}
 }

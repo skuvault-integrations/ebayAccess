@@ -43,15 +43,13 @@ namespace EbayAccess.Services.Parsers
 		public TParseResult Parse( String str )
 		{
 			var stream = new MemoryStream();
-			var streamWriter = new StreamWriter(stream);
+			var streamWriter = new StreamWriter( stream );
 			streamWriter.Write( str );
 			streamWriter.Flush();
 			stream.Position = 0;
 
-			using (stream)
-			{
-				return Parse(stream);
-			}
+			using( stream )
+				return Parse( stream );
 		}
 
 		public virtual TParseResult Parse( Stream stream, bool keepStremPosition = true )

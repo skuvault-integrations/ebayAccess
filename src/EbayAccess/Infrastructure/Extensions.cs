@@ -13,7 +13,7 @@ namespace EbayAccess.Infrastructure
 			return result;
 		}
 
-		public static decimal ToDecimalDotOrComaSeparated(this string srcString)
+		public static decimal ToDecimalDotOrComaSeparated( this string srcString )
 		{
 			decimal parsedNumber;
 			try

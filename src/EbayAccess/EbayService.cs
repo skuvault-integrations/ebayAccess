@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Infrastructure;
@@ -10,6 +11,7 @@ using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccess.Services.Parsers;
+using Netco.Extensions;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess
@@ -56,6 +58,68 @@ namespace EbayAccess
 		}
 		#endregion
 
+		#region EbayStandartRequest
+		public async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body )
+		{
+			try
+			{
+				const string xEbayApiCompatibilityLevel = "X-EBAY-API-COMPATIBILITY-LEVEL";
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiCompatibilityLevel ) )
+					headers.Add( xEbayApiCompatibilityLevel, "853" );
+
+				const string xEbayApiDevName = "X-EBAY-API-DEV-NAME";
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiDevName ) )
+					headers.Add( xEbayApiDevName, this._ebayDevCredentials.DevName );
+
+				const string xEbayApiAppName = "X-EBAY-API-APP-NAME";
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiAppName ) )
+					headers.Add( xEbayApiAppName, this._ebayDevCredentials.AppName );
+
+				const string xEbayApiSiteid = "X-EBAY-API-SITEID";
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiSiteid ) )
+					headers.Add( xEbayApiSiteid, "0" );
+
+				return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
+			}
+			catch( WebException exc )
+			{
+				// todo: log some exceptions
+				throw;
+			}
+		}
+
+		public WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body )
+		{
+			var resultTask = this.CreateEbayStandartPostRequestAsync( url, headers, body );
+			resultTask.Wait();
+			return resultTask.Result;
+		}
+
+		public async Task< WebRequest > CreateEbayStandartPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body )
+		{
+			try
+			{
+				const string xEbayApiCertName = "X-EBAY-API-CERT-NAME";
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiCertName ) )
+					headers.Add( xEbayApiCertName, this._ebayDevCredentials.CertName );
+
+				return await this.CreateEbayStandartPostRequestAsync( url, headers, body ).ConfigureAwait( false );
+			}
+			catch( WebException exc )
+			{
+				// todo: log some exceptions
+				throw;
+			}
+		}
+
+		public WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body )
+		{
+			var requestTask = this.CreateEbayStandartPostRequestWithCertAsync( url, headers, body );
+			requestTask.Wait();
+			return requestTask.Result;
+		}
+		#endregion
+
 		#region GetOrders
 		private string CreateGetOrdersRequestBody( DateTime dateFrom, DateTime dateTo, int recordsPerPage, int pageNumber )
 		{
@@ -92,7 +156,7 @@ namespace EbayAccess
 
 				ActionPolicies.Get.Do( () =>
 				{
-					var webRequest = this._webRequestServices.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
+					var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
 					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
 					{
@@ -128,7 +192,7 @@ namespace EbayAccess
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this._webRequestServices.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
 					{
@@ -186,7 +250,7 @@ namespace EbayAccess
 
 				ActionPolicies.Get.Do( () =>
 				{
-					var webRequest = this._webRequestServices.CreateEbayStandartPostRequest( this._endPoint, headers, body );
+					var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body );
 
 					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
 					{
@@ -224,7 +288,7 @@ namespace EbayAccess
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this._webRequestServices.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
 					{
@@ -279,7 +343,7 @@ namespace EbayAccess
 
 			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatus.ItemId, inventoryStatus.Quantity, inventoryStatus.Sku );
 
-			var request = this._webRequestServices.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
+			var request = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
 			using( var memStream = this._webRequestServices.GetResponseStream( request ) )
 			{
@@ -295,7 +359,7 @@ namespace EbayAccess
 
 			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatus.ItemId, inventoryStatus.Quantity, inventoryStatus.Sku );
 
-			var request = await this._webRequestServices.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
 			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
 			{
