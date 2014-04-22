@@ -9,6 +9,7 @@ using EbayAccess.Misc;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services;
 using EbayAccess.Services.Parsers;
 using Netco.Extensions;
@@ -51,7 +52,7 @@ namespace EbayAccess
 			//this.Log().Error( "Failed to get file for account '{0}'", this._credentials.AccountName );
 		}
 
-		public void LogUploadItemResponseError( InventoryStatus response )
+		public void LogUploadItemResponseError( InventoryStatusResponse response )
 		{
 			throw new NotImplementedException();
 			//this.Log().Error( "Failed to upload item with SKU '{0}'. Status code:'{1}', message: {2}", response.Sku, response.Status, response.Message );
@@ -166,7 +167,7 @@ namespace EbayAccess
 
 						var tempOrders = new EbayGetOrdersResponseParser().Parse( memStream );
 						if( tempOrders != null )
-							orders.AddRange( tempOrders );
+							orders.AddRange( tempOrders.Orders );
 					}
 				} );
 
@@ -202,7 +203,7 @@ namespace EbayAccess
 
 						var tempOrders = new EbayGetOrdersResponseParser().Parse( memStream );
 						if( tempOrders != null )
-							orders.AddRange( tempOrders );
+							orders.AddRange( tempOrders.Orders );
 					}
 				} ).ConfigureAwait( false );
 
@@ -261,8 +262,8 @@ namespace EbayAccess
 						var tempOrders = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( tempOrders != null )
 						{
-							orders.AddRange( tempOrders );
-							alreadyReadRecords += tempOrders.Count;
+							orders.AddRange( tempOrders.Items );
+							alreadyReadRecords += tempOrders.Items.Count;
 						}
 					}
 				} );
@@ -298,7 +299,7 @@ namespace EbayAccess
 
 						var tempOrders = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( tempOrders != null )
-							orders.AddRange( tempOrders );
+							orders.AddRange( tempOrders.Items );
 					}
 				} ).ConfigureAwait( false );
 
@@ -337,11 +338,11 @@ namespace EbayAccess
 			};
 		}
 
-		public InventoryStatus ReviseInventoryStatus( InventoryStatus inventoryStatus )
+		public InventoryStatusResponse ReviseInventoryStatus( InventoryStatusRequest inventoryStatusReq )
 		{
 			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
 
-			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatus.ItemId, inventoryStatus.Quantity, inventoryStatus.Sku );
+			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq.ItemId, inventoryStatusReq.Quantity, inventoryStatusReq.Sku );
 
 			var request = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
@@ -353,11 +354,11 @@ namespace EbayAccess
 			}
 		}
 
-		public async Task< InventoryStatus > ReviseInventoryStatusAsync( InventoryStatus inventoryStatus )
+		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq )
 		{
 			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
 
-			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatus.ItemId, inventoryStatus.Quantity, inventoryStatus.Sku );
+			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq.ItemId, inventoryStatusReq.Quantity, inventoryStatusReq.Sku );
 
 			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
@@ -369,7 +370,7 @@ namespace EbayAccess
 			}
 		}
 
-		public IEnumerable< InventoryStatus > ReviseInventoriesStatus( IEnumerable< InventoryStatus > inventoryStatuses )
+		public IEnumerable< InventoryStatusResponse > ReviseInventoriesStatus( IEnumerable< InventoryStatusRequest > inventoryStatuses )
 		{
 			return
 				inventoryStatuses.Select(
@@ -378,7 +379,7 @@ namespace EbayAccess
 					.ToList();
 		}
 
-		public async Task< IEnumerable< InventoryStatus > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatus > inventoryStatuses )
+		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses )
 		{
 			var reviseInventoryTasks =
 				inventoryStatuses.Select(

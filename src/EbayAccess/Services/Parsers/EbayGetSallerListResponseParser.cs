@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,9 +8,9 @@ using EbayAccess.Models.GetSellerListResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayGetSallerListResponseParser : EbayXmlParser< List< Item > >
+	public class EbayGetSallerListResponseParser : EbayXmlParser< GetSellerListResponse >
 	{
-		public override List< Item > Parse( Stream stream, bool keepStremPosition = true )
+		public override GetSellerListResponse Parse( Stream stream, bool keepStremPosition = true )
 		{
 			try
 			{
@@ -20,6 +19,10 @@ namespace EbayAccess.Services.Parsers
 				var streamStartPos = stream.Position;
 
 				var root = XElement.Load( stream );
+
+				var erros = this.ResponseContainsErrors( root, ns );
+				if( erros != null )
+					return new GetSellerListResponse { Error = erros };
 
 				var xmlItems = root.Descendants( ns + "Item" );
 
@@ -117,7 +120,7 @@ namespace EbayAccess.Services.Parsers
 					return res;
 				} ).ToList();
 
-				return orders;
+				return new GetSellerListResponse() { Items = orders };
 			}
 			catch( Exception ex )
 			{

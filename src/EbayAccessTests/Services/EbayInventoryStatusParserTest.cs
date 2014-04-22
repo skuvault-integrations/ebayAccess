@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
@@ -20,7 +20,7 @@ namespace EbayAccessTests.Services
 				var inventoryStatus = new EbayReviseInventoryStatusResponseParser().Parse( fs );
 
 				//A
-				inventoryStatus.ShouldBeEquivalentTo( new InventoryStatus
+				inventoryStatus.ShouldBeEquivalentTo( new InventoryStatusResponse
 				{
 					ItemId = 110136942332,
 					StartPrice = 1.0,

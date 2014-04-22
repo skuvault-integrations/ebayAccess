@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,9 +7,9 @@ using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayGetOrdersResponseParser : EbayXmlParser< List< Order > >
+	public class EbayGetOrdersResponseParser : EbayXmlParser< GetOrdersResponse >
 	{
-		public override List< Order > Parse( Stream stream, bool keepStremPosition = true )
+		public override GetOrdersResponse Parse( Stream stream, bool keepStremPosition = true )
 		{
 			try
 			{
@@ -21,6 +20,10 @@ namespace EbayAccess.Services.Parsers
 				var root = XElement.Load( stream );
 
 				var xmlOrders = root.Descendants( ns + "Order" );
+
+				var error = this.ResponseContainsErrors( root, ns );
+				if( error != null )
+					return new GetOrdersResponse { Error = error };
 
 				var orders = xmlOrders.Select( x =>
 				{
@@ -120,7 +123,7 @@ namespace EbayAccess.Services.Parsers
 					return res;
 				} ).ToList();
 
-				return orders;
+				return new GetOrdersResponse { Orders = orders };
 			}
 			catch( Exception ex )
 			{

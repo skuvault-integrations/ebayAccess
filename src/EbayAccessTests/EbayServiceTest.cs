@@ -113,10 +113,10 @@ namespace EbayAccessTests
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
 
 			//A
-			var inventoryStat = ( await ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatus >
+			var inventoryStat = ( await ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
-				new InventoryStatus { ItemId = item1Id, Quantity = itemsQty1 },
-				new InventoryStatus { ItemId = item2Id, Quantity = itemsQty1 }
+				new InventoryStatusRequest { ItemId = item1Id, Quantity = itemsQty1 },
+				new InventoryStatusRequest { ItemId = item2Id, Quantity = itemsQty1 }
 			} ).ConfigureAwait( false ) ).ToArray();
 
 			//A

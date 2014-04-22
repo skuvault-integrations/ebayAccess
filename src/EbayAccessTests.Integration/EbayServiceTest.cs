@@ -34,15 +34,15 @@ namespace EbayAccessTests.Integration
 			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
 
 			//A
-			var inventoryStat1 = ( await ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatus >
+			var inventoryStat1 = ( await ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
-				new InventoryStatus { ItemId = saleItemsIds[ 0 ], Quantity = itemsQty1 },
-				new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = itemsQty1 }
+				new InventoryStatusRequest { ItemId = saleItemsIds[ 0 ], Quantity = itemsQty1 },
+				new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = itemsQty1 }
 			} ).ConfigureAwait( false ) ).ToArray();
-			var inventoryStat2 = ( await ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatus >
+			var inventoryStat2 = ( await ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
-				new InventoryStatus { ItemId = saleItemsIds[ 0 ], Quantity = itemsQty2 },
-				new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = itemsQty2 }
+				new InventoryStatusRequest { ItemId = saleItemsIds[ 0 ], Quantity = itemsQty2 },
+				new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = itemsQty2 }
 			} ).ConfigureAwait( false ) ).ToArray();
 
 			//A
@@ -63,9 +63,9 @@ namespace EbayAccessTests.Integration
 
 			//A
 			var inventoryStat1 =
-				ebayService.ReviseInventoryStatus( new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = qty1 } );
+				ebayService.ReviseInventoryStatus( new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = qty1 } );
 			var inventoryStat2 =
-				ebayService.ReviseInventoryStatus( new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = qty2 } );
+				ebayService.ReviseInventoryStatus( new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = qty2 } );
 
 			//A
 			( inventoryStat1.Quantity - inventoryStat2.Quantity ).Should()
@@ -84,15 +84,15 @@ namespace EbayAccessTests.Integration
 
 			//A
 			var inventoryStat1 =
-				ebayService.ReviseInventoriesStatus( new List< InventoryStatus >
+				ebayService.ReviseInventoriesStatus( new List< InventoryStatusRequest >
 				{
-					new InventoryStatus { ItemId = saleItemsIds[ 0 ], Quantity = itemsQty1 },
-					new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = itemsQty1 }
+					new InventoryStatusRequest { ItemId = saleItemsIds[ 0 ], Quantity = itemsQty1 },
+					new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = itemsQty1 }
 				} ).ToArray();
-			var inventoryStat2 = ebayService.ReviseInventoriesStatus( new List< InventoryStatus >
+			var inventoryStat2 = ebayService.ReviseInventoriesStatus( new List< InventoryStatusRequest >
 			{
-				new InventoryStatus { ItemId = saleItemsIds[ 0 ], Quantity = itemsQty2 },
-				new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = itemsQty2 }
+				new InventoryStatusRequest { ItemId = saleItemsIds[ 0 ], Quantity = itemsQty2 },
+				new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = itemsQty2 }
 			} ).ToArray();
 
 			//A
@@ -212,9 +212,9 @@ namespace EbayAccessTests.Integration
 
 			//A
 			var inventoryStat1 =
-				await ebayService.ReviseInventoryStatusAsync( new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = qty1 } ).ConfigureAwait( false );
+				await ebayService.ReviseInventoryStatusAsync( new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = qty1 } ).ConfigureAwait( false );
 			var inventoryStat2 =
-				await ebayService.ReviseInventoryStatusAsync( new InventoryStatus { ItemId = saleItemsIds[ 1 ], Quantity = qty2 } ).ConfigureAwait( false );
+				await ebayService.ReviseInventoryStatusAsync( new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = qty2 } ).ConfigureAwait( false );
 
 			//A
 			( inventoryStat1.Quantity - inventoryStat2.Quantity ).Should()

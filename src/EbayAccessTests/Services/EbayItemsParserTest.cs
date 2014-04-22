@@ -20,7 +20,7 @@ namespace EbayAccessTests.Services
 				var orders = new EbayGetSallerListResponseParser().Parse( fs );
 
 				//A
-				orders.Should().HaveCount( 3, "because in source file there is {0} items", 3 );
+				orders.Items.Should().HaveCount( 3, "because in source file there is {0} items", 3 );
 			}
 		}
 	}

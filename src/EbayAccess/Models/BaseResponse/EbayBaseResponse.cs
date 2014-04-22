@@ -13,5 +13,7 @@ namespace EbayAccess.Models.BaseResponse
 		public string Build { get; set; }
 
 		public PaginationResult PaginationResult { get; set; }
+
+		public ResponseError Error { get; set; }
 	}
 }

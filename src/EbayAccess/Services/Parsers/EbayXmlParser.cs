@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
+using EbayAccess.Models.BaseResponse;
+using EbayAccess.Models.ReviseInventoryStatusResponse;
 
 namespace EbayAccess.Services.Parsers
 {
@@ -55,6 +57,40 @@ namespace EbayAccess.Services.Parsers
 		public virtual TParseResult Parse( Stream stream, bool keepStremPosition = true )
 		{
 			return default( TParseResult );
+		}
+
+		protected ResponseError ResponseContainsErrors( XElement root, XNamespace ns )
+		{
+			var isSuccess = root.Element( ns + "Ack" );
+			if( isSuccess != null && isSuccess.Value == "Failure" )
+			{
+				var ResponseError = new ResponseError();
+				string temp = null;
+
+				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "ShortMessage" ) ) )
+					ResponseError.ShortMessage = temp;
+
+				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "LongMessage" ) ) )
+					ResponseError.LongMessage = temp;
+
+				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "ErrorCode" ) ) )
+					ResponseError.ErrorCode = temp;
+
+				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "UserDisplayHint" ) ) )
+					ResponseError.UserDisplayHint = temp;
+
+				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "ServerityCode" ) ) )
+					ResponseError.ServerityCode = temp;
+
+				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "ErrorClassification" ) ) )
+					ResponseError.ErrorClassification = temp;
+
+				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "ErrorParameters" ) ) )
+					ResponseError.ErrorParameters = temp;
+
+				return ResponseError;
+			}
+			return null;
 		}
 	}
 }

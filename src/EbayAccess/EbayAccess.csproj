@@ -53,20 +53,24 @@
     <Compile Include="Misc\ActionPolicies.cs" />
     <Compile Include="Models\BaseResponse\EbayBaseResponse.cs" />
     <Compile Include="Models\BaseResponse\PaginationResult.cs" />
+    <Compile Include="Models\BaseResponse\ResponseError.cs" />
     <Compile Include="Models\Credentials\EbayUserCredentials.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\GetOrdersResponse\Buyer.cs" />
     <Compile Include="Models\GetOrdersResponse\CheckoutStatus.cs" />
+    <Compile Include="Models\GetOrdersResponse\GetOrdersResponse.cs" />
     <Compile Include="Models\GetOrdersResponse\Order.cs" />
     <Compile Include="Models\GetOrdersResponse\Item.cs" />
     <Compile Include="Models\GetOrdersResponse\ShippingAddress.cs" />
     <Compile Include="Models\GetOrdersResponse\Transaction.cs" />
     <Compile Include="Models\GetSellerListResponse\Category.cs" />
+    <Compile Include="Models\GetSellerListResponse\GetSellerListResponse.cs" />
     <Compile Include="Models\GetSellerListResponse\Item.cs" />
     <Compile Include="Models\GetSellerListResponse\ListingDetails.cs" />
     <Compile Include="Models\GetSellerListResponse\ListingType.cs" />
-    <Compile Include="Models\ReviseInventoryStatusRequest\InventoryStatus.cs" />
+    <Compile Include="Models\ReviseInventoryStatusRequest\InventoryStatusRequest.cs" />
+    <Compile Include="Models\ReviseInventoryStatusResponse\InventoryStatusResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Credentials\EbayDevCredentials.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />

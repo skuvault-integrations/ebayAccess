@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Models.Credentials;
+using Netco.Logging;
 
 namespace EbayAccess.Services
 {
@@ -64,22 +65,31 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region logging
-		private void LogParseReportError( MemoryStream stream )
+		private void LogTraceStartGetResponse()
 		{
-			// todo: add loging
-			//this.Log().Error("Failed to parse file for account '{0}':\n\r{1}", this._credentials.AccountName, rawTeapplixExport);
+			this.Log().Trace( "[ebay] Get response started." );
 		}
 
-		private void LogUploadHttpError( string status )
+		private void LogTraceEndGetResponse()
 		{
-			// todo: add loging
-			//this.Log().Error("Failed to to upload file for account '{0}'. Request status is '{1}'", this._credentials.AccountName, status);
+			this.Log().Trace( "[ebay] Get response ended." );
+		}
+
+		private void LogTraceGetResponseAsyncStarted()
+		{
+			this.Log().Trace( "[ebay] Get response async started." );
+		}
+
+		private void LogTraceGetResponseAsyncEnded()
+		{
+			this.Log().Trace( "[ebay] Get response async ended." );
 		}
 		#endregion
 
 		#region ResponseHanding
 		public Stream GetResponseStream( WebRequest webRequest )
 		{
+			this.LogTraceStartGetResponse();
 			using( var response = ( HttpWebResponse )webRequest.GetResponse() )
 			using( var dataStream = response.GetResponseStream() )
 			{
@@ -89,20 +99,19 @@ namespace EbayAccess.Services
 				memoryStream.Position = 0;
 				return memoryStream;
 			}
+			this.LogTraceEndGetResponse();
 		}
 
 		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest )
 		{
-			MemoryStream memoryStream;
+			this.LogTraceGetResponseAsyncStarted();
 			using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync().ConfigureAwait( false ) )
-			using( var dataStream = await new TaskFactory< Stream >().StartNew( () =>
+			using( var dataStream = await new TaskFactory< Stream >().StartNew( () => response != null ? response.GetResponseStream() : null ).ConfigureAwait( false ) )
 			{
-				return response.GetResponseStream();
-			} ).ConfigureAwait( false ) )
-			{
-				memoryStream = new MemoryStream();
+				var memoryStream = new MemoryStream();
 				await dataStream.CopyToAsync( memoryStream, 0x100 ).ConfigureAwait( false );
 				memoryStream.Position = 0;
+				this.LogTraceGetResponseAsyncEnded();
 				return memoryStream;
 			}
 		}
