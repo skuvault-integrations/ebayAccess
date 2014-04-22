@@ -10,9 +10,9 @@ using Item = EbayAccess.Models.GetItemResponse.Item;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayGetItemResponseParser : EbayXmlParser<GetItemResponse>
+	public class EbayGetItemResponseParser : EbayXmlParser< GetItemResponse >
 	{
-		public override GetItemResponse Parse(Stream stream, bool keepStremPosition = true)
+		public override GetItemResponse Parse( Stream stream, bool keepStremPosition = true )
 		{
 			try
 			{
@@ -36,7 +36,7 @@ namespace EbayAccess.Services.Parsers
 				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "BuyItNowPrice" ) ) )
 				{
 					res.BuyItNowPrice = temp.ToDecimalDotOrComaSeparated();
-					res.BuyItNowPriceCurrencyId = GetElementAttribute( "currencyID", x, ns, "BuyItNowPrice" );
+					res.BuyItNowPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "BuyItNowPrice" );
 				}
 
 				res.Country = GetElementValue( x, ns, "Country" );
@@ -58,7 +58,7 @@ namespace EbayAccess.Services.Parsers
 				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ReservePrice" ) ) )
 				{
 					res.ReservePrice = temp.ToDecimalDotOrComaSeparated();
-					res.ReservePriceCurrencyId = GetElementAttribute( "currencyID", x, ns, "ReservePrice" );
+					res.ReservePriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "ReservePrice" );
 				}
 
 				res.Site = GetElementValue( x, ns, "Site" );
@@ -72,7 +72,7 @@ namespace EbayAccess.Services.Parsers
 				{
 					res.SellingStatus = new SellingStatus();
 					res.SellingStatus.CurrentPrice = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToDecimalDotOrComaSeparated();
-					res.SellingStatus.CurrentPriceCurrencyId = GetElementAttribute( "currencyID", x, ns, "SellingStatus", "CurrentPrice" );
+					res.SellingStatus.CurrentPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "CurrentPrice" );
 				}
 
 				var listingDetails = x.Element( ns + "ListingDetails" );

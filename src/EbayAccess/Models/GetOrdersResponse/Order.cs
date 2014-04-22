@@ -24,10 +24,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 
 		public decimal Total
 		{
-			get
-			{
-				return TransactionArray.Aggregate( 0m, ( ac, item ) => ac + (decimal)item.TransactionPrice * (decimal)item.QuantityPurchased );
-			} 
+			get { return this.TransactionArray.Aggregate( 0m, ( ac, item ) => ac + ( decimal )item.TransactionPrice * ( decimal )item.QuantityPurchased ); }
 		}
 	}
 

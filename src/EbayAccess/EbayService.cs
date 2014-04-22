@@ -311,15 +311,15 @@ namespace EbayAccess
 		#endregion
 
 		#region
-		private static Dictionary<string, string> CreateGetItemRequestHeadersWithApiCallName()
+		private static Dictionary< string, string > CreateGetItemRequestHeadersWithApiCallName()
 		{
-			return new Dictionary<string, string>
+			return new Dictionary< string, string >
 			{
 				{ XEbayApiCallName, "GetItem" },
 			};
 		}
 
-		private string CreateGetItemRequestBody(string id)
+		private string CreateGetItemRequestBody( string id )
 		{
 			return string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><ItemID>{1}</ItemID></GetItemRequest>​",
@@ -349,7 +349,6 @@ namespace EbayAccess
 
 			return order;
 		}
-
 		#endregion
 
 		#region Upload

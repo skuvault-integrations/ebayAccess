@@ -1,6 +1,4 @@
-﻿using EbayAccess.Services.Parsers;
-
-namespace EbayAccess.Models.GetSellerListResponse
+﻿namespace EbayAccess.Models.GetSellerListResponse
 {
 	public class Item
 	{
