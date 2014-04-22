@@ -310,6 +310,48 @@ namespace EbayAccess
 		}
 		#endregion
 
+		#region
+		private static Dictionary<string, string> CreateGetItemRequestHeadersWithApiCallName()
+		{
+			return new Dictionary<string, string>
+			{
+				{ XEbayApiCallName, "GetItem" },
+			};
+		}
+
+		private string CreateGetItemRequestBody(string id)
+		{
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><ItemID>{1}</ItemID></GetItemRequest>​",
+				this._userCredentials.Token,
+				id );
+		}
+
+		public Models.GetItemResponse.Item GetItem( string id )
+		{
+			var order = new Models.GetItemResponse.Item();
+
+			var body = this.CreateGetItemRequestBody( id );
+
+			var headers = CreateGetItemRequestHeadersWithApiCallName();
+
+			ActionPolicies.Get.Do( () =>
+			{
+				var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body );
+
+				using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
+				{
+					var tempOrders = new EbayGetItemResponseParser().Parse( memStream );
+					if( tempOrders != null )
+						order = tempOrders.Item;
+				}
+			} );
+
+			return order;
+		}
+
+		#endregion
+
 		#region Upload
 		private string CreateReviseInventoryStatusRequestBody( long? itemIdMonad, long? quantityMonad, string skuMonad )
 		{
