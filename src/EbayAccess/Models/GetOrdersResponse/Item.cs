@@ -1,8 +1,8 @@
 ﻿namespace EbayAccess.Models.GetOrdersResponse
 {
-	public class Item
+	public partial class Item
 	{
-		public long ItemId { get; set; }
+		public string ItemId { get; set; }
 
 		public string Site { get; set; }
 

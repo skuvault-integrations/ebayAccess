@@ -2,6 +2,7 @@
 
 namespace EbayAccess.Models.GetItemResponse
 {
+	// todo: try to rid of this and use get item from saller list 
 	public class Item
 	{
 		public bool AutoPay { get; set; }

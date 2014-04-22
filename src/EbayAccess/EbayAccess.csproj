@@ -72,6 +72,7 @@
     <Compile Include="Models\GetSellerListResponse\ListingDetails.cs" />
     <Compile Include="Models\GetSellerListResponse\ListingType.cs" />
     <Compile Include="Models\GetSellerListResponse\SellingStatus.cs" />
+    <Compile Include="Models\GetOrdersResponse\OrderItemExtended.cs" />
     <Compile Include="Models\ReviseInventoryStatusRequest\InventoryStatusRequest.cs" />
     <Compile Include="Models\ReviseInventoryStatusResponse\InventoryStatusResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

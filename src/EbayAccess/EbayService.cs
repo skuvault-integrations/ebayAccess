@@ -133,6 +133,17 @@ namespace EbayAccess
 				pageNumber );
 		}
 
+		private void PopulateOrdersItemsDetails( IEnumerable< Order > orders )
+		{
+			foreach( var order in orders )
+			{
+				foreach( var transaction in order.TransactionArray )
+				{
+					transaction.Item.ItemDetails = this.GetItem( transaction.Item.ItemId );
+				}
+			}
+		}
+
 		private static Dictionary< string, string > CreateEbayGetOrdersRequestHeadersWithApiCallName()
 		{
 			return new Dictionary< string, string >
@@ -141,7 +152,7 @@ namespace EbayAccess
 			};
 		}
 
-		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo )
+		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo, bool includeDetails = false )
 		{
 			var orders = new List< Order >();
 
@@ -174,10 +185,12 @@ namespace EbayAccess
 				pageNumber++;
 			} while( orders.Count < totalRecords );
 
+			if( includeDetails )
+				this.PopulateOrdersItemsDetails( orders );
 			return orders;
 		}
 
-		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
+		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo, bool includeDetails = false )
 		{
 			var orders = new List< Order >();
 
@@ -211,6 +224,8 @@ namespace EbayAccess
 				//} while( ( pagination != null ) && pagination.TotalNumberOfPages > pageNumber );
 			} while( totalRecords > orders.Count() );
 
+			if( includeDetails )
+				this.PopulateOrdersItemsDetails( orders );
 			return orders;
 		}
 		#endregion
@@ -310,7 +325,7 @@ namespace EbayAccess
 		}
 		#endregion
 
-		#region
+		#region GetItem
 		private static Dictionary< string, string > CreateGetItemRequestHeadersWithApiCallName()
 		{
 			return new Dictionary< string, string >
@@ -319,7 +334,7 @@ namespace EbayAccess
 			};
 		}
 
-		private string CreateGetItemRequestBody( string id )
+		private string CreateGetItemByIdRequestBody( string id )
 		{
 			return string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><ItemID>{1}</ItemID></GetItemRequest>​",
@@ -331,7 +346,7 @@ namespace EbayAccess
 		{
 			var order = new Models.GetItemResponse.Item();
 
-			var body = this.CreateGetItemRequestBody( id );
+			var body = this.CreateGetItemByIdRequestBody( id );
 
 			var headers = CreateGetItemRequestHeadersWithApiCallName();
 

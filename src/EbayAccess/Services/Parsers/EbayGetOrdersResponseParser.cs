@@ -102,8 +102,7 @@ namespace EbayAccess.Services.Parsers
 							{
 								resTransaction.Item = new Item();
 
-								if( !string.IsNullOrWhiteSpace( temp = GetElementValue( elItem, ns, "ItemID" ) ) )
-									resTransaction.Item.ItemId = long.Parse( temp );
+								resTransaction.Item.ItemId = GetElementValue( elItem, ns, "ItemID" );
 
 								resTransaction.Item.Site = GetElementValue( elItem, ns, "Site" );
 
