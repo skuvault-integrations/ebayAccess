@@ -35,7 +35,10 @@ namespace EbayAccess.Services.Parsers
 						res.AutoPay = bool.Parse( temp );
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "BuyItNowPrice" ) ) )
-						res.BuyItNowPrice = decimal.Parse( temp.Replace( '.', ',' ) );
+					{
+						res.BuyItNowPrice = temp.ToDecimalDotOrComaSeparated();
+						res.BuyItNowPriceCurrencyId = GetElementAttribute("currencyID", x, ns, "BuyItNowPrice");
+					}
 
 					res.Country = GetElementValue( x, ns, "Country" );
 
@@ -54,11 +57,24 @@ namespace EbayAccess.Services.Parsers
 						res.Quantity = long.Parse( temp );
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ReservePrice" ) ) )
+					{
 						res.ReservePrice = temp.ToDecimalDotOrComaSeparated();
+						res.ReservePriceCurrencyId = GetElementAttribute("currencyID", x, ns, "ReservePrice");
+					}
 
 					res.Site = GetElementValue( x, ns, "Site" );
 
-					res.Title = GetElementValue( x, ns, "Title" );
+					res.Title = GetElementValue(x, ns, "Title");
+
+					res.Title = GetElementValue(x, ns, "Sku");
+
+					var sellingStatus = x.Element(ns + "SellingStatus");
+					if (sellingStatus != null)
+					{
+						res.SellingStatus = new SellingStatus();
+						res.SellingStatus.CurrentPrice = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToDecimalDotOrComaSeparated();
+						res.SellingStatus.CurrentPriceCurrencyId = GetElementAttribute( "currencyID", x, ns, "SellingStatus", "CurrentPrice" );
+					}
 
 					var listingDetails = x.Element( ns + "ListingDetails" );
 					if( listingDetails != null )

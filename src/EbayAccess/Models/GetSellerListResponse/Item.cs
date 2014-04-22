@@ -1,4 +1,6 @@
-﻿namespace EbayAccess.Models.GetSellerListResponse
+﻿using EbayAccess.Services.Parsers;
+
+namespace EbayAccess.Models.GetSellerListResponse
 {
 	public class Item
 	{
@@ -26,6 +28,14 @@
 
 		public string Title { get; set; }
 
+		public string Sku { get; set; }
+
 		public bool HideFromSearch { get; set; }
+
+		public SellingStatus SellingStatus { get; set; }
+
+		public string BuyItNowPriceCurrencyId { get; set; }
+
+		public string ReservePriceCurrencyId { get; set; }
 	}
 }

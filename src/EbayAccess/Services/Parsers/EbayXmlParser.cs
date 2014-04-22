@@ -24,6 +24,20 @@ namespace EbayAccess.Services.Parsers
 			return elementName.Length > 1 ? GetElementValue( element, ns, elementName.Skip( 1 ).ToArray() ) : element.Value;
 		}
 
+		protected string GetElementAttribute(string attributeName, XElement xElement, XNamespace ns, params string[] elementName)
+		{
+			var elementAttribute = string.Empty;
+
+			if (elementName.Length <= 0)
+				return xElement.Attribute(attributeName).Value;
+
+			var element = xElement.Element(ns + elementName[0]);
+			if (element == null)
+				return elementAttribute;
+
+			return elementName.Length > 1 ? GetElementAttribute(attributeName,element, ns, elementName.Skip(1).ToArray()) : element.Attribute(attributeName).Value;
+		}
+
 		public TParseResult Parse( WebResponse response )
 		{
 			var result = default( TParseResult );
