@@ -1,4 +1,5 @@
 ﻿using System;
+using Netco.Logging;
 
 namespace EbayAccess.Models.BaseResponse
 {
@@ -14,6 +15,18 @@ namespace EbayAccess.Models.BaseResponse
 
 		public PaginationResult PaginationResult { get; set; }
 
-		public ResponseError Error { get; set; }
+		public ResponseError _error;
+
+		public ResponseError Error
+		{
+			get { return this._error; }
+
+			set
+			{
+				if( value != null )
+					this.Log().Error( "[ebay] An error occured in response: code={0}, message={1}", value.ErrorCode, value.LongMessage );
+				this._error = value;
+			}
+		}
 	}
 }
