@@ -11,7 +11,7 @@ namespace EbayAccess.Models.GetItemResponse
 		public string Country { get; set; }
 		public string Currency { get; set; }
 		public bool HideFromSearch { get; set; }
-		public long ItemId { get; set; }
+		public string ItemId { get; set; }
 		public ListingType ListingType { get; set; }
 		public long Quantity { get; set; }
 		public decimal ReservePrice { get; set; }
