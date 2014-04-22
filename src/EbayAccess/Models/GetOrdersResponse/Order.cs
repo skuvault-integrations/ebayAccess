@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EbayAccess.Models.GetOrdersResponse
 {
@@ -20,6 +21,14 @@ namespace EbayAccess.Models.GetOrdersResponse
 		public string BuyerUserId { get; set; }
 
 		public ShippingAddress ShippingAddress { get; set; }
+
+		public decimal Total
+		{
+			get
+			{
+				return TransactionArray.Aggregate( 0m, ( ac, item ) => ac + (decimal)item.TransactionPrice * (decimal)item.QuantityPurchased );
+			} 
+		}
 	}
 
 	public enum EbayOrderStatusEnum
