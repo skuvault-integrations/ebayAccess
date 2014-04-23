@@ -1,13 +1,9 @@
 ﻿using CuttingEdge.Conditions;
+using EbayAccess.Interfaces;
 using EbayAccess.Models.Credentials;
 
 namespace EbayAccess
 {
-	public interface IEbayFactory
-	{
-		IEbayService CreateService( EbayUserCredentials userCredentials );
-	}
-
 	public sealed class EbayFactory : IEbayFactory
 	{
 		private readonly EbayDevCredentials _devCredentials;

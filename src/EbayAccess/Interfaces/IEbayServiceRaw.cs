@@ -6,9 +6,9 @@ using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
-namespace EbayAccess
+namespace EbayAccess.Interfaces
 {
-	public interface IEbayService
+	public interface IEbayServiceRaw
 	{
 		IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo, bool includeDetails = false );
 
