@@ -58,7 +58,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\GetItemResponse\GetItemResponse.cs" />
-    <Compile Include="Models\GetItemResponse\Item.cs" />
     <Compile Include="Models\GetOrdersResponse\Buyer.cs" />
     <Compile Include="Models\GetOrdersResponse\CheckoutStatus.cs" />
     <Compile Include="Models\GetOrdersResponse\GetOrdersResponse.cs" />

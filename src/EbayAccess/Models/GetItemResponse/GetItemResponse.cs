@@ -1,4 +1,5 @@
 ﻿using EbayAccess.Models.BaseResponse;
+using EbayAccess.Models.GetSellerListResponse;
 
 namespace EbayAccess.Models.GetItemResponse
 {

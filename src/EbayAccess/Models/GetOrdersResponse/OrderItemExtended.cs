@@ -2,6 +2,6 @@
 {
 	public partial class Item
 	{
-		public GetItemResponse.Item ItemDetails { get; set; }
+		public GetSellerListResponse.Item ItemDetails { get; set; }
 	}
 }

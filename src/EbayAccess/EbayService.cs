@@ -342,9 +342,9 @@ namespace EbayAccess
 				id );
 		}
 
-		public Models.GetItemResponse.Item GetItem( string id )
+		public Item GetItem( string id )
 		{
-			var order = new Models.GetItemResponse.Item();
+			var order = new Item();
 
 			var body = this.CreateGetItemByIdRequestBody( id );
 
