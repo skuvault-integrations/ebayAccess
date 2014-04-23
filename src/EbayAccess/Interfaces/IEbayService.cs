@@ -20,5 +20,9 @@ namespace EbayAccess.Interfaces
 		void UpdateProducts( IEnumerable< InventoryStatusRequest > products );
 
 		Task UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products );
+
+		Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFrom );
+
+		Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo );
 	}
 }

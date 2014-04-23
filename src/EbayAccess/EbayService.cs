@@ -67,6 +67,17 @@ namespace EbayAccess
 			return await this.EbayServiceLowLevel.GetItemsAsync( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
 		}
 
+		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFrom )
+		{
+			var createTimeTo = new DateTime( createTimeFrom.Year, createTimeFrom.Month + 4, createTimeFrom.Day, createTimeFrom.Hour, createTimeFrom.Minute, createTimeFrom.Second, createTimeFrom.Kind );
+			return await this.EbayServiceLowLevel.GetItemsAsync( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
+		}
+
+		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
+		{
+			return await this.EbayServiceLowLevel.GetItemsAsync( createTimeFromStart, createTimeFromTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
+		}
+
 		public void UpdateProducts( IEnumerable< InventoryStatusRequest > products )
 		{
 			this.EbayServiceLowLevel.ReviseInventoriesStatus( products );
