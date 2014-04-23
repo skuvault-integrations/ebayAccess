@@ -47,8 +47,7 @@ namespace EbayAccess.Services.Parsers
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "HideFromSearch" ) ) )
 						res.HideFromSearch = bool.Parse( temp );
 
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ItemID" ) ) )
-						res.ItemId = long.Parse( temp );
+					res.ItemId = GetElementValue( x, ns, "ItemID" );
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingType" ) ) )
 						res.ListingType = ( ListingType )Enum.Parse( typeof( ListingType ), temp );

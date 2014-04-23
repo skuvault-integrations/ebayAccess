@@ -364,6 +364,29 @@ namespace EbayAccess
 
 			return order;
 		}
+
+		public async Task< Item > GetItemAsync( string id )
+		{
+			var order = new Item();
+
+			var body = this.CreateGetItemByIdRequestBody( id );
+
+			var headers = CreateGetItemRequestHeadersWithApiCallName();
+
+			await ActionPolicies.GetAsync.Do( async () =>
+			{
+				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				{
+					var tempOrders = new EbayGetItemResponseParser().Parse( memStream );
+					if( tempOrders != null )
+						order = tempOrders.Item;
+				}
+			} );
+
+			return order;
+		}
 		#endregion
 
 		#region Upload

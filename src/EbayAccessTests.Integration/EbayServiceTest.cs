@@ -220,5 +220,21 @@ namespace EbayAccessTests.Integration
 			( inventoryStat1.Quantity - inventoryStat2.Quantity ).Should()
 				.Be( qty1 - qty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", qty1, qty2 ) );
 		}
+
+		[ Test ]
+		public void EbayServiceWithExistingSaleItem_GetItem_HookapItemWithDetails()
+		{
+			//A
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
+			const int qty1 = 100;
+			const int qty2 = 200;
+			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
+
+			//A
+			var inventoryStat1 = ebayService.GetItem( saleItemsIds[ 1 ].ToString() );
+
+			//A
+			inventoryStat1.ItemId.Should().Be( saleItemsIds[ 1 ].ToString(), "Code requests item with id={0}.", saleItemsIds[ 1 ].ToString() );
+		}
 	}
 }
