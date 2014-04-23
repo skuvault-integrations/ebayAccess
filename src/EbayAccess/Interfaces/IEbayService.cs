@@ -12,9 +12,9 @@ namespace EbayAccess.Interfaces
 
 		Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo );
 
-		IEnumerable< Item > GetProducts();
+		IEnumerable<EbayAccess.Models.GetSellerListResponse.Item> GetProducts();
 
-		Task< IEnumerable< Item > > GetProductsAsync();
+		Task<IEnumerable<EbayAccess.Models.GetSellerListResponse.Item>> GetProductsAsync();
 
 		void UpdateProducts( IEnumerable< InventoryStatusRequest > products );
 

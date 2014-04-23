@@ -19,7 +19,7 @@ using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess
 {
-	public sealed class EbayServiceRaw : IEbayServiceRaw
+	public sealed class EbayServiceLowLevel : IEbayServiceLowLevel
 	{
 		private readonly EbayUserCredentials _userCredentials;
 		private readonly EbayDevCredentials _ebayDevCredentials;
@@ -28,7 +28,7 @@ namespace EbayAccess
 		private readonly IWebRequestServices _webRequestServices;
 		private const string XEbayApiCallName = "X-EBAY-API-CALL-NAME";
 
-		public EbayServiceRaw( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
+		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();
 			Condition.Ensures( endPouint, "endPoint" ).IsNotNullOrEmpty();
@@ -42,7 +42,7 @@ namespace EbayAccess
 			this._ebayDevCredentials = ebayDevCredentials;
 		}
 
-		public EbayServiceRaw( EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
+		public EbayServiceLowLevel( EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
 			: this( userCredentials, ebayDevCredentials, new WebRequestServices( userCredentials, ebayDevCredentials ), endPouint, itemsPerPage )
 		{
 		}
@@ -124,26 +124,15 @@ namespace EbayAccess
 		#endregion
 
 		#region GetOrders
-		private string CreateGetOrdersRequestBody( DateTime dateFrom, DateTime dateTo, int recordsPerPage, int pageNumber )
+		private string CreateGetOrdersRequestBody( DateTime createTimeFrom, DateTime createTimeTo, int recordsPerPage, int pageNumber )
 		{
 			return string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><CreateTimeFrom>{1}</CreateTimeFrom><CreateTimeTo>{2}</CreateTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
 				this._userCredentials.Token,
-				dateFrom.ToStringUtcIso8601(),
-				dateTo.ToStringUtcIso8601(),
+				createTimeFrom.ToStringUtcIso8601(),
+				createTimeTo.ToStringUtcIso8601(),
 				recordsPerPage,
 				pageNumber );
-		}
-
-		private void PopulateOrdersItemsDetails( IEnumerable< Order > orders )
-		{
-			foreach( var order in orders )
-			{
-				foreach( var transaction in order.TransactionArray )
-				{
-					transaction.Item.ItemDetails = this.GetItem( transaction.Item.ItemId );
-				}
-			}
 		}
 
 		private static Dictionary< string, string > CreateEbayGetOrdersRequestHeadersWithApiCallName()
@@ -154,7 +143,7 @@ namespace EbayAccess
 			};
 		}
 
-		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo, bool includeDetails = false )
+		public IEnumerable< Order > GetOrders( DateTime createTimeFrom, DateTime createTimeTo)
 		{
 			var orders = new List< Order >();
 
@@ -166,7 +155,7 @@ namespace EbayAccess
 			{
 				var headers = CreateEbayGetOrdersRequestHeadersWithApiCallName();
 
-				var body = this.CreateGetOrdersRequestBody( dateFrom, dateTo, recordsPerPage, pageNumber );
+				var body = this.CreateGetOrdersRequestBody( createTimeFrom, createTimeTo, recordsPerPage, pageNumber );
 
 				ActionPolicies.Get.Do( () =>
 				{
@@ -187,12 +176,10 @@ namespace EbayAccess
 				pageNumber++;
 			} while( orders.Count < totalRecords );
 
-			if( includeDetails )
-				this.PopulateOrdersItemsDetails( orders );
 			return orders;
 		}
 
-		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo, bool includeDetails = false )
+		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo)
 		{
 			var orders = new List< Order >();
 
@@ -204,7 +191,7 @@ namespace EbayAccess
 			{
 				var headers = CreateEbayGetOrdersRequestHeadersWithApiCallName();
 
-				var body = this.CreateGetOrdersRequestBody( dateFrom, dateTo, recordsPerPage, pageNumber );
+				var body = this.CreateGetOrdersRequestBody( createTimeFrom, createTimeTo, recordsPerPage, pageNumber );
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
@@ -226,8 +213,6 @@ namespace EbayAccess
 				//} while( ( pagination != null ) && pagination.TotalNumberOfPages > pageNumber );
 			} while( totalRecords > orders.Count() );
 
-			if( includeDetails )
-				this.PopulateOrdersItemsDetails( orders );
 			return orders;
 		}
 		#endregion
@@ -241,18 +226,19 @@ namespace EbayAccess
 			};
 		}
 
-		private string CreateGetItemsRequestBody( DateTime startTimeFrom, DateTime startTimeTo, int recordsPerPage, int pageNumber )
+		private string CreateGetItemsRequestBody( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum,  int recordsPerPage, int pageNumber )
 		{
 			return string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><StartTimeFrom>{1}</StartTimeFrom><StartTimeTo>{2}</StartTimeTo><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><{5}From>{1}</{5}From><{5}To>{2}</{5}To><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
 				this._userCredentials.Token,
-				startTimeFrom.ToStringUtcIso8601(),
-				startTimeTo.ToStringUtcIso8601(),
+				timeFrom.ToStringUtcIso8601(),
+				timeTo.ToStringUtcIso8601(),
 				recordsPerPage,
-				pageNumber );
+				pageNumber,
+				timeRangeEnum);
 		}
 
-		public IEnumerable< Item > GetItems( DateTime startTimeFrom, DateTime startTimeTo )
+		public IEnumerable< Item > GetItems( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
 		{
 			var orders = new List< Item >();
 
@@ -262,7 +248,7 @@ namespace EbayAccess
 			var pageNumber = 1;
 			do
 			{
-				var body = this.CreateGetItemsRequestBody( startTimeFrom, startTimeTo, recordsPerPage, pageNumber );
+				var body = this.CreateGetItemsRequestBody(timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber);
 
 				var headers = CreateGetItemsRequestHeadersWithApiCallName();
 
@@ -291,7 +277,7 @@ namespace EbayAccess
 			return orders;
 		}
 
-		public async Task< IEnumerable< Item > > GetItemsAsync( DateTime startTimeFrom, DateTime startTimeTo )
+		public async Task<IEnumerable<Item>> GetItemsAsync(DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum)
 		{
 			var orders = new List< Item >();
 
@@ -300,7 +286,7 @@ namespace EbayAccess
 			var pageNumber = 1;
 			do
 			{
-				var body = this.CreateGetItemsRequestBody( startTimeFrom, startTimeTo, recordsPerPage, pageNumber );
+				var body = this.CreateGetItemsRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
 
 				var headers = CreateGetItemsRequestHeadersWithApiCallName();
 
@@ -471,5 +457,11 @@ namespace EbayAccess
 			return await Task.WhenAll( reviseInventoryTasks ).ConfigureAwait( false );
 		}
 		#endregion
+	}
+
+	public enum TimeRangeEnum
+	{
+		StartTime,
+		EndTime
 	}
 }

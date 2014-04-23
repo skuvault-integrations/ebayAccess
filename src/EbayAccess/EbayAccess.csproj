@@ -47,12 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EbayFactory.cs" />
-    <Compile Include="EbayServiceRaw.cs" />
+    <Compile Include="EbayServiceLowLevel.cs" />
     <Compile Include="EbayService.cs" />
     <Compile Include="Infrastructure\Extensions.cs" />
     <Compile Include="Interfaces\IEbayFactory.cs" />
     <Compile Include="Interfaces\IEbayService.cs" />
-    <Compile Include="Interfaces\IEbayServiceRaw.cs" />
+    <Compile Include="Interfaces\IEbayServiceLowLevel.cs" />
     <Compile Include="Interfaces\Services\IWebRequestServices.cs" />
     <Compile Include="Misc\ActionPolicies.cs" />
     <Compile Include="Models\BaseResponse\EbayBaseResponse.cs" />

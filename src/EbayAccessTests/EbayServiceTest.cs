@@ -6,8 +6,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using EbayAccess;
+using EbayAccess.Interfaces.Services;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
-using EbayAccess.Services;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -47,11 +47,11 @@ namespace EbayAccessTests
 				return ms;
 			} ).Callback( () => stubCallCounter++ );
 
-			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
+			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
 
 			//A
 			var orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ),TimeRangeEnum.StartTime );
 
 			//A
 			orders.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );
@@ -80,7 +80,7 @@ namespace EbayAccessTests
 				return ms;
 			} ).Callback( () => stubCallCounter++ );
 
-			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
+			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
 
 			//A
 			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
@@ -110,7 +110,7 @@ namespace EbayAccessTests
 					return Task.FromResult( ( Stream )ms );
 				} );
 
-			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
+			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
 
 			//A
 			var inventoryStat = ( await ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >

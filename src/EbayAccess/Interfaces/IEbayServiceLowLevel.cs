@@ -8,18 +8,22 @@ using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Interfaces
 {
-	public interface IEbayServiceRaw
+	public interface IEbayServiceLowLevel
 	{
-		IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo, bool includeDetails = false );
+		IEnumerable< Order > GetOrders( DateTime createTimeFrom, DateTime createTimeTo );
 
-		Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo, bool includeDetails = false );
+		Task< IEnumerable< Order > > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo );
 
 		InventoryStatusResponse ReviseInventoryStatus( InventoryStatusRequest inventoryStatusResponse );
 
 		Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusResponse );
 
-		IEnumerable< Item > GetItems( DateTime startTimeFrom, DateTime startTimeTo );
+		IEnumerable<Item> GetItems(DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum);
 
-		Task< IEnumerable< Item > > GetItemsAsync( DateTime startTimeFrom, DateTime startTimeTo );
+		Task<IEnumerable<Item>> GetItemsAsync(DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum);
+
+		Item GetItem( string id );
+
+		Task< Item > GetItemAsync( string id );
 	}
 }
