@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Interfaces
 {
@@ -12,9 +13,9 @@ namespace EbayAccess.Interfaces
 
 		Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo );
 
-		IEnumerable<EbayAccess.Models.GetSellerListResponse.Item> GetProducts();
+		IEnumerable< Item > GetProducts();
 
-		Task<IEnumerable<EbayAccess.Models.GetSellerListResponse.Item>> GetProductsAsync();
+		Task< IEnumerable< Item > > GetProductsAsync();
 
 		void UpdateProducts( IEnumerable< InventoryStatusRequest > products );
 

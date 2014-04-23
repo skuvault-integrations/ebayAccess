@@ -51,7 +51,7 @@ namespace EbayAccessTests
 
 			//A
 			var orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ),TimeRangeEnum.StartTime );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
 
 			//A
 			orders.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );

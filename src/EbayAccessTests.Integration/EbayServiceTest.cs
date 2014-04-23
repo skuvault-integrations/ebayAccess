@@ -110,7 +110,7 @@ namespace EbayAccessTests.Integration
 
 			//A
 			var orders =
-				await ebayService.GetItemsAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ),TimeRangeEnum.StartTime ).ConfigureAwait( false );
+				await ebayService.GetItemsAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime ).ConfigureAwait( false );
 
 			//A
 			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
@@ -124,7 +124,7 @@ namespace EbayAccessTests.Integration
 
 			//A
 			var orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ),TimeRangeEnum.StartTime );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
 
 			//A
 			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
@@ -138,7 +138,7 @@ namespace EbayAccessTests.Integration
 
 			//A
 			var orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ),TimeRangeEnum.StartTime );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
 
 			//A
 			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
