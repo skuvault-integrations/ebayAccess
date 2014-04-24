@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace EbayAccess.Models.GetOrdersResponse
 {
-	public sealed class Order
+	public sealed partial class Order
 	{
 		public string OrderId { get; set; }
 

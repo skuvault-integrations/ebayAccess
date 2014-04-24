@@ -64,6 +64,7 @@
     <Compile Include="Models\GetItemResponse\GetItemResponse.cs" />
     <Compile Include="Models\GetOrdersResponse\Buyer.cs" />
     <Compile Include="Models\GetOrdersResponse\CheckoutStatus.cs" />
+    <Compile Include="Models\GetOrdersResponse\OrderExtended.cs" />
     <Compile Include="Models\GetOrdersResponse\GetOrdersResponse.cs" />
     <Compile Include="Models\GetOrdersResponse\Order.cs" />
     <Compile Include="Models\GetOrdersResponse\Item.cs" />
