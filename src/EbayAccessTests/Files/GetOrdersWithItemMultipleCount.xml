@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
+
 <GetOrdersResponse xmlns="urn:ebay:apis:eBLBaseComponents">
 	<Timestamp>2014-04-24T08:16:31.812Z</Timestamp>
 	<Ack>Success</Ack>
@@ -126,4 +127,5 @@
 	<OrdersPerPage>100</OrdersPerPage>
 	<PageNumber>1</PageNumber>
 	<ReturnedOrderCountActual>1</ReturnedOrderCountActual>
-</GetOrdersResponse>​
+</GetOrdersResponse>
+​
