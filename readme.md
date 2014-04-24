@@ -1,0 +1,1 @@
+ebayAccess is .NET wrapper around [Ebay API](http://developer.ebay.com/DevZone/guides/ebayfeatures/index.html) was created to simplify and speed up working with it.
