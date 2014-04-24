@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace EbayAccessTests.Integration
 {
 	[ TestFixture ]
-	public class EbayServiceTest
+	public class EbayServiceLowLevelTest
 	{
 		private TestCredentials _credentials;
 
@@ -24,7 +24,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public async Task EbayServiceWithExistingInventoryItesm_UpdateItemsQuantityAsync_QuantityUpdatedForAll()
+		public async Task EbayServiceLowLevelWithExistingInventoryItesm_UpdateItemsQuantityAsync_QuantityUpdatedForAll()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
@@ -53,7 +53,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void EbayServiceWithExistingInventoryItesm_UpdateItemQuantity_QuantityUpdated()
+		public void EbayServiceLowLevelWithExistingInventoryItesm_UpdateItemQuantity_QuantityUpdated()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
@@ -73,7 +73,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void EbayServiceWithExistingInventoryItesm_UpdateItemsQuantity_QuantityUpdatedForAll()
+		public void EbayServiceLowLevelWithExistingInventoryItesm_UpdateItemsQuantity_QuantityUpdatedForAll()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
@@ -103,7 +103,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public async Task EbayServiceExistingItems_GetItemsAsync_NotEmptyItemsCollection()
+		public async Task EbayServiceLowLevelWithExistingItems_GetItemsAsync_NotEmptyItemsCollection()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
@@ -117,7 +117,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void EbayServiceExistingItems_GetItemsSmart_NotEmptyItemsCollection()
+		public void EbayServiceLowLevelWithExistingItems_GetItemsSmart_NotEmptyItemsCollection()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
@@ -131,7 +131,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void EbayServiceExistingItems_GetItems_NotEmptyItemsCollection()
+		public void EbayServiceLowLevelWithExistingItems_GetItems_NotEmptyItemsCollection()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
@@ -145,7 +145,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public async Task EbayServiceWithExistingOrders_GetOrdersAsync_HookInOrders()
+		public async Task EbayServiceLowLevelWithExistingOrders_GetOrdersAsync_HookInOrders()
 		{
 			//A
 
@@ -160,7 +160,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void EbayServiceWithExistingOrders_GetOrders_HookInOrders()
+		public void EbayServiceLowLevelWithExistingOrders_GetOrders_HookInOrders()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
@@ -174,7 +174,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public async Task EbayServiceWithNotExistingOrders_GetOrdersAsync_EmptyOrdersCollection()
+		public async Task EbayServiceLowLevelWithNotExistingOrders_GetOrdersAsync_EmptyOrdersCollection()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
@@ -188,7 +188,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void EbayServiceWithNotExistingOrders_GetOrders_EmptyOrdersCollection()
+		public void EbayServiceLowLevelWithNotExistingOrders_GetOrders_EmptyOrdersCollection()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
@@ -202,7 +202,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public async Task EbayServiceWithExistingInventoryItem_UpdateItemQuantityAsync_QuantityChanged()
+		public async Task EbayServiceLowLevelWithExistingInventoryItem_UpdateItemQuantityAsync_QuantityChanged()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
@@ -222,7 +222,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void EbayServiceWithExistingSaleItem_GetItem_HookapItemWithDetails()
+		public void EbayServiceLowLevelWithExistingSaleItem_GetItem_HookapItemWithDetails()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );

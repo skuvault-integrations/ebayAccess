@@ -13,13 +13,13 @@ namespace EbayAccess.Interfaces
 
 		Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo );
 
-		IEnumerable< Item > GetProducts();
-
-		Task< IEnumerable< Item > > GetProductsAsync();
-
 		void UpdateProducts( IEnumerable< InventoryStatusRequest > products );
 
 		Task UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products );
+
+		IEnumerable< Item > GetProducts();
+
+		Task< IEnumerable< Item > > GetProductsAsync();
 
 		Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFrom );
 
