@@ -31,5 +31,4 @@ _ReSharper*/
 #Ignore common build files
 build
 log
-EbayCommerceCredentials.csv
 
