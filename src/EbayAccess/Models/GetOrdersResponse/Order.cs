@@ -22,10 +22,16 @@ namespace EbayAccess.Models.GetOrdersResponse
 
 		public ShippingAddress ShippingAddress { get; set; }
 
+		public DateTime PaidTime { get; set; }
+
+		public DateTime ShippedTime { get; set; }
+
 		public decimal Total
 		{
 			get { return this.TransactionArray.Aggregate( 0m, ( ac, item ) => ac + ( decimal )item.TransactionPrice * ( decimal )item.QuantityPurchased ); }
 		}
+
+		public ShippingDetails ShippingDetails { get; set; }
 	}
 
 	public enum EbayOrderStatusEnum

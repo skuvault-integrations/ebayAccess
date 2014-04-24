@@ -27,10 +27,10 @@ namespace EbayAccess.Services.Parsers
 
 				var orders = xmlOrders.Select( x =>
 				{
-					string temp = null;
-					var res = new Order();
+					string temp;
+					var resultOrder = new Order();
 
-					res.BuyerUserId = GetElementValue( x, ns, "BuyerUserID" );
+					resultOrder.BuyerUserId = GetElementValue( x, ns, "BuyerUserID" );
 
 					if( x.Element( ns + "CheckoutStatus" ) != null )
 					{
@@ -49,7 +49,7 @@ namespace EbayAccess.Services.Parsers
 
 						obCheckoutStatus.Status = GetElementValue( elCheckoutStatus, ns, "Status" );
 
-						res.CheckoutStatus = obCheckoutStatus;
+						resultOrder.CheckoutStatus = obCheckoutStatus;
 					}
 
 					if( x.Element( ns + "ShippingAddress" ) != null )
@@ -70,21 +70,67 @@ namespace EbayAccess.Services.Parsers
 						address.Street2 = GetElementValue( shipToAddress, ns, "Street2" );
 					}
 
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "CreatedTime" ) ) )
-						res.CreatedTime = ( DateTime.Parse( temp ) );
+					if( x.Element( ns + "PaymentHoldDetails" ) != null )
+					{
+						var paymentHoldDetails = x.Element( ns + "PaymentHoldDetails" );
+						var address = new PaymentHoldDetails();
 
-					res.OrderId = GetElementValue( x, ns, "OrderID" );
+						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( paymentHoldDetails, ns, "ExpectedReleaseDate" ) ) )
+							address.ExpectedReleaseDate = ( DateTime.Parse( temp ) );
+					}
+
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "CreatedTime" ) ) )
+						resultOrder.CreatedTime = ( DateTime.Parse( temp ) );
+
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "PaidTime" ) ) )
+						resultOrder.PaidTime = ( DateTime.Parse( temp ) );
+
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippedTime" ) ) )
+						resultOrder.ShippedTime = ( DateTime.Parse( temp ) );
+
+					if( x.Element( ns + "ShippingDetails" ) != null )
+					{
+						if( x.Element( ns + "ShippingServiceOptions" ) != null )
+						{
+							if( x.Element( ns + "ShippingPackageInfo" ) != null )
+							{
+								resultOrder.ShippingDetails = new ShippingDetails();
+								resultOrder.ShippingDetails.ShippingServiceOptions = new ShippingServiceOptions();
+								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo = new ShippingPackageInfo();
+
+								if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ActualDeliveryTime" ) ) )
+									resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ActualDeliveryTime = ( DateTime.Parse( temp ) );
+
+								if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMax" ) ) )
+									resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMax = ( DateTime.Parse( temp ) );
+
+								if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMin" ) ) )
+									resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMin = ( DateTime.Parse( temp ) );
+							}
+						}
+					}
+
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ActualDeliveryTime" ) ) )
+					{
+						resultOrder.ShippingDetails = new ShippingDetails();
+						resultOrder.ShippingDetails.ShippingServiceOptions = new ShippingServiceOptions();
+						resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo = new ShippingPackageInfo();
+
+						resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ActualDeliveryTime = ( DateTime.Parse( temp ) );
+					}
+
+					resultOrder.OrderId = GetElementValue( x, ns, "OrderID" );
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "OrderStatus" ) ) )
-						res.Status = ( EbayOrderStatusEnum )Enum.Parse( typeof( EbayOrderStatusEnum ), temp );
+						resultOrder.Status = ( EbayOrderStatusEnum )Enum.Parse( typeof( EbayOrderStatusEnum ), temp );
 
-					res.PaymentMethods = GetElementValue( x, ns, "PaymentMethods" );
+					resultOrder.PaymentMethods = GetElementValue( x, ns, "PaymentMethods" );
 
 					var elTransactionArray = x.Element( ns + "TransactionArray" );
 					if( elTransactionArray != null )
 					{
 						var transactions = elTransactionArray.Descendants( ns + "Transaction" );
-						res.TransactionArray = transactions.Select( transaction =>
+						resultOrder.TransactionArray = transactions.Select( transaction =>
 						{
 							var resTransaction = new Transaction();
 							var elBuyer = transaction.Element( ns + "Buyer" );
@@ -119,7 +165,7 @@ namespace EbayAccess.Services.Parsers
 					if( keepStremPosition )
 						stream.Position = streamStartPos;
 
-					return res;
+					return resultOrder;
 				} ).ToList();
 
 				return new GetOrdersResponse { Orders = orders };
