@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using EbayAccess.Infrastructure;
 using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Services.Parsers
@@ -32,6 +33,12 @@ namespace EbayAccess.Services.Parsers
 
 					resultOrder.BuyerUserId = GetElementValue( x, ns, "BuyerUserID" );
 
+					resultOrder.OrderId = GetElementValue( x, ns, "OrderID" );
+
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "OrderStatus" ) ) )
+						resultOrder.Status = ( EbayOrderStatusEnum )Enum.Parse( typeof( EbayOrderStatusEnum ), temp );
+
+					#region ChecoutStatus
 					if( x.Element( ns + "CheckoutStatus" ) != null )
 					{
 						var elCheckoutStatus = x.Element( ns + "CheckoutStatus" );
@@ -51,7 +58,9 @@ namespace EbayAccess.Services.Parsers
 
 						resultOrder.CheckoutStatus = obCheckoutStatus;
 					}
+					#endregion
 
+					#region Shipping
 					if( x.Element( ns + "ShippingAddress" ) != null )
 					{
 						var shipToAddress = x.Element( ns + "ShippingAddress" );
@@ -69,7 +78,9 @@ namespace EbayAccess.Services.Parsers
 
 						address.Street2 = GetElementValue( shipToAddress, ns, "Street2" );
 					}
+					#endregion
 
+					#region PaymentDetails
 					if( x.Element( ns + "PaymentHoldDetails" ) != null )
 					{
 						var paymentHoldDetails = x.Element( ns + "PaymentHoldDetails" );
@@ -79,6 +90,10 @@ namespace EbayAccess.Services.Parsers
 							address.ExpectedReleaseDate = ( DateTime.Parse( temp ) );
 					}
 
+					resultOrder.PaymentMethods = GetElementValue( x, ns, "PaymentMethods" );
+					#endregion
+
+					#region XXXTime
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "CreatedTime" ) ) )
 						resultOrder.CreatedTime = ( DateTime.Parse( temp ) );
 
@@ -87,7 +102,36 @@ namespace EbayAccess.Services.Parsers
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippedTime" ) ) )
 						resultOrder.ShippedTime = ( DateTime.Parse( temp ) );
+					#endregion
 
+					#region Refunds
+					var elMonetaryDetails = x.Element( ns + "MonetaryDetails" );
+					if( elMonetaryDetails != null )
+					{
+						resultOrder.MonetaryDetails = new MonetaryDetails();
+
+						var refunds = elMonetaryDetails.Descendants( ns + "Refund" );
+						resultOrder.MonetaryDetails.Refunds = refunds.Select( refund =>
+						{
+							var resRefund = new Refund();
+
+							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( refund, ns, "RefundAmount" ) ) )
+								resRefund.RefundAmount = temp.ToDecimalDotOrComaSeparated();
+
+							resRefund.RefundAmountCurrencyID = this.GetElementAttribute( "CurrencyCodeType", refund, ns, "RefundAmount" );
+
+							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( refund, ns, "RefundTime" ) ) )
+								resRefund.RefundTime = ( DateTime.Parse( temp ) );
+
+							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( refund, ns, "RefundTime" ) ) )
+								resRefund.RefundStatus = GetElementValue( refund, ns, "RefundStatus" );
+
+							return resRefund;
+						} );
+					}
+					#endregion
+
+					#region Delivery
 					if( x.Element( ns + "ShippingDetails" ) != null )
 					{
 						if( x.Element( ns + "ShippingServiceOptions" ) != null )
@@ -109,23 +153,9 @@ namespace EbayAccess.Services.Parsers
 							}
 						}
 					}
+					#endregion
 
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ActualDeliveryTime" ) ) )
-					{
-						resultOrder.ShippingDetails = new ShippingDetails();
-						resultOrder.ShippingDetails.ShippingServiceOptions = new ShippingServiceOptions();
-						resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo = new ShippingPackageInfo();
-
-						resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ActualDeliveryTime = ( DateTime.Parse( temp ) );
-					}
-
-					resultOrder.OrderId = GetElementValue( x, ns, "OrderID" );
-
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "OrderStatus" ) ) )
-						resultOrder.Status = ( EbayOrderStatusEnum )Enum.Parse( typeof( EbayOrderStatusEnum ), temp );
-
-					resultOrder.PaymentMethods = GetElementValue( x, ns, "PaymentMethods" );
-
+					#region TransactionArray
 					var elTransactionArray = x.Element( ns + "TransactionArray" );
 					if( elTransactionArray != null )
 					{
@@ -161,6 +191,7 @@ namespace EbayAccess.Services.Parsers
 							return resTransaction;
 						} ).ToList();
 					}
+					#endregion
 
 					if( keepStremPosition )
 						stream.Position = streamStartPos;
