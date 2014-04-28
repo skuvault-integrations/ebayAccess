@@ -123,8 +123,8 @@ namespace EbayAccess.Services.Parsers
 							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( refund, ns, "RefundTime" ) ) )
 								resRefund.RefundTime = ( DateTime.Parse( temp ) );
 
-							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( refund, ns, "RefundTime" ) ) )
-								resRefund.RefundStatus = GetElementValue( refund, ns, "RefundStatus" );
+							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( refund, ns, "RefundStatus" ) ) )
+								resRefund.RefundStatus = ( RefundStatus )Enum.Parse( typeof( RefundStatus ), temp );
 
 							return resRefund;
 						} );
