@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<GetOrdersResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+	<Timestamp>2014-04-29T15:29:47.538Z</Timestamp>
+	<Ack>Success</Ack>
+	<Version>869</Version>
+	<Build>E869_CORE_API_16786567_R1</Build>
+	<PaginationResult>
+		<TotalNumberOfPages>0</TotalNumberOfPages>
+		<TotalNumberOfEntries>0</TotalNumberOfEntries>
+	</PaginationResult>
+	<HasMoreOrders>false</HasMoreOrders>
+	<OrderArray />
+	<OrdersPerPage>100</OrdersPerPage>
+	<PageNumber>1</PageNumber>
+	<ReturnedOrderCountActual>0</ReturnedOrderCountActual>
+</GetOrdersResponse>

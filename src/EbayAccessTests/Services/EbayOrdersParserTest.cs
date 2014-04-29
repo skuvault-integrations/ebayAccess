@@ -20,5 +20,16 @@ namespace EbayAccessTests.Services
 				orders.Orders[ 0 ].Status.ShouldBeEquivalentTo( EbayOrderStatusEnum.Active );
 			}
 		}
+
+		[Test]
+		public void Parse_OrdersResponseWithoutItems_ThereisNoErrorsAndExceptions()
+		{
+			using (var fs = new FileStream(@".\FIles\EbayServiceGetOrdersResponseWithOutItems.xml", FileMode.Open, FileAccess.Read))
+			{
+				var parser = new EbayGetOrdersResponseParser();
+				var orders = parser.Parse(fs);
+				orders.Orders.Should().HaveCount(0, "because in source file there is {0} order", 1);
+			}
+		}
 	}
 }

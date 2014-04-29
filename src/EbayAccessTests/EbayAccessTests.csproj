@@ -78,6 +78,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Files\EbayServiceGetOrdersResponseWithOutItems.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Files\EbayServiceGetSellerListResponseWith1PageOf4Contains1Item.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
