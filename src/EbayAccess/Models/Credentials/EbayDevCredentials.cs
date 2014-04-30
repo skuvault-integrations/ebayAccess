@@ -4,18 +4,18 @@ namespace EbayAccess.Models.Credentials
 {
 	public class EbayDevCredentials
 	{
-		public string DevName { get; private set; }
 		public string AppName { get; private set; }
+		public string DevName { get; private set; }
 		public string CertName { get; private set; }
 
-		public EbayDevCredentials( string devName, string appName, string certName )
+		public EbayDevCredentials( string appName, string devName, string certName )
 		{
-			Condition.Requires( devName, "devName" ).IsNotNullOrWhiteSpace();
-			Condition.Requires( appName, "appName" ).IsNotNullOrWhiteSpace();
+			Condition.Requires( appName, "devName" ).IsNotNullOrWhiteSpace();
+			Condition.Requires( devName, "appName" ).IsNotNullOrWhiteSpace();
 			Condition.Requires( certName, "certName" ).IsNotNullOrWhiteSpace();
 
-			this.DevName = devName;
 			this.AppName = appName;
+			this.DevName = devName;
 			this.CertName = certName;
 		}
 	}

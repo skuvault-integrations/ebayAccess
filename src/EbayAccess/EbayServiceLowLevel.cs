@@ -72,11 +72,11 @@ namespace EbayAccess
 
 				const string xEbayApiDevName = "X-EBAY-API-DEV-NAME";
 				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiDevName ) )
-					headers.Add( xEbayApiDevName, this._ebayDevCredentials.DevName );
+					headers.Add( xEbayApiDevName, this._ebayDevCredentials.AppName );
 
 				const string xEbayApiAppName = "X-EBAY-API-APP-NAME";
 				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiAppName ) )
-					headers.Add( xEbayApiAppName, this._ebayDevCredentials.AppName );
+					headers.Add( xEbayApiAppName, this._ebayDevCredentials.DevName );
 
 				const string xEbayApiSiteid = "X-EBAY-API-SITEID";
 				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiSiteid ) )
