@@ -63,8 +63,8 @@
     <Compile Include="EbayServiceLowLevelTest.cs" />
     <Compile Include="Programm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestCredentials.cs" />
     <Compile Include="TestEnvironment\TestBase.cs" />
+    <Compile Include="TestEnvironment\TestCredentials.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

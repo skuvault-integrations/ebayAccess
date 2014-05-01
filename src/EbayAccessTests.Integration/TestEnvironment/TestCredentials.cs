@@ -3,7 +3,7 @@ using System.Linq;
 using EbayAccess.Models.Credentials;
 using LINQtoCSV;
 
-namespace EbayAccessTests.Integration
+namespace EbayAccessTests.Integration.TestEnvironment
 {
 	public class TestCredentials
 	{
