@@ -20,7 +20,7 @@ namespace EbayAccess
 			return new EbayService( userCredentials, this._devCredentials );
 		}
 
-		public IEbayService CreateService(EbayUserCredentials userCredentials, string endPoint)
+		public IEbayService CreateService( EbayUserCredentials userCredentials, string endPoint )
 		{
 			return new EbayService( userCredentials, this._devCredentials, endPoint );
 		}

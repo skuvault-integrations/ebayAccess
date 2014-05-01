@@ -6,6 +6,6 @@ namespace EbayAccess.Interfaces
 	{
 		IEbayService CreateService( EbayUserCredentials userCredentials );
 
-		IEbayService CreateService(EbayUserCredentials userCredentials, string endPoint);
+		IEbayService CreateService( EbayUserCredentials userCredentials, string endPoint );
 	}
 }

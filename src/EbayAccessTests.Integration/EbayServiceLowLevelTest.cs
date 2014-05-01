@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace EbayAccessTests.Integration
 {
 	[ TestFixture ]
-	public class EbayServiceLowLevelTest:TestBase
+	public class EbayServiceLowLevelTest : TestBase
 	{
 		[ Test ]
 		public async Task EbayServiceLowLevelWithExistingInventoryItesm_UpdateItemsQuantityAsync_QuantityUpdatedForAll()
