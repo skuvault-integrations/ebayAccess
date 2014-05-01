@@ -53,43 +53,42 @@ namespace EbayAccessTests.Integration
 		#endregion
 
 		#region GetProducts
-		[Test]
+		[ Test ]
 		public void GetProductsAsync_EbayServiceWithProductsCreatedInSpecifiedTimeRange_HookupProducts()
 		{
 			//------------ Arrange
-			var service = new EbayService(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint());
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
 
 			//------------ Act
 			var ordersTask = service.GetProductsAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ) );
 			ordersTask.Wait();
 
 			//------------ Assert
-			ordersTask.Result.Count().Should().BeGreaterThan(0, "because on site there are items started in specified time");
+			ordersTask.Result.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
 		}
 		#endregion
 
-		//#region UpdateProducts
-		//[ Test ]
-		//public void UpdateItems()
-		//{
-		//	//------------ Arrange
-		//	var ebayService = new EbayService(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint());
-		//	const int qty1 = 100;
-		//	const int qty2 = 200;
-		//	var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
+		#region UpdateProducts
+		[ Test ]
+		public void UpdateItems()
+		{
+			//------------ Arrange
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
+			const int qty1 = 100;
+			const int qty2 = 200;
+			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
 
-		//	//------------ Act
-		//	var inventoryStat1Task = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest > { new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = qty1 } } );
-		//	var inventoryStat2Task = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest > { new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = qty2 } } );
+			//------------ Act
+			var inventoryStat1Task = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest > { new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = qty1 } } );
+			var inventoryStat2Task = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest > { new InventoryStatusRequest { ItemId = saleItemsIds[ 1 ], Quantity = qty2 } } );
 
-		//	var commonTask = Task.WhenAll( inventoryStat1Task, inventoryStat2Task );
-		//	commonTask.Wait();
+			var commonTask = Task.WhenAll( inventoryStat1Task, inventoryStat2Task );
+			commonTask.Wait();
 
-		//	//------------ Assert
-		//	(inventoryStat1Task.Quantity - inventoryStat2.Quantity).Should()
-		//		.Be(qty1 - qty2, String.Format("because we set 1 qty {0}, then set 2 qty {1}", qty1, qty2));
-		
-		//}
-		//#endregion
+			//------------ Assert
+			( inventoryStat1Task.Result.First().Quantity - inventoryStat2Task.Result.First().Quantity ).Should()
+				.Be( qty1 - qty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", qty1, qty2 ) );
+		}
+		#endregion
 	}
 }

@@ -6,6 +6,7 @@ using EbayAccess.Interfaces.Services;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
@@ -88,9 +89,9 @@ namespace EbayAccess
 			this.EbayServiceLowLevel.ReviseInventoriesStatus( products );
 		}
 
-		public async Task UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products )
+		public async Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products )
 		{
-			await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products );
+			return await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products );
 		}
 		#endregion
 	}
