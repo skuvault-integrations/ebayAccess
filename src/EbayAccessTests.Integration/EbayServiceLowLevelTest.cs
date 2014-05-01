@@ -4,25 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
 using NUnit.Framework;
 
 namespace EbayAccessTests.Integration
 {
 	[ TestFixture ]
-	public class EbayServiceLowLevelTest
+	public class EbayServiceLowLevelTest:TestBase
 	{
-		private TestCredentials _credentials;
-
-		[ SetUp ]
-		public void Init()
-		{
-			const string credentialsFilePath = @"..\..\Files\ebay_test_credentials.csv";
-			const string devCredentialsFilePath = @"..\..\Files\ebay_test_devcredentials.csv";
-			const string saleItemsIdsFilePath = @"..\..\Files\ebay_test_saleitemsids.csv";
-			this._credentials = new TestCredentials( credentialsFilePath, devCredentialsFilePath, saleItemsIdsFilePath );
-		}
-
 		[ Test ]
 		public async Task EbayServiceLowLevelWithExistingInventoryItesm_UpdateItemsQuantityAsync_QuantityUpdatedForAll()
 		{
