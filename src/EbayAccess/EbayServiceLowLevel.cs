@@ -279,7 +279,7 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Item > > GetItemsAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
 		{
-			var orders = new List< Item >();
+			var items = new List< Item >();
 
 			var totalRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
@@ -302,14 +302,14 @@ namespace EbayAccess
 
 						var tempOrders = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( tempOrders != null )
-							orders.AddRange( tempOrders.Items );
+							items.AddRange( tempOrders.Items );
 					}
 				} ).ConfigureAwait( false );
 
 				pageNumber++;
-			} while( orders.Count < totalRecords );
+			} while( items.Count < totalRecords );
 
-			return orders;
+			return items;
 		}
 		#endregion
 

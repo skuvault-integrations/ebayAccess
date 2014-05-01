@@ -25,7 +25,9 @@ namespace EbayAccess.Interfaces
 		Item GetItem( string id );
 
 		Task< Item > GetItemAsync( string id );
+		
 		IEnumerable< InventoryStatusResponse > ReviseInventoriesStatus( IEnumerable< InventoryStatusRequest > inventoryStatuses );
+		
 		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses );
 	}
 }
