@@ -37,6 +37,7 @@ namespace EbayAccess
 		{
 		}
 
+		#region GetOrders
 		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo )
 		{
 			var orders = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo );
@@ -50,7 +51,9 @@ namespace EbayAccess
 			var orders = await Task.Factory.StartNew( () => this.GetOrders( dateFrom, dateTo ) ).ConfigureAwait( false );
 			return orders;
 		}
+		#endregion
 
+		#region GetProducts
 		public IEnumerable< Item > GetProducts()
 		{
 			var utcNow = DateTime.UtcNow;
@@ -77,7 +80,9 @@ namespace EbayAccess
 		{
 			return await this.EbayServiceLowLevel.GetItemsAsync( createTimeFromStart, createTimeFromTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
 		}
+		#endregion
 
+		#region UpdateProducts
 		public void UpdateProducts( IEnumerable< InventoryStatusRequest > products )
 		{
 			this.EbayServiceLowLevel.ReviseInventoriesStatus( products );
@@ -87,5 +92,6 @@ namespace EbayAccess
 		{
 			await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products );
 		}
+		#endregion
 	}
 }

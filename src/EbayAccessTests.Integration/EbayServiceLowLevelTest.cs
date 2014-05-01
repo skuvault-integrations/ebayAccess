@@ -117,20 +117,6 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void EbayServiceLowLevelWithExistingItems_GetItemsSmart_NotEmptyItemsCollection()
-		{
-			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
-
-			//A
-			var orders = ebayService.GetItems( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
-
-			//A
-			orders.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
-		}
-
-		[ Test ]
 		public void EbayServiceLowLevelWithExistingItems_GetItems_NotEmptyItemsCollection()
 		{
 			//A
