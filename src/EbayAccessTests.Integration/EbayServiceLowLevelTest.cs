@@ -166,8 +166,7 @@ namespace EbayAccessTests.Integration
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
 
 			//A
-			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 21, 10, 0, 0 ) );
+			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
 
 			//A
 			orders.Count().Should().Be( 2, "because on site there is 2 orders" );
