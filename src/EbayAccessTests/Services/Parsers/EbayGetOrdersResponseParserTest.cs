@@ -29,7 +29,7 @@ namespace EbayAccessTests.Services.Parsers
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
-				orders.Orders.Should().HaveCount( 0, "because in source file there is {0} order", 1 );
+				orders.Orders.Should().HaveCount( 0, "because in source file there is {0} orders", 0 );
 			}
 		}
 
@@ -40,7 +40,7 @@ namespace EbayAccessTests.Services.Parsers
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
-				orders.Orders.First().TransactionArray.First().Item.Sku.Should().NotBeNullOrWhiteSpace( "because in source file there is order with SKU", 1 );
+				orders.Orders.First().TransactionArray.First().Item.Sku.Should().NotBeNullOrWhiteSpace( "because in source file there is order with SKU" );
 			}
 		}
 	}
