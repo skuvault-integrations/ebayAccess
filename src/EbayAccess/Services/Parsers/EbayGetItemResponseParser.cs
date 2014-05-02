@@ -66,7 +66,7 @@ namespace EbayAccess.Services.Parsers
 
 				res.Title = GetElementValue( x, ns, "Title" );
 
-				res.Sku = GetElementValue( x, ns, "Sku" );
+				res.Sku = GetElementValue( x, ns, "SKU" );
 
 				var sellingStatus = x.Element( ns + "SellingStatus" );
 				if( sellingStatus != null )

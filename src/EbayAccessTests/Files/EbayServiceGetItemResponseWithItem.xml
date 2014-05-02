@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<GetItemResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+	<Timestamp>2014-05-02T18:15:03.095Z</Timestamp>
+	<Ack>Success</Ack>
+	<Version>869</Version>
+	<Build>E869_CORE_API_16786567_R1</Build>
+	<Item>
+		<AutoPay>false</AutoPay>
+		<BuyerProtection>ItemIneligible</BuyerProtection>
+		<BuyItNowPrice currencyID="USD">0.0</BuyItNowPrice>
+		<Country>US</Country>
+		<Currency>USD</Currency>
+		<GiftIcon>0</GiftIcon>
+		<HitCounter>NoHitCounter</HitCounter>
+		<ItemID>110142400319</ItemID>
+		<ListingDetails>
+			<Adult>false</Adult>
+			<BindingAuction>false</BindingAuction>
+			<CheckoutEnabled>true</CheckoutEnabled>
+			<ConvertedBuyItNowPrice currencyID="USD">0.0</ConvertedBuyItNowPrice>
+			<ConvertedStartPrice currencyID="USD">1.12</ConvertedStartPrice>
+			<ConvertedReservePrice currencyID="USD">0.0</ConvertedReservePrice>
+			<HasReservePrice>false</HasReservePrice>
+			<StartTime>2014-05-02T13:07:23.000Z</StartTime>
+			<EndTime>2014-06-01T13:07:23.000Z</EndTime>
+			<ViewItemURL>http://cgi.sandbox.ebay.com/levis-501-teenager-Trousers-/110142400319</ViewItemURL>
+			<HasUnansweredQuestions>false</HasUnansweredQuestions>
+			<HasPublicMessages>false</HasPublicMessages>
+			<ViewItemURLForNaturalSearch>http://cgi.sandbox.ebay.com/levis-501-teenager-Trousers-/110142400319</ViewItemURLForNaturalSearch>
+		</ListingDetails>
+		<ListingDuration>GTC</ListingDuration>
+		<ListingType>FixedPriceItem</ListingType>
+		<Location>Seattle, Washington</Location>
+		<PaymentMethods>PayPal</PaymentMethods>
+		<PayPalEmailAddress>slav-facilitator@agileharbor.com</PayPalEmailAddress>
+		<PrimaryCategory>
+			<CategoryID>11483</CategoryID>
+			<CategoryName>Clothing, Shoes &amp; Accessories:Men's Clothing:Jeans</CategoryName>
+		</PrimaryCategory>
+		<PrivateListing>false</PrivateListing>
+		<Quantity>900</Quantity>
+		<ReservePrice currencyID="USD">0.0</ReservePrice>
+		<ReviseStatus>
+			<ItemRevised>false</ItemRevised>
+		</ReviseStatus>
+		<Seller>
+			<AboutMePage>false</AboutMePage>
+			<Email>sv02@1.com</Email>
+			<FeedbackScore>500</FeedbackScore>
+			<PositiveFeedbackPercent>0.0</PositiveFeedbackPercent>
+			<FeedbackPrivate>false</FeedbackPrivate>
+			<FeedbackRatingStar>Purple</FeedbackRatingStar>
+			<IDVerified>true</IDVerified>
+			<eBayGoodStanding>true</eBayGoodStanding>
+			<NewUser>false</NewUser>
+			<RegistrationDate>1995-01-01T00:00:00.000Z</RegistrationDate>
+			<Site>US</Site>
+			<Status>Confirmed</Status>
+			<UserID>testuser_sv02</UserID>
+			<UserIDChanged>false</UserIDChanged>
+			<UserIDLastChanged>2014-01-17T21:08:45.000Z</UserIDLastChanged>
+			<VATStatus>NoVATTax</VATStatus>
+			<SellerInfo>
+				<AllowPaymentEdit>true</AllowPaymentEdit>
+				<CheckoutEnabled>true</CheckoutEnabled>
+				<CIPBankAccountStored>false</CIPBankAccountStored>
+				<GoodStanding>true</GoodStanding>
+				<LiveAuctionAuthorized>false</LiveAuctionAuthorized>
+				<MerchandizingPref>OptIn</MerchandizingPref>
+				<QualifiesForB2BVAT>false</QualifiesForB2BVAT>
+				<StoreOwner>true</StoreOwner>
+				<StoreURL>http://www.stores.sandbox.ebay.com/id=133037671</StoreURL>
+				<SafePaymentExempt>true</SafePaymentExempt>
+			</SellerInfo>
+			<MotorsDealer>false</MotorsDealer>
+		</Seller>
+		<SellingStatus>
+			<BidCount>0</BidCount>
+			<BidIncrement currencyID="USD">0.0</BidIncrement>
+			<ConvertedCurrentPrice currencyID="USD">1.12</ConvertedCurrentPrice>
+			<CurrentPrice currencyID="USD">1.12</CurrentPrice>
+			<LeadCount>0</LeadCount>
+			<MinimumToBid currencyID="USD">1.12</MinimumToBid>
+			<QuantitySold>4</QuantitySold>
+			<ReserveMet>true</ReserveMet>
+			<SecondChanceEligible>false</SecondChanceEligible>
+			<ListingStatus>Active</ListingStatus>
+			<QuantitySoldByPickupInStore>0</QuantitySoldByPickupInStore>
+		</SellingStatus>
+		<ShippingDetails>
+			<ApplyShippingDiscount>false</ApplyShippingDiscount>
+			<CalculatedShippingRate>
+				<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+				<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+			</CalculatedShippingRate>
+			<SalesTax>
+				<SalesTaxPercent>0.0</SalesTaxPercent>
+				<ShippingIncludedInTax>false</ShippingIncludedInTax>
+			</SalesTax>
+			<ShippingServiceOptions>
+				<ShippingService>Other</ShippingService>
+				<ShippingServiceCost currencyID="USD">1.15</ShippingServiceCost>
+				<ShippingServiceAdditionalCost currencyID="USD">1.15</ShippingServiceAdditionalCost>
+				<ShippingServicePriority>1</ShippingServicePriority>
+				<ExpeditedService>false</ExpeditedService>
+				<ShippingTimeMin>1</ShippingTimeMin>
+				<ShippingTimeMax>10</ShippingTimeMax>
+			</ShippingServiceOptions>
+			<ShippingType>Flat</ShippingType>
+			<ThirdPartyCheckout>false</ThirdPartyCheckout>
+			<ShippingDiscountProfileID>0</ShippingDiscountProfileID>
+			<InternationalShippingDiscountProfileID>0</InternationalShippingDiscountProfileID>
+			<SellerExcludeShipToLocationsPreference>true</SellerExcludeShipToLocationsPreference>
+		</ShippingDetails>
+		<ShipToLocations>US</ShipToLocations>
+		<Site>US</Site>
+		<StartPrice currencyID="USD">1.12</StartPrice>
+		<Storefront>
+			<StoreCategoryID>1</StoreCategoryID>
+			<StoreCategory2ID>0</StoreCategory2ID>
+			<StoreURL>http://www.stores.sandbox.ebay.com/id=133037671</StoreURL>
+		</Storefront>
+		<TimeLeft>P29DT18H52M20S</TimeLeft>
+		<Title>levis 501 teenager Trousers</Title>
+		<HitCount>0</HitCount>
+		<LocationDefaulted>true</LocationDefaulted>
+		<GetItFast>false</GetItFast>
+		<PostalCode>98102</PostalCode>
+		<PictureDetails>
+			<GalleryType>Gallery</GalleryType>
+			<GalleryURL>http://i.ebayimg.sandbox.ebay.com/00/s/MzY1WDQ1Nw==/$(KGrHqNHJEwFMV+N6SDcBTY5UR(kbg~~60_1.JPG?set_id=8800005007</GalleryURL>
+			<PhotoDisplay>PicturePack</PhotoDisplay>
+			<PictureURL>http://i.ebayimg.sandbox.ebay.com/00/s/MzY1WDQ1Nw==/$(KGrHqNHJEwFMV+N6SDcBTY5UR(kbg~~60_1.JPG?set_id=8800005007</PictureURL>
+		</PictureDetails>
+		<DispatchTimeMax>2</DispatchTimeMax>
+		<ProxyItem>false</ProxyItem>
+		<BuyerGuaranteePrice currencyID="USD">20000.0</BuyerGuaranteePrice>
+		<IntangibleItem>false</IntangibleItem>
+		<ReturnPolicy>
+			<RefundOption>MoneyBack</RefundOption>
+			<Refund>Money Back</Refund>
+			<ReturnsWithinOption>Days_14</ReturnsWithinOption>
+			<ReturnsWithin>14 Days</ReturnsWithin>
+			<ReturnsAcceptedOption>ReturnsAccepted</ReturnsAcceptedOption>
+			<ReturnsAccepted>Returns Accepted</ReturnsAccepted>
+			<ShippingCostPaidByOption>Buyer</ShippingCostPaidByOption>
+			<ShippingCostPaidBy>Buyer</ShippingCostPaidBy>
+		</ReturnPolicy>
+		<PaymentAllowedSite>eBayMotors</PaymentAllowedSite>
+		<PaymentAllowedSite>CanadaFrench</PaymentAllowedSite>
+		<PaymentAllowedSite>Canada</PaymentAllowedSite>
+		<PaymentAllowedSite>US</PaymentAllowedSite>
+		<SKU>TestSku501Tr</SKU>
+		<Variations>
+			<Variation>
+				<SKU>testSku501_B</SKU>
+				<StartPrice currencyID="USD">1.12</StartPrice>
+				<Quantity>300</Quantity>
+				<VariationSpecifics>
+					<NameValueList>
+						<Name>Color</Name>
+						<Value>Black</Value>
+					</NameValueList>
+				</VariationSpecifics>
+				<SellingStatus>
+					<QuantitySold>1</QuantitySold>
+					<QuantitySoldByPickupInStore>0</QuantitySoldByPickupInStore>
+				</SellingStatus>
+			</Variation>
+			<Variation>
+				<SKU>testSku501_W</SKU>
+				<StartPrice currencyID="USD">1.14</StartPrice>
+				<Quantity>300</Quantity>
+				<VariationSpecifics>
+					<NameValueList>
+						<Name>Color</Name>
+						<Value>White</Value>
+					</NameValueList>
+				</VariationSpecifics>
+				<SellingStatus>
+					<QuantitySold>2</QuantitySold>
+					<QuantitySoldByPickupInStore>0</QuantitySoldByPickupInStore>
+				</SellingStatus>
+			</Variation>
+			<Variation>
+				<SKU>testSku501_Y</SKU>
+				<StartPrice currencyID="USD">1.15</StartPrice>
+				<Quantity>300</Quantity>
+				<VariationSpecifics>
+					<NameValueList>
+						<Name>Color</Name>
+						<Value>Yellow</Value>
+					</NameValueList>
+				</VariationSpecifics>
+				<SellingStatus>
+					<QuantitySold>1</QuantitySold>
+					<QuantitySoldByPickupInStore>0</QuantitySoldByPickupInStore>
+				</SellingStatus>
+			</Variation>
+			<Pictures>
+				<VariationSpecificName>Color</VariationSpecificName>
+				<VariationSpecificPictureSet>
+					<VariationSpecificValue>Black</VariationSpecificValue>
+					<PictureURL>http://i.ebayimg.sandbox.ebay.com/00/s/MzY1WDQ1Nw==/$(KGrHqRHJCwFLsYvc5jdBTY5UeIezg~~60_1.JPG?set_id=8800005007</PictureURL>
+				</VariationSpecificPictureSet>
+				<VariationSpecificPictureSet>
+					<VariationSpecificValue>White</VariationSpecificValue>
+					<PictureURL>http://i.ebayimg.sandbox.ebay.com/00/s/MzY1WDQ1Nw==/$(KGrHqRHJCoFJlO3PCfjBTY5UqD0u!~~60_1.JPG?set_id=8800005007</PictureURL>
+				</VariationSpecificPictureSet>
+				<VariationSpecificPictureSet>
+					<VariationSpecificValue>Yellow</VariationSpecificValue>
+					<PictureURL>http://i.ebayimg.sandbox.ebay.com/00/s/MzY1WDQ1Nw==/$(KGrHqFHJBUFJv6zvdC9BTY5U6tWgQ~~60_1.JPG?set_id=8800005007</PictureURL>
+				</VariationSpecificPictureSet>
+			</Pictures>
+			<VariationSpecificsSet>
+				<NameValueList>
+					<Name>Color</Name>
+					<Value>Black</Value>
+					<Value>White</Value>
+					<Value>Yellow</Value>
+				</NameValueList>
+			</VariationSpecificsSet>
+		</Variations>
+		<ConditionID>1000</ConditionID>
+		<ConditionDisplayName>New with tags</ConditionDisplayName>
+		<PostCheckoutExperienceEnabled>false</PostCheckoutExperienceEnabled>
+		<ShippingPackageDetails>
+			<ShippingIrregular>false</ShippingIrregular>
+			<ShippingPackage>PackageThickEnvelope</ShippingPackage>
+			<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+			<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+		</ShippingPackageDetails>
+		<HideFromSearch>false</HideFromSearch>
+	</Item>
+</GetItemResponse>
