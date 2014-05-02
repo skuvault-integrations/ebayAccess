@@ -3,10 +3,10 @@ using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace EbayAccessTests.Services
+namespace EbayAccessTests.Services.Parsers
 {
 	[ TestFixture ]
-	public class EbayItemsParserTest
+	public class EbayGetSallerListResponseParserTest
 	{
 		[ Test ]
 		public void FileStreamWithCorrectXml_ParseItemsResponse_HookupCorrectDeserializedObject()

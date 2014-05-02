@@ -4,14 +4,13 @@ using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace EbayAccessTests.Services
+namespace EbayAccessTests.Services.Parsers
 {
 	[ TestFixture ]
-	public class EbayInventoryStatusParserTest
+	public class EbayReviseInventoryStatusResponseParserTest
 	{
 		[ Test ]
-		public void
-			CorrectReviseInventoryStatusResponseWithInventory_ParseInventoryStatusResponse_HookupCorrectDeserializedObject()
+		public void CorrectReviseInventoryStatusResponseWithInventory_ParseInventoryStatusResponse_HookupCorrectDeserializedObject()
 		{
 			//A
 			using( var fs = new FileStream( @".\Files\ReviseInventoryStatusResponse.xml", FileMode.Open, FileAccess.Read ) )

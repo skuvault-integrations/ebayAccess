@@ -3,10 +3,10 @@ using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace EbayAccessTests.Services
+namespace EbayAccessTests.Services.Parsers
 {
 	[ TestFixture ]
-	public class EbayPagesParserTest
+	public class EbayPaginationResultResponseParserTest
 	{
 		[ Test ]
 		public void ParsePaginationResultResponse_ResultContainsMultiplePages_AllPagesHandled()
