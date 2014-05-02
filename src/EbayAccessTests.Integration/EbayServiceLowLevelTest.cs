@@ -148,8 +148,6 @@ namespace EbayAccessTests.Integration
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
-			const int qty1 = 100;
-			const int qty2 = 200;
 			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
 
 			//A
@@ -157,6 +155,20 @@ namespace EbayAccessTests.Integration
 
 			//A
 			inventoryStat1.ItemId.Should().Be( saleItemsIds[ 1 ].ToString(), "Code requests item with id={0}.", saleItemsIds[ 1 ].ToString() );
+		}
+
+		[Test]
+		public void GetItem_EbayServiceWithExistingSaleItemWithSku_HookupItemWithSku()
+		{
+			//A
+			var ebayService = new EbayServiceLowLevel(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint());
+			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
+
+			//A
+			var inventoryStat1 = ebayService.GetItem(saleItemsIds[2].ToString());
+
+			//A
+			inventoryStat1.Sku.Should().NotBeNullOrWhiteSpace("because in store item SKU well filled");
 		}
 		#endregion
 
@@ -187,6 +199,21 @@ namespace EbayAccessTests.Integration
 
 			//A
 			orders.Count().Should().Be( 2, "because on site there is 2 orders" );
+		}
+
+		[ Test ]
+		public void GetOrders_EbayServiceWithExistingOrders_HookupOrdersWithSku()
+		{
+			//A
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
+
+			//A
+			var timeFrom = new DateTime( 2014, 5, 2, 18, 0, 45 );
+			var timeTo = new DateTime( 2014, 5, 2, 18, 2, 45 );
+			var orders = ebayService.GetOrders( timeFrom, timeTo );
+
+			//A
+			orders.ToList().First().TransactionArray.TrueForAll( x => x.Variation != null && !string.IsNullOrWhiteSpace( x.Variation.Sku ) ).Should().BeTrue( "because in ebay store order created in this time range [{0}{1}] contains items with sku", timeFrom, timeTo );
 		}
 
 		[ Test ]

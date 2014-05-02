@@ -15,5 +15,7 @@
 		public string CurrencyId { get; set; }
 
 		public string OrderLineItemId { get; set; }
+
+		public Variation Variation { get; set; }
 	}
 }
