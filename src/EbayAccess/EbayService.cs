@@ -60,7 +60,7 @@ namespace EbayAccess
 			var utcNow = DateTime.UtcNow;
 			var createTimeFrom = new DateTime( utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, utcNow.Minute + 1, utcNow.Second, utcNow.Kind );
 			var createTimeTo = new DateTime( createTimeFrom.Year, createTimeFrom.Month + 1, createTimeFrom.Day, createTimeFrom.Hour, createTimeFrom.Minute, createTimeFrom.Second, createTimeFrom.Kind );
-			return this.EbayServiceLowLevel.GetItems( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime );
+			return this.EbayServiceLowLevel.GetSellerList( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime );
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsAsync()
@@ -68,18 +68,18 @@ namespace EbayAccess
 			var utcNow = DateTime.UtcNow;
 			var createTimeFrom = new DateTime( utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, utcNow.Minute + 1, utcNow.Second, utcNow.Kind );
 			var createTimeTo = new DateTime( createTimeFrom.Year, createTimeFrom.Month + 1, createTimeFrom.Day, createTimeFrom.Hour, createTimeFrom.Minute, createTimeFrom.Second, createTimeFrom.Kind );
-			return await this.EbayServiceLowLevel.GetItemsAsync( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
+			return await this.EbayServiceLowLevel.GetSellerListAsync( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFrom )
 		{
 			var createTimeTo = new DateTime( createTimeFrom.Year, createTimeFrom.Month + 4, createTimeFrom.Day, createTimeFrom.Hour, createTimeFrom.Minute, createTimeFrom.Second, createTimeFrom.Kind );
-			return await this.EbayServiceLowLevel.GetItemsAsync( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
+			return await this.EbayServiceLowLevel.GetSellerListAsync( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
 		{
-			return await this.EbayServiceLowLevel.GetItemsAsync( createTimeFromStart, createTimeFromTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
+			return await this.EbayServiceLowLevel.GetSellerListAsync( createTimeFromStart, createTimeFromTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
 		}
 		#endregion
 

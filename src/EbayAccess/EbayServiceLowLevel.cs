@@ -217,8 +217,8 @@ namespace EbayAccess
 		}
 		#endregion
 
-		#region GetItems
-		private static Dictionary< string, string > CreateGetItemsRequestHeadersWithApiCallName()
+		#region GetSellerList
+		private static Dictionary< string, string > CreateGetSellerListRequestHeadersWithApiCallName()
 		{
 			return new Dictionary< string, string >
 			{
@@ -226,7 +226,7 @@ namespace EbayAccess
 			};
 		}
 
-		private string CreateGetItemsRequestBody( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, int recordsPerPage, int pageNumber )
+		private string CreateGetSellerListRequestBody( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, int recordsPerPage, int pageNumber )
 		{
 			return string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><{5}From>{1}</{5}From><{5}To>{2}</{5}To><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><GranularityLevel>Fine</GranularityLevel></GetSellerListRequest>​​",
@@ -238,7 +238,7 @@ namespace EbayAccess
 				timeRangeEnum );
 		}
 
-		public IEnumerable< Item > GetItems( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public IEnumerable< Item > GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
 		{
 			var orders = new List< Item >();
 
@@ -248,9 +248,9 @@ namespace EbayAccess
 			var pageNumber = 1;
 			do
 			{
-				var body = this.CreateGetItemsRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
+				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
 
-				var headers = CreateGetItemsRequestHeadersWithApiCallName();
+				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
 				ActionPolicies.Get.Do( () =>
 				{
@@ -277,7 +277,7 @@ namespace EbayAccess
 			return orders;
 		}
 
-		public async Task< IEnumerable< Item > > GetItemsAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public async Task< IEnumerable< Item > > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
 		{
 			var items = new List< Item >();
 
@@ -286,9 +286,9 @@ namespace EbayAccess
 			var pageNumber = 1;
 			do
 			{
-				var body = this.CreateGetItemsRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
+				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
 
-				var headers = CreateGetItemsRequestHeadersWithApiCallName();
+				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
@@ -377,7 +377,15 @@ namespace EbayAccess
 		}
 		#endregion
 
-		#region Upload
+		#region ReviseInventoryStatus
+		private static Dictionary< string, string > CreateReviseInventoryStatusHeadersWithApiCallName()
+		{
+			return new Dictionary< string, string >
+			{
+				{ XEbayApiCallName, "ReviseInventoryStatus" },
+			};
+		}
+
 		private string CreateReviseInventoryStatusRequestBody( long? itemIdMonad, long? quantityMonad, string skuMonad )
 		{
 			var itemIdElement = itemIdMonad.HasValue ? string.Format( "<ItemID>{0}</ItemID>", itemIdMonad.Value ) : string.Empty;
@@ -395,14 +403,6 @@ namespace EbayAccess
 				skuElement
 				);
 			return body;
-		}
-
-		private static Dictionary< string, string > CreateReviseInventoryStatusHeadersWithApiCallName()
-		{
-			return new Dictionary< string, string >
-			{
-				{ XEbayApiCallName, "ReviseInventoryStatus" },
-			};
 		}
 
 		public InventoryStatusResponse ReviseInventoryStatus( InventoryStatusRequest inventoryStatusReq )

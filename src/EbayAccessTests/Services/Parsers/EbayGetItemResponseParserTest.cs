@@ -12,13 +12,13 @@ namespace EbayAccessTests.Services.Parsers
 		public void Parse_GetItemResponseWithSku_HookupSku()
 		{
 			//A
-			using(var fs = new FileStream(@".\Files\EbayServiceGetItemResponseWithItem.xml", FileMode.Open,FileAccess.Read ) )
+			using( var fs = new FileStream( @".\Files\EbayServiceGetItemResponseWithItem.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				//A
 				var orders = new EbayGetItemResponseParser().Parse( fs );
 
 				//A
-				orders.Item.Sku.Should().NotBeNullOrWhiteSpace("because in source file there is item with sku" );
+				orders.Item.Sku.Should().NotBeNullOrWhiteSpace( "because in source file there is item with sku" );
 			}
 		}
 	}

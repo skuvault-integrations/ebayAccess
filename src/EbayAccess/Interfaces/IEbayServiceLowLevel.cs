@@ -18,9 +18,9 @@ namespace EbayAccess.Interfaces
 
 		Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusResponse );
 
-		IEnumerable< Item > GetItems( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
+		IEnumerable< Item > GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
 
-		Task< IEnumerable< Item > > GetItemsAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
+		Task< IEnumerable< Item > > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
 
 		Item GetItem( string id );
 
