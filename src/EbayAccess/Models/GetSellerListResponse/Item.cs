@@ -1,4 +1,7 @@
-﻿namespace EbayAccess.Models.GetSellerListResponse
+﻿using System.Collections.Generic;
+using EbayAccess.Models.GetOrdersResponse;
+
+namespace EbayAccess.Models.GetSellerListResponse
 {
 	public class Item
 	{
@@ -35,5 +38,7 @@
 		public string BuyItNowPriceCurrencyId { get; set; }
 
 		public string ReservePriceCurrencyId { get; set; }
+
+		public List< Variation > Variations { get; set; }
 	}
 }

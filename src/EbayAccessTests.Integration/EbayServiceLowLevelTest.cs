@@ -157,18 +157,18 @@ namespace EbayAccessTests.Integration
 			inventoryStat1.ItemId.Should().Be( saleItemsIds[ 1 ].ToString(), "Code requests item with id={0}.", saleItemsIds[ 1 ].ToString() );
 		}
 
-		[Test]
+		[ Test ]
 		public void GetItem_EbayServiceWithExistingSaleItemWithSku_HookupItemWithSku()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint());
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
 			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
 
 			//A
-			var inventoryStat1 = ebayService.GetItem(saleItemsIds[2].ToString());
+			var inventoryStat1 = ebayService.GetItem( saleItemsIds[ 2 ].ToString() );
 
 			//A
-			inventoryStat1.Sku.Should().NotBeNullOrWhiteSpace("because in store item SKU well filled");
+			inventoryStat1.Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because in ebay store sale item with ID={0} contains variations with sku", saleItemsIds[ 2 ].ToString() );
 		}
 		#endregion
 

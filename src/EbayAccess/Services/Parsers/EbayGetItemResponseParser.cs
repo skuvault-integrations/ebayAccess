@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using EbayAccess.Infrastructure;
 using EbayAccess.Models.GetItemResponse;
+using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListResponse;
+using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services.Parsers
 {
@@ -125,6 +128,25 @@ namespace EbayAccess.Services.Parsers
 						res.PrimaryCategory.CategoryId = long.Parse( temp );
 
 					res.PrimaryCategory.CategoryName = GetElementValue( x, ns, "PrimaryCategory", "CategoryName" );
+				}
+
+				var variations = x.Element( ns + "Variations" );
+				if( variations != null )
+				{
+					res.Variations = new List< Variation >();
+
+					var variationsElem = variations.Descendants( ns + "Variation" );
+
+					var variationsObj = variationsElem.Select( variat =>
+					{
+						var tempVariation = new Variation();
+
+						tempVariation.Sku = GetElementValue( variat, ns, "SKU" );
+
+						return tempVariation;
+					} );
+
+					res.Variations.AddRange( variationsObj );
 				}
 
 				if( keepStremPosition )

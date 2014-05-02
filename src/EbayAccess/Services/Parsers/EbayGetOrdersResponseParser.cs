@@ -184,13 +184,13 @@ namespace EbayAccess.Services.Parsers
 
 								resTransaction.Item.Title = GetElementValue( elItem, ns, "Title" );
 							}
-							
-							var elVariation = transaction.Element(ns + "Variation");
-							if (elVariation != null)
+
+							var elVariation = transaction.Element( ns + "Variation" );
+							if( elVariation != null )
 							{
 								resTransaction.Variation = new Variation();
 
-								resTransaction.Variation.Sku = GetElementValue(elVariation, ns, "SKU");
+								resTransaction.Variation.Sku = GetElementValue( elVariation, ns, "SKU" );
 							}
 
 							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( transaction, ns, "QuantityPurchased" ) ) )
