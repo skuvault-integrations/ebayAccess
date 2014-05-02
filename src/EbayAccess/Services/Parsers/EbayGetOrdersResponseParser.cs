@@ -182,6 +182,8 @@ namespace EbayAccess.Services.Parsers
 
 								resTransaction.Item.Site = GetElementValue( elItem, ns, "Site" );
 
+								resTransaction.Item.Sku = GetElementValue( elItem, ns, "SKU" );
+
 								resTransaction.Item.Title = GetElementValue( elItem, ns, "Title" );
 							}
 

@@ -7,5 +7,7 @@
 		public string Site { get; set; }
 
 		public string Title { get; set; }
+
+		public string Sku { get; set; }
 	}
 }
