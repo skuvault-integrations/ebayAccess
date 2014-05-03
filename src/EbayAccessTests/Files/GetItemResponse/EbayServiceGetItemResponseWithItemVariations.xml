@@ -151,7 +151,6 @@
 		<PaymentAllowedSite>CanadaFrench</PaymentAllowedSite>
 		<PaymentAllowedSite>Canada</PaymentAllowedSite>
 		<PaymentAllowedSite>US</PaymentAllowedSite>
-		<SKU>TestSku501Tr</SKU>
 		<Variations>
 			<Variation>
 				<SKU>testSku501_B</SKU>

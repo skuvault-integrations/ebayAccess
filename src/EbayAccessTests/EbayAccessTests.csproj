@@ -75,15 +75,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Files\EbayServiceGetItemResponseWithItem.xml">
+    <Content Include="Files\GetItemResponse\EbayServiceGetItemResponseWithItemSku.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Files\EbayServiceGetOrdersResponseWithItems.xml">
+    <Content Include="Files\GetItemResponse\EbayServiceGetItemResponseWithItemVariations.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Files\EbayServiceGetOrdersResponseWithOutItems.xml">
+    <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\EbayServiceGetSellerListResponseWith1PageOf4Contains1Item.xml">
@@ -92,13 +96,15 @@
     <Content Include="Files\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Files\GetOrdersWithItemMultipleCount.xml">
+    <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemVariationSku.xml">
+      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\ReviseInventoryStatusResponse.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
