@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using EbayAccess.Interfaces;
 using EbayAccess.Interfaces.Services;
@@ -80,6 +81,17 @@ namespace EbayAccess
 		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
 		{
 			return await this.EbayServiceLowLevel.GetSellerListAsync( createTimeFromStart, createTimeFromTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
+		}
+
+		public async Task< IEnumerable< Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
+		{
+			var products = await this.EbayServiceLowLevel.GetSellerListAsync( createTimeFromStart, createTimeFromTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
+
+			var productsDetailsTasks = products.Select( x => this.EbayServiceLowLevel.GetItemAsync( x.ItemId ) );
+
+			var productsDetails = await Task.WhenAll( productsDetailsTasks ).ConfigureAwait( false );
+
+			return productsDetails;
 		}
 		#endregion
 

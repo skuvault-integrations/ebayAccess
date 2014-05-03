@@ -25,5 +25,7 @@ namespace EbayAccess.Interfaces
 		Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFrom );
 
 		Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo );
+
+		Task< IEnumerable< Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo );
 	}
 }

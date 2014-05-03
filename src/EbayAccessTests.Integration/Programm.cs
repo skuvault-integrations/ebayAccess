@@ -23,5 +23,21 @@ namespace EbayAccessTests.Integration
 			//------------ Assert
 			orders.Count().Should().Be( 2, "because on site there is 2 orders" );
 		}
+
+		[ Test ]
+		public void GetProductsDetailsAsync_EbayServiceWithProductsVariationsSku_HookupProductsVariationsSku()
+		{
+			//------------ Arrange
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayEndPoint() );
+
+			//------------ Act
+			var ordersTask = ebayService.GetProductsDetailsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
+			ordersTask.Wait();
+			var orders = ordersTask.Result;
+
+			//------------ Assert
+			orders.First().Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because on site there is 2 orders" );
+		}
 	}
 }

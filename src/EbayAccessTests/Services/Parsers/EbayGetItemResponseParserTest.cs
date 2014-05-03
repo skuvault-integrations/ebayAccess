@@ -12,7 +12,7 @@ namespace EbayAccessTests.Services.Parsers
 		public void Parse_GetItemResponseWithSku_HookupSku()
 		{
 			//A
-			using (var fs = new FileStream(@".\Files\GetItemResponse\EbayServiceGetItemResponseWithItemSku.xml", FileMode.Open, FileAccess.Read))
+			using( var fs = new FileStream( @".\Files\GetItemResponse\EbayServiceGetItemResponseWithItemSku.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				//A
 				var orders = new EbayGetItemResponseParser().Parse( fs );
@@ -22,17 +22,17 @@ namespace EbayAccessTests.Services.Parsers
 			}
 		}
 
-		[Test]
+		[ Test ]
 		public void Parse_GetItemResponseWithVariationsSku_HookupVariationSkus()
 		{
 			//A
-			using (var fs = new FileStream(@".\Files\GetItemResponse\EbayServiceGetItemResponseWithItemVariations.xml", FileMode.Open, FileAccess.Read))
+			using( var fs = new FileStream( @".\Files\GetItemResponse\EbayServiceGetItemResponseWithItemVariations.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				//A
-				var orders = new EbayGetItemResponseParser().Parse(fs);
+				var orders = new EbayGetItemResponseParser().Parse( fs );
 
 				//A
-				orders.Item.Variations.TrueForAll(x=>!string.IsNullOrWhiteSpace(x.Sku)).Should().BeTrue("because in source file there is item with variation skus");
+				orders.Item.Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because in source file there is item with variation skus" );
 			}
 		}
 	}

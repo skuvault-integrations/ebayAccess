@@ -13,7 +13,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void FileStreamWithCorrectXml_ParseOrdersResponse_HookupCorrectDeserializedObject()
 		{
-			using (var fs = new FileStream(@".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read))
+			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -25,7 +25,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_OrdersResponseWithoutItems_ThereisNoErrorsAndExceptions()
 		{
-			using (var fs = new FileStream(@".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml", FileMode.Open, FileAccess.Read))
+			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -36,7 +36,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponseWithSku_HookupSku()
 		{
-			using (var fs = new FileStream(@".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read))
+			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -44,14 +44,14 @@ namespace EbayAccessTests.Services.Parsers
 			}
 		}
 
-		[Test]
+		[ Test ]
 		public void Parse_GetOrdersResponseWithItemVariationSku_HookupVariationSku()
 		{
-			using (var fs = new FileStream(@".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemVariationSku.xml", FileMode.Open, FileAccess.Read))
+			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemVariationSku.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
-				var orders = parser.Parse(fs);
-				orders.Orders.First().TransactionArray.First().Variation.Sku.Should().NotBeNullOrWhiteSpace("because in source file there is item with variation sku");
+				var orders = parser.Parse( fs );
+				orders.Orders.First().TransactionArray.First().Variation.Sku.Should().NotBeNullOrWhiteSpace( "because in source file there is item with variation sku" );
 			}
 		}
 	}
