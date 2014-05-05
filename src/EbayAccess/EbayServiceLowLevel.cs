@@ -387,14 +387,11 @@ namespace EbayAccess
 			};
 		}
 
-		private string CreateReviseInventoryStatusRequestBody( long? itemIdMonad, long? quantityMonad, string skuMonad )
+		private string CreateReviseInventoryStatusRequestBody( long? itemIdMonad, long? quantityMonad, string sku )
 		{
 			var itemIdElement = itemIdMonad.HasValue ? string.Format( "<ItemID>{0}</ItemID>", itemIdMonad.Value ) : string.Empty;
-			var quantityElement = quantityMonad.HasValue
-				? string.Format( "<Quantity>{0}</Quantity>", quantityMonad.Value )
-				: string.Empty;
-
-			var skuElement = string.IsNullOrWhiteSpace( skuMonad ) ? string.Format( "<SKU>{0}</SKU>", skuMonad ) : string.Empty;
+			var quantityElement = quantityMonad.HasValue ? string.Format( "<Quantity>{0}</Quantity>", quantityMonad.Value ) : string.Empty;
+			var skuElement = !string.IsNullOrWhiteSpace( sku ) ? string.Format( "<SKU>{0}</SKU>", sku ) : string.Empty;
 
 			var body = string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><InventoryStatus ComplexType=\"InventoryStatusType\">{1}{2}{3}</InventoryStatus></ReviseInventoryStatusRequest>",

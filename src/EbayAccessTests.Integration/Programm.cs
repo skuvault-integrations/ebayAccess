@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EbayAccess;
+using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
 using NUnit.Framework;
@@ -54,6 +56,36 @@ namespace EbayAccessTests.Integration
 
 			//------------ Assert
 			orders.First().TransactionArray.TrueForAll( x => x.Variation != null && !string.IsNullOrWhiteSpace( x.Variation.Sku ) ).Should().BeTrue( "because on site there is 2 orders" );
+		}
+
+		[ Test ]
+		public void UpdateProductsAsync_EbayServiceWithOrdersVariationsSku_ProductsUpdated()
+		{
+			//------------ Arrange
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayEndPoint() );
+
+			const int itemsQty1 = 499;
+			const int itemsQty2 = 299;
+
+			//------------ Act
+			var updateProductsAsyncTask = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			{
+				new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_B", Quantity = itemsQty1 },
+			} );
+			updateProductsAsyncTask.Wait();
+			var inventoryStat1 = updateProductsAsyncTask.Result.ToArray();
+
+			var updateProductsAsyncTask2 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			{
+				new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_B", Quantity = itemsQty2 },
+			} );
+			updateProductsAsyncTask2.Wait();
+			var inventoryStat2 = updateProductsAsyncTask2.Result.ToArray();
+
+			//------------ Assert
+			( inventoryStat1[ 0 ].Quantity - inventoryStat2[ 0 ].Quantity ).Should()
+				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", itemsQty1, itemsQty2 ) );
 		}
 	}
 }
