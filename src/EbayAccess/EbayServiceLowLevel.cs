@@ -31,7 +31,7 @@ namespace EbayAccess
 		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();
-			Condition.Ensures( endPouint, "endPoint" ).IsNotNullOrEmpty();
+			Condition.Ensures( endPouint, "endPoint" ).IsNotNullOrWhiteSpace();
 			Condition.Requires( webRequestServices, "webRequestServices" ).IsNotNull();
 			Condition.Requires( ebayDevCredentials, "ebayDevCredentials" ).IsNotNull();
 
