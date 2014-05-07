@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -27,14 +26,14 @@ namespace EbayAccess.Services
 		}
 
 		#region BaseRequests
-		public WebRequest CreateServiceGetRequest( string serviceUrl, IEnumerable< Tuple< string, string > > rawUrlParameters )
+		public WebRequest CreateServiceGetRequest( string serviceUrl, IDictionary< string, string > rawUrlParameters )
 		{
 			var parametrizedServiceUrl = serviceUrl;
 
 			if( rawUrlParameters.Any() )
 			{
-				parametrizedServiceUrl += "?" + rawUrlParameters.Aggregate( string.Empty,
-					( accum, item ) => accum + "&" + string.Format( "{0}={1}", item.Item1, item.Item2 ) );
+				parametrizedServiceUrl += "?" + rawUrlParameters.Keys.Aggregate( string.Empty,
+					( accum, item ) => accum + "&" + string.Format( "{0}={1}", item, rawUrlParameters[ item ] ) );
 			}
 
 			var serviceRequest = WebRequest.Create( parametrizedServiceUrl );
