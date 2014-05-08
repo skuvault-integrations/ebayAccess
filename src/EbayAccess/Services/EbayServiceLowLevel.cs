@@ -46,27 +46,19 @@ namespace EbayAccess.Services
 		#region EbayStandartRequest
 		public async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body )
 		{
-			try
-			{
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCompatibilityLevel ) )
-					headers.Add( EbayHeaders.XEbayApiCompatibilityLevel, "853" );
+			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCompatibilityLevel ) )
+				headers.Add( EbayHeaders.XEbayApiCompatibilityLevel, "853" );
 
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiDevName ) )
-					headers.Add( EbayHeaders.XEbayApiDevName, this._ebayDevCredentials.AppName );
+			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiDevName ) )
+				headers.Add( EbayHeaders.XEbayApiDevName, this._ebayDevCredentials.AppName );
 
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiAppName ) )
-					headers.Add( EbayHeaders.XEbayApiAppName, this._ebayDevCredentials.DevName );
+			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiAppName ) )
+				headers.Add( EbayHeaders.XEbayApiAppName, this._ebayDevCredentials.DevName );
 
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiSiteid ) )
-					headers.Add( EbayHeaders.XEbayApiSiteid, "0" );
+			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiSiteid ) )
+				headers.Add( EbayHeaders.XEbayApiSiteid, "0" );
 
-				return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
-			}
-			catch( WebException exc )
-			{
-				// todo: log some exceptions
-				throw;
-			}
+			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
 		}
 
 		public WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body )
@@ -78,18 +70,10 @@ namespace EbayAccess.Services
 
 		public async Task< WebRequest > CreateEbayStandartPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body )
 		{
-			try
-			{
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCertName ) )
-					headers.Add( EbayHeaders.XEbayApiCertName, this._ebayDevCredentials.CertName );
+			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCertName ) )
+				headers.Add( EbayHeaders.XEbayApiCertName, this._ebayDevCredentials.CertName );
 
-				return await this.CreateEbayStandartPostRequestAsync( url, headers, body ).ConfigureAwait( false );
-			}
-			catch( WebException exc )
-			{
-				// todo: log some exceptions
-				throw;
-			}
+			return await this.CreateEbayStandartPostRequestAsync( url, headers, body ).ConfigureAwait( false );
 		}
 
 		public WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body )

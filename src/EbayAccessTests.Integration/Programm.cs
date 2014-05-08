@@ -91,7 +91,7 @@ namespace EbayAccessTests.Integration
 			var orders = ordersTask.Result;
 
 			//------------ Assert
-			orders.First().TransactionArray.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Item.Sku ) ).Should().BeTrue( "because on site there is 1 order with sku in time range {0}{1}", dateFrom, dateTo );
+			orders.First().TransactionArray.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Item.Sku ) ).Should().BeTrue( "because on site there is 1 order with sku in time range {0}-{1}", dateFrom, dateTo );
 		}
 
 		[ Test ]

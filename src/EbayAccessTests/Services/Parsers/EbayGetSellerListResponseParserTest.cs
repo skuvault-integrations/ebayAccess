@@ -23,22 +23,5 @@ namespace EbayAccessTests.Services.Parsers
 				orders.Items.Should().HaveCount( 3, "because in source file there is {0} items", 3 );
 			}
 		}
-
-		//todo: add tests to hookup sku
-		//[Test]
-		//public void Parse_GetSellerLisrResponseWithSku_HookupSku()
-		//{
-		//	//A
-		//	using (
-		//		var fs = new FileStream(@".\Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml", FileMode.Open,
-		//			FileAccess.Read))
-		//	{
-		//		//A
-		//		var orders = new EbayGetSallerListResponseParser().Parse(fs);
-
-		//		//A
-		//		orders.Items.Should().HaveCount(3, "because in source file there is {0} items", 3);
-		//	}
-		//}
 	}
 }
