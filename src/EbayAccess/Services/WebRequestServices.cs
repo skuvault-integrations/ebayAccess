@@ -64,31 +64,49 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region logging
-		private void LogTraceStartGetResponse()
+		private void LogTraceGetResponseStarted( WebRequest webRequest )
 		{
-			this.Log().Trace( "[ebay] Get response started." );
+			this.Log().Trace( "[ebay] Get response url:[0} started.", webRequest.RequestUri );
 		}
 
-		private void LogTraceEndGetResponse()
+		private void LogTraceGetResponseEnded( WebRequest webRequest, Stream webResponseStream )
 		{
-			this.Log().Trace( "[ebay] Get response ended." );
+			using( Stream streamCopy = new MemoryStream( ( int )webResponseStream.Length ) )
+			{
+				var sourcePos = webResponseStream.Position;
+				webResponseStream.CopyTo( streamCopy );
+				webResponseStream.Position = sourcePos;
+				streamCopy.Position = 0;
+
+				var responseStr = new StreamReader( streamCopy ).ReadToEnd();
+				this.Log().Trace( "[ebay] Get response url:{0} ended with {1}.", webRequest.RequestUri, responseStr );
+			}
 		}
 
-		private void LogTraceGetResponseAsyncStarted()
+		private void LogTraceGetResponseAsyncStarted( WebRequest webRequest )
 		{
-			this.Log().Trace( "[ebay] Get response async started." );
+			this.Log().Trace( "[ebay] Get response  async url:[0} started.", webRequest.RequestUri );
 		}
 
-		private void LogTraceGetResponseAsyncEnded()
+		private void LogTraceGetResponseAsyncEnded( WebRequest webRequest, Stream webResponseStream )
 		{
-			this.Log().Trace( "[ebay] Get response async ended." );
+			using( Stream streamCopy = new MemoryStream( ( int )webResponseStream.Length ) )
+			{
+				var sourcePos = webResponseStream.Position;
+				webResponseStream.CopyTo( streamCopy );
+				webResponseStream.Position = sourcePos;
+				streamCopy.Position = 0;
+
+				var responseStr = new StreamReader( streamCopy ).ReadToEnd();
+				this.Log().Trace( "[ebay] Get response async url:{0} ended with {1}.", webRequest.RequestUri, responseStr );
+			}
 		}
 		#endregion
 
 		#region ResponseHanding
 		public Stream GetResponseStream( WebRequest webRequest )
 		{
-			this.LogTraceStartGetResponse();
+			this.LogTraceGetResponseStarted( webRequest );
 			using( var response = ( HttpWebResponse )webRequest.GetResponse() )
 			using( var dataStream = response.GetResponseStream() )
 			{
@@ -96,21 +114,21 @@ namespace EbayAccess.Services
 				if( dataStream != null )
 					dataStream.CopyTo( memoryStream, 0x100 );
 				memoryStream.Position = 0;
+				this.LogTraceGetResponseEnded( webRequest, memoryStream );
 				return memoryStream;
 			}
-			this.LogTraceEndGetResponse();
 		}
 
 		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest )
 		{
-			this.LogTraceGetResponseAsyncStarted();
+			this.LogTraceGetResponseAsyncStarted( webRequest );
 			using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync().ConfigureAwait( false ) )
 			using( var dataStream = await new TaskFactory< Stream >().StartNew( () => response != null ? response.GetResponseStream() : null ).ConfigureAwait( false ) )
 			{
 				var memoryStream = new MemoryStream();
 				await dataStream.CopyToAsync( memoryStream, 0x100 ).ConfigureAwait( false );
 				memoryStream.Position = 0;
-				this.LogTraceGetResponseAsyncEnded();
+				this.LogTraceGetResponseAsyncEnded( webRequest, memoryStream );
 				return memoryStream;
 			}
 		}

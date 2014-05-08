@@ -44,20 +44,6 @@ namespace EbayAccess.Services
 		{
 		}
 
-		#region Logging
-		public void LogReportResponseError()
-		{
-			throw new NotImplementedException();
-			//this.Log().Error( "Failed to get file for account '{0}'", this._credentials.AccountName );
-		}
-
-		public void LogUploadItemResponseError( InventoryStatusResponse response )
-		{
-			throw new NotImplementedException();
-			//this.Log().Error( "Failed to upload item with SKU '{0}'. Status code:'{1}', message: {2}", response.Sku, response.Status, response.Message );
-		}
-		#endregion
-
 		#region EbayStandartRequest
 		public async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body )
 		{
