@@ -1,4 +1,5 @@
 ﻿using EbayAccess.Models.Credentials;
+using EbayAccess.Models.CredentialsAndConfig;
 
 namespace EbayAccessTests.TestEnvironment
 {
@@ -9,9 +10,9 @@ namespace EbayAccessTests.TestEnvironment
 			return new EbayUserCredentials( "AccountName: does not metter for test", "Token: does not metter for test" );
 		}
 
-		public EbayDevCredentials GetEbayDevCredentials()
+		public EbayConfig GetEbayDevCredentials()
 		{
-			return new EbayDevCredentials( "AppName: does not metter for test", "DevName: does not metter for test", "CertName: does not metter for test" );
+			return new EbayConfig( "AppName: does not metter for test", "DevName: does not metter for test", "CertName: does not metter for test", "EndPoint: does not metter for test " );
 		}
 
 		public string GetEbayEndPoint()

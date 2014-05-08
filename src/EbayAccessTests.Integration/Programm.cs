@@ -16,7 +16,7 @@ namespace EbayAccessTests.Integration
 		public void EbayServiceGetOrders_EbayServiceWithProducts_HookupProducts()
 		{
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
@@ -30,7 +30,7 @@ namespace EbayAccessTests.Integration
 		public void GetProductsDetailsAsync_EbayServiceWithProductsVariationsSku_HookupProductsVariationsSku()
 		{
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
@@ -46,7 +46,7 @@ namespace EbayAccessTests.Integration
 		public void GetProductsDetailsAsync_EbayServiceWithProductsSku_HookupProductsSku()
 		{
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
@@ -64,7 +64,7 @@ namespace EbayAccessTests.Integration
 		public void GetOrders_EbayServiceWithOrdersVariationsSku_HookupProductsVariationsSku()
 		{
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
@@ -80,7 +80,7 @@ namespace EbayAccessTests.Integration
 		public void GetOrders_EbayServiceWithOrdersSku_HookupProductsSku()
 		{
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
@@ -98,7 +98,7 @@ namespace EbayAccessTests.Integration
 		public void UpdateProductsAsync_EbayServiceWithOrdersVariationsSku_ProductsUpdated()
 		{
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			const int itemsQty1 = 499;
@@ -128,7 +128,7 @@ namespace EbayAccessTests.Integration
 		public void UpdateProductsAsync_EbayServiceWithOrdersSku_ProductsUpdated()
 		{
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			const int itemsQty1 = 405;

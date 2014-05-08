@@ -24,7 +24,7 @@ namespace EbayAccessTests.Services
 
 				stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >() ).Returns( Task.Factory.StartNew< Stream >( () => fs ) );
 
-				var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService, this._testEmptyCredentials.GetEbayEndPoint() );
+				var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 				//A
 				var ordersTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );

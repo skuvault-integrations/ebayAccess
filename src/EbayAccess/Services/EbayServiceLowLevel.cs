@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Misc;
 using EbayAccess.Models.Credentials;
+using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
@@ -18,27 +19,26 @@ namespace EbayAccess.Services
 	public sealed class EbayServiceLowLevel : IEbayServiceLowLevel
 	{
 		private readonly EbayUserCredentials _userCredentials;
-		private readonly EbayDevCredentials _ebayDevCredentials;
+		private readonly EbayConfig _ebayConfig;
 		private readonly string _endPoint;
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
 
-		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
+		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();
-			Condition.Ensures( endPouint, "endPoint" ).IsNotNullOrWhiteSpace();
 			Condition.Requires( webRequestServices, "webRequestServices" ).IsNotNull();
-			Condition.Requires( ebayDevCredentials, "ebayDevCredentials" ).IsNotNull();
+			Condition.Requires( ebayConfig, "ebayDevCredentials" ).IsNotNull();
 
 			this._userCredentials = credentials;
 			this._webRequestServices = webRequestServices;
-			this._endPoint = endPouint;
-			this._itemsPerPage = itemsPerPage;
-			this._ebayDevCredentials = ebayDevCredentials;
+			this._endPoint = ebayConfig.EndPoint;
+			this._itemsPerPage = 50;
+			this._ebayConfig = ebayConfig;
 		}
 
-		public EbayServiceLowLevel( EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
-			: this( userCredentials, ebayDevCredentials, new WebRequestServices(), endPouint, itemsPerPage )
+		public EbayServiceLowLevel( EbayUserCredentials userCredentials, EbayConfig ebayConfig )
+			: this( userCredentials, ebayConfig, new WebRequestServices() )
 		{
 		}
 
@@ -49,10 +49,10 @@ namespace EbayAccess.Services
 				headers.Add( EbayHeaders.XEbayApiCompatibilityLevel, "853" );
 
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiDevName ) )
-				headers.Add( EbayHeaders.XEbayApiDevName, this._ebayDevCredentials.AppName );
+				headers.Add( EbayHeaders.XEbayApiDevName, this._ebayConfig.AppName );
 
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiAppName ) )
-				headers.Add( EbayHeaders.XEbayApiAppName, this._ebayDevCredentials.DevName );
+				headers.Add( EbayHeaders.XEbayApiAppName, this._ebayConfig.DevName );
 
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiSiteid ) )
 				headers.Add( EbayHeaders.XEbayApiSiteid, "0" );
@@ -70,7 +70,7 @@ namespace EbayAccess.Services
 		public async Task< WebRequest > CreateEbayStandartPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body )
 		{
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCertName ) )
-				headers.Add( EbayHeaders.XEbayApiCertName, this._ebayDevCredentials.CertName );
+				headers.Add( EbayHeaders.XEbayApiCertName, this._ebayConfig.CertName );
 
 			return await this.CreateEbayStandartPostRequestAsync( url, headers, body ).ConfigureAwait( false );
 		}

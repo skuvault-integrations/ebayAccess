@@ -1,22 +1,22 @@
 ﻿using CuttingEdge.Conditions;
 using EbayAccess.Models.Credentials;
+using EbayAccess.Models.CredentialsAndConfig;
 
 namespace EbayAccess
 {
 	public sealed class EbayFactory : IEbayFactory
 	{
-		private readonly EbayDevCredentials _devCredentials;
+		private readonly EbayConfig _config;
 
-		public EbayFactory( EbayDevCredentials devCredentials )
+		public EbayFactory( EbayConfig config )
 		{
-			Condition.Requires( devCredentials, "devCredentials" ).IsNotNull();
-
-			this._devCredentials = devCredentials;
+			Condition.Requires( config, "config" ).IsNotNull();
+			this._config = config;
 		}
 
 		public IEbayService CreateService( EbayUserCredentials userCredentials )
 		{
-			return new EbayService( userCredentials, this._devCredentials );
+			return new EbayService( userCredentials, this._config );
 		}
 	}
 }

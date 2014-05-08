@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using EbayAccess.Models.Credentials;
+using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
@@ -16,9 +16,9 @@ namespace EbayAccess
 	{
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
 
-		private string EndPoint { get; set; }
+		//private string EndPoint { get; set; }
 
-		private int ItemsPerPage { get; set; }
+		//private int ItemsPerPage { get; set; }
 
 		private void PopulateOrdersItemsDetails( IEnumerable< Order > orders )
 		{
@@ -33,15 +33,15 @@ namespace EbayAccess
 			}
 		}
 
-		public EbayService( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices )
+		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
 		{
-			this.ItemsPerPage = 50;
-			this.EndPoint = ConfigurationManager.AppSettings[ "EndPoint" ];
+			//this.ItemsPerPage = 50;
+			//this.EndPoint = ConfigurationManager.AppSettings[ "EndPoint" ];
 
-			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayDevCredentials, webRequestServices, this.EndPoint, this.ItemsPerPage );
+			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayConfig, webRequestServices );
 		}
 
-		public EbayService( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials ) : this( credentials, ebayDevCredentials, new WebRequestServices() )
+		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig ) : this( credentials, ebayConfig, new WebRequestServices() )
 		{
 		}
 

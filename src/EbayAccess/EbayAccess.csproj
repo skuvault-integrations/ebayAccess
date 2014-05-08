@@ -60,7 +60,7 @@
     <Compile Include="Models\BaseResponse\EbayBaseResponse.cs" />
     <Compile Include="Models\BaseResponse\PaginationResult.cs" />
     <Compile Include="Models\BaseResponse\ResponseError.cs" />
-    <Compile Include="Models\Credentials\EbayUserCredentials.cs">
+    <Compile Include="Models\CredentialsAndConfig\EbayUserCredentials.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\GetItemResponse\GetItemResponse.cs" />
@@ -90,7 +90,7 @@
     <Compile Include="Models\ReviseInventoryStatusRequest\InventoryStatusRequest.cs" />
     <Compile Include="Models\ReviseInventoryStatusResponse\InventoryStatusResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\Credentials\EbayDevCredentials.cs" />
+    <Compile Include="Models\CredentialsAndConfig\EbayConfig.cs" />
     <Compile Include="Services\EbayServiceLowLevel.cs" />
     <Compile Include="Services\IEbayServiceLowLevel.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />
@@ -127,7 +127,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-<!-- 
+  <!-- 
   <UsingTask TaskName="TransformXml" AssemblyFile="$(SolutionDir)\..\lib\Microsoft.Web.Publishing.Tasks.dll">
   </UsingTask>
   <Target Name="AfterBuild">

@@ -40,7 +40,7 @@ namespace EbayAccessTests
 				return ms;
 			} ).Callback( () => stubCallCounter++ );
 
-			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
+			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
 			var orders = ebayService.GetSellerList( new DateTime( 2014, 1, 1, 0, 0, 0 ),
@@ -68,7 +68,7 @@ namespace EbayAccessTests
 				return ms;
 			} );
 
-			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService, this._testEmptyCredentials.GetEbayEndPoint() );
+			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
 			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
@@ -98,7 +98,7 @@ namespace EbayAccessTests
 				return ms;
 			} );
 
-			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService, this._testEmptyCredentials.GetEbayEndPoint() );
+			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
 			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
@@ -132,7 +132,7 @@ namespace EbayAccessTests
 				return ms;
 			} ).Callback( () => stubCallCounter++ );
 
-			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
+			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
 			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
@@ -162,7 +162,7 @@ namespace EbayAccessTests
 					return Task.FromResult( ( Stream )ms );
 				} );
 
-			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object, this._testEmptyCredentials.GetEbayEndPoint() );
+			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
 			var inventoryStat = ( await ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
