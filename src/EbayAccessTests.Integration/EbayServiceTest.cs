@@ -18,7 +18,7 @@ namespace EbayAccessTests.Integration
 		public void GetOrders_ServiceWithExistingOrdersInSpecifiedTimeRange_HookupOrders()
 		{
 			//------------ Arrange
-			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials() );
 
 			//------------ Act
 			var orders = service.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
@@ -31,7 +31,7 @@ namespace EbayAccessTests.Integration
 		public void GetOrdersAsync_ServiceWithExistingOrdersInSpecifiedTimeRange_HookupOrders()
 		{
 			//------------ Arrange
-			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials() );
 
 			//------------ Act
 			var ordersTask = service.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
@@ -47,7 +47,7 @@ namespace EbayAccessTests.Integration
 		public void UpdateItems()
 		{
 			//------------ Arrange
-			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials());
 			const int qty1 = 100;
 			const int qty2 = 200;
 			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();

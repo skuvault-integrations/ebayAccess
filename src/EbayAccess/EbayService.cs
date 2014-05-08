@@ -15,6 +15,10 @@ namespace EbayAccess
 	{
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
 
+		private string EndPoint { get; set; }
+
+		private int ItemsPerPage { get; set; }
+
 		private void PopulateOrdersItemsDetails( IEnumerable< Order > orders )
 		{
 			//todo: rfactor, create the same but async
@@ -28,13 +32,15 @@ namespace EbayAccess
 			}
 		}
 
-		public EbayService( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
+		public EbayService( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices )
 		{
-			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayDevCredentials, webRequestServices, endPouint, itemsPerPage );
+			this.ItemsPerPage = 50;
+			this.EndPoint = "https://api.ebay.com/ws/api.dll"; //todo: move to config
+
+			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayDevCredentials, webRequestServices, this.EndPoint, this.ItemsPerPage );
 		}
 
-		public EbayService( EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
-			: this( userCredentials, ebayDevCredentials, new WebRequestServices(), endPouint, itemsPerPage )
+		public EbayService( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials ) : this( credentials, ebayDevCredentials, new WebRequestServices() )
 		{
 		}
 

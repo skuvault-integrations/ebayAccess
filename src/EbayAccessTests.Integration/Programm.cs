@@ -17,7 +17,7 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
-			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayEndPoint() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials());
 
 			//------------ Act
 			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
@@ -31,7 +31,7 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
-			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayEndPoint() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
 			var ordersTask = ebayService.GetProductsDetailsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
@@ -47,7 +47,7 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
-			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayEndPoint() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
 			var timeFromStart = new DateTime( 2014, 4, 18, 0, 0, 0 );
@@ -65,7 +65,7 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
-			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayEndPoint() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
 			var ordersTask = ebayService.GetOrdersAsync( new DateTime( 2014, 5, 2, 18, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
@@ -81,7 +81,7 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
-			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayEndPoint() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
 			var dateFrom = new DateTime( 2014, 4, 28, 19, 30, 0 );
@@ -99,7 +99,7 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
-			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayEndPoint() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			const int itemsQty1 = 499;
 			const int itemsQty2 = 299;
@@ -129,7 +129,7 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
-			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayEndPoint() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			const int itemsQty1 = 405;
 			const int itemsQty2 = 205;

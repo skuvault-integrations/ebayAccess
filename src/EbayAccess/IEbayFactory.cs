@@ -5,7 +5,5 @@ namespace EbayAccess
 	public interface IEbayFactory
 	{
 		IEbayService CreateService( EbayUserCredentials userCredentials );
-
-		IEbayService CreateService( EbayUserCredentials userCredentials, string endPoint );
 	}
 }
