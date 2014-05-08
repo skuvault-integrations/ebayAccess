@@ -23,7 +23,6 @@ namespace EbayAccess.Services
 		private readonly string _endPoint;
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
-		private const string XEbayApiCallName = "X-EBAY-API-CALL-NAME";
 
 		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
 		{
@@ -40,7 +39,7 @@ namespace EbayAccess.Services
 		}
 
 		public EbayServiceLowLevel( EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
-			: this( userCredentials, ebayDevCredentials, new WebRequestServices( ), endPouint, itemsPerPage )
+			: this( userCredentials, ebayDevCredentials, new WebRequestServices(), endPouint, itemsPerPage )
 		{
 		}
 
@@ -49,21 +48,17 @@ namespace EbayAccess.Services
 		{
 			try
 			{
-				const string xEbayApiCompatibilityLevel = "X-EBAY-API-COMPATIBILITY-LEVEL";
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiCompatibilityLevel ) )
-					headers.Add( xEbayApiCompatibilityLevel, "853" );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCompatibilityLevel ) )
+					headers.Add( EbayHeaders.XEbayApiCompatibilityLevel, "853" );
 
-				const string xEbayApiDevName = "X-EBAY-API-DEV-NAME";
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiDevName ) )
-					headers.Add( xEbayApiDevName, this._ebayDevCredentials.AppName );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiDevName ) )
+					headers.Add( EbayHeaders.XEbayApiDevName, this._ebayDevCredentials.AppName );
 
-				const string xEbayApiAppName = "X-EBAY-API-APP-NAME";
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiAppName ) )
-					headers.Add( xEbayApiAppName, this._ebayDevCredentials.DevName );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiAppName ) )
+					headers.Add( EbayHeaders.XEbayApiAppName, this._ebayDevCredentials.DevName );
 
-				const string xEbayApiSiteid = "X-EBAY-API-SITEID";
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiSiteid ) )
-					headers.Add( xEbayApiSiteid, "0" );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiSiteid ) )
+					headers.Add( EbayHeaders.XEbayApiSiteid, "0" );
 
 				return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
 			}
@@ -85,9 +80,8 @@ namespace EbayAccess.Services
 		{
 			try
 			{
-				const string xEbayApiCertName = "X-EBAY-API-CERT-NAME";
-				if( !headers.Exists( keyValuePair => keyValuePair.Key == xEbayApiCertName ) )
-					headers.Add( xEbayApiCertName, this._ebayDevCredentials.CertName );
+				if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCertName ) )
+					headers.Add( EbayHeaders.XEbayApiCertName, this._ebayDevCredentials.CertName );
 
 				return await this.CreateEbayStandartPostRequestAsync( url, headers, body ).ConfigureAwait( false );
 			}
@@ -122,7 +116,7 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				{ XEbayApiCallName, "GetOrders" },
+				{ EbayHeaders.XEbayApiCallName, "GetOrders" },
 			};
 		}
 
@@ -205,7 +199,7 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				{ XEbayApiCallName, "GetSellerList" },
+				{ EbayHeaders.XEbayApiCallName, "GetSellerList" },
 			};
 		}
 
@@ -302,7 +296,7 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				{ XEbayApiCallName, "GetItem" },
+				{ EbayHeaders.XEbayApiCallName, "GetItem" },
 			};
 		}
 
@@ -366,7 +360,7 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				{ XEbayApiCallName, "ReviseInventoryStatus" },
+				{ EbayHeaders.XEbayApiCallName, "ReviseInventoryStatus" },
 			};
 		}
 

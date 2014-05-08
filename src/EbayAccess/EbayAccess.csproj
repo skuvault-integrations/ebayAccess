@@ -50,6 +50,7 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="EbayFactory.cs" />
+    <Compile Include="EbayHeaders.cs" />
     <Compile Include="EbayService.cs" />
     <Compile Include="IEbayFactory.cs" />
     <Compile Include="IEbayService.cs" />
