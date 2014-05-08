@@ -36,7 +36,7 @@ namespace EbayAccess
 		public EbayService( EbayUserCredentials credentials, EbayDevCredentials ebayDevCredentials, IWebRequestServices webRequestServices )
 		{
 			this.ItemsPerPage = 50;
-			this.EndPoint = ConfigurationManager.AppSettings["EndPoint"];
+			this.EndPoint = ConfigurationManager.AppSettings[ "EndPoint" ];
 
 			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayDevCredentials, webRequestServices, this.EndPoint, this.ItemsPerPage );
 		}

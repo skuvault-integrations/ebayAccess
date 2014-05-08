@@ -17,7 +17,7 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayDevCredentials() );
-			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials());
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
 			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );

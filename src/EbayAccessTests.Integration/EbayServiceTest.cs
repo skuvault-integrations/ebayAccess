@@ -47,7 +47,7 @@ namespace EbayAccessTests.Integration
 		public void UpdateItems()
 		{
 			//------------ Arrange
-			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials());
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials() );
 			const int qty1 = 100;
 			const int qty2 = 200;
 			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
