@@ -5,9 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using EbayAccess;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
+using EbayAccessTests.TestEnvironment;
 using FluentAssertions;
 using Moq;
 using NSubstitute;
@@ -16,16 +16,8 @@ using NUnit.Framework;
 namespace EbayAccessTests
 {
 	[ TestFixture ]
-	public class EbayServiceTest
+	public class EbayServiceTest : TestBase
 	{
-		private TestEmptyCredentials _testEmptyCredentials;
-
-		[ SetUp ]
-		public void Init()
-		{
-			this._testEmptyCredentials = new TestEmptyCredentials();
-		}
-
 		[ Test ]
 		public void EbayServiceExistingItemsDevidedIntoMultiplePages_GetItems_HookUpItemsFromAllPages()
 		{

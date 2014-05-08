@@ -58,12 +58,14 @@
     <Compile Include="EbayServiceTest.cs" />
     <Compile Include="Infrastructure\Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\EbayServiceLowLevelTest.cs" />
     <Compile Include="Services\Parsers\EbayGetItemResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayGetOrdersResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayGetSellerListResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayPaginationResultResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayReviseInventoryStatusResponseParserTest.cs" />
     <Compile Include="TestEmptyCredentials.cs" />
+    <Compile Include="TestEnvironment\TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -88,6 +90,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith5ItemsWithSku_DetailLevelAll.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith1PageOf4Contains1Item.xml">

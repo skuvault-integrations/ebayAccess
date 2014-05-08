@@ -42,22 +42,6 @@ namespace EbayAccessTests.Integration
 		}
 		#endregion
 
-		#region GetProducts
-		[ Test ]
-		public void GetProductsAsync_EbayServiceWithProductsCreatedInSpecifiedTimeRange_HookupProducts()
-		{
-			//------------ Arrange
-			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayDevCredentials(), this._credentials.GetEbayEndPoint() );
-
-			//------------ Act
-			var ordersTask = service.GetProductsAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ) );
-			ordersTask.Wait();
-
-			//------------ Assert
-			ordersTask.Result.Count().Should().BeGreaterThan( 0, "because on site there are items started in specified time" );
-		}
-		#endregion
-
 		#region UpdateProducts
 		[ Test ]
 		public void UpdateItems()

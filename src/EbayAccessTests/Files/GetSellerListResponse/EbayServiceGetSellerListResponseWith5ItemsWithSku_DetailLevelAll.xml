@@ -1,0 +1,746 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<GetSellerListResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+	<Timestamp>2014-05-08T09:26:45.824Z</Timestamp>
+	<Ack>Success</Ack>
+	<Version>869</Version>
+	<Build>E869_CORE_API_16786567_R1</Build>
+	<PaginationResult>
+		<TotalNumberOfPages>1</TotalNumberOfPages>
+		<TotalNumberOfEntries>5</TotalNumberOfEntries>
+	</PaginationResult>
+	<HasMoreItems>false</HasMoreItems>
+	<ItemArray>
+		<Item>
+			<AutoPay>false</AutoPay>
+			<BuyerProtection>ItemIneligible</BuyerProtection>
+			<BuyItNowPrice currencyID="USD">0.0</BuyItNowPrice>
+			<Country>US</Country>
+			<Currency>USD</Currency>
+			<Description>&lt;font face="Arial" size="2"&gt;WARNING !&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font face="Arial" size="2"&gt;THIS IS A TEST ITEM !!!&lt;/font&gt;&lt;/div&gt;</Description>
+			<GiftIcon>0</GiftIcon>
+			<HitCounter>NoHitCounter</HitCounter>
+			<ItemID>110141553531</ItemID>
+			<ListingDetails>
+				<Adult>false</Adult>
+				<BindingAuction>false</BindingAuction>
+				<CheckoutEnabled>true</CheckoutEnabled>
+				<ConvertedBuyItNowPrice currencyID="USD">0.0</ConvertedBuyItNowPrice>
+				<ConvertedStartPrice currencyID="USD">2.22</ConvertedStartPrice>
+				<ConvertedReservePrice currencyID="USD">0.0</ConvertedReservePrice>
+				<HasReservePrice>false</HasReservePrice>
+				<StartTime>2014-04-18T14:01:04.000Z</StartTime>
+				<EndTime>2014-05-18T14:01:04.000Z</EndTime>
+				<ViewItemURL>http://cgi.sandbox.ebay.com/levis-501-teenager-T-Shirt-/110141553531</ViewItemURL>
+				<HasUnansweredQuestions>false</HasUnansweredQuestions>
+				<HasPublicMessages>false</HasPublicMessages>
+				<ViewItemURLForNaturalSearch>http://cgi.sandbox.ebay.com/levis-501-teenager-T-Shirt-/110141553531</ViewItemURLForNaturalSearch>
+			</ListingDetails>
+			<ListingDesigner>
+				<LayoutID>10000</LayoutID>
+				<ThemeID>10</ThemeID>
+			</ListingDesigner>
+			<ListingDuration>GTC</ListingDuration>
+			<ListingType>FixedPriceItem</ListingType>
+			<Location>Seattle, Washington</Location>
+			<PaymentMethods>PayPal</PaymentMethods>
+			<PayPalEmailAddress>slav-facilitator@agileharbor.com</PayPalEmailAddress>
+			<PrimaryCategory>
+				<CategoryID>11554</CategoryID>
+				<CategoryName>Clothing, Shoes &amp; Accessories:Women's Clothing:Jeans</CategoryName>
+			</PrimaryCategory>
+			<PrivateListing>false</PrivateListing>
+			<Quantity>205</Quantity>
+			<ReservePrice currencyID="USD">0.0</ReservePrice>
+			<ReviseStatus>
+				<ItemRevised>true</ItemRevised>
+			</ReviseStatus>
+			<SellingStatus>
+				<BidCount>0</BidCount>
+				<BidIncrement currencyID="USD">0.0</BidIncrement>
+				<ConvertedCurrentPrice currencyID="USD">2.22</ConvertedCurrentPrice>
+				<CurrentPrice currencyID="USD">2.22</CurrentPrice>
+				<LeadCount>0</LeadCount>
+				<MinimumToBid currencyID="USD">2.22</MinimumToBid>
+				<QuantitySold>5</QuantitySold>
+				<ReserveMet>true</ReserveMet>
+				<SecondChanceEligible>false</SecondChanceEligible>
+				<ListingStatus>Active</ListingStatus>
+			</SellingStatus>
+			<ShippingDetails>
+				<ApplyShippingDiscount>false</ApplyShippingDiscount>
+				<CalculatedShippingRate>
+					<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+					<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+				</CalculatedShippingRate>
+				<SalesTax>
+					<SalesTaxPercent>0.0</SalesTaxPercent>
+					<ShippingIncludedInTax>false</ShippingIncludedInTax>
+				</SalesTax>
+				<ShippingServiceOptions>
+					<ShippingService>USPSParcel</ShippingService>
+					<ShippingServiceCost currencyID="USD">1.15</ShippingServiceCost>
+					<ShippingServiceAdditionalCost currencyID="USD">0.65</ShippingServiceAdditionalCost>
+					<ShippingServicePriority>1</ShippingServicePriority>
+					<ExpeditedService>false</ExpeditedService>
+					<ShippingTimeMin>2</ShippingTimeMin>
+					<ShippingTimeMax>9</ShippingTimeMax>
+				</ShippingServiceOptions>
+				<ShippingType>Flat</ShippingType>
+				<ThirdPartyCheckout>false</ThirdPartyCheckout>
+				<ShippingDiscountProfileID>0</ShippingDiscountProfileID>
+				<InternationalShippingDiscountProfileID>0</InternationalShippingDiscountProfileID>
+				<SellerExcludeShipToLocationsPreference>false</SellerExcludeShipToLocationsPreference>
+			</ShippingDetails>
+			<ShipToLocations>US</ShipToLocations>
+			<Site>US</Site>
+			<StartPrice currencyID="USD">2.22</StartPrice>
+			<Storefront>
+				<StoreCategoryID>1</StoreCategoryID>
+				<StoreCategory2ID>0</StoreCategory2ID>
+				<StoreURL>http://www.stores.sandbox.ebay.com/id=133037671</StoreURL>
+			</Storefront>
+			<SubTitle>subtitle</SubTitle>
+			<TimeLeft>P10DT4H34M19S</TimeLeft>
+			<Title>levis 501 teenager T-Shirt</Title>
+			<LocationDefaulted>true</LocationDefaulted>
+			<GetItFast>false</GetItFast>
+			<SKU>testSku11014</SKU>
+			<PostalCode>98102</PostalCode>
+			<PictureDetails>
+				<GalleryType>Gallery</GalleryType>
+				<GalleryURL>http://i.ebayimg.sandbox.ebay.com/00/s/MTY3WDMwMQ==/$(KGrHqZHJCwFJgTgPdkTBS3!ekFmWg~~60_1.JPG?set_id=8800005007</GalleryURL>
+				<PhotoDisplay>None</PhotoDisplay>
+				<PictureURL>http://i.ebayimg.sandbox.ebay.com/00/s/OTBYOTA=/$(KGrHqJHJC4FLfcGW8rEBT(nv)j07g~~60_1.JPG?set_id=8800004005</PictureURL>
+			</PictureDetails>
+			<DispatchTimeMax>3</DispatchTimeMax>
+			<ProxyItem>false</ProxyItem>
+			<BuyerGuaranteePrice currencyID="USD">20000.0</BuyerGuaranteePrice>
+			<BuyerRequirementDetails>
+				<ShipToRegistrationCountry>true</ShipToRegistrationCountry>
+				<MinimumFeedbackScore>-1</MinimumFeedbackScore>
+				<LinkedPayPalAccount>true</LinkedPayPalAccount>
+				<MaximumUnpaidItemStrikesInfo>
+					<Count>2</Count>
+					<Period>Days_30</Period>
+				</MaximumUnpaidItemStrikesInfo>
+				<MaximumBuyerPolicyViolations>
+					<Count>4</Count>
+					<Period>Days_30</Period>
+				</MaximumBuyerPolicyViolations>
+			</BuyerRequirementDetails>
+			<ReturnPolicy>
+				<ReturnsAcceptedOption>ReturnsNotAccepted</ReturnsAcceptedOption>
+				<ReturnsAccepted>No returns accepted</ReturnsAccepted>
+			</ReturnPolicy>
+			<PaymentAllowedSite>eBayMotors</PaymentAllowedSite>
+			<PaymentAllowedSite>CanadaFrench</PaymentAllowedSite>
+			<PaymentAllowedSite>Canada</PaymentAllowedSite>
+			<PaymentAllowedSite>US</PaymentAllowedSite>
+			<ConditionID>1000</ConditionID>
+			<ConditionDisplayName>New with tags</ConditionDisplayName>
+			<PostCheckoutExperienceEnabled>false</PostCheckoutExperienceEnabled>
+			<SellerProfiles />
+			<ShippingPackageDetails>
+				<ShippingIrregular>false</ShippingIrregular>
+				<ShippingPackage>PackageThickEnvelope</ShippingPackage>
+				<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+				<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+			</ShippingPackageDetails>
+			<RelistParentID>110137091582</RelistParentID>
+			<HideFromSearch>false</HideFromSearch>
+		</Item>
+		<Item>
+			<AutoPay>false</AutoPay>
+			<BuyerProtection>ItemIneligible</BuyerProtection>
+			<BuyItNowPrice currencyID="USD">0.0</BuyItNowPrice>
+			<Country>US</Country>
+			<Currency>USD</Currency>
+			<Description>&lt;font face="Arial" size="2"&gt;WARNING !&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font face="Arial" size="2"&gt;THIS IS A TEST ITEM !!!&lt;/font&gt;&lt;/div&gt;</Description>
+			<GiftIcon>0</GiftIcon>
+			<HitCounter>NoHitCounter</HitCounter>
+			<ItemID>110141989389</ItemID>
+			<ListingDetails>
+				<Adult>false</Adult>
+				<BindingAuction>false</BindingAuction>
+				<CheckoutEnabled>true</CheckoutEnabled>
+				<ConvertedBuyItNowPrice currencyID="USD">0.0</ConvertedBuyItNowPrice>
+				<ConvertedStartPrice currencyID="USD">1.17</ConvertedStartPrice>
+				<ConvertedReservePrice currencyID="USD">0.0</ConvertedReservePrice>
+				<HasReservePrice>false</HasReservePrice>
+				<StartTime>2014-04-28T16:06:40.000Z</StartTime>
+				<EndTime>2014-05-28T16:06:40.000Z</EndTime>
+				<ViewItemURL>http://cgi.sandbox.ebay.com/levis-501-teenager-Cap-/110141989389</ViewItemURL>
+				<HasUnansweredQuestions>false</HasUnansweredQuestions>
+				<HasPublicMessages>false</HasPublicMessages>
+				<ViewItemURLForNaturalSearch>http://cgi.sandbox.ebay.com/levis-501-teenager-Cap-/110141989389</ViewItemURLForNaturalSearch>
+			</ListingDetails>
+			<ListingDesigner>
+				<LayoutID>10000</LayoutID>
+				<ThemeID>10</ThemeID>
+			</ListingDesigner>
+			<ListingDuration>GTC</ListingDuration>
+			<ListingType>FixedPriceItem</ListingType>
+			<Location>Seattle, Washington</Location>
+			<PaymentMethods>PayPal</PaymentMethods>
+			<PayPalEmailAddress>slav-facilitator@agileharbor.com</PayPalEmailAddress>
+			<PrimaryCategory>
+				<CategoryID>11554</CategoryID>
+				<CategoryName>Clothing, Shoes &amp; Accessories:Women's Clothing:Jeans</CategoryName>
+			</PrimaryCategory>
+			<PrivateListing>false</PrivateListing>
+			<Quantity>204</Quantity>
+			<ReservePrice currencyID="USD">0.0</ReservePrice>
+			<ReviseStatus>
+				<ItemRevised>true</ItemRevised>
+			</ReviseStatus>
+			<SellingStatus>
+				<BidCount>0</BidCount>
+				<BidIncrement currencyID="USD">0.0</BidIncrement>
+				<ConvertedCurrentPrice currencyID="USD">1.17</ConvertedCurrentPrice>
+				<CurrentPrice currencyID="USD">1.17</CurrentPrice>
+				<HighBidder>
+					<AboutMePage>false</AboutMePage>
+					<EIASToken>nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhDJKBogudj6x9nY+seQ==</EIASToken>
+					<Email>sv03@3.com</Email>
+					<FeedbackScore>500</FeedbackScore>
+					<PositiveFeedbackPercent>0.0</PositiveFeedbackPercent>
+					<FeedbackPrivate>false</FeedbackPrivate>
+					<FeedbackRatingStar>Purple</FeedbackRatingStar>
+					<IDVerified>true</IDVerified>
+					<eBayGoodStanding>true</eBayGoodStanding>
+					<NewUser>false</NewUser>
+					<RegistrationDate>1995-01-01T00:00:00.000Z</RegistrationDate>
+					<Site>US</Site>
+					<Status>Confirmed</Status>
+					<UserID>testuser_sv03</UserID>
+					<UserIDChanged>true</UserIDChanged>
+					<UserIDLastChanged>2014-04-28T15:11:58.000Z</UserIDLastChanged>
+					<VATStatus>NoVATTax</VATStatus>
+					<BuyerInfo>
+						<ShippingAddress>
+							<Country>US</Country>
+							<PostalCode>98102</PostalCode>
+						</ShippingAddress>
+					</BuyerInfo>
+					<UserAnonymized>false</UserAnonymized>
+				</HighBidder>
+				<LeadCount>0</LeadCount>
+				<MinimumToBid currencyID="USD">1.17</MinimumToBid>
+				<QuantitySold>1</QuantitySold>
+				<ReserveMet>true</ReserveMet>
+				<SecondChanceEligible>false</SecondChanceEligible>
+				<ListingStatus>Active</ListingStatus>
+			</SellingStatus>
+			<ShippingDetails>
+				<ApplyShippingDiscount>false</ApplyShippingDiscount>
+				<CalculatedShippingRate>
+					<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+					<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+				</CalculatedShippingRate>
+				<SalesTax>
+					<SalesTaxPercent>0.0</SalesTaxPercent>
+					<ShippingIncludedInTax>false</ShippingIncludedInTax>
+				</SalesTax>
+				<ShippingServiceOptions>
+					<ShippingService>USPSParcel</ShippingService>
+					<ShippingServiceCost currencyID="USD">0.0</ShippingServiceCost>
+					<ShippingServiceAdditionalCost currencyID="USD">0.0</ShippingServiceAdditionalCost>
+					<ShippingServicePriority>1</ShippingServicePriority>
+					<ExpeditedService>false</ExpeditedService>
+					<ShippingTimeMin>2</ShippingTimeMin>
+					<ShippingTimeMax>9</ShippingTimeMax>
+					<FreeShipping>true</FreeShipping>
+				</ShippingServiceOptions>
+				<ShippingType>Flat</ShippingType>
+				<ThirdPartyCheckout>false</ThirdPartyCheckout>
+				<ShippingDiscountProfileID>0</ShippingDiscountProfileID>
+				<InternationalShippingDiscountProfileID>0</InternationalShippingDiscountProfileID>
+				<SellerExcludeShipToLocationsPreference>false</SellerExcludeShipToLocationsPreference>
+			</ShippingDetails>
+			<ShipToLocations>US</ShipToLocations>
+			<Site>US</Site>
+			<StartPrice currencyID="USD">1.17</StartPrice>
+			<Storefront>
+				<StoreCategoryID>1</StoreCategoryID>
+				<StoreCategory2ID>0</StoreCategory2ID>
+				<StoreURL>http://www.stores.sandbox.ebay.com/id=133037671</StoreURL>
+			</Storefront>
+			<TimeLeft>P20DT6H39M55S</TimeLeft>
+			<Title>levis 501 teenager Cap</Title>
+			<LocationDefaulted>true</LocationDefaulted>
+			<GetItFast>false</GetItFast>
+			<SKU>testSku110141989389</SKU>
+			<PostalCode>98102</PostalCode>
+			<PictureDetails>
+				<GalleryType>Gallery</GalleryType>
+				<GalleryURL>http://i.ebayimg.sandbox.ebay.com/00/s/MTk0WDI1OQ==/$(KGrHqVHJEwFMO2Z+JJQBT(n)BQFyw~~60_1.JPG?set_id=8800004005</GalleryURL>
+				<PhotoDisplay>PicturePack</PhotoDisplay>
+				<PictureURL>http://i.ebayimg.sandbox.ebay.com/00/s/MTk0WDI1OQ==/$(KGrHqVHJEwFMO2Z+JJQBT(n)BQFyw~~60_1.JPG?set_id=8800004005</PictureURL>
+			</PictureDetails>
+			<DispatchTimeMax>3</DispatchTimeMax>
+			<ProxyItem>false</ProxyItem>
+			<BuyerGuaranteePrice currencyID="USD">20000.0</BuyerGuaranteePrice>
+			<BuyerRequirementDetails>
+				<ShipToRegistrationCountry>true</ShipToRegistrationCountry>
+				<MinimumFeedbackScore>-1</MinimumFeedbackScore>
+				<LinkedPayPalAccount>true</LinkedPayPalAccount>
+				<MaximumUnpaidItemStrikesInfo>
+					<Count>2</Count>
+					<Period>Days_30</Period>
+				</MaximumUnpaidItemStrikesInfo>
+				<MaximumBuyerPolicyViolations>
+					<Count>4</Count>
+					<Period>Days_30</Period>
+				</MaximumBuyerPolicyViolations>
+			</BuyerRequirementDetails>
+			<ReturnPolicy>
+				<ReturnsAcceptedOption>ReturnsNotAccepted</ReturnsAcceptedOption>
+				<ReturnsAccepted>No returns accepted</ReturnsAccepted>
+			</ReturnPolicy>
+			<PaymentAllowedSite>eBayMotors</PaymentAllowedSite>
+			<PaymentAllowedSite>CanadaFrench</PaymentAllowedSite>
+			<PaymentAllowedSite>Canada</PaymentAllowedSite>
+			<PaymentAllowedSite>US</PaymentAllowedSite>
+			<ConditionID>1000</ConditionID>
+			<ConditionDisplayName>New with tags</ConditionDisplayName>
+			<PostCheckoutExperienceEnabled>false</PostCheckoutExperienceEnabled>
+			<SellerProfiles />
+			<ShippingPackageDetails>
+				<ShippingIrregular>false</ShippingIrregular>
+				<ShippingPackage>PackageThickEnvelope</ShippingPackage>
+				<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+				<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+			</ShippingPackageDetails>
+			<RelistParentID>110141553531</RelistParentID>
+			<HideFromSearch>false</HideFromSearch>
+		</Item>
+		<Item>
+			<AutoPay>false</AutoPay>
+			<BuyerProtection>ItemIneligible</BuyerProtection>
+			<BuyItNowPrice currencyID="USD">0.0</BuyItNowPrice>
+			<Country>US</Country>
+			<Currency>USD</Currency>
+			<Description>&lt;font face="Arial" size="2"&gt;WARNING !&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font face="Arial" size="2"&gt;THIS IS A TEST ITEM !!!&lt;/font&gt;&lt;/div&gt;</Description>
+			<GiftIcon>0</GiftIcon>
+			<HitCounter>NoHitCounter</HitCounter>
+			<ItemID>110141989458</ItemID>
+			<ListingDetails>
+				<Adult>false</Adult>
+				<BindingAuction>false</BindingAuction>
+				<CheckoutEnabled>true</CheckoutEnabled>
+				<ConvertedBuyItNowPrice currencyID="USD">0.0</ConvertedBuyItNowPrice>
+				<ConvertedStartPrice currencyID="USD">1.17</ConvertedStartPrice>
+				<ConvertedReservePrice currencyID="USD">0.0</ConvertedReservePrice>
+				<HasReservePrice>false</HasReservePrice>
+				<StartTime>2014-04-28T16:09:40.000Z</StartTime>
+				<EndTime>2014-05-28T16:09:40.000Z</EndTime>
+				<ViewItemURL>http://cgi.sandbox.ebay.com/levis-501-teenager-bootsofspeed-/110141989458</ViewItemURL>
+				<HasUnansweredQuestions>false</HasUnansweredQuestions>
+				<HasPublicMessages>false</HasPublicMessages>
+				<ViewItemURLForNaturalSearch>http://cgi.sandbox.ebay.com/levis-501-teenager-bootsofspeed-/110141989458</ViewItemURLForNaturalSearch>
+			</ListingDetails>
+			<ListingDesigner>
+				<LayoutID>10000</LayoutID>
+				<ThemeID>10</ThemeID>
+			</ListingDesigner>
+			<ListingDuration>GTC</ListingDuration>
+			<ListingType>FixedPriceItem</ListingType>
+			<Location>Seattle, Washington</Location>
+			<PaymentMethods>PayPal</PaymentMethods>
+			<PayPalEmailAddress>slav-facilitator@agileharbor.com</PayPalEmailAddress>
+			<PrimaryCategory>
+				<CategoryID>11554</CategoryID>
+				<CategoryName>Clothing, Shoes &amp; Accessories:Women's Clothing:Jeans</CategoryName>
+			</PrimaryCategory>
+			<PrivateListing>false</PrivateListing>
+			<Quantity>204</Quantity>
+			<ReservePrice currencyID="USD">0.0</ReservePrice>
+			<ReviseStatus>
+				<ItemRevised>false</ItemRevised>
+			</ReviseStatus>
+			<SellingStatus>
+				<BidCount>0</BidCount>
+				<BidIncrement currencyID="USD">0.0</BidIncrement>
+				<ConvertedCurrentPrice currencyID="USD">1.17</ConvertedCurrentPrice>
+				<CurrentPrice currencyID="USD">1.17</CurrentPrice>
+				<LeadCount>0</LeadCount>
+				<MinimumToBid currencyID="USD">1.17</MinimumToBid>
+				<QuantitySold>0</QuantitySold>
+				<ReserveMet>true</ReserveMet>
+				<SecondChanceEligible>false</SecondChanceEligible>
+				<ListingStatus>Active</ListingStatus>
+			</SellingStatus>
+			<ShippingDetails>
+				<ApplyShippingDiscount>false</ApplyShippingDiscount>
+				<CalculatedShippingRate>
+					<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+					<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+				</CalculatedShippingRate>
+				<SalesTax>
+					<SalesTaxPercent>0.0</SalesTaxPercent>
+					<ShippingIncludedInTax>false</ShippingIncludedInTax>
+				</SalesTax>
+				<ShippingServiceOptions>
+					<ShippingService>USPSParcel</ShippingService>
+					<ShippingServiceCost currencyID="USD">1.14</ShippingServiceCost>
+					<ShippingServiceAdditionalCost currencyID="USD">0.67</ShippingServiceAdditionalCost>
+					<ShippingServicePriority>1</ShippingServicePriority>
+					<ExpeditedService>false</ExpeditedService>
+					<ShippingTimeMin>2</ShippingTimeMin>
+					<ShippingTimeMax>9</ShippingTimeMax>
+				</ShippingServiceOptions>
+				<ShippingType>Flat</ShippingType>
+				<ThirdPartyCheckout>false</ThirdPartyCheckout>
+				<ShippingDiscountProfileID>0</ShippingDiscountProfileID>
+				<InternationalShippingDiscountProfileID>0</InternationalShippingDiscountProfileID>
+				<SellerExcludeShipToLocationsPreference>false</SellerExcludeShipToLocationsPreference>
+			</ShippingDetails>
+			<ShipToLocations>US</ShipToLocations>
+			<Site>US</Site>
+			<StartPrice currencyID="USD">1.17</StartPrice>
+			<Storefront>
+				<StoreCategoryID>1</StoreCategoryID>
+				<StoreCategory2ID>0</StoreCategory2ID>
+				<StoreURL>http://www.stores.sandbox.ebay.com/id=133037671</StoreURL>
+			</Storefront>
+			<TimeLeft>P20DT6H42M55S</TimeLeft>
+			<Title>levis 501 teenager bootsofspeed</Title>
+			<LocationDefaulted>true</LocationDefaulted>
+			<GetItFast>false</GetItFast>
+			<PostalCode>98102</PostalCode>
+			<PictureDetails>
+				<GalleryType>Gallery</GalleryType>
+				<GalleryURL>http://i.ebayimg.sandbox.ebay.com/00/s/NjRYNjQ=/$(KGrHqZHJCIFJ3uC6q0GBT(nz-4Jdw~~60_1.GIF?set_id=8800004005</GalleryURL>
+				<PhotoDisplay>PicturePack</PhotoDisplay>
+				<PictureURL>http://i.ebayimg.sandbox.ebay.com/00/s/NjRYNjQ=/$(KGrHqZHJCIFJ3uC6q0GBT(nz-4Jdw~~60_1.GIF?set_id=8800004005</PictureURL>
+			</PictureDetails>
+			<DispatchTimeMax>3</DispatchTimeMax>
+			<ProxyItem>false</ProxyItem>
+			<BuyerGuaranteePrice currencyID="USD">20000.0</BuyerGuaranteePrice>
+			<BuyerRequirementDetails>
+				<ShipToRegistrationCountry>true</ShipToRegistrationCountry>
+				<MinimumFeedbackScore>-1</MinimumFeedbackScore>
+				<LinkedPayPalAccount>true</LinkedPayPalAccount>
+				<MaximumUnpaidItemStrikesInfo>
+					<Count>2</Count>
+					<Period>Days_30</Period>
+				</MaximumUnpaidItemStrikesInfo>
+				<MaximumBuyerPolicyViolations>
+					<Count>4</Count>
+					<Period>Days_30</Period>
+				</MaximumBuyerPolicyViolations>
+			</BuyerRequirementDetails>
+			<ReturnPolicy>
+				<ReturnsAcceptedOption>ReturnsNotAccepted</ReturnsAcceptedOption>
+				<ReturnsAccepted>No returns accepted</ReturnsAccepted>
+			</ReturnPolicy>
+			<PaymentAllowedSite>eBayMotors</PaymentAllowedSite>
+			<PaymentAllowedSite>CanadaFrench</PaymentAllowedSite>
+			<PaymentAllowedSite>Canada</PaymentAllowedSite>
+			<PaymentAllowedSite>US</PaymentAllowedSite>
+			<ConditionID>1000</ConditionID>
+			<ConditionDisplayName>New with tags</ConditionDisplayName>
+			<PostCheckoutExperienceEnabled>false</PostCheckoutExperienceEnabled>
+			<SellerProfiles />
+			<ShippingPackageDetails>
+				<ShippingIrregular>false</ShippingIrregular>
+				<ShippingPackage>PackageThickEnvelope</ShippingPackage>
+				<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+				<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+			</ShippingPackageDetails>
+			<RelistParentID>110141989389</RelistParentID>
+			<HideFromSearch>false</HideFromSearch>
+		</Item>
+		<Item>
+			<AutoPay>false</AutoPay>
+			<BuyerProtection>ItemIneligible</BuyerProtection>
+			<BuyItNowPrice currencyID="USD">0.0</BuyItNowPrice>
+			<Country>US</Country>
+			<Currency>USD</Currency>
+			<Description>&lt;font face="Arial" size="2"&gt;TEST ITEM! DO NOT BAY IT!!!&lt;/font&gt;</Description>
+			<GiftIcon>0</GiftIcon>
+			<HitCounter>NoHitCounter</HitCounter>
+			<ItemID>110142400319</ItemID>
+			<ListingDetails>
+				<Adult>false</Adult>
+				<BindingAuction>false</BindingAuction>
+				<CheckoutEnabled>true</CheckoutEnabled>
+				<ConvertedBuyItNowPrice currencyID="USD">0.0</ConvertedBuyItNowPrice>
+				<ConvertedStartPrice currencyID="USD">1.12</ConvertedStartPrice>
+				<ConvertedReservePrice currencyID="USD">0.0</ConvertedReservePrice>
+				<HasReservePrice>false</HasReservePrice>
+				<StartTime>2014-05-02T13:07:23.000Z</StartTime>
+				<EndTime>2014-06-01T13:07:23.000Z</EndTime>
+				<ViewItemURL>http://cgi.sandbox.ebay.com/levis-501-teenager-Trousers-/110142400319</ViewItemURL>
+				<HasUnansweredQuestions>false</HasUnansweredQuestions>
+				<HasPublicMessages>false</HasPublicMessages>
+				<ViewItemURLForNaturalSearch>http://cgi.sandbox.ebay.com/levis-501-teenager-Trousers-/110142400319</ViewItemURLForNaturalSearch>
+			</ListingDetails>
+			<ListingDesigner>
+				<LayoutID>10000</LayoutID>
+				<ThemeID>10</ThemeID>
+			</ListingDesigner>
+			<ListingDuration>GTC</ListingDuration>
+			<ListingType>FixedPriceItem</ListingType>
+			<Location>Seattle, Washington</Location>
+			<PaymentMethods>PayPal</PaymentMethods>
+			<PayPalEmailAddress>slav-facilitator@agileharbor.com</PayPalEmailAddress>
+			<PrimaryCategory>
+				<CategoryID>11483</CategoryID>
+				<CategoryName>Clothing, Shoes &amp; Accessories:Men's Clothing:Jeans</CategoryName>
+			</PrimaryCategory>
+			<PrivateListing>false</PrivateListing>
+			<Quantity>900</Quantity>
+			<ReservePrice currencyID="USD">0.0</ReservePrice>
+			<ReviseStatus>
+				<ItemRevised>true</ItemRevised>
+			</ReviseStatus>
+			<SellingStatus>
+				<BidCount>0</BidCount>
+				<BidIncrement currencyID="USD">0.0</BidIncrement>
+				<ConvertedCurrentPrice currencyID="USD">1.12</ConvertedCurrentPrice>
+				<CurrentPrice currencyID="USD">1.12</CurrentPrice>
+				<LeadCount>0</LeadCount>
+				<MinimumToBid currencyID="USD">1.12</MinimumToBid>
+				<QuantitySold>4</QuantitySold>
+				<ReserveMet>true</ReserveMet>
+				<SecondChanceEligible>false</SecondChanceEligible>
+				<ListingStatus>Active</ListingStatus>
+			</SellingStatus>
+			<ShippingDetails>
+				<ApplyShippingDiscount>false</ApplyShippingDiscount>
+				<CalculatedShippingRate>
+					<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+					<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+				</CalculatedShippingRate>
+				<SalesTax>
+					<SalesTaxPercent>0.0</SalesTaxPercent>
+					<ShippingIncludedInTax>false</ShippingIncludedInTax>
+				</SalesTax>
+				<ShippingServiceOptions>
+					<ShippingService>Other</ShippingService>
+					<ShippingServiceCost currencyID="USD">1.15</ShippingServiceCost>
+					<ShippingServiceAdditionalCost currencyID="USD">1.15</ShippingServiceAdditionalCost>
+					<ShippingServicePriority>1</ShippingServicePriority>
+					<ExpeditedService>false</ExpeditedService>
+					<ShippingTimeMin>1</ShippingTimeMin>
+					<ShippingTimeMax>10</ShippingTimeMax>
+				</ShippingServiceOptions>
+				<ShippingType>Flat</ShippingType>
+				<ThirdPartyCheckout>false</ThirdPartyCheckout>
+				<ShippingDiscountProfileID>0</ShippingDiscountProfileID>
+				<InternationalShippingDiscountProfileID>0</InternationalShippingDiscountProfileID>
+				<SellerExcludeShipToLocationsPreference>true</SellerExcludeShipToLocationsPreference>
+			</ShippingDetails>
+			<ShipToLocations>US</ShipToLocations>
+			<Site>US</Site>
+			<StartPrice currencyID="USD">1.12</StartPrice>
+			<Storefront>
+				<StoreCategoryID>1</StoreCategoryID>
+				<StoreCategory2ID>0</StoreCategory2ID>
+				<StoreURL>http://www.stores.sandbox.ebay.com/id=133037671</StoreURL>
+			</Storefront>
+			<TimeLeft>P24DT3H40M38S</TimeLeft>
+			<Title>levis 501 teenager Trousers</Title>
+			<LocationDefaulted>true</LocationDefaulted>
+			<GetItFast>false</GetItFast>
+			<PostalCode>98102</PostalCode>
+			<PictureDetails>
+				<GalleryType>Gallery</GalleryType>
+				<GalleryURL>http://i.ebayimg.sandbox.ebay.com/00/s/MzY1WDQ1Nw==/$(KGrHqNHJEwFMV+N6SDcBTY5UR(kbg~~60_1.JPG?set_id=8800005007</GalleryURL>
+				<PhotoDisplay>PicturePack</PhotoDisplay>
+				<PictureURL>http://i.ebayimg.sandbox.ebay.com/00/s/MzY1WDQ1Nw==/$(KGrHqNHJEwFMV+N6SDcBTY5UR(kbg~~60_1.JPG?set_id=8800005007</PictureURL>
+			</PictureDetails>
+			<DispatchTimeMax>2</DispatchTimeMax>
+			<ProxyItem>false</ProxyItem>
+			<BuyerGuaranteePrice currencyID="USD">20000.0</BuyerGuaranteePrice>
+			<ReturnPolicy>
+				<RefundOption>MoneyBack</RefundOption>
+				<Refund>Money Back</Refund>
+				<ReturnsWithinOption>Days_14</ReturnsWithinOption>
+				<ReturnsWithin>14 Days</ReturnsWithin>
+				<ReturnsAcceptedOption>ReturnsAccepted</ReturnsAcceptedOption>
+				<ReturnsAccepted>Returns Accepted</ReturnsAccepted>
+				<ShippingCostPaidByOption>Buyer</ShippingCostPaidByOption>
+				<ShippingCostPaidBy>Buyer</ShippingCostPaidBy>
+			</ReturnPolicy>
+			<PaymentAllowedSite>eBayMotors</PaymentAllowedSite>
+			<PaymentAllowedSite>CanadaFrench</PaymentAllowedSite>
+			<PaymentAllowedSite>Canada</PaymentAllowedSite>
+			<PaymentAllowedSite>US</PaymentAllowedSite>
+			<ConditionID>1000</ConditionID>
+			<ConditionDisplayName>New with tags</ConditionDisplayName>
+			<PostCheckoutExperienceEnabled>false</PostCheckoutExperienceEnabled>
+			<SellerProfiles />
+			<ShippingPackageDetails>
+				<ShippingIrregular>false</ShippingIrregular>
+				<ShippingPackage>PackageThickEnvelope</ShippingPackage>
+				<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+				<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+			</ShippingPackageDetails>
+			<HideFromSearch>false</HideFromSearch>
+		</Item>
+		<Item>
+			<AutoPay>false</AutoPay>
+			<BuyerProtection>ItemIneligible</BuyerProtection>
+			<BuyItNowPrice currencyID="USD">0.0</BuyItNowPrice>
+			<Country>US</Country>
+			<Currency>USD</Currency>
+			<Description>&lt;font face="Arial" size="2"&gt;TEST ITEM! DO NOT BAY IT!!!&lt;/font&gt;</Description>
+			<GiftIcon>0</GiftIcon>
+			<HitCounter>NoHitCounter</HitCounter>
+			<ItemID>110142503362</ItemID>
+			<ListingDetails>
+				<Adult>false</Adult>
+				<BindingAuction>false</BindingAuction>
+				<CheckoutEnabled>true</CheckoutEnabled>
+				<ConvertedBuyItNowPrice currencyID="USD">0.0</ConvertedBuyItNowPrice>
+				<ConvertedStartPrice currencyID="USD">1.14</ConvertedStartPrice>
+				<ConvertedReservePrice currencyID="USD">0.0</ConvertedReservePrice>
+				<HasReservePrice>false</HasReservePrice>
+				<StartTime>2014-05-05T13:23:27.000Z</StartTime>
+				<EndTime>2014-06-04T13:23:27.000Z</EndTime>
+				<ViewItemURL>http://cgi.sandbox.ebay.com/levis-501-teenager-Jackets-/110142503362</ViewItemURL>
+				<HasUnansweredQuestions>false</HasUnansweredQuestions>
+				<HasPublicMessages>false</HasPublicMessages>
+				<ViewItemURLForNaturalSearch>http://cgi.sandbox.ebay.com/levis-501-teenager-Jackets-/110142503362</ViewItemURLForNaturalSearch>
+			</ListingDetails>
+			<ListingDesigner>
+				<LayoutID>10000</LayoutID>
+				<ThemeID>10</ThemeID>
+			</ListingDesigner>
+			<ListingDuration>GTC</ListingDuration>
+			<ListingType>FixedPriceItem</ListingType>
+			<Location>Seattle, Washington</Location>
+			<PaymentMethods>PayPal</PaymentMethods>
+			<PayPalEmailAddress>slav-facilitator@agileharbor.com</PayPalEmailAddress>
+			<PrimaryCategory>
+				<CategoryID>11483</CategoryID>
+				<CategoryName>Clothing, Shoes &amp; Accessories:Men's Clothing:Jeans</CategoryName>
+			</PrimaryCategory>
+			<PrivateListing>false</PrivateListing>
+			<Quantity>900</Quantity>
+			<ReservePrice currencyID="USD">0.0</ReservePrice>
+			<ReviseStatus>
+				<ItemRevised>false</ItemRevised>
+			</ReviseStatus>
+			<SellingStatus>
+				<BidCount>0</BidCount>
+				<BidIncrement currencyID="USD">0.0</BidIncrement>
+				<ConvertedCurrentPrice currencyID="USD">1.14</ConvertedCurrentPrice>
+				<CurrentPrice currencyID="USD">1.14</CurrentPrice>
+				<LeadCount>0</LeadCount>
+				<MinimumToBid currencyID="USD">1.14</MinimumToBid>
+				<QuantitySold>0</QuantitySold>
+				<ReserveMet>true</ReserveMet>
+				<SecondChanceEligible>false</SecondChanceEligible>
+				<ListingStatus>Active</ListingStatus>
+			</SellingStatus>
+			<ShippingDetails>
+				<ApplyShippingDiscount>false</ApplyShippingDiscount>
+				<CalculatedShippingRate>
+					<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+					<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+				</CalculatedShippingRate>
+				<SalesTax>
+					<SalesTaxPercent>0.0</SalesTaxPercent>
+					<ShippingIncludedInTax>false</ShippingIncludedInTax>
+				</SalesTax>
+				<ShippingServiceOptions>
+					<ShippingService>Other</ShippingService>
+					<ShippingServiceCost currencyID="USD">1.15</ShippingServiceCost>
+					<ShippingServiceAdditionalCost currencyID="USD">1.15</ShippingServiceAdditionalCost>
+					<ShippingServicePriority>1</ShippingServicePriority>
+					<ExpeditedService>false</ExpeditedService>
+					<ShippingTimeMin>1</ShippingTimeMin>
+					<ShippingTimeMax>10</ShippingTimeMax>
+				</ShippingServiceOptions>
+				<ShippingType>Flat</ShippingType>
+				<ThirdPartyCheckout>false</ThirdPartyCheckout>
+				<ShippingDiscountProfileID>0</ShippingDiscountProfileID>
+				<InternationalShippingDiscountProfileID>0</InternationalShippingDiscountProfileID>
+				<SellerExcludeShipToLocationsPreference>true</SellerExcludeShipToLocationsPreference>
+			</ShippingDetails>
+			<ShipToLocations>US</ShipToLocations>
+			<Site>US</Site>
+			<StartPrice currencyID="USD">1.14</StartPrice>
+			<Storefront>
+				<StoreCategoryID>1</StoreCategoryID>
+				<StoreCategory2ID>0</StoreCategory2ID>
+				<StoreURL>http://www.stores.sandbox.ebay.com/id=133037671</StoreURL>
+			</Storefront>
+			<TimeLeft>P27DT3H56M42S</TimeLeft>
+			<Title>levis 501 teenager Jackets</Title>
+			<LocationDefaulted>true</LocationDefaulted>
+			<GetItFast>false</GetItFast>
+			<PostalCode>98102</PostalCode>
+			<PictureDetails>
+				<GalleryType>Gallery</GalleryType>
+				<PhotoDisplay>None</PhotoDisplay>
+			</PictureDetails>
+			<DispatchTimeMax>2</DispatchTimeMax>
+			<ProxyItem>false</ProxyItem>
+			<BuyerGuaranteePrice currencyID="USD">20000.0</BuyerGuaranteePrice>
+			<ReturnPolicy>
+				<RefundOption>MoneyBack</RefundOption>
+				<Refund>Money Back</Refund>
+				<ReturnsWithinOption>Days_14</ReturnsWithinOption>
+				<ReturnsWithin>14 Days</ReturnsWithin>
+				<ReturnsAcceptedOption>ReturnsAccepted</ReturnsAcceptedOption>
+				<ReturnsAccepted>Returns Accepted</ReturnsAccepted>
+				<ShippingCostPaidByOption>Buyer</ShippingCostPaidByOption>
+				<ShippingCostPaidBy>Buyer</ShippingCostPaidBy>
+			</ReturnPolicy>
+			<PaymentAllowedSite>eBayMotors</PaymentAllowedSite>
+			<PaymentAllowedSite>CanadaFrench</PaymentAllowedSite>
+			<PaymentAllowedSite>Canada</PaymentAllowedSite>
+			<PaymentAllowedSite>US</PaymentAllowedSite>
+			<ConditionID>1000</ConditionID>
+			<ConditionDisplayName>New with tags</ConditionDisplayName>
+			<PostCheckoutExperienceEnabled>false</PostCheckoutExperienceEnabled>
+			<SellerProfiles />
+			<ShippingPackageDetails>
+				<ShippingIrregular>false</ShippingIrregular>
+				<ShippingPackage>PackageThickEnvelope</ShippingPackage>
+				<WeightMajor measurementSystem="English" unit="lbs">0</WeightMajor>
+				<WeightMinor measurementSystem="English" unit="oz">0</WeightMinor>
+			</ShippingPackageDetails>
+			<HideFromSearch>false</HideFromSearch>
+		</Item>
+	</ItemArray>
+	<ItemsPerPage>50</ItemsPerPage>
+	<PageNumber>1</PageNumber>
+	<ReturnedItemCountActual>5</ReturnedItemCountActual>
+	<Seller>
+		<AboutMePage>false</AboutMePage>
+		<Email>sv02@1.com</Email>
+		<FeedbackScore>500</FeedbackScore>
+		<PositiveFeedbackPercent>0.0</PositiveFeedbackPercent>
+		<FeedbackPrivate>false</FeedbackPrivate>
+		<FeedbackRatingStar>Purple</FeedbackRatingStar>
+		<IDVerified>true</IDVerified>
+		<eBayGoodStanding>true</eBayGoodStanding>
+		<NewUser>false</NewUser>
+		<RegistrationDate>1995-01-01T00:00:00.000Z</RegistrationDate>
+		<Site>US</Site>
+		<Status>Confirmed</Status>
+		<UserID>testuser_sv02</UserID>
+		<UserIDChanged>false</UserIDChanged>
+		<UserIDLastChanged>2014-01-17T21:08:45.000Z</UserIDLastChanged>
+		<VATStatus>NoVATTax</VATStatus>
+		<SellerInfo>
+			<AllowPaymentEdit>true</AllowPaymentEdit>
+			<CheckoutEnabled>true</CheckoutEnabled>
+			<CIPBankAccountStored>false</CIPBankAccountStored>
+			<GoodStanding>true</GoodStanding>
+			<LiveAuctionAuthorized>false</LiveAuctionAuthorized>
+			<MerchandizingPref>OptIn</MerchandizingPref>
+			<QualifiesForB2BVAT>false</QualifiesForB2BVAT>
+			<StoreOwner>true</StoreOwner>
+			<StoreURL>http://www.stores.sandbox.ebay.com/id=133037671</StoreURL>
+			<SafePaymentExempt>true</SafePaymentExempt>
+		</SellerInfo>
+		<MotorsDealer>false</MotorsDealer>
+	</Seller>
+</GetSellerListResponse>
