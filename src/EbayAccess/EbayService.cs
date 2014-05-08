@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EbayAccess.Interfaces;
-using EbayAccess.Interfaces.Services;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;

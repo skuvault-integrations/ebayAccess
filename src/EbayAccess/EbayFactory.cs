@@ -1,5 +1,4 @@
 ﻿using CuttingEdge.Conditions;
-using EbayAccess.Interfaces;
 using EbayAccess.Models.Credentials;
 
 namespace EbayAccess

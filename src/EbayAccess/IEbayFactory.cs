@@ -1,6 +1,6 @@
 ﻿using EbayAccess.Models.Credentials;
 
-namespace EbayAccess.Interfaces
+namespace EbayAccess
 {
 	public interface IEbayFactory
 	{

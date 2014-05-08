@@ -5,19 +5,16 @@ using System.Net;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Infrastructure;
-using EbayAccess.Interfaces;
-using EbayAccess.Interfaces.Services;
 using EbayAccess.Misc;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
-using EbayAccess.Services;
 using EbayAccess.Services.Parsers;
 using Netco.Extensions;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
-namespace EbayAccess
+namespace EbayAccess.Services
 {
 	public sealed class EbayServiceLowLevel : IEbayServiceLowLevel
 	{

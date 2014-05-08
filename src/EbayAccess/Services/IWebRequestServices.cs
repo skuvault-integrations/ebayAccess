@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace EbayAccess.Interfaces.Services
+namespace EbayAccess.Services
 {
 	public interface IWebRequestServices
 	{

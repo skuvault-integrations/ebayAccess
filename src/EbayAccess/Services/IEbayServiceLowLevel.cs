@@ -6,7 +6,7 @@ using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
-namespace EbayAccess.Interfaces
+namespace EbayAccess.Services
 {
 	public interface IEbayServiceLowLevel
 	{

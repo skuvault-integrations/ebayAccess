@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EbayAccess;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace EbayAccessTests.Integration
+namespace EbayAccessTests.Integration.Services
 {
 	[ TestFixture ]
 	public class EbayServiceLowLevelTest : TestBase
