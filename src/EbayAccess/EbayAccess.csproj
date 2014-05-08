@@ -127,10 +127,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v11.0\Web\Microsoft.Web.Publishing.Tasks.dll">
+<!-- 
+  <UsingTask TaskName="TransformXml" AssemblyFile="$(SolutionDir)\..\lib\Microsoft.Web.Publishing.Tasks.dll">
   </UsingTask>
   <Target Name="AfterBuild">
     <TransformXml Source="App.config" Transform="App.$(Configuration).config" Destination="App.config" StackTrace="true">
     </TransformXml>
   </Target>
+  -->
 </Project>
