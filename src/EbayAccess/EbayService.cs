@@ -24,7 +24,8 @@ namespace EbayAccess
 			{
 				foreach( var transaction in order.TransactionArray )
 				{
-					transaction.Item.ItemDetails = this.EbayServiceLowLevel.GetItem( transaction.Item.ItemId );
+					transaction.Item.ItemDetails = this.EbayServiceLowLevel.GetItem(transaction.Item.ItemId);
+					transaction.Item.Sku = transaction.Item.ItemDetails.Sku;
 				}
 			}
 		}
