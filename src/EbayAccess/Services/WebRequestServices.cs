@@ -4,26 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using CuttingEdge.Conditions;
-using EbayAccess.Models.Credentials;
 using Netco.Logging;
 
 namespace EbayAccess.Services
 {
 	public class WebRequestServices : IWebRequestServices
 	{
-		private readonly EbayUserCredentials _userCredentials;
-		private readonly EbayDevCredentials _ebayDevCredentials;
-
-		public WebRequestServices( EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials )
-		{
-			Condition.Requires( userCredentials, "userCredentials" ).IsNotNull();
-			Condition.Requires( ebayDevCredentials, "ebayDevCredentials" ).IsNotNull();
-
-			this._userCredentials = userCredentials;
-			this._ebayDevCredentials = ebayDevCredentials;
-		}
-
 		#region BaseRequests
 		public WebRequest CreateServiceGetRequest( string serviceUrl, IDictionary< string, string > rawUrlParameters )
 		{

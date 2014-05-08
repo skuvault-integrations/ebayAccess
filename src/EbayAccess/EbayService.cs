@@ -34,7 +34,7 @@ namespace EbayAccess
 		}
 
 		public EbayService( EbayUserCredentials userCredentials, EbayDevCredentials ebayDevCredentials, string endPouint = "https://api.ebay.com/ws/api.dll", int itemsPerPage = 50 )
-			: this( userCredentials, ebayDevCredentials, new WebRequestServices( userCredentials, ebayDevCredentials ), endPouint, itemsPerPage )
+			: this( userCredentials, ebayDevCredentials, new WebRequestServices( ), endPouint, itemsPerPage )
 		{
 		}
 
