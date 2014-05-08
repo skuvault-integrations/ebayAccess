@@ -13,7 +13,7 @@ namespace EbayAccessTests.Services.Parsers
 		{
 			//A
 			using(
-				var fs = new FileStream( @".\Files\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml", FileMode.Open,
+				var fs = new FileStream( @".\Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml", FileMode.Open,
 					FileAccess.Read ) )
 			{
 				//A
@@ -30,7 +30,7 @@ namespace EbayAccessTests.Services.Parsers
 		//{
 		//	//A
 		//	using (
-		//		var fs = new FileStream(@".\Files\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml", FileMode.Open,
+		//		var fs = new FileStream(@".\Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml", FileMode.Open,
 		//			FileAccess.Read))
 		//	{
 		//		//A

@@ -90,10 +90,10 @@
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Files\EbayServiceGetSellerListResponseWith1PageOf4Contains1Item.xml">
+    <Content Include="Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith1PageOf4Contains1Item.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Files\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml">
+    <Content Include="Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemVariationSku.xml">

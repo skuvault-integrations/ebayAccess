@@ -13,7 +13,7 @@ namespace EbayAccessTests.Services.Parsers
 		{
 			//A
 			using(
-				var fs = new FileStream( @".\Files\EbayServiceGetSellerListResponseWith1PageOf4Contains1Item.xml", FileMode.Open, FileAccess.Read ) )
+				var fs = new FileStream( @".\Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith1PageOf4Contains1Item.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				const int itemCount = 4;
 				const int pagesCount = 4;
