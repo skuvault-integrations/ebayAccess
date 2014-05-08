@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using EbayAccess.Infrastructure;
+using EbayAccess.Misc;
 using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Services.Parsers

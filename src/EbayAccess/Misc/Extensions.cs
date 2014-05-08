@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Xml;
 
-namespace EbayAccess.Infrastructure
+namespace EbayAccess.Misc
 {
 	public static class Extensions
 	{

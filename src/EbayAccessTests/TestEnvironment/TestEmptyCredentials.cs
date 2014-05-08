@@ -1,6 +1,6 @@
 ﻿using EbayAccess.Models.Credentials;
 
-namespace EbayAccessTests
+namespace EbayAccessTests.TestEnvironment
 {
 	public class TestEmptyCredentials
 	{

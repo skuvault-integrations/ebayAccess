@@ -55,8 +55,8 @@
     <Compile Include="EbayService.cs" />
     <Compile Include="IEbayFactory.cs" />
     <Compile Include="IEbayService.cs" />
-    <Compile Include="Infrastructure\Extensions.cs" />
     <Compile Include="Misc\ActionPolicies.cs" />
+    <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Models\BaseResponse\EbayBaseResponse.cs" />
     <Compile Include="Models\BaseResponse\PaginationResult.cs" />
     <Compile Include="Models\BaseResponse\ResponseError.cs" />

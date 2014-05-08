@@ -1,9 +1,9 @@
 ﻿using System;
-using EbayAccess.Infrastructure;
+using EbayAccess.Misc;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace EbayAccessTests.Infrastructure
+namespace EbayAccessTests.Misc
 {
 	[ TestFixture ]
 	public class Extensions

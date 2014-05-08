@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using EbayAccess.Infrastructure;
+using EbayAccess.Misc;
 using EbayAccess.Models.GetItemResponse;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListResponse;

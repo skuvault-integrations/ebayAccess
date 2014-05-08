@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
-using EbayAccess.Infrastructure;
 using EbayAccess.Misc;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.GetOrdersResponse;
