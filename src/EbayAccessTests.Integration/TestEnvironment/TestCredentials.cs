@@ -12,7 +12,6 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		private readonly FlatCsvLine _flatCsvLine;
 		private readonly FlatDevCredentialCsvLine _flatDevCredentialCsvLine;
 		private readonly List< FlatSaleItemsCsvLine > _flatSaleItemsCsvLines;
-		private readonly string _ebayEndPoint;
 
 		public TestCredentials( string credentialsFilePath, string devCredentialsFilePath, string saleItemsIdsFilePath )
 		{
@@ -20,7 +19,6 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			this._flatCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatCsvLine >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 			this._flatDevCredentialCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatDevCredentialCsvLine >( devCredentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 			this._flatSaleItemsCsvLines = cc.Read< FlatSaleItemsCsvLine >( saleItemsIdsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ).ToList();
-			this._ebayEndPoint = ConfigurationManager.AppSettings[ "EndPoint" ];
 		}
 
 		public EbayUserCredentials GetEbayUserCredentials()
@@ -30,17 +28,12 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 		public EbayConfig GetEbayConfig()
 		{
-			return new EbayConfig( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName, this._ebayEndPoint );
+			return new EbayConfig( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName );
 		}
 
 		public IEnumerable< long > GetSaleItemsIds()
 		{
 			return this._flatSaleItemsCsvLines.Select( x => long.Parse( x.Id ) ).ToList();
-		}
-
-		public string GetEbayEndPoint()
-		{
-			return this._ebayEndPoint;
 		}
 
 		internal class FlatCsvLine
