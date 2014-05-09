@@ -1,4 +1,5 @@
-﻿using CuttingEdge.Conditions;
+﻿using System.Configuration;
+using CuttingEdge.Conditions;
 
 namespace EbayAccess.Models.CredentialsAndConfig
 {
@@ -9,17 +10,16 @@ namespace EbayAccess.Models.CredentialsAndConfig
 		public string CertName { get; private set; }
 		public string EndPoint { get; private set; }
 
-		public EbayConfig( string appName, string devName, string certName, string endPoint )
+		public EbayConfig( string appName, string devName, string certName, string endPoint = null )
 		{
 			Condition.Requires( appName, "devName" ).IsNotNullOrWhiteSpace();
 			Condition.Requires( devName, "appName" ).IsNotNullOrWhiteSpace();
 			Condition.Requires( certName, "certName" ).IsNotNullOrWhiteSpace();
-			Condition.Requires( endPoint, "endPoint" ).IsNotNullOrWhiteSpace();
 
 			this.AppName = appName;
 			this.DevName = devName;
 			this.CertName = certName;
-			this.EndPoint = endPoint;
+			this.EndPoint = string.IsNullOrWhiteSpace( endPoint ) ? ConfigurationManager.AppSettings[ "EndPoint" ] : endPoint;
 		}
 	}
 }

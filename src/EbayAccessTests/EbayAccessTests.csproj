@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="EbayServiceTest.cs" />
     <Compile Include="Misc\Extensions.cs" />
+    <Compile Include="Models\CredentialsAndConfig\EbayConfigTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EbayServiceLowLevelTest.cs" />
     <Compile Include="Services\Parsers\EbayGetItemResponseParserTest.cs" />
