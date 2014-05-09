@@ -67,8 +67,18 @@
     <Compile Include="TestEnvironment\TestBase.cs" />
     <Compile Include="TestEnvironment\TestCredentials.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
+  <ItemGroup>    
+    <None Include="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="App.Release.config">
+      <DependentUpon>App.config</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="App.Debug.config">
+      <DependentUpon>App.config</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +98,14 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
+  </Target>
+  -->
+  <!-- 
+  <UsingTask TaskName="TransformXml" AssemblyFile="$(SolutionDir)\..\lib\Microsoft.Web.Publishing.Tasks.dll">
+  </UsingTask>
+  <Target Name="AfterBuild">
+    <TransformXml Source="App.config" Transform="App.$(Configuration).config" Destination="App.config" StackTrace="true">
+    </TransformXml>
   </Target>
   -->
 </Project>

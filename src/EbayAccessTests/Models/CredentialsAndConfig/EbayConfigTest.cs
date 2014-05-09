@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace EbayAccessTests.Models.CredentialsAndConfig
 {
-	[TestFixture]
+	[ TestFixture ]
 	public class EbayConfigTest
 	{
 		[ Test ]
@@ -14,7 +14,7 @@ namespace EbayAccessTests.Models.CredentialsAndConfig
 			const string doesNotMetter = "does not metter";
 
 			//------------ Act
-			var ebayConfig = new EbayConfig(doesNotMetter, doesNotMetter, doesNotMetter);
+			var ebayConfig = new EbayConfig( doesNotMetter, doesNotMetter, doesNotMetter );
 
 			//------------ Assert
 			ebayConfig.EndPoint.Should().NotBeNullOrWhiteSpace( "because constructor must initialize field from config" );
