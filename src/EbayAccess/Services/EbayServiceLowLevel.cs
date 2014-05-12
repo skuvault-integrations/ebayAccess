@@ -46,7 +46,7 @@ namespace EbayAccess.Services
 		public async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body )
 		{
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCompatibilityLevel ) )
-				headers.Add( EbayHeaders.XEbayApiCompatibilityLevel, "853" );
+				headers.Add(EbayHeaders.XEbayApiCompatibilityLevel, EbayHeadersValues.XEbayApiCompatibilityLevel);
 
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiDevName ) )
 				headers.Add( EbayHeaders.XEbayApiDevName, this._ebayConfig.AppName );
@@ -55,7 +55,7 @@ namespace EbayAccess.Services
 				headers.Add( EbayHeaders.XEbayApiAppName, this._ebayConfig.DevName );
 
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiSiteid ) )
-				headers.Add( EbayHeaders.XEbayApiSiteid, "0" );
+				headers.Add(EbayHeaders.XEbayApiSiteid, EbayHeadersValues.XEbayApiSiteid);
 
 			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
 		}

@@ -24,4 +24,17 @@
 
 		public static string XEbayApiCallName { get; private set; }
 	}
+
+	public static class EbayHeadersValues
+	{
+		static EbayHeadersValues()
+		{
+			XEbayApiSiteid = "0";
+			XEbayApiCompatibilityLevel = "853";
+		}
+
+		public static string XEbayApiSiteid { get; private set; }
+
+		public static string XEbayApiCompatibilityLevel { get; private set; }
+	}
 }
