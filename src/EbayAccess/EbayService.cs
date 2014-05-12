@@ -16,10 +16,6 @@ namespace EbayAccess
 	{
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
 
-		//private string EndPoint { get; set; }
-
-		//private int ItemsPerPage { get; set; }
-
 		private void PopulateOrdersItemsDetails( IEnumerable< Order > orders )
 		{
 			//todo: rfactor, create the same but async
@@ -35,9 +31,6 @@ namespace EbayAccess
 
 		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
 		{
-			//this.ItemsPerPage = 50;
-			//this.EndPoint = ConfigurationManager.AppSettings[ "EndPoint" ];
-
 			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayConfig, webRequestServices );
 		}
 
