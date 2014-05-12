@@ -48,8 +48,8 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
 		{
-			var orders = await this.EbayServiceLowLevel.GetOrdersAsync(dateFrom, dateTo).ConfigureAwait(false);
-			this.PopulateOrdersItemsDetails(orders);
+			var orders = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo ).ConfigureAwait( false );
+			this.PopulateOrdersItemsDetails( orders );
 			return orders;
 		}
 		#endregion

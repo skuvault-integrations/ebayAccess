@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
