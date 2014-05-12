@@ -18,7 +18,6 @@ namespace EbayAccess
 
 		private void PopulateOrdersItemsDetails( IEnumerable< Order > orders )
 		{
-			//todo: rfactor, create the same but async
 			foreach( var order in orders )
 			{
 				foreach( var transaction in order.TransactionArray )
