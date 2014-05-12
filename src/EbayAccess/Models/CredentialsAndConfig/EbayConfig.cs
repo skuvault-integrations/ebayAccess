@@ -20,6 +20,8 @@ namespace EbayAccess.Models.CredentialsAndConfig
 			this.DevName = devName;
 			this.CertName = certName;
 			this.EndPoint = ConfigurationManager.AppSettings[ "EndPoint" ];
+
+			Condition.Requires( this.EndPoint ).IsNotNullOrWhiteSpace();
 		}
 	}
 }
