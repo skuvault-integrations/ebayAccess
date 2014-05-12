@@ -12,7 +12,7 @@ namespace EbayAccessTests.TestEnvironment
 
 		public EbayConfig GetEbayDevCredentials()
 		{
-			return new EbayConfig( "AppName: does not metter for test", "DevName: does not metter for test", "CertName: does not metter for test", "EndPoint: does not metter for test " );
+			return new EbayConfig( "AppName: does not metter for test", "DevName: does not metter for test", "CertName: does not metter for test" );
 		}
 
 		public string GetEbayEndPoint()

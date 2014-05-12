@@ -10,16 +10,16 @@ namespace EbayAccess.Models.CredentialsAndConfig
 		public string CertName { get; private set; }
 		public string EndPoint { get; private set; }
 
-		public EbayConfig( string appName, string devName, string certName, string endPoint = null )
+		public EbayConfig( string appName, string devName, string certName )
 		{
-			Condition.Requires( appName, "devName" ).IsNotNullOrWhiteSpace();
-			Condition.Requires( devName, "appName" ).IsNotNullOrWhiteSpace();
+			Condition.Requires( appName, "appName" ).IsNotNullOrWhiteSpace();
+			Condition.Requires( devName, "devName" ).IsNotNullOrWhiteSpace();
 			Condition.Requires( certName, "certName" ).IsNotNullOrWhiteSpace();
 
 			this.AppName = appName;
 			this.DevName = devName;
 			this.CertName = certName;
-			this.EndPoint = string.IsNullOrWhiteSpace( endPoint ) ? ConfigurationManager.AppSettings[ "EndPoint" ] : endPoint;
+			this.EndPoint = ConfigurationManager.AppSettings[ "EndPoint" ];
 		}
 	}
 }
