@@ -50,7 +50,7 @@ namespace EbayAccessTests.Integration
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
-			var ordersTask = ebayService.GetProductsDetailsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
+			var ordersTask = ebayService.GetProductsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
 			ordersTask.Wait();
 			var orders = ordersTask.Result;
 
