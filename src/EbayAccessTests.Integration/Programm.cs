@@ -39,7 +39,23 @@ namespace EbayAccessTests.Integration
 			var orders = ordersTask.Result;
 
 			//------------ Assert
-			orders.First().Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because on site there is 2 orders" );
+			orders.First().Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because on site there is orders with Sku" );
+		}
+
+		[ Test ]
+		public void GetProductsAsync_EbayServiceWithProductsVariationsSku_HookupProductsVariationsSku()
+		{
+			//------------ Arrange
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
+
+			//------------ Act
+			var ordersTask = ebayService.GetProductsDetailsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
+			ordersTask.Wait();
+			var orders = ordersTask.Result;
+
+			//------------ Assert
+			orders.First().Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because on site there is orders with Sku" );
 		}
 
 		[ Test ]
