@@ -8,7 +8,7 @@ namespace EbayAccess.Models.CredentialsAndConfig
 		public string AppName { get; private set; }
 		public string DevName { get; private set; }
 		public string CertName { get; private set; }
-		public string EndPoint { get; private set; }
+		public virtual string EndPoint { get; private set; }
 
 		public EbayConfig( string appName, string devName, string certName )
 		{
@@ -19,9 +19,7 @@ namespace EbayAccess.Models.CredentialsAndConfig
 			this.AppName = appName;
 			this.DevName = devName;
 			this.CertName = certName;
-			this.EndPoint = ConfigurationManager.AppSettings[ "EndPoint" ];
-
-			Condition.Requires( this.EndPoint ).IsNotNullOrWhiteSpace();
+			this.EndPoint = "https://api.ebay.com/ws/api.dll";
 		}
 	}
 }

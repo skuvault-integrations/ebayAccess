@@ -25,9 +25,9 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			return new EbayUserCredentials( this._flatCsvLine.AccountName, this._flatCsvLine.Token );
 		}
 
-		public EbayConfig GetEbayConfig()
+		public EbayConfigStub GetEbayConfig()
 		{
-			return new EbayConfig( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName );
+			return new EbayConfigStub(this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName);
 		}
 
 		public IEnumerable< long > GetSaleItemsIds()
