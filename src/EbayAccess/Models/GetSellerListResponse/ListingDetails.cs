@@ -2,6 +2,7 @@
 
 namespace EbayAccess.Models.GetSellerListResponse
 {
+	[Serializable]
 	public class ListingDetails
 	{
 		public bool Adult { get; set; }

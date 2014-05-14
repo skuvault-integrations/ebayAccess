@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Models.GetSellerListResponse
 {
-	public class Item
+	[Serializable]
+	public partial class Item
 	{
 		public bool AutoPay { get; set; }
 

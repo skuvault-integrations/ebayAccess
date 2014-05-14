@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -88,15 +89,6 @@ namespace EbayAccess
 			return await this.GetItemsAsync( products ).ConfigureAwait( false );
 		}
 
-		protected async Task< IEnumerable< Item > > GetItemsAsync( IEnumerable< Item > items )
-		{
-			var itemsDetailsTasks = items.Select( x => this.EbayServiceLowLevel.GetItemAsync( x.ItemId ) );
-
-			var productsDetails = await Task.WhenAll( itemsDetailsTasks ).ConfigureAwait( false );
-
-			return productsDetails;
-		}
-
 		public async Task< IEnumerable< Item > > GetProductsDetailsAsync()
 		{
 			const int maxtimerange = 119;
@@ -120,6 +112,27 @@ namespace EbayAccess
 			var products = getSellerListAsyncTasks.SelectMany( task => task.Result ).ToList();
 
 			return await this.GetItemsAsync( products ).ConfigureAwait( false );
+		}
+
+		protected async Task< IEnumerable< Item > > GetItemsAsync( IEnumerable< Item > items )
+		{
+			var itemsDetailsTasks = items.Select( x => this.EbayServiceLowLevel.GetItemAsync( x.ItemId ) );
+
+			var productsDetails = await Task.WhenAll(itemsDetailsTasks).ConfigureAwait(false);
+
+			var productsDetailsDevidedByVariations = new List< Item >();
+
+			foreach( var productDetails in productsDetails )
+			{
+				if( productDetails.IsItemWithVariations() && productDetails.HaveManyVariations() )
+					productsDetailsDevidedByVariations.AddRange( productDetails.DevideByVariations() );
+				else
+				{
+					productsDetailsDevidedByVariations.Add( productDetails );
+				}
+			}
+
+			return productsDetailsDevidedByVariations;
 		}
 		#endregion
 

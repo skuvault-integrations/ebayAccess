@@ -80,6 +80,7 @@
     <Compile Include="Models\GetOrdersResponse\Transaction.cs" />
     <Compile Include="Models\GetOrdersResponse\Variation.cs" />
     <Compile Include="Models\GetSellerListResponse\Category.cs" />
+    <Compile Include="Models\GetSellerListResponse\ItemExtended.cs" />
     <Compile Include="Models\GetSellerListResponse\GetSellerListResponse.cs" />
     <Compile Include="Models\GetSellerListResponse\Item.cs" />
     <Compile Include="Models\GetSellerListResponse\ListingDetails.cs" />
