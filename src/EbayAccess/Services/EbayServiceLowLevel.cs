@@ -223,11 +223,11 @@ namespace EbayAccess.Services
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var tempOrders = new EbayGetSallerListResponseParser().Parse( memStream );
-						if( tempOrders != null )
+						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
+						if (getSellerListResponse != null && getSellerListResponse.Items != null)
 						{
-							orders.AddRange( tempOrders.Items );
-							alreadyReadRecords += tempOrders.Items.Count;
+							orders.AddRange( getSellerListResponse.Items );
+							alreadyReadRecords += getSellerListResponse.Items.Count;
 						}
 					}
 				} );
@@ -261,9 +261,11 @@ namespace EbayAccess.Services
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var tempOrders = new EbayGetSallerListResponseParser().Parse( memStream );
-						if( tempOrders != null )
-							items.AddRange( tempOrders.Items );
+						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse(memStream);
+						if (getSellerListResponse != null && getSellerListResponse.Items!= null)
+						{
+							items.AddRange( getSellerListResponse.Items );
+						}
 					}
 				} ).ConfigureAwait( false );
 
