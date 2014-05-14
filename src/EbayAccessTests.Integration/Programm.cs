@@ -13,7 +13,7 @@ namespace EbayAccessTests.Integration
 	public class Programm : TestBase
 	{
 		[ Test ]
-		public void EbayServiceGetOrders_EbayServiceWithProducts_HookupProducts()
+		public void GetOrders_EbayServiceWithProducts_HookupOrders()
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
@@ -34,32 +34,32 @@ namespace EbayAccessTests.Integration
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
-			var ordersTask = ebayService.GetProductsDetailsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
-			ordersTask.Wait();
-			var orders = ordersTask.Result;
+			var productsDetailsAsyncTask = ebayService.GetProductsDetailsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
+			productsDetailsAsyncTask.Wait();
+			var products = productsDetailsAsyncTask.Result;
 
 			//------------ Assert
-			orders.First().Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because on site there is orders with Sku" );
+			products.First().Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because on site there is orders with Sku" );
 		}
 
 		[ Test ]
-		public void GetProductsAsync_EbayServiceWithProductsVariationsSku_HookupProductsVariationsSku()
+		public void GetProductsAsync_EbayServiceWithProductsVariationsSku_HookupProducts()
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
-			var ordersTask = ebayService.GetProductsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
-			ordersTask.Wait();
-			var orders = ordersTask.Result;
+			var productsAsyncTask = ebayService.GetProductsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
+			productsAsyncTask.Wait();
+			var products = productsAsyncTask.Result;
 
 			//------------ Assert
-			orders.First().Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because on site there is orders with Sku" );
+			products.Count().Should().BeGreaterThan( 0, "because there are items on the site" );
 		}
 
 		[ Test ]
-		public void GetProductsDetailsAsync_EbayServiceWithProductsSku_HookupProductsSku()
+		public void GetProductsDetailsAsyncInTimeRange_EbayServiceWithProductsAndSkus_HookupProductsAndTheirSkus()
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
@@ -68,12 +68,28 @@ namespace EbayAccessTests.Integration
 			//------------ Act
 			var timeFromStart = new DateTime( 2014, 4, 18, 0, 0, 0 );
 			var timeFromTo = new DateTime( 2014, 4, 19, 10, 0, 0 );
-			var ordersTask = ebayService.GetProductsDetailsAsync( timeFromStart, timeFromTo );
-			ordersTask.Wait();
-			var orders = ordersTask.Result;
+			var productsDetailsAsyncTask = ebayService.GetProductsDetailsAsync( timeFromStart, timeFromTo );
+			productsDetailsAsyncTask.Wait();
+			var products = productsDetailsAsyncTask.Result;
 
 			//------------ Assert
-			orders.ToList().TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because on site there item with sku specified in time range {0}-{1}", timeFromStart, timeFromTo );
+			products.ToList().TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue( "because on site there item with sku specified in time range {0}-{1}", timeFromStart, timeFromTo );
+		}
+
+		[ Test ]
+		public void GetProductsDetailsAsync_EbayServiceWithProductsWithVariationSku_HookupProductsWithTheirVariationSkus()
+		{
+			//------------ Arrange
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
+
+			//------------ Act
+			var productsDetailsAsyncTask = ebayService.GetProductsDetailsAsync();
+			productsDetailsAsyncTask.Wait();
+			var products = productsDetailsAsyncTask.Result;
+
+			//------------ Assert
+			products.Count().Should().BeGreaterThan( 0, "because on site there are items" );
 		}
 
 		[ Test ]
