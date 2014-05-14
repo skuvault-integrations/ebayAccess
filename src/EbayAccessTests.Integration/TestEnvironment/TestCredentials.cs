@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EbayAccess.Models.Credentials;
-using EbayAccess.Models.CredentialsAndConfig;
 using LINQtoCSV;
 
 namespace EbayAccessTests.Integration.TestEnvironment
@@ -27,7 +26,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 		public EbayConfigStub GetEbayConfig()
 		{
-			return new EbayConfigStub(this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName);
+			return new EbayConfigStub( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName );
 		}
 
 		public IEnumerable< long > GetSaleItemsIds()

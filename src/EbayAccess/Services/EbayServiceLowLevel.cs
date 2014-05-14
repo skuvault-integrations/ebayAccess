@@ -224,7 +224,7 @@ namespace EbayAccess.Services
 							totalRecords = pagination.TotalNumberOfEntries;
 
 						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
-						if (getSellerListResponse != null && getSellerListResponse.Items != null)
+						if( getSellerListResponse != null && getSellerListResponse.Items != null )
 						{
 							orders.AddRange( getSellerListResponse.Items );
 							alreadyReadRecords += getSellerListResponse.Items.Count;
@@ -261,11 +261,9 @@ namespace EbayAccess.Services
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse(memStream);
-						if (getSellerListResponse != null && getSellerListResponse.Items!= null)
-						{
+						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
+						if( getSellerListResponse != null && getSellerListResponse.Items != null )
 							items.AddRange( getSellerListResponse.Items );
-						}
 					}
 				} ).ConfigureAwait( false );
 

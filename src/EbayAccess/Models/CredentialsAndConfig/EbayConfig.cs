@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using CuttingEdge.Conditions;
+﻿using CuttingEdge.Conditions;
 
 namespace EbayAccess.Models.CredentialsAndConfig
 {
