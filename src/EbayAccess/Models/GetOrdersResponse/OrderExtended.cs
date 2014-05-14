@@ -8,5 +8,10 @@ namespace EbayAccess.Models.GetOrdersResponse
 		{
 			get { return this.ShippedTime == default ( DateTime ) ? this.CreatedTime : this.ShippedTime; }
 		}
+
+		public bool IsShipped
+		{
+			get { return this.ShippedTime == default(DateTime); }
+		}
 	}
 }

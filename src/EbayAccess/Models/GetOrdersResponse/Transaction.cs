@@ -1,6 +1,6 @@
 ﻿namespace EbayAccess.Models.GetOrdersResponse
 {
-	public class Transaction
+	public partial class Transaction
 	{
 		public Buyer Buyer { get; set; }
 
@@ -17,5 +17,19 @@
 		public string OrderLineItemId { get; set; }
 
 		public Variation Variation { get; set; }
+	}
+
+	public partial class Transaction
+	{
+		public string GetSku()
+		{
+			if( this.Item != null && !string.IsNullOrWhiteSpace( this.Item.Sku ) )
+				return this.Item.Sku;
+
+			if( this.Variation != null && !string.IsNullOrWhiteSpace( this.Variation.Sku ) )
+				return this.Variation.Sku;
+
+			return string.Empty;
+		}
 	}
 }
