@@ -11,7 +11,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 
 		public bool IsShipped
 		{
-			get { return this.ShippedTime == default(DateTime); }
+			get { return this.ShippedTime == default( DateTime ); }
 		}
 	}
 }
