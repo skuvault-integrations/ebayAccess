@@ -66,11 +66,11 @@ namespace EbayAccessTests.Integration
 		#endregion
 
 		#region GetProductsDetails
-		[Test]
+		[ Test ]
 		public void GetProductsDetails()
 		{
 			//------------ Arrange
-			var ebayService = new EbayService(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig());
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
 
 			//------------ Act
 			var inventoryStat1Task = ebayService.GetProductsDetailsAsync();
@@ -78,7 +78,7 @@ namespace EbayAccessTests.Integration
 			var products = inventoryStat1Task.Result;
 
 			//------------ Assert
-			products.Count().Should().BeGreaterThan(0, "because on site there are items");
+			products.Count().Should().BeGreaterThan( 0, "because on site there are items" );
 		}
 		#endregion
 	}
