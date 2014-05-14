@@ -85,11 +85,41 @@ namespace EbayAccess
 		{
 			var products = await this.EbayServiceLowLevel.GetSellerListAsync( createTimeFromStart, createTimeFromTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
 
-			var productsDetailsTasks = products.Select( x => this.EbayServiceLowLevel.GetItemAsync( x.ItemId ) );
+			return await this.GetItemsAsync( products ).ConfigureAwait( false );
+		}
 
-			var productsDetails = await Task.WhenAll( productsDetailsTasks ).ConfigureAwait( false );
+		protected async Task< IEnumerable< Item > > GetItemsAsync( IEnumerable< Item > items )
+		{
+			var itemsDetailsTasks = items.Select( x => this.EbayServiceLowLevel.GetItemAsync( x.ItemId ) );
+
+			var productsDetails = await Task.WhenAll( itemsDetailsTasks ).ConfigureAwait( false );
 
 			return productsDetails;
+		}
+
+		public async Task< IEnumerable< Item > > GetProductsDetailsAsync()
+		{
+			const int maxtimerange = 119;
+			var lastQuartalStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
+			var quartalsStart = new List< DateTime > { lastQuartalStart };
+
+			while( lastQuartalStart < DateTime.Now )
+			{
+				lastQuartalStart = lastQuartalStart.AddDays( maxtimerange );
+				quartalsStart.Add( lastQuartalStart );
+			}
+
+			var getSellerListAsyncTasks = new List< Task< IEnumerable< Item > > >();
+			for( var i = 0; i < quartalsStart.Count - 1; i++ )
+			{
+				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStart[ i ], quartalsStart[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ) );
+			}
+
+			await Task.WhenAll( getSellerListAsyncTasks ).ConfigureAwait( false );
+
+			var products = getSellerListAsyncTasks.SelectMany( task => task.Result ).ToList();
+
+			return await this.GetItemsAsync( products ).ConfigureAwait( false );
 		}
 		#endregion
 
