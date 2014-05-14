@@ -2,7 +2,7 @@
 
 namespace EbayAccess.Models.GetSellerListResponse
 {
-	[Serializable]
+	[ Serializable ]
 	public class SellingStatus
 	{
 		public decimal CurrentPrice { get; set; }

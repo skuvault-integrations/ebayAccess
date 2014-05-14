@@ -2,7 +2,7 @@
 
 namespace EbayAccess.Models.GetOrdersResponse
 {
-	[Serializable]
+	[ Serializable ]
 	public class Variation
 	{
 		public string Sku { get; set; }

@@ -2,7 +2,7 @@
 
 namespace EbayAccess.Models.GetSellerListResponse
 {
-	[Serializable]
+	[ Serializable ]
 	public class Category
 	{
 		public long CategoryId { get; set; }

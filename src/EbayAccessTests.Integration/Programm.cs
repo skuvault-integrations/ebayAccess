@@ -186,20 +186,20 @@ namespace EbayAccessTests.Integration
 				.Be( itemsQty1 - itemsQty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", itemsQty1, itemsQty2 ) );
 		}
 
-		[Test]
+		[ Test ]
 		public void GetProductsDetailsAsync_EbayServiceWithProductsVariationsSku_HookupProductsVariationsSkuDevided()
 		{
 			//------------ Arrange
-			var ebayFactory = new EbayFactory(this._credentials.GetEbayConfig());
-			var ebayService = ebayFactory.CreateService(this._credentials.GetEbayUserCredentials());
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
-			var productsDetailsAsyncTask = ebayService.GetProductsDetailsAsync(new DateTime(2014, 5, 2, 0, 0, 0), new DateTime(2014, 5, 3, 10, 0, 0));
+			var productsDetailsAsyncTask = ebayService.GetProductsDetailsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
 			productsDetailsAsyncTask.Wait();
 			var products = productsDetailsAsyncTask.Result;
 
 			//------------ Assert
-			products.ToList().TrueForAll(X => !X.IsItemWithVariations() || !X.HaveManyVariations()).Should().BeTrue("because before returned ,items dwas devided by variations skus");
+			products.ToList().TrueForAll( X => !X.IsItemWithVariations() || !X.HaveManyVariations() ).Should().BeTrue( "because before returned ,items dwas devided by variations skus" );
 		}
 	}
 }

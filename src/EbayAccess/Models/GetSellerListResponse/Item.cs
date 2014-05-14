@@ -4,7 +4,7 @@ using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Models.GetSellerListResponse
 {
-	[Serializable]
+	[ Serializable ]
 	public partial class Item
 	{
 		public bool AutoPay { get; set; }

@@ -64,5 +64,22 @@ namespace EbayAccessTests.Integration
 				.Be( qty1 - qty2, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", qty1, qty2 ) );
 		}
 		#endregion
+
+		#region GetProductsDetails
+		[Test]
+		public void GetProductsDetails()
+		{
+			//------------ Arrange
+			var ebayService = new EbayService(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig());
+
+			//------------ Act
+			var inventoryStat1Task = ebayService.GetProductsDetailsAsync();
+			inventoryStat1Task.Wait();
+			var products = inventoryStat1Task.Result;
+
+			//------------ Assert
+			products.Count().Should().BeGreaterThan(0, "because on site there are items");
+		}
+		#endregion
 	}
 }

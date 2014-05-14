@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EbayAccess.Models.GetSellerListResponse
+﻿namespace EbayAccess.Models.GetSellerListResponse
 {
 	public enum ListingType
 	{
