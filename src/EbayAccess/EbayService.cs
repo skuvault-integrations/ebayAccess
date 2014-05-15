@@ -14,6 +14,8 @@ namespace EbayAccess
 {
 	public class EbayService : IEbayService
 	{
+		private readonly DateTime _ebayWorkingStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
+
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
 
 		private void PopulateOrdersItemsDetails( IEnumerable< Order > orders )
@@ -64,16 +66,12 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Item > > GetProductsAsync()
 		{
-			var utcNow = DateTime.UtcNow;
-			var createTimeFrom = new DateTime( utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, utcNow.Minute + 1, utcNow.Second, utcNow.Kind );
-			var createTimeTo = new DateTime( createTimeFrom.Year, createTimeFrom.Month + 1, createTimeFrom.Day, createTimeFrom.Hour, createTimeFrom.Minute, createTimeFrom.Second, createTimeFrom.Kind );
-			return await this.EbayServiceLowLevel.GetSellerListAsync( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
+			return await this.GetProductsAsync( this._ebayWorkingStart, DateTime.Now ).ConfigureAwait( false );
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFrom )
 		{
-			var createTimeTo = new DateTime( createTimeFrom.Year, createTimeFrom.Month + 4, createTimeFrom.Day, createTimeFrom.Hour, createTimeFrom.Minute, createTimeFrom.Second, createTimeFrom.Kind );
-			return await this.EbayServiceLowLevel.GetSellerListAsync( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
+			return await this.GetProductsAsync( createTimeFrom, DateTime.Now ).ConfigureAwait( false );
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
@@ -115,7 +113,7 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Item > > GetProductsDetailsAsync()
 		{
-			return await this.GetProductsDetailsAsync( new DateTime( 1995, 1, 1, 0, 0, 0 ), DateTime.Now ).ConfigureAwait( false );
+			return await this.GetProductsDetailsAsync( this._ebayWorkingStart, DateTime.Now ).ConfigureAwait( false );
 		}
 
 		protected static IEnumerable< DateTime > GetListOfTimeRanges( DateTime firstQuartalStart, DateTime lastQuartalEnd )
