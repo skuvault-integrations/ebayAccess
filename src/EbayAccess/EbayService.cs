@@ -78,7 +78,18 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
 		{
-			return await this.EbayServiceLowLevel.GetSellerListAsync( createTimeFromStart, createTimeFromTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
+			var quartalsStartList = GetListOfTimeRanges( createTimeFromStart, createTimeFromTo ).ToList();
+
+			var getSellerListAsyncTasks = new List< Task< IEnumerable< Item > > >();
+			for( var i = 0; i < quartalsStartList.Count - 1; i++ )
+			{
+				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ) );
+			}
+			await Task.WhenAll( getSellerListAsyncTasks ).ConfigureAwait( false );
+
+			var products = getSellerListAsyncTasks.SelectMany( task => task.Result ).ToList();
+
+			return products;
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
