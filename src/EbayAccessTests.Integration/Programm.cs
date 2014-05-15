@@ -73,7 +73,7 @@ namespace EbayAccessTests.Integration
 			var products = productsAsyncTask.Result;
 
 			//------------ Assert
-			products.Count().Should().BeGreaterThan( 1, "because there is 1 item on the site" );
+			products.Count().Should().Be( 1, "because there is 1 item on the site" );
 		}
 
 		[ Test ]
