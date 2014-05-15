@@ -27,22 +27,6 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void GetProductsAsync_EbayServiceWithProductsVariationsSku_HookupProducts()
-		{
-			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
-			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
-
-			//------------ Act
-			var productsAsyncTask = ebayService.GetProductsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
-			productsAsyncTask.Wait();
-			var products = productsAsyncTask.Result;
-
-			//------------ Assert
-			products.Count().Should().BeGreaterThan( 0, "because there are items on the site" );
-		}
-
-		[ Test ]
 		public void GetOrders_EbayServiceWithOrdersVariationsSku_HookupProductsVariationsSku()
 		{
 			//------------ Arrange
@@ -55,7 +39,7 @@ namespace EbayAccessTests.Integration
 			var orders = ordersTask.Result;
 
 			//------------ Assert
-			orders.First().TransactionArray.TrueForAll( x => x.Variation != null && !string.IsNullOrWhiteSpace( x.Variation.Sku ) ).Should().BeTrue( "because on site there is 2 orders" );
+			orders.First().TransactionArray.TrueForAll( x => x.Variation != null && !string.IsNullOrWhiteSpace( x.Variation.Sku ) ).Should().BeTrue( "because on site there is an order contains 3 products, each is variation" );
 		}
 
 		[ Test ]
@@ -73,7 +57,23 @@ namespace EbayAccessTests.Integration
 			var orders = ordersTask.Result;
 
 			//------------ Assert
-			orders.First().TransactionArray.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Item.Sku ) ).Should().BeTrue( "because on site there is 1 order with sku in time range {0}-{1}", dateFrom, dateTo );
+			orders.First().TransactionArray.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Item.Sku ) ).Should().BeTrue( "because on site there is order with sku in specified time range {0}-{1}", dateFrom, dateTo );
+		}
+
+		[ Test ]
+		public void GetProductsAsync_EbayServiceWithProductsVariationsSku_HookupProducts()
+		{
+			//------------ Arrange
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
+
+			//------------ Act
+			var productsAsyncTask = ebayService.GetProductsAsync( new DateTime( 2014, 5, 2, 0, 0, 0 ), new DateTime( 2014, 5, 3, 10, 0, 0 ) );
+			productsAsyncTask.Wait();
+			var products = productsAsyncTask.Result;
+
+			//------------ Assert
+			products.Count().Should().BeGreaterThan( 1, "because there is 1 item on the site" );
 		}
 
 		[ Test ]
