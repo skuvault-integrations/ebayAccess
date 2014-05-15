@@ -44,7 +44,7 @@ namespace EbayAccess.Models.GetSellerListResponse
 			throw new Exception( "Can't get Sku" );
 		}
 
-		public bool HaveManyVariations()
+		public bool HaveMultiVariations()
 		{
 			return ( this.Variations != null && this.Variations.Count > 1 ) ? true : false;
 		}
@@ -59,11 +59,11 @@ namespace EbayAccess.Models.GetSellerListResponse
 	{
 		public ItemSku( bool isvariation, string sku )
 		{
-			this.IsVariation = isvariation;
+			this.IsVariationSku = isvariation;
 			this.Sku = sku;
 		}
 
-		public bool IsVariation { get; set; }
+		public bool IsVariationSku { get; set; }
 		public string Sku { get; set; }
 	}
 }

@@ -151,7 +151,7 @@ namespace EbayAccess
 
 			foreach( var productDetails in productsDetails )
 			{
-				if( productDetails.IsItemWithVariations() && productDetails.HaveManyVariations() )
+				if( productDetails.IsItemWithVariations() && productDetails.HaveMultiVariations() )
 					productsDetailsDevidedByVariations.AddRange( productDetails.DevideByVariations() );
 				else
 					productsDetailsDevidedByVariations.Add( productDetails );

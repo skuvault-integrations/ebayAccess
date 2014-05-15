@@ -168,7 +168,7 @@ namespace EbayAccessTests.Integration
 
 			//------------ Assert
 			products.Should().NotBeEmpty( "because in site there are items" );
-			products.ToList().TrueForAll( x => !x.IsItemWithVariations() || !x.HaveManyVariations() ).Should().BeTrue( "because before returned, items was devided by variations skus" );
+			products.ToList().TrueForAll( x => !x.IsItemWithVariations() || !x.HaveMultiVariations() ).Should().BeTrue( "because before returned, items was devided by variations skus" );
 		}
 
 		[ Test ]
