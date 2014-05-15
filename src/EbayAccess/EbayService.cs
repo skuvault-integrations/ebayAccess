@@ -83,27 +83,12 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
 		{
-			var products = await this.EbayServiceLowLevel.GetSellerListAsync( createTimeFromStart, createTimeFromTo, TimeRangeEnum.StartTime ).ConfigureAwait( false );
-
-			return await this.GetItemsAsync( products ).ConfigureAwait( false );
-		}
-
-		public async Task< IEnumerable< Item > > GetProductsDetailsAsync()
-		{
-			const int maxtimerange = 119;
-			var lastQuartalStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
-			var quartalsStart = new List< DateTime > { lastQuartalStart };
-
-			while( lastQuartalStart < DateTime.Now )
-			{
-				lastQuartalStart = lastQuartalStart.AddDays( maxtimerange );
-				quartalsStart.Add( lastQuartalStart );
-			}
+			var quartalsStartList = GetListOfTimeRanges( createTimeFromStart, createTimeFromTo ).ToList();
 
 			var getSellerListAsyncTasks = new List< Task< IEnumerable< Item > > >();
-			for( var i = 0; i < quartalsStart.Count - 1; i++ )
+			for( var i = 0; i < quartalsStartList.Count - 1; i++ )
 			{
-				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStart[ i ], quartalsStart[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ) );
+				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ) );
 			}
 
 			await Task.WhenAll( getSellerListAsyncTasks ).ConfigureAwait( false );
@@ -115,6 +100,29 @@ namespace EbayAccess
 			var productsDetailsDevidedByVariations = ProductsDetailsDevideByVariations( productsDetails );
 
 			return productsDetailsDevidedByVariations;
+		}
+
+		public async Task< IEnumerable< Item > > GetProductsDetailsAsync()
+		{
+			return await this.GetProductsDetailsAsync( new DateTime( 1995, 1, 1, 0, 0, 0 ), DateTime.Now ).ConfigureAwait( false );
+		}
+
+		protected static IEnumerable< DateTime > GetListOfTimeRanges( DateTime firstQuartalStart, DateTime lastQuartalEnd )
+		{
+			if( lastQuartalEnd < firstQuartalStart )
+				return Enumerable.Empty< DateTime >();
+
+			var quartalsStart = new List< DateTime > { firstQuartalStart };
+
+			const int maxtimerange = 119;
+
+			while( firstQuartalStart < lastQuartalEnd )
+			{
+				firstQuartalStart = firstQuartalStart.AddDays( maxtimerange );
+				quartalsStart.Add( firstQuartalStart < lastQuartalEnd ? firstQuartalStart : lastQuartalEnd );
+			}
+
+			return quartalsStart;
 		}
 
 		protected async Task< IEnumerable< Item > > GetItemsAsync( IEnumerable< Item > items )
