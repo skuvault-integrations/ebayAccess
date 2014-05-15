@@ -98,13 +98,13 @@ namespace EbayAccessTests.Models.GetSellerListResponse
 			haveManyVariations.Should().Be( false );
 		}
 
-		[Test]
+		[ Test ]
 		public void DevideByVariations_ProductWithOneOrLessVariations_False()
 		{
 			//------------ Arrange
 			var item = new Item
 			{
-				Variations = new List<Variation> { new Variation(){Sku = "1"},new Variation(){Sku = "2"} }
+				Variations = new List< Variation > { new Variation() { Sku = "1" }, new Variation() { Sku = "2" } }
 			};
 
 			//------------ Act
