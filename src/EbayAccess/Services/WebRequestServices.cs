@@ -71,7 +71,7 @@ namespace EbayAccess.Services
 
 		private void LogTraceGetResponseAsyncStarted( WebRequest webRequest )
 		{
-			this.Log().Trace( "[ebay] Get response  async url:[0} started.", webRequest.RequestUri );
+			this.Log().Trace( "[ebay] Get response async url:[0} started.", webRequest.RequestUri );
 		}
 
 		private void LogTraceGetResponseAsyncEnded( WebRequest webRequest, Stream webResponseStream )
@@ -87,35 +87,61 @@ namespace EbayAccess.Services
 				this.Log().Trace( "[ebay] Get response async url:{0} ended with {1}.", webRequest.RequestUri, responseStr );
 			}
 		}
+
+		private void LogTraceGetResponseException( WebRequest webRequest )
+		{
+			this.Log().Trace( "[ebay] Get response url:[0} throw an exception .", webRequest.RequestUri );
+		}
+
+		private void LogTraceGetResponseAsyncException( WebRequest webRequest )
+		{
+			this.Log().Trace( "[ebay] Get response async url:[0} throw an exception .", webRequest.RequestUri );
+		}
 		#endregion
 
 		#region ResponseHanding
 		public Stream GetResponseStream( WebRequest webRequest )
 		{
 			this.LogTraceGetResponseStarted( webRequest );
-			using( var response = ( HttpWebResponse )webRequest.GetResponse() )
-			using( var dataStream = response.GetResponseStream() )
+			try
 			{
-				var memoryStream = new MemoryStream();
-				if( dataStream != null )
-					dataStream.CopyTo( memoryStream, 0x100 );
-				memoryStream.Position = 0;
-				this.LogTraceGetResponseEnded( webRequest, memoryStream );
-				return memoryStream;
+				using( var response = ( HttpWebResponse )webRequest.GetResponse() )
+				using( var dataStream = response.GetResponseStream() )
+				{
+					var memoryStream = new MemoryStream();
+					if( dataStream != null )
+						dataStream.CopyTo( memoryStream, 0x100 );
+					memoryStream.Position = 0;
+					this.LogTraceGetResponseEnded( webRequest, memoryStream );
+					return memoryStream;
+				}
+			}
+			catch
+			{
+				this.LogTraceGetResponseException( webRequest );
+				throw;
 			}
 		}
 
 		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest )
 		{
-			this.LogTraceGetResponseAsyncStarted( webRequest );
-			using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync().ConfigureAwait( false ) )
-			using( var dataStream = await new TaskFactory< Stream >().StartNew( () => response != null ? response.GetResponseStream() : null ).ConfigureAwait( false ) )
+			try
 			{
-				var memoryStream = new MemoryStream();
-				await dataStream.CopyToAsync( memoryStream, 0x100 ).ConfigureAwait( false );
-				memoryStream.Position = 0;
-				this.LogTraceGetResponseAsyncEnded( webRequest, memoryStream );
-				return memoryStream;
+				this.LogTraceGetResponseAsyncStarted( webRequest );
+				using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync().ConfigureAwait( false ) )
+				using( var dataStream = await new TaskFactory< Stream >().StartNew( () => response != null ? response.GetResponseStream() : null ).ConfigureAwait( false ) )
+				{
+					var memoryStream = new MemoryStream();
+					await dataStream.CopyToAsync( memoryStream, 0x100 ).ConfigureAwait( false );
+					memoryStream.Position = 0;
+					this.LogTraceGetResponseAsyncEnded( webRequest, memoryStream );
+					return memoryStream;
+				}
+			}
+			catch
+			{
+				this.LogTraceGetResponseAsyncException( webRequest );
+				throw;
 			}
 		}
 		#endregion
