@@ -49,10 +49,10 @@ namespace EbayAccess.Services
 				headers.Add( EbayHeaders.XEbayApiCompatibilityLevel, EbayHeadersValues.XEbayApiCompatibilityLevel );
 
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiDevName ) )
-				headers.Add( EbayHeaders.XEbayApiDevName, this._ebayConfig.AppName );
+				headers.Add( EbayHeaders.XEbayApiDevName, this._ebayConfig.DevName );
 
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiAppName ) )
-				headers.Add( EbayHeaders.XEbayApiAppName, this._ebayConfig.DevName );
+				headers.Add(EbayHeaders.XEbayApiAppName, this._ebayConfig.AppName);
 
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiSiteid ) )
 				headers.Add( EbayHeaders.XEbayApiSiteid, EbayHeadersValues.XEbayApiSiteid );
