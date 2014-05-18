@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -435,6 +436,7 @@ namespace EbayAccess.Services
 				//this._userCredentials.Token,
 				ruName );
 		}
+		
 		public async Task<string> GetSessionIdAsync(string ruName)
 		{
 			string result = null;
@@ -457,6 +459,14 @@ namespace EbayAccess.Services
 
 			return result;
 		}
+
+		public void  GetUserToken2(string ruName, string sessionId)
+		{
+			//todo: move to const
+			var uri = new Uri( string.Format( "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}", ruName, sessionId ) );
+			Process.Start(uri.AbsoluteUri);
+		}
+
 		#endregion
 	}
 
