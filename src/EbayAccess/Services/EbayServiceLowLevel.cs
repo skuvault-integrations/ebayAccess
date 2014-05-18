@@ -415,6 +415,49 @@ namespace EbayAccess.Services
 			return await Task.WhenAll( reviseInventoryTasks ).ConfigureAwait( false );
 		}
 		#endregion
+
+		#region GetSessionId
+		private static Dictionary<string, string> CreateGetSessionIDRequestHeadersWithApiCallName()
+		{
+			return new Dictionary<string, string>
+			{
+				//todo: rename to 'headersNames'
+				//todo: add enum MethodsNames
+				{ EbayHeaders.XEbayApiCallName, "GetSessionID" },
+			};
+		}
+
+		private string CreateGetSessionIdRequestBody( string ruName )
+		{
+			return string.Format(
+				//"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSessionIDRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><RuName>{1}</RuName></GetSessionIDRequest>​​",
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSessionIDRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RuName>{0}</RuName></GetSessionIDRequest>​​",
+				//this._userCredentials.Token,
+				ruName );
+		}
+		public async Task<string> GetSessionIdAsync(string ruName)
+		{
+			string result = null;
+
+			var body = this.CreateGetSessionIdRequestBody(ruName);
+
+			var headers = CreateGetSessionIDRequestHeadersWithApiCallName();
+
+			await ActionPolicies.GetAsync.Do(async () =>
+			{
+				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync(this._endPoint, headers, body).ConfigureAwait(false);
+
+				using (var memStream = await this._webRequestServices.GetResponseStreamAsync(webRequest).ConfigureAwait(false))
+				{
+					var tempSessionId = new EbayGetSessionIdResponseParser().Parse(memStream);
+					if (tempSessionId != null)
+						result = tempSessionId.SessionId;
+				}
+			});
+
+			return result;
+		}
+		#endregion
 	}
 
 	public enum TimeRangeEnum

@@ -13,7 +13,8 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			const string credentialsFilePath = @"..\..\Files\ebay_test_credentials.csv";
 			const string devCredentialsFilePath = @"..\..\Files\ebay_test_devcredentials.csv";
 			const string saleItemsIdsFilePath = @"..\..\Files\ebay_test_saleitemsids.csv";
-			this._credentials = new TestCredentials( credentialsFilePath, devCredentialsFilePath, saleItemsIdsFilePath );
+			const string runameFilePath = @"..\..\Files\ebay_test_runame.csv";
+			this._credentials = new TestCredentials(credentialsFilePath, devCredentialsFilePath, saleItemsIdsFilePath, runameFilePath);
 		}
 	}
 }
