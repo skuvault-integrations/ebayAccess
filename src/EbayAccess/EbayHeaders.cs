@@ -37,4 +37,24 @@
 
 		public static string XEbayApiCompatibilityLevel { get; private set; }
 	}
+
+	public static class EbayHeadersMethodnames
+	{
+		static EbayHeadersMethodnames()
+		{
+			GetSessionID = "GetSessionID";
+			GetOrders = "GetOrders";
+			GetSellerList = "GetSellerList";
+			GetItem = "GetItem";
+			ReviseInventoryStatus = "ReviseInventoryStatus";
+			FetchToken = "FetchToken";
+		}
+
+		public static string GetSessionID { get; private set; }
+		public static string GetOrders { get; set; }
+		public static string GetSellerList { get; set; }
+		public static string GetItem { get; set; }
+		public static string ReviseInventoryStatus { get; set; }
+		public static string FetchToken { get; set; }
+	}
 }

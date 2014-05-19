@@ -102,7 +102,7 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				{ EbayHeaders.XEbayApiCallName, "GetOrders" },
+				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.GetOrders },
 			};
 		}
 
@@ -185,7 +185,7 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				{ EbayHeaders.XEbayApiCallName, "GetSellerList" },
+				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.GetSellerList },
 			};
 		}
 
@@ -282,7 +282,7 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				{ EbayHeaders.XEbayApiCallName, "GetItem" },
+				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.GetItem },
 			};
 		}
 
@@ -346,7 +346,7 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				{ EbayHeaders.XEbayApiCallName, "ReviseInventoryStatus" },
+				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.ReviseInventoryStatus },
 			};
 		}
 
@@ -424,18 +424,14 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				//todo: rename to 'headersNames'
-				//todo: add enum MethodsNames
-				{ EbayHeaders.XEbayApiCallName, "GetSessionID" },
+				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.GetSessionID },
 			};
 		}
 
 		private string CreateGetSessionIdRequestBody( string ruName )
 		{
 			return string.Format(
-				//"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSessionIDRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><RuName>{1}</RuName></GetSessionIDRequest>​​",
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSessionIDRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RuName>{0}</RuName></GetSessionIDRequest>​​",
-				//this._userCredentials.Token,
 				ruName );
 		}
 
@@ -443,16 +439,14 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				{ EbayHeaders.XEbayApiCallName, "FetchToken" },
+				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.FetchToken },
 			};
 		}
 
 		private string CreateFetchTokenRequestBody( string sessionId )
 		{
 			return string.Format(
-				//"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSessionIDRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><RuName>{1}</RuName></GetSessionIDRequest>​​",
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><FetchTokenRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><SessionID>{0}</SessionID></FetchTokenRequest>",
-				//this._userCredentials.Token,
 				sessionId );
 		}
 
