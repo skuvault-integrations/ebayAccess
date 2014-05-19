@@ -7,7 +7,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 {
 	public class TestCredentials
 	{
-		private readonly FlatCsvLine _flatCsvLine;
+		private readonly FlatUserCredentialsCsvLine _flatUserCredentialsCsvLine;
 		private readonly FlatDevCredentialCsvLine _flatDevCredentialCsvLine;
 		private readonly List< FlatSaleItemsCsvLine > _flatSaleItemsCsvLines;
 		private readonly List< FlatRuNameCsvLine > _ruNameFilePath;
@@ -15,7 +15,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		public TestCredentials( string credentialsFilePath, string devCredentialsFilePath, string saleItemsIdsFilePath, string runameFilePath )
 		{
 			var cc = new CsvContext();
-			this._flatCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatCsvLine >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
+			this._flatUserCredentialsCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatUserCredentialsCsvLine >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 			this._flatDevCredentialCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatDevCredentialCsvLine >( devCredentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 			this._flatSaleItemsCsvLines = cc.Read< FlatSaleItemsCsvLine >( saleItemsIdsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ).ToList();
 			this._ruNameFilePath = cc.Read< FlatRuNameCsvLine >( runameFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ).ToList();
@@ -23,7 +23,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 		public EbayUserCredentials GetEbayUserCredentials()
 		{
-			return new EbayUserCredentials( this._flatCsvLine.AccountName, this._flatCsvLine.Token );
+			return new EbayUserCredentials( this._flatUserCredentialsCsvLine.AccountName, this._flatUserCredentialsCsvLine.Token );
 		}
 
 		public EbayConfigStub GetEbayConfig()
@@ -41,9 +41,9 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			return this._ruNameFilePath.First().RuName;
 		}
 
-		internal class FlatCsvLine
+		internal class FlatUserCredentialsCsvLine
 		{
-			public FlatCsvLine()
+			public FlatUserCredentialsCsvLine()
 			{
 			}
 

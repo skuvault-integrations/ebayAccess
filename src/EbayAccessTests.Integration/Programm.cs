@@ -7,6 +7,7 @@ using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
+using LINQtoCSV;
 using NUnit.Framework;
 
 namespace EbayAccessTests.Integration
@@ -225,11 +226,11 @@ namespace EbayAccessTests.Integration
 			userToken.Should().NotBeNullOrWhiteSpace();
 		}
 
-		[Test]
+		[ Test ]
 		public void GetUserToken_EbayServiceWithCorrectRuName_HookupToken()
 		{
 			//------------ Arrange
-			var ebayFactory = new EbayFactory(this._credentials.GetEbayConfig());
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfig() );
 			var ebayService = ebayFactory.CreateService();
 
 			//------------ Act
@@ -239,6 +240,9 @@ namespace EbayAccessTests.Integration
 
 			//------------ Assert
 			token.Should().NotBeNullOrEmpty();
+
+			var cc = new CsvContext();
+			cc.Write( new List< TestCredentials.FlatUserCredentialsCsvLine > { new TestCredentials.FlatUserCredentialsCsvLine { AccountName = "", Token = token } }, this.FilesEbayTestCredentialsCsv );
 		}
 	}
 }
