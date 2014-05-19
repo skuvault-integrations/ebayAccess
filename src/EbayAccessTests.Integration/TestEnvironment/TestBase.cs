@@ -18,4 +18,17 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			this._credentials = new TestCredentials( this.FilesEbayTestCredentialsCsv, this.FilesEbayTestDevcredentialsCsv, this.FilesEbayTestSaleitemsidsCsv, this.FilesEbayTestRunameCsv );
 		}
 	}
+
+	public static class TestItemsDescriptions
+
+	{
+		public static string AnyExistingNonVariationItem { get; set; }
+		public static string ExistingItemWithVariationsSku { get; set; }
+
+		static TestItemsDescriptions()
+		{
+			AnyExistingNonVariationItem = "AnyExistingNonVariationItem";
+			ExistingItemWithVariationsSku = "ExistingItemWithVariationsSku";
+		}
+	}
 }

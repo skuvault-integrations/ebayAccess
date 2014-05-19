@@ -42,7 +42,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			return this._flatSaleItemsCsvLines.Select( x => long.Parse( x.Id ) ).ToList();
 		}
 
-		public IEnumerable<FlatSaleItemsCsvLine> GetSaleItems()
+		public IEnumerable< FlatSaleItemsCsvLine > GetSaleItems()
 		{
 			return this._flatSaleItemsCsvLines;
 		}
@@ -87,13 +87,13 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			{
 			}
 
-			[CsvColumn(Name = "Id", FieldIndex = 1)]
+			[ CsvColumn( Name = "Id", FieldIndex = 1 ) ]
 			public string Id { get; set; }
 
-			[CsvColumn(Name = "Sku", FieldIndex = 2)]
+			[ CsvColumn( Name = "Sku", FieldIndex = 2 ) ]
 			public string Sku { get; set; }
 
-			[CsvColumn(Name = "Descr", FieldIndex = 3)]
+			[ CsvColumn( Name = "Descr", FieldIndex = 3 ) ]
 			public string Descr { get; set; }
 		}
 

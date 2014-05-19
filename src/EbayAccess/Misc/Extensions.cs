@@ -28,6 +28,12 @@ namespace EbayAccess.Misc
 			return parsedNumber;
 		}
 
+		public static long ToLong( this string srcString )
+		{
+			var parsedNumber = long.Parse( srcString, CultureInfo.InvariantCulture );
+			return parsedNumber;
+		}
+
 		public static DateTime ToDateTime( this string srcString )
 		{
 			try
