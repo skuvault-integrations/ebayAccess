@@ -7,8 +7,9 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		public EbayConfigStub( string appName, string devName, string certName ) : base( appName, devName, certName )
 		{
 		}
-		public EbayConfigStub(string appName, string devName, string certName, string ruName)
-			: base(appName, devName, certName, ruName)
+
+		public EbayConfigStub( string appName, string devName, string certName, string ruName )
+			: base( appName, devName, certName, ruName )
 		{
 		}
 

@@ -29,12 +29,12 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 		public EbayConfigStub GetEbayConfigSandbox()
 		{
-			return new EbayConfigStub(this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName, this._ruNameCsvLines.RuName);
+			return new EbayConfigStub( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName, this._ruNameCsvLines.RuName );
 		}
 
 		public EbayConfig GetEbayConfigProduction()
 		{
-			return new EbayConfig(this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName, this._ruNameCsvLines.RuName);
+			return new EbayConfig( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName, this._ruNameCsvLines.RuName );
 		}
 
 		public IEnumerable< long > GetSaleItemsIds()
