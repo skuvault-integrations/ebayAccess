@@ -29,5 +29,11 @@ namespace EbayAccess.Services
 		IEnumerable< InventoryStatusResponse > ReviseInventoriesStatus( IEnumerable< InventoryStatusRequest > inventoryStatuses );
 
 		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses );
+
+		Task<string> GetSessionIdAsync(string ruName);
+
+		void AutentificateUser(string ruName, string sessionId);
+
+		Task< string> FetchTokenAsync(string sessionId);
 	}
 }

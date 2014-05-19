@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
 using NUnit.Framework;
@@ -206,5 +208,21 @@ namespace EbayAccessTests.Integration
 			products.Count().Should().BeGreaterThan( 0, "because on site there are items" );
 		}
 		#endregion
+
+		[Test]
+		public async Task GetUserToken_EbayServiceWithCorrectRuName_HookupSessionId()
+		{
+			//A
+			var ebayService = new EbayServiceLowLevel(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig());
+
+			//A
+			var sessionId = await ebayService.GetSessionIdAsync(this._credentials.GetRuName()).ConfigureAwait(false);
+			ebayService.AutentificateUser( this._credentials.GetRuName(), sessionId );
+			var userToken = await ebayService.FetchToken( sessionId ).ConfigureAwait(false);
+
+			//A
+			sessionId.Should().NotBeNullOrWhiteSpace();
+			userToken.Should().NotBeNullOrWhiteSpace();
+		}
 	}
 }

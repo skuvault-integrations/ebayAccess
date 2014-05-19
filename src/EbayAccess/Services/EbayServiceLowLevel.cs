@@ -417,7 +417,7 @@ namespace EbayAccess.Services
 		}
 		#endregion
 
-		#region GetSessionId
+		#region Authorization
 		private static Dictionary<string, string> CreateGetSessionIDRequestHeadersWithApiCallName()
 		{
 			return new Dictionary<string, string>
@@ -436,7 +436,24 @@ namespace EbayAccess.Services
 				//this._userCredentials.Token,
 				ruName );
 		}
-		
+
+		private static Dictionary<string, string> CreateFetchTokenRequestHeadersWithApiCallName()
+		{
+			return new Dictionary<string, string>
+			{
+				{ EbayHeaders.XEbayApiCallName, "FetchToken" },
+			};
+		}
+
+		private string CreateFetchTokenRequestBody(string sessionId)
+		{
+			return string.Format(
+				//"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSessionIDRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><RuName>{1}</RuName></GetSessionIDRequest>​​",
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><FetchTokenRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><SessionID>{0}</SessionID></FetchTokenRequest>",
+				//this._userCredentials.Token,
+				sessionId);
+		}
+
 		public async Task<string> GetSessionIdAsync(string ruName)
 		{
 			string result = null;
@@ -460,11 +477,39 @@ namespace EbayAccess.Services
 			return result;
 		}
 
-		public void  GetUserToken2(string ruName, string sessionId)
+		public void AutentificateUser(string ruName, string sessionId)
 		{
 			//todo: move to const
-			var uri = new Uri( string.Format( "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}", ruName, sessionId ) );
+			//var uri = new Uri( string.Format( "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}", ruName, sessionId ) );
+			var uri = new Uri( string.Format( "https://signin.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}", ruName, sessionId ) );
 			Process.Start(uri.AbsoluteUri);
+
+
+		}
+
+		public async Task< string> FetchTokenAsync(string sessionId)
+		{
+			string result = null;
+
+			var body = this.CreateFetchTokenRequestBody(sessionId);
+
+			var headers = CreateFetchTokenRequestHeadersWithApiCallName();
+
+			await ActionPolicies.GetAsync.Do(async () =>
+			{
+				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync(this._endPoint, headers, body).ConfigureAwait(false);
+
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				{
+					var tempResponse = new EbayFetchTokenResponseParser().Parse( memStream );
+					if( tempResponse != null && tempResponse.Error == null )
+						result = tempResponse.EbayAuthToken;
+					else
+						throw new Exception( "Can't fetch token" );
+				}
+			});
+
+			return result;
 		}
 
 		#endregion

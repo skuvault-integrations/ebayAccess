@@ -62,6 +62,7 @@
     <Compile Include="Models\CredentialsAndConfig\EbayUserCredentials.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\FetchTokenResponse.cs" />
     <Compile Include="Models\GetItemResponse\GetItemResponse.cs" />
     <Compile Include="Models\GetOrdersResponse\Buyer.cs" />
     <Compile Include="Models\GetOrdersResponse\CheckoutStatus.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Services\EbayServiceLowLevel.cs" />
     <Compile Include="Services\IEbayServiceLowLevel.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />
+    <Compile Include="Services\Parsers\EbayFetchTokenResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetSessionIdResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetItemResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayXmlParser.cs" />

@@ -27,5 +27,18 @@ namespace EbayAccess.Misc
 
 			return parsedNumber;
 		}
+
+		public static DateTime ToDateTime(this string srcString)
+		{
+			try
+			{
+				var dateTime = DateTime.Parse(srcString, CultureInfo.InvariantCulture);
+				return dateTime;
+			}
+			catch
+			{
+				return default(DateTime);
+			}
+		}
 	}
 }
