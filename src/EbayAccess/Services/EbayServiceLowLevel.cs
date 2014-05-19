@@ -24,6 +24,7 @@ namespace EbayAccess.Services
 		private readonly string _endPoint;
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
+		private string _ebaySignInUrl;
 
 		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
 		{
@@ -34,6 +35,7 @@ namespace EbayAccess.Services
 			this._userCredentials = credentials;
 			this._webRequestServices = webRequestServices;
 			this._endPoint = ebayConfig.EndPoint;
+			this._ebaySignInUrl = ebayConfig.SignInUrl;
 			this._itemsPerPage = 50;
 			this._ebayConfig = ebayConfig;
 		}
@@ -479,9 +481,7 @@ namespace EbayAccess.Services
 
 		public void AuthenticateUser( string sessionId )
 		{
-			//todo: move to const
-			//var uri = new Uri( string.Format( "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}", ruName, sessionId ) );
-			var uri = new Uri( string.Format( "https://signin.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}", this._ebayConfig.RuName, sessionId ) );
+			var uri = new Uri(string.Format("{0}?SignIn&RuName={1}&SessID={2}", this._ebaySignInUrl, this._ebayConfig.RuName, sessionId));
 			Process.Start( uri.AbsoluteUri );
 		}
 

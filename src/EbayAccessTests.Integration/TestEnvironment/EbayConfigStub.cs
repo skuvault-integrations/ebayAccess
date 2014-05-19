@@ -16,5 +16,10 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		{
 			get { return "https://api.sandbox.ebay.com/ws/api.dll"; }
 		}
+
+		public override string SignInUrl
+		{
+			get { return "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll"; }
+		}
 	}
 }

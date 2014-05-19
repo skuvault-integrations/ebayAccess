@@ -8,7 +8,9 @@ namespace EbayAccess.Models.CredentialsAndConfig
 		public string DevName { get; private set; }
 		public string CertName { get; private set; }
 		public string RuName { get; private set; }
+
 		public virtual string EndPoint { get; private set; }
+		public virtual string SignInUrl { get; set; }
 
 		public EbayConfig( string appName, string devName, string certName )
 		{
@@ -20,6 +22,7 @@ namespace EbayAccess.Models.CredentialsAndConfig
 			this.DevName = devName;
 			this.CertName = certName;
 			this.EndPoint = "https://api.ebay.com/ws/api.dll";
+			this.SignInUrl = "https://signin.ebay.com/ws/eBayISAPI.dll";
 		}
 
 		public EbayConfig( string appName, string devName, string certName, string ruName ) : this( appName, devName, certName )
