@@ -7,6 +7,7 @@ using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
+using LINQtoCSV;
 using NUnit.Framework;
 
 namespace EbayAccessTests.Integration
@@ -210,59 +211,62 @@ namespace EbayAccessTests.Integration
 		#endregion
 
 		[ Test ]
+		[ Ignore ]
 		public async Task GetUserTokenLowLevel_EbayServiceWithCorrectRuName_HookupToken()
 		{
 			////Attention!!! This code will regenerate youe credentials!!!
-			
-			////A
-			//var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
-			////A
-			//var sessionId = await ebayService.GetSessionIdAsync().ConfigureAwait( false );
-			//ebayService.AuthenticateUser( sessionId );
-			//var userToken = await ebayService.FetchTokenAsync( sessionId ).ConfigureAwait( false );
+			//A
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
-			////A
-			//sessionId.Should().NotBeNullOrWhiteSpace();
-			//userToken.Should().NotBeNullOrWhiteSpace();
+			//A
+			var sessionId = await ebayService.GetSessionIdAsync().ConfigureAwait( false );
+			ebayService.AuthenticateUser( sessionId );
+			var userToken = await ebayService.FetchTokenAsync( sessionId ).ConfigureAwait( false );
+
+			//A
+			sessionId.Should().NotBeNullOrWhiteSpace();
+			userToken.Should().NotBeNullOrWhiteSpace();
 		}
 
 		[ Test ]
+		[ Ignore ]
 		public void GetUserToken_EbaySandBoxServiceWithCorrectRuName_HookupToken()
 		{
 			////Attention!!! This code will regenerate youe credentials!!!
 
-			////------------ Arrange
-			//var ebayFactory = new EbayFactory(this._credentials.GetEbayConfigSandbox());
-			//var ebayService = ebayFactory.CreateService();
+			//------------ Arrange
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigSandbox() );
+			var ebayService = ebayFactory.CreateService();
 
-			////------------ Act
-			//var getUserTokenAsyncTask = ebayService.GetUserToken();
-			//getUserTokenAsyncTask.Wait();
-			//var token = getUserTokenAsyncTask.Result;
+			//------------ Act
+			var getUserTokenAsyncTask = ebayService.GetUserToken();
+			getUserTokenAsyncTask.Wait();
+			var token = getUserTokenAsyncTask.Result;
 
-			////------------ Assert
-			//token.Should().NotBeNullOrEmpty();
-			//var cc = new CsvContext();
-			//cc.Write(new List<TestCredentials.FlatUserCredentialsCsvLine> { new TestCredentials.FlatUserCredentialsCsvLine { AccountName = "", Token = token } }, this.FilesEbayTestCredentialsCsv);
+			//------------ Assert
+			token.Should().NotBeNullOrEmpty();
+			var cc = new CsvContext();
+			cc.Write( new List< TestCredentials.FlatUserCredentialsCsvLine > { new TestCredentials.FlatUserCredentialsCsvLine { AccountName = "", Token = token } }, this.FilesEbayTestCredentialsCsv );
 		}
 
 		[ Test ]
+		[ Ignore ]
 		public void GetUserToken_EbayProductionServiceWithCorrectRuName_HookupToken()
 		{
-			//	//------------ Arrange
-			//	var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigProduction() );
-			//	var ebayService = ebayFactory.CreateService();
+			//------------ Arrange
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigProduction() );
+			var ebayService = ebayFactory.CreateService();
 
-			//	//------------ Act
-			//	var getUserTokenAsyncTask = ebayService.GetUserToken();
-			//	getUserTokenAsyncTask.Wait();
-			//	var token = getUserTokenAsyncTask.Result;
+			//------------ Act
+			var getUserTokenAsyncTask = ebayService.GetUserToken();
+			getUserTokenAsyncTask.Wait();
+			var token = getUserTokenAsyncTask.Result;
 
-			//	//------------ Assert
-			//	token.Should().NotBeNullOrEmpty();
-			//	var cc = new CsvContext();
-			//	cc.Write( new List< TestCredentials.FlatUserCredentialsCsvLine > { new TestCredentials.FlatUserCredentialsCsvLine { AccountName = "", Token = token } }, this.FilesEbayTestCredentialsCsv );
+			//------------ Assert
+			token.Should().NotBeNullOrEmpty();
+			var cc = new CsvContext();
+			cc.Write( new List< TestCredentials.FlatUserCredentialsCsvLine > { new TestCredentials.FlatUserCredentialsCsvLine { AccountName = "", Token = token } }, this.FilesEbayTestCredentialsCsv );
 		}
 	}
 }
