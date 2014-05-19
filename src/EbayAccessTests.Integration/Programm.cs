@@ -240,9 +240,8 @@ namespace EbayAccessTests.Integration
 
 			//------------ Assert
 			token.Should().NotBeNullOrEmpty();
-
-			var cc = new CsvContext();
-			cc.Write( new List< TestCredentials.FlatUserCredentialsCsvLine > { new TestCredentials.FlatUserCredentialsCsvLine { AccountName = "", Token = token } }, this.FilesEbayTestCredentialsCsv );
+			//var cc = new CsvContext();
+			//cc.Write( new List< TestCredentials.FlatUserCredentialsCsvLine > { new TestCredentials.FlatUserCredentialsCsvLine { AccountName = "", Token = token } }, this.FilesEbayTestCredentialsCsv );
 		}
 	}
 }

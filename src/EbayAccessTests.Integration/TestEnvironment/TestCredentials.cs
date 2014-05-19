@@ -10,7 +10,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		private readonly FlatUserCredentialsCsvLine _flatUserCredentialsCsvLine;
 		private readonly FlatDevCredentialCsvLine _flatDevCredentialCsvLine;
 		private readonly List< FlatSaleItemsCsvLine > _flatSaleItemsCsvLines;
-		private readonly List< FlatRuNameCsvLine > _ruNameFilePath;
+		private readonly FlatRuNameCsvLine _ruNameCsvLines;
 
 		public TestCredentials( string credentialsFilePath, string devCredentialsFilePath, string saleItemsIdsFilePath, string runameFilePath )
 		{
@@ -18,7 +18,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			this._flatUserCredentialsCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatUserCredentialsCsvLine >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 			this._flatDevCredentialCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatDevCredentialCsvLine >( devCredentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 			this._flatSaleItemsCsvLines = cc.Read< FlatSaleItemsCsvLine >( saleItemsIdsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ).ToList();
-			this._ruNameFilePath = cc.Read< FlatRuNameCsvLine >( runameFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ).ToList();
+			this._ruNameCsvLines = Enumerable.FirstOrDefault( cc.Read< FlatRuNameCsvLine >( runameFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 		}
 
 		public EbayUserCredentials GetEbayUserCredentials()
@@ -28,7 +28,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 		public EbayConfigStub GetEbayConfig()
 		{
-			return new EbayConfigStub( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName );
+			return new EbayConfigStub(this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName, this._ruNameCsvLines.RuName);
 		}
 
 		public IEnumerable< long > GetSaleItemsIds()
@@ -38,7 +38,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 		public string GetRuName()
 		{
-			return this._ruNameFilePath.First().RuName;
+			return this._ruNameCsvLines.RuName;
 		}
 
 		internal class FlatUserCredentialsCsvLine
