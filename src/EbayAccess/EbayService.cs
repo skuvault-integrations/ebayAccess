@@ -43,7 +43,7 @@ namespace EbayAccess
 		/// Just for auth
 		/// </summary>
 		/// <param name="ebayConfig"></param>
-		public EbayService( EbayConfig ebayConfig ) : this( new EbayUserCredentials("empty","empty"), ebayConfig, new WebRequestServices() )
+		public EbayService( EbayConfig ebayConfig ) : this( new EbayUserCredentials( "empty", "empty" ), ebayConfig, new WebRequestServices() )
 		{
 		}
 
@@ -180,14 +180,14 @@ namespace EbayAccess
 		}
 		#endregion
 
-#region Authentication
-		public async Task< string > GetUserToken( )
+		#region Authentication
+		public async Task< string > GetUserToken()
 		{
-			var sessionId = await this.EbayServiceLowLevel.GetSessionIdAsync().ConfigureAwait(false);
-			this.EbayServiceLowLevel.AutentificateUser(sessionId);
-			var userToken = await this.EbayServiceLowLevel.FetchTokenAsync(sessionId).ConfigureAwait(false);
+			var sessionId = await this.EbayServiceLowLevel.GetSessionIdAsync().ConfigureAwait( false );
+			this.EbayServiceLowLevel.AutentificateUser( sessionId );
+			var userToken = await this.EbayServiceLowLevel.FetchTokenAsync( sessionId ).ConfigureAwait( false );
 			return userToken;
 		}
-#endregion
+		#endregion
 	}
 }

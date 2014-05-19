@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using EbayAccess.Misc;
 using EbayAccess.Models;
-using EbayAccess.Models.GetItemResponse;
-using EbayAccess.Models.GetOrdersResponse;
-using EbayAccess.Models.GetSellerListResponse;
-using EbayAccess.Models.GetSessionIdResponse;
-using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayFetchTokenResponseParser : EbayXmlParser<FetchTokenResponse>
+	public class EbayFetchTokenResponseParser : EbayXmlParser< FetchTokenResponse >
 	{
-		public override FetchTokenResponse Parse(Stream stream, bool keepStremPosition = true)
+		public override FetchTokenResponse Parse( Stream stream, bool keepStremPosition = true )
 		{
 			try
 			{
@@ -30,9 +23,9 @@ namespace EbayAccess.Services.Parsers
 				if( erros != null )
 					return new FetchTokenResponse { Error = erros };
 
-				var res = new FetchTokenResponse { EbayAuthToken = GetElementValue(root, ns, "eBayAuthToken"), HardExpirationTime = GetElementValue(root, ns, "HardExpirationTime").ToDateTime() };
+				var res = new FetchTokenResponse { EbayAuthToken = GetElementValue( root, ns, "eBayAuthToken" ), HardExpirationTime = GetElementValue( root, ns, "HardExpirationTime" ).ToDateTime() };
 
-				if (keepStremPosition)
+				if( keepStremPosition )
 					stream.Position = streamStartPos;
 
 				return res;

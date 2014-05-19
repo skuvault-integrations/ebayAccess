@@ -209,16 +209,16 @@ namespace EbayAccessTests.Integration
 		}
 		#endregion
 
-		[Test]
+		[ Test ]
 		public async Task GetUserToken_EbayServiceWithCorrectRuName_HookupSessionId()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig());
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
 
 			//A
-			var sessionId = await ebayService.GetSessionIdAsync().ConfigureAwait(false);
-			ebayService.AutentificateUser(sessionId);
-			var userToken = await ebayService.FetchTokenAsync(sessionId).ConfigureAwait(false);
+			var sessionId = await ebayService.GetSessionIdAsync().ConfigureAwait( false );
+			ebayService.AutentificateUser( sessionId );
+			var userToken = await ebayService.FetchTokenAsync( sessionId ).ConfigureAwait( false );
 
 			//A
 			sessionId.Should().NotBeNullOrWhiteSpace();

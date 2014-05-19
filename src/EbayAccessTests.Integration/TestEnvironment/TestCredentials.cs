@@ -10,15 +10,15 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		private readonly FlatCsvLine _flatCsvLine;
 		private readonly FlatDevCredentialCsvLine _flatDevCredentialCsvLine;
 		private readonly List< FlatSaleItemsCsvLine > _flatSaleItemsCsvLines;
-		private readonly List<FlatRuNameCsvLine> _ruNameFilePath;
+		private readonly List< FlatRuNameCsvLine > _ruNameFilePath;
 
-		public TestCredentials(string credentialsFilePath, string devCredentialsFilePath, string saleItemsIdsFilePath, string runameFilePath)
+		public TestCredentials( string credentialsFilePath, string devCredentialsFilePath, string saleItemsIdsFilePath, string runameFilePath )
 		{
 			var cc = new CsvContext();
 			this._flatCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatCsvLine >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 			this._flatDevCredentialCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatDevCredentialCsvLine >( devCredentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 			this._flatSaleItemsCsvLines = cc.Read< FlatSaleItemsCsvLine >( saleItemsIdsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ).ToList();
-			this._ruNameFilePath = cc.Read<FlatRuNameCsvLine>(runameFilePath, new CsvFileDescription { FirstLineHasColumnNames = true }).ToList();
+			this._ruNameFilePath = cc.Read< FlatRuNameCsvLine >( runameFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ).ToList();
 		}
 
 		public EbayUserCredentials GetEbayUserCredentials()
@@ -79,7 +79,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			[ CsvColumn( Name = "Id", FieldIndex = 1 ) ]
 			public string Id { get; set; }
 		}
-		
+
 		internal class FlatRuNameCsvLine
 		{
 			public FlatRuNameCsvLine()
@@ -90,5 +90,4 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			public string RuName { get; set; }
 		}
 	}
-
 }

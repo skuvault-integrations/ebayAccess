@@ -14,7 +14,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			const string devCredentialsFilePath = @"..\..\Files\ebay_test_devcredentials.csv";
 			const string saleItemsIdsFilePath = @"..\..\Files\ebay_test_saleitemsids.csv";
 			const string runameFilePath = @"..\..\Files\ebay_test_runame.csv";
-			this._credentials = new TestCredentials(credentialsFilePath, devCredentialsFilePath, saleItemsIdsFilePath, runameFilePath);
+			this._credentials = new TestCredentials( credentialsFilePath, devCredentialsFilePath, saleItemsIdsFilePath, runameFilePath );
 		}
 	}
 }
