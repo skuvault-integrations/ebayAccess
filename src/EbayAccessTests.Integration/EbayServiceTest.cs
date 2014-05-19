@@ -18,7 +18,7 @@ namespace EbayAccessTests.Integration
 		public void GetOrders_ServiceWithExistingOrdersInSpecifiedTimeRange_HookupOrders()
 		{
 			//------------ Arrange
-			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
 			var orders = service.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
@@ -31,7 +31,7 @@ namespace EbayAccessTests.Integration
 		public void GetOrdersAsync_ServiceWithExistingOrdersInSpecifiedTimeRange_HookupOrders()
 		{
 			//------------ Arrange
-			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
 			var ordersTask = service.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
@@ -47,7 +47,7 @@ namespace EbayAccessTests.Integration
 		public void UpdateItems()
 		{
 			//------------ Arrange
-			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 			const int qty1 = 100;
 			const int qty2 = 200;
 			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
@@ -70,7 +70,7 @@ namespace EbayAccessTests.Integration
 		public void GetProductsDetails()
 		{
 			//------------ Arrange
-			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
 			var inventoryStat1Task = ebayService.GetProductsDetailsAsync();

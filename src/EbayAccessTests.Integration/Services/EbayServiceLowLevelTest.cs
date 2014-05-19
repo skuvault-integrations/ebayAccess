@@ -18,7 +18,7 @@ namespace EbayAccessTests.Integration.Services
 		public async Task UpdateItemsQuantityAsync_EbayServiceWithExistingtems_QuantityUpdatedForAll()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			const int itemsQty1 = 100;
 			const int itemsQty2 = 200;
@@ -47,7 +47,7 @@ namespace EbayAccessTests.Integration.Services
 		public void UpdateItemQuantity_EbayServiceWithExistingItems_QuantityUpdated()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 			const int qty1 = 100;
 			const int qty2 = 200;
 			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
@@ -67,7 +67,7 @@ namespace EbayAccessTests.Integration.Services
 		public void UpdateItemsQuantity_EbayServiceWithExistingItems_QuantityUpdatedForAll()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			const int itemsQty1 = 100;
 			const int itemsQty2 = 200;
@@ -97,7 +97,7 @@ namespace EbayAccessTests.Integration.Services
 		public async Task UpdateItemQuantityAsync_EbayServiceWithExistingItem_QuantityChanged()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 			const int qty1 = 100;
 			const int qty2 = 200;
 			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
@@ -119,7 +119,7 @@ namespace EbayAccessTests.Integration.Services
 		public void GetItem_EbayServiceWithExistingSaleItem_HookupItemWithDetails()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
 
 			//A
@@ -133,7 +133,7 @@ namespace EbayAccessTests.Integration.Services
 		public void GetItem_EbayServiceWithExistingSaleItemWithSku_HookupItemWithSku()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
 
 			//A
@@ -150,7 +150,7 @@ namespace EbayAccessTests.Integration.Services
 		{
 			//A
 
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
 			var orders =
@@ -164,7 +164,7 @@ namespace EbayAccessTests.Integration.Services
 		public void GetOrders_EbayServiceWithExistingOrders_HookupOrders()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
 			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
@@ -177,7 +177,7 @@ namespace EbayAccessTests.Integration.Services
 		public void GetOrders_EbayServiceWithExistingOrders_HookupOrdersWithSku()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
 			var timeFrom = new DateTime( 2014, 5, 2, 18, 0, 45 );
@@ -192,7 +192,7 @@ namespace EbayAccessTests.Integration.Services
 		public async Task GetOrdersAsync_EbayServiceWithNotExistingOrders_EmptyOrdersCollection()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
 			var orders =
@@ -206,7 +206,7 @@ namespace EbayAccessTests.Integration.Services
 		public void GetOrders_EbayServiceWithNotExistingOrders_EmptyOrdersCollection()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
 			var orders = ebayService.GetOrders( new DateTime( 1999, 1, 1, 0, 0, 0 ),
@@ -222,7 +222,7 @@ namespace EbayAccessTests.Integration.Services
 		public async Task GetSessionId_EbayServiceWithCorrectRuName_HookupSessionId()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
 			var sessionId = await ebayService.GetSessionIdAsync().ConfigureAwait( false );
