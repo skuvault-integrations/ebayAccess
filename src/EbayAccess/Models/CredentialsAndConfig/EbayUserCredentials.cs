@@ -4,7 +4,7 @@ namespace EbayAccess.Models.Credentials
 {
 	public class EbayUserCredentials
 	{
-		public object AccountName { get; set; }
+		public string AccountName { get; set; }
 		public string Token { get; set; }
 
 		public EbayUserCredentials( string accountName, string token )

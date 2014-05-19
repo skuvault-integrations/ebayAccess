@@ -216,9 +216,9 @@ namespace EbayAccessTests.Integration
 			var ebayService = new EbayServiceLowLevel(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig());
 
 			//A
-			var sessionId = await ebayService.GetSessionIdAsync(this._credentials.GetRuName()).ConfigureAwait(false);
-			ebayService.AutentificateUser( this._credentials.GetRuName(), sessionId );
-			var userToken = await ebayService.FetchToken( sessionId ).ConfigureAwait(false);
+			var sessionId = await ebayService.GetSessionIdAsync().ConfigureAwait(false);
+			ebayService.AutentificateUser(sessionId);
+			var userToken = await ebayService.FetchTokenAsync(sessionId).ConfigureAwait(false);
 
 			//A
 			sessionId.Should().NotBeNullOrWhiteSpace();

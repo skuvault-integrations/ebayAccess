@@ -39,6 +39,14 @@ namespace EbayAccess
 		{
 		}
 
+		/// <summary>
+		/// Just for auth
+		/// </summary>
+		/// <param name="ebayConfig"></param>
+		public EbayService( EbayConfig ebayConfig ) : this( new EbayUserCredentials("empty","empty"), ebayConfig, new WebRequestServices() )
+		{
+		}
+
 		#region GetOrders
 		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo )
 		{
@@ -171,5 +179,15 @@ namespace EbayAccess
 			return await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products );
 		}
 		#endregion
+
+#region Authentication
+		public async Task< string > GetUserToken( )
+		{
+			var sessionId = await this.EbayServiceLowLevel.GetSessionIdAsync().ConfigureAwait(false);
+			this.EbayServiceLowLevel.AutentificateUser(sessionId);
+			var userToken = await this.EbayServiceLowLevel.FetchTokenAsync(sessionId).ConfigureAwait(false);
+			return userToken;
+		}
+#endregion
 	}
 }

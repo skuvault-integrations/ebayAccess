@@ -7,9 +7,10 @@ namespace EbayAccess.Models.CredentialsAndConfig
 		public string AppName { get; private set; }
 		public string DevName { get; private set; }
 		public string CertName { get; private set; }
+		public string RuName { get; private set; }
 		public virtual string EndPoint { get; private set; }
 
-		public EbayConfig( string appName, string devName, string certName )
+		public EbayConfig(string appName, string devName, string certName)
 		{
 			Condition.Requires( appName, "appName" ).IsNotNullOrWhiteSpace();
 			Condition.Requires( devName, "devName" ).IsNotNullOrWhiteSpace();
@@ -18,6 +19,20 @@ namespace EbayAccess.Models.CredentialsAndConfig
 			this.AppName = appName;
 			this.DevName = devName;
 			this.CertName = certName;
+			this.EndPoint = "https://api.ebay.com/ws/api.dll";
+		}
+
+		public EbayConfig(string appName, string devName, string certName, string ruName)
+		{
+			Condition.Requires(appName, "appName").IsNotNullOrWhiteSpace();
+			Condition.Requires(devName, "devName").IsNotNullOrWhiteSpace();
+			Condition.Requires(certName, "certName").IsNotNullOrWhiteSpace();
+			Condition.Requires(ruName, "ruName").IsNotNullOrWhiteSpace();
+
+			this.AppName = appName;
+			this.DevName = devName;
+			this.CertName = certName;
+			this.RuName = ruName;
 			this.EndPoint = "https://api.ebay.com/ws/api.dll";
 		}
 	}

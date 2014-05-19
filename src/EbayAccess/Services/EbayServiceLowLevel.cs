@@ -44,7 +44,7 @@ namespace EbayAccess.Services
 		}
 
 		#region EbayStandartRequest
-		public async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body )
+		private async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body )
 		{
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCompatibilityLevel ) )
 				headers.Add( EbayHeaders.XEbayApiCompatibilityLevel, EbayHeadersValues.XEbayApiCompatibilityLevel );
@@ -454,11 +454,11 @@ namespace EbayAccess.Services
 				sessionId);
 		}
 
-		public async Task<string> GetSessionIdAsync(string ruName)
+		public async Task<string> GetSessionIdAsync()
 		{
 			string result = null;
 
-			var body = this.CreateGetSessionIdRequestBody(ruName);
+			var body = this.CreateGetSessionIdRequestBody(this._ebayConfig.RuName);
 
 			var headers = CreateGetSessionIDRequestHeadersWithApiCallName();
 
@@ -477,14 +477,12 @@ namespace EbayAccess.Services
 			return result;
 		}
 
-		public void AutentificateUser(string ruName, string sessionId)
+		public void AutentificateUser(string sessionId)
 		{
 			//todo: move to const
 			//var uri = new Uri( string.Format( "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}", ruName, sessionId ) );
-			var uri = new Uri( string.Format( "https://signin.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}", ruName, sessionId ) );
+			var uri = new Uri( string.Format( "https://signin.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}", this._ebayConfig.RuName, sessionId ) );
 			Process.Start(uri.AbsoluteUri);
-
-
 		}
 
 		public async Task< string> FetchTokenAsync(string sessionId)
