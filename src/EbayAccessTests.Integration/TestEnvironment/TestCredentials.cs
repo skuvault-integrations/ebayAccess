@@ -95,6 +95,12 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 			[ CsvColumn( Name = "Descr", FieldIndex = 3 ) ]
 			public string Descr { get; set; }
+
+			[ CsvColumn( Name = "CreationTime", FieldIndex = 4 ) ]
+			public string CreationTime { get; set; }
+
+			[ CsvColumn( Name = "OrderedTime", FieldIndex = 5 ) ]
+			public string OrderedTime { get; set; }
 		}
 
 		internal class FlatRuNameCsvLine

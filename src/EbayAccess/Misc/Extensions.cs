@@ -43,7 +43,15 @@ namespace EbayAccess.Misc
 			}
 			catch
 			{
-				return default( DateTime );
+				try
+				{
+					var result = XmlConvert.ToDateTime( srcString, XmlDateTimeSerializationMode.RoundtripKind | XmlDateTimeSerializationMode.Utc );
+					return result;
+				}
+				catch
+				{
+					return default( DateTime );
+				}
 			}
 		}
 	}
