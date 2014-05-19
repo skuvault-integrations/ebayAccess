@@ -120,13 +120,13 @@ namespace EbayAccessTests.Integration.Services
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			var saleItemsIds = this._credentials.GetSaleItemsIds().ToArray();
+			var saleItemsIds = this._credentials.GetSaleItems().First( x => String.Compare( x.Descr, "AnyExistingItem", StringComparison.InvariantCultureIgnoreCase ) == 0 );
 
 			//A
-			var inventoryStat1 = ebayService.GetItem( saleItemsIds[ 1 ].ToString() );
+			var inventoryStat1 = ebayService.GetItem( saleItemsIds.Id );
 
 			//A
-			inventoryStat1.ItemId.Should().Be( saleItemsIds[ 1 ].ToString(), "Code requests item with id={0}.", saleItemsIds[ 1 ].ToString() );
+			inventoryStat1.ItemId.Should().Be(saleItemsIds.Id, "Code requests item with id={0}.", saleItemsIds.Id);
 		}
 
 		[ Test ]

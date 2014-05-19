@@ -27,7 +27,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			return new EbayUserCredentials( this._flatUserCredentialsCsvLine.AccountName, this._flatUserCredentialsCsvLine.Token );
 		}
 
-		public EbayConfigStub GetEbayConfigSandbox()
+		public EbayConfig GetEbayConfigSandbox()
 		{
 			return new EbayConfigStub( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName, this._ruNameCsvLines.RuName );
 		}
@@ -40,6 +40,11 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		public IEnumerable< long > GetSaleItemsIds()
 		{
 			return this._flatSaleItemsCsvLines.Select( x => long.Parse( x.Id ) ).ToList();
+		}
+
+		public IEnumerable<FlatSaleItemsCsvLine> GetSaleItems()
+		{
+			return this._flatSaleItemsCsvLines;
 		}
 
 		public string GetRuName()
@@ -76,14 +81,20 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			public string CertName { get; set; }
 		}
 
-		internal class FlatSaleItemsCsvLine
+		public class FlatSaleItemsCsvLine
 		{
 			public FlatSaleItemsCsvLine()
 			{
 			}
 
-			[ CsvColumn( Name = "Id", FieldIndex = 1 ) ]
+			[CsvColumn(Name = "Id", FieldIndex = 1)]
 			public string Id { get; set; }
+
+			[CsvColumn(Name = "Sku", FieldIndex = 2)]
+			public string Sku { get; set; }
+
+			[CsvColumn(Name = "Descr", FieldIndex = 3)]
+			public string Descr { get; set; }
 		}
 
 		internal class FlatRuNameCsvLine
