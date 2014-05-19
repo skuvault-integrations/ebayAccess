@@ -22,18 +22,10 @@ namespace EbayAccess.Models.CredentialsAndConfig
 			this.EndPoint = "https://api.ebay.com/ws/api.dll";
 		}
 
-		public EbayConfig( string appName, string devName, string certName, string ruName )
+		public EbayConfig( string appName, string devName, string certName, string ruName ) : this( appName, devName, certName )
 		{
-			Condition.Requires( appName, "appName" ).IsNotNullOrWhiteSpace();
-			Condition.Requires( devName, "devName" ).IsNotNullOrWhiteSpace();
-			Condition.Requires( certName, "certName" ).IsNotNullOrWhiteSpace();
 			Condition.Requires( ruName, "ruName" ).IsNotNullOrWhiteSpace();
-
-			this.AppName = appName;
-			this.DevName = devName;
-			this.CertName = certName;
 			this.RuName = ruName;
-			this.EndPoint = "https://api.ebay.com/ws/api.dll";
 		}
 	}
 }
