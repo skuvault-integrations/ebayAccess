@@ -29,5 +29,6 @@ namespace EbayAccess
 		Task< IEnumerable< Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo );
 
 		Task< IEnumerable< Item > > GetProductsDetailsAsync();
+		Task< string > GetUserToken();
 	}
 }

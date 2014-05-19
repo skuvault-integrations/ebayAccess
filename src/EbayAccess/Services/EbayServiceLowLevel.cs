@@ -477,7 +477,7 @@ namespace EbayAccess.Services
 			return result;
 		}
 
-		public void AutentificateUser( string sessionId )
+		public void AuthenticateUser( string sessionId )
 		{
 			//todo: move to const
 			//var uri = new Uri( string.Format( "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}", ruName, sessionId ) );

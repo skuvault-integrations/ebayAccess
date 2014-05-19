@@ -210,19 +210,35 @@ namespace EbayAccessTests.Integration
 		#endregion
 
 		[ Test ]
-		public async Task GetUserToken_EbayServiceWithCorrectRuName_HookupSessionId()
+		public async Task GetUserTokenLowLevel_EbayServiceWithCorrectRuName_HookupToken()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfig() );
 
 			//A
 			var sessionId = await ebayService.GetSessionIdAsync().ConfigureAwait( false );
-			ebayService.AutentificateUser( sessionId );
+			ebayService.AuthenticateUser( sessionId );
 			var userToken = await ebayService.FetchTokenAsync( sessionId ).ConfigureAwait( false );
 
 			//A
 			sessionId.Should().NotBeNullOrWhiteSpace();
 			userToken.Should().NotBeNullOrWhiteSpace();
+		}
+
+		[Test]
+		public void GetUserToken_EbayServiceWithCorrectRuName_HookupToken()
+		{
+			//------------ Arrange
+			var ebayFactory = new EbayFactory(this._credentials.GetEbayConfig());
+			var ebayService = ebayFactory.CreateService();
+
+			//------------ Act
+			var getUserTokenAsyncTask = ebayService.GetUserToken();
+			getUserTokenAsyncTask.Wait();
+			var token = getUserTokenAsyncTask.Result;
+
+			//------------ Assert
+			token.Should().NotBeNullOrEmpty();
 		}
 	}
 }

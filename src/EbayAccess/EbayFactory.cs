@@ -18,5 +18,10 @@ namespace EbayAccess
 		{
 			return new EbayService( userCredentials, this._config );
 		}
+
+		public IEbayService CreateService()
+		{
+			return new EbayService( this._config );
+		}
 	}
 }

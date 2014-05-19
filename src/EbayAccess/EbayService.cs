@@ -184,7 +184,7 @@ namespace EbayAccess
 		public async Task< string > GetUserToken()
 		{
 			var sessionId = await this.EbayServiceLowLevel.GetSessionIdAsync().ConfigureAwait( false );
-			this.EbayServiceLowLevel.AutentificateUser( sessionId );
+			this.EbayServiceLowLevel.AuthenticateUser( sessionId );
 			var userToken = await this.EbayServiceLowLevel.FetchTokenAsync( sessionId ).ConfigureAwait( false );
 			return userToken;
 		}

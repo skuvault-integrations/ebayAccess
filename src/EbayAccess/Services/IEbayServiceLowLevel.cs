@@ -32,7 +32,7 @@ namespace EbayAccess.Services
 
 		Task< string > GetSessionIdAsync();
 
-		void AutentificateUser( string sessionId );
+		void AuthenticateUser( string sessionId );
 
 		Task< string > FetchTokenAsync( string sessionId );
 	}
