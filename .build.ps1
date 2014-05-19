@@ -104,7 +104,7 @@ task NuGet Package, Version, {
 		<projectUrl>https://github.com/slav/EbayAccess</projectUrl>
 		<licenseUrl>https://raw.github.com/slav/EbayAccess/master/License.txt</licenseUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<copyright>Copyright (C) Agile Harbor, LLC 2013</copyright>
+		<copyright>Copyright (C) Agile Harbor, LLC 2014</copyright>
 		<summary>$text</summary>
 		<description>$text</description>
 		<tags>Ebay</tags>
@@ -112,7 +112,6 @@ task NuGet Package, Version, {
 			<group targetFramework="net45">
 				<dependency id="Netco" version="1.3.1" />
 				<dependency id="CuttingEdge.Conditions" version="1.2.0.0" />
-				<dependency id="LINQtoCSV " version="1.2.0.0" />
 			</group>
 		</dependencies>
 	</metadata>
