@@ -23,12 +23,12 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 	{
 		public static string AnyExistingNonVariationItem { get; set; }
-		public static string ExistingItemWithVariationsSku { get; set; }
+		public static string ExistingFixedPriceItemWithVariationsSku { get; set; }
 
 		static TestItemsDescriptions()
 		{
 			AnyExistingNonVariationItem = "AnyExistingNonVariationItem";
-			ExistingItemWithVariationsSku = "ExistingItemWithVariationsSku";
+			ExistingFixedPriceItemWithVariationsSku = "ExistingFixedPriceItemWithVariationsSku";
 		}
 	}
 }

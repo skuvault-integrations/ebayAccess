@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EbayAccess;
+using EbayAccess.Misc;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
@@ -80,26 +81,31 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void UpdateProductsAsync_EbayServiceWithOrdersVariationsSku_ProductsUpdated()
+		public void UpdateProductsAsync_EbayServiceWithProductVariationsSku_ProductsUpdated()
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigSandbox() );
-			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
+			var ebayService = ebayFactory.CreateService(this._credentials.GetEbayUserCredentials());
+			var saleItemsIds = this._credentials.GetSaleItems();
+			var item1 = saleItemsIds.First(x => String.Compare(x.Descr, TestItemsDescriptions.ExistingFixedPriceItemWithVariationsSku, StringComparison.InvariantCultureIgnoreCase) == 0);
+			var item2 = saleItemsIds.First(x => String.Compare(x.Descr, TestItemsDescriptions.ExistingFixedPriceItemWithVariationsSku, StringComparison.InvariantCultureIgnoreCase) == 0 && item1.Sku != x.Sku);
 
-			const int itemsQty1 = 499;
-			const int itemsQty2 = 299;
+			const int itemsQty1 = 2;
+			const int itemsQty2 = 1;
 
 			//------------ Act
 			var updateProductsAsyncTask = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
 			{
-				new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_B", Quantity = itemsQty1 },
+				new InventoryStatusRequest { ItemId = item1.Id.ToLong(), Sku = item1.Sku, Quantity = itemsQty1 },
+				new InventoryStatusRequest { ItemId = item2.Id.ToLong(), Sku = item2.Sku, Quantity = itemsQty1 },
 			} );
 			updateProductsAsyncTask.Wait();
 			var inventoryStat1 = updateProductsAsyncTask.Result.ToArray();
 
 			var updateProductsAsyncTask2 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
 			{
-				new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_B", Quantity = itemsQty2 },
+				new InventoryStatusRequest { ItemId = item1.Id.ToLong(), Sku = item1.Sku, Quantity = itemsQty2 },
+				new InventoryStatusRequest { ItemId = item2.Id.ToLong(), Sku = item2.Sku, Quantity = itemsQty2 },
 			} );
 			updateProductsAsyncTask2.Wait();
 			var inventoryStat2 = updateProductsAsyncTask2.Result.ToArray();
@@ -110,7 +116,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void UpdateProductsAsync_EbayServiceWithOrdersSku_ProductsUpdated()
+		public void UpdateProductsAsync_EbayServiceWithNonVariationFixedPriceProducts_ProductsUpdated()
 		{
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigSandbox() );

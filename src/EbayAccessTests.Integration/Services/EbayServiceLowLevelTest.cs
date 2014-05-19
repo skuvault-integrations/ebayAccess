@@ -141,7 +141,7 @@ namespace EbayAccessTests.Integration.Services
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			var saleItemsIds = this._credentials.GetSaleItems().First( x => String.Compare( x.Descr, TestItemsDescriptions.ExistingItemWithVariationsSku, StringComparison.InvariantCultureIgnoreCase ) == 0 );
+			var saleItemsIds = this._credentials.GetSaleItems().First( x => String.Compare( x.Descr, TestItemsDescriptions.ExistingFixedPriceItemWithVariationsSku, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 
 			//A
 			var inventoryStat1 = ebayService.GetItem( saleItemsIds.Id );
