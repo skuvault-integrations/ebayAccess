@@ -52,17 +52,25 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			const int qty1 = 5;
-			const int qty2 = 6;
+			const int qty1 = 3;
+			const int qty2 = 4;
 			var saleItemsIds = this._credentials.GetSaleItems();
 			var item1 = saleItemsIds.First( x => String.Compare( x.Descr, TestItemsDescriptions.ExistingFixedPriceItemWithVariationsSku, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 			var item2 = saleItemsIds.First( x => String.Compare( x.Descr, TestItemsDescriptions.ExistingFixedPriceItemWithVariationsSku, StringComparison.InvariantCultureIgnoreCase ) == 0 && item1.Sku != x.Sku );
 
 			//------------ Act
-			var inventoryStat1Task = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest > { new InventoryStatusRequest { ItemId = item1.Id.ToLong(), Sku = item1.Sku, Quantity = qty1 }, new InventoryStatusRequest { ItemId = item2.Id.ToLong(), Sku = item2.Sku, Quantity = qty1 } } );
+			var inventoryStat1Task = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			{
+				new InventoryStatusRequest { ItemId = item1.Id.ToLong(), Sku = item1.Sku, Quantity = qty1 },
+				new InventoryStatusRequest { ItemId = item2.Id.ToLong(), Sku = item2.Sku, Quantity = qty1 }
+			} );
 			inventoryStat1Task.Wait();
 
-			var inventoryStat2Task = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest > { new InventoryStatusRequest { ItemId = item1.Id.ToLong(), Sku = item1.Sku, Quantity = qty2 }, new InventoryStatusRequest { ItemId = item2.Id.ToLong(), Sku = item2.Sku, Quantity = qty2 } } );
+			var inventoryStat2Task = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			{
+				new InventoryStatusRequest { ItemId = item1.Id.ToLong(), Sku = item1.Sku, Quantity = qty2 },
+				new InventoryStatusRequest { ItemId = item2.Id.ToLong(), Sku = item2.Sku, Quantity = qty2 }
+			} );
 			inventoryStat2Task.Wait();
 
 			//------------ Assert

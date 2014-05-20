@@ -16,7 +16,7 @@ namespace EbayAccessTests.Integration.Services
 	{
 		#region UpdateQuantity
 		[ Test ]
-		public async Task UpdateItemsQuantityAsync_EbayServiceWithExistingtems_QuantityUpdatedForAll()
+		public async Task UpdateItemsQuantityAsync_EbayServiceWithNonVariationFixedPriceItems_QuantityUpdatedForAll()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
@@ -47,7 +47,7 @@ namespace EbayAccessTests.Integration.Services
 		}
 
 		[ Test ]
-		public void UpdateItemQuantity_EbayServiceWithExistingItems_QuantityUpdated()
+		public void UpdateItemQuantity_EbayServiceWithExistingNonVariationFixedPriceItems_QuantityUpdated()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
@@ -68,7 +68,7 @@ namespace EbayAccessTests.Integration.Services
 		}
 
 		[ Test ]
-		public void UpdateItemsQuantity_EbayServiceWithExistingItems_QuantityUpdatedForAll()
+		public void UpdateItemsQuantity_EbayServiceWithNonVariationFixedPriceItems_QuantityUpdatedForAll()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
@@ -100,14 +100,14 @@ namespace EbayAccessTests.Integration.Services
 		}
 
 		[ Test ]
-		public async Task UpdateItemQuantityAsync_EbayServiceWithExistingItem_QuantityChanged()
+		public async Task UpdateItemQuantityAsync_EbayServiceWithExistingNonVariationFixedPriceItem_QuantityChanged()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 			const int qty1 = 3;
 			const int qty2 = 4;
-			var saleItemsIds = this._credentials.GetSaleItems();
-			var item1 = saleItemsIds.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
+			var saleItems = this._credentials.GetSaleItems();
+			var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 
 			//A
 			var inventoryStat1 =
@@ -157,13 +157,14 @@ namespace EbayAccessTests.Integration.Services
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-
+			var saleItems = this._credentials.GetSaleItems();
+			var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 			//A
 			var orders =
-				await ebayService.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) ).ConfigureAwait( false );
+				await ebayService.GetOrdersAsync( item1.OrderedTime.ToDateTime().AddDays( -1 ), item1.OrderedTime.ToDateTime().AddDays( 1 ) ).ConfigureAwait( false );
 
 			//A
-			orders.Count().Should().Be( 2, "because on site there is 2 orders" );
+			orders.Count().Should().Be( 1 );
 		}
 
 		[ Test ]
@@ -171,12 +172,14 @@ namespace EbayAccessTests.Integration.Services
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			var saleItems = this._credentials.GetSaleItems();
+			var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 
 			//A
-			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
+			var orders = ebayService.GetOrders( item1.OrderedTime.ToDateTime().AddDays( -1 ), item1.OrderedTime.ToDateTime().AddDays( 1 ) );
 
 			//A
-			orders.Count().Should().Be( 2, "because on site there is 2 orders" );
+			orders.Count().Should().Be( 1 );
 		}
 
 		[ Test ]

@@ -36,14 +36,17 @@ namespace EbayAccessTests.Integration
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigSandbox() );
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
+			var saleItems = this._credentials.GetSaleItems();
+			var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 
 			//------------ Act
-			var ordersTask = ebayService.GetOrdersAsync( new DateTime( 2014, 5, 2, 18, 0, 0 ), new DateTime( 2014, 5, 20, 10, 0, 0 ) );
+			var ordersTask = ebayService.GetOrdersAsync( item1.OrderedTime.ToDateTime().AddHours( -1 ), item1.OrderedTime.ToDateTime().AddHours( 1 ) );
 			ordersTask.Wait();
 			var orders = ordersTask.Result;
 
 			//------------ Assert
-			orders.First().TransactionArray.TrueForAll( x => x.Variation != null && !string.IsNullOrWhiteSpace( x.Variation.Sku ) ).Should().BeTrue( "because on site there is an order contains 3 products, each is variation" );
+			orders.First().TransactionArray.Where( x => x.Item.ItemDetails.IsItemWithVariations() ).Count().Should().BeGreaterThan( 0 );
+			orders.First().TransactionArray.Where( x => x.Item.ItemDetails.IsItemWithVariations() ).ToList().TrueForAll( x => !string.IsNullOrWhiteSpace( x.Variation.Sku ) ).Should().BeTrue( "because on site there is an order contains 3 products, each is variation" );
 		}
 
 		[ Test ]
@@ -61,7 +64,8 @@ namespace EbayAccessTests.Integration
 			var orders = ordersTask.Result;
 
 			//------------ Assert
-			orders.First().TransactionArray.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Item.Sku ) ).Should().BeTrue( "because on site there is order with sku in specified time range {0}-{1}", dateFrom, dateTo );
+			orders.First().TransactionArray.Where( x => !x.Item.ItemDetails.IsItemWithVariations() ).Count().Should().BeGreaterThan( 0 );
+			orders.First().TransactionArray.Where( x => !x.Item.ItemDetails.IsItemWithVariations() ).ToList().TrueForAll( x => !string.IsNullOrWhiteSpace( x.Item.Sku ) );
 		}
 
 		[ Test ]
