@@ -8,7 +8,7 @@ set LOGDIR=%~dp0log\
 set LOGFILE=%LOGDIR%%1.log
 if not exist %LOGDIR% md %LOGDIR%
 
-powershell -NoProfile -ExecutionPolicy unrestricted "Build -Parameters @{Configuration='%1'} -Summary:$True" -verbose | tools\buildLog\mtee %LOGFILE%
+powershell -NoProfile -ExecutionPolicy unrestricted "Build -Parameters @{Configuration='%1'} -Summary:$True" -verbose
 
 PAUSE
 GOTO End1

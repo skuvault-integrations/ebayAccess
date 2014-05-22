@@ -27,6 +27,7 @@ param
 )
 
 $project_name = "EbayAccess"
+$project_short_name = "Ebay"
 
 # Folder structure:
 # \build - Contains all code during the build process
@@ -82,16 +83,17 @@ task Archive {
 
 task Zip Version, {
 	$release_zip_file = "$release_dir\$project_name.$Version.zip"
+	$7z = Get-ChildItem -recurse $src_dir\packages -include 7za.exe | Sort-Object LastWriteTime -descending | Select-Object -First 1
 	
 	Write-Host "Zipping release to: " $release_zip_file
 	
-	exec { & 7za.exe a $release_zip_file $build_output_dir\EbayAccess\lib\net45\* -mx9 }
+	exec { & $7z a $release_zip_file $build_output_dir\$project_name\lib\net45\* -mx9 }
 }
 
 task NuGet Package, Version, {
 
 	Write-Host ================= Preparing EbayAccess Nuget package =================
-	$text = "Ebay webservices API wrapper."
+	$text = "$project_short_name webservices API wrapper."
 	# nuspec
 	Set-Content $build_output_dir\EbayAccess\EbayAccess.nuspec @"
 <?xml version="1.0"?>
@@ -107,7 +109,7 @@ task NuGet Package, Version, {
 		<copyright>Copyright (C) Agile Harbor, LLC 2014</copyright>
 		<summary>$text</summary>
 		<description>$text</description>
-		<tags>Ebay</tags>
+		<tags>$project_short_name</tags>
 		<dependencies> 
 			<group targetFramework="net45">
 				<dependency id="Netco" version="1.3.1" />
@@ -118,12 +120,14 @@ task NuGet Package, Version, {
 </package>
 "@
 	# pack
-	exec { NuGet pack $build_output_dir\EbayAccess\EbayAccess.nuspec -Output $build_dir }
+	$nuget = "$($src_dir)\.nuget\NuGet"
 	
-	$pushEbayAccess = Read-Host 'Push EbayAccess ' $Version ' to NuGet? (Y/N)'
-	Write-Host $pushEbayAccess
-	if( $pushEbayAccess -eq "y" -or $pushEbayAccess -eq "Y" )	{
-		Get-ChildItem $build_dir\*.nupkg |% { exec { NuGet push  $_.FullName }}
+	exec { & $nuget pack $build_output_dir\$project_name\$project_name.nuspec -Output $build_dir }
+	
+	$push_project = Read-Host "Push $($project_name) " $Version " to NuGet? (Y/N)"
+	Write-Host $push_project
+	if( $push_project -eq "y" -or $push_project -eq "Y" )	{
+		Get-ChildItem $build_dir\*.nupkg |% { exec { & $nuget push  $_.FullName }}
 	}
 }
 
