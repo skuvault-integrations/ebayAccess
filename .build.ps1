@@ -98,7 +98,7 @@ task NuGet Package, Version, {
 <package>
 	<metadata>
 		<id>EbayAccess</id>
-		<version>$Version</version>
+		<version>$Version-rc1</version>
 		<authors>Slav Ivanyuk</authors>
 		<owners>Slav Ivanyuk</owners>
 		<projectUrl>https://github.com/slav/EbayAccess</projectUrl>
