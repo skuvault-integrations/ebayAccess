@@ -473,9 +473,15 @@ namespace EbayAccess.Services
 			return result;
 		}
 
-		public void AuthenticateUser( string sessionId )
+		public Uri GetAuthenticationUri( string sessionId )
 		{
 			var uri = new Uri( string.Format( "{0}?SignIn&RuName={1}&SessID={2}", this._ebaySignInUrl, this._ebayConfig.RuName, sessionId ) );
+			return uri;
+		}
+
+		public void AuthenticateUser( string sessionId )
+		{
+			var uri = this.GetAuthenticationUri( sessionId );
 			Process.Start( uri.AbsoluteUri );
 		}
 

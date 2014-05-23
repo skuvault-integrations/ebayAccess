@@ -181,10 +181,28 @@ namespace EbayAccess
 		#endregion
 
 		#region Authentication
-		public async Task< string > GetUserToken()
+		public async Task< string > GetUserTokenAsync()
 		{
 			var sessionId = await this.EbayServiceLowLevel.GetSessionIdAsync().ConfigureAwait( false );
 			this.EbayServiceLowLevel.AuthenticateUser( sessionId );
+			var userToken = await this.EbayServiceLowLevel.FetchTokenAsync( sessionId ).ConfigureAwait( false );
+			return userToken;
+		}
+
+		public async Task< string > GetUserSessionIdAsync()
+		{
+			var sessionId = await this.EbayServiceLowLevel.GetSessionIdAsync().ConfigureAwait( false );
+			return sessionId;
+		}
+
+		public string GetAuthUri( string sessionId )
+		{
+			var uri = this.EbayServiceLowLevel.GetAuthenticationUri( sessionId );
+			return uri.AbsoluteUri;
+		}
+
+		public async Task< string > FetchUserTokenAsync( string sessionId )
+		{
 			var userToken = await this.EbayServiceLowLevel.FetchTokenAsync( sessionId ).ConfigureAwait( false );
 			return userToken;
 		}

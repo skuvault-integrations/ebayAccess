@@ -35,5 +35,7 @@ namespace EbayAccess.Services
 		void AuthenticateUser( string sessionId );
 
 		Task< string > FetchTokenAsync( string sessionId );
+
+		Uri GetAuthenticationUri( string sessionId );
 	}
 }
