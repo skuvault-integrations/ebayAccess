@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -28,28 +29,53 @@ namespace EbayAccess.Services
 
 		public async Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders )
 		{
-			var encoding = new UTF8Encoding();
-			var encodedBody = encoding.GetBytes( body );
-
-			var serviceRequest = ( HttpWebRequest )WebRequest.Create( serviceUrl );
-			serviceRequest.Method = WebRequestMethods.Http.Post;
-			serviceRequest.ContentType = "text/xml";
-			serviceRequest.ContentLength = encodedBody.Length;
-			serviceRequest.KeepAlive = true;
-
-			foreach( var rawHeadersKey in rawHeaders.Keys )
+			try
 			{
-				serviceRequest.Headers.Add( rawHeadersKey, rawHeaders[ rawHeadersKey ] );
+				this.LogTraceCreateServicePostRequestAsyncStarted( rawHeaders, body );
+				var encoding = new UTF8Encoding();
+				var encodedBody = encoding.GetBytes( body );
+
+				var serviceRequest = ( HttpWebRequest )WebRequest.Create( serviceUrl );
+				serviceRequest.Method = WebRequestMethods.Http.Post;
+				serviceRequest.ContentType = "text/xml";
+				serviceRequest.ContentLength = encodedBody.Length;
+				serviceRequest.KeepAlive = true;
+
+				foreach( var rawHeadersKey in rawHeaders.Keys )
+				{
+					serviceRequest.Headers.Add( rawHeadersKey, rawHeaders[ rawHeadersKey ] );
+				}
+
+				using( var newStream = await serviceRequest.GetRequestStreamAsync().ConfigureAwait( false ) )
+					newStream.Write( encodedBody, 0, encodedBody.Length );
+
+				this.LogTraceCreateServicePostRequestAsyncEnded( rawHeaders, body );
+				return serviceRequest;
 			}
-
-			using( var newStream = await serviceRequest.GetRequestStreamAsync().ConfigureAwait( false ) )
-				newStream.Write( encodedBody, 0, encodedBody.Length );
-
-			return serviceRequest;
+			catch( Exception )
+			{
+				this.LogTraceCreateServicePostRequestAsyncException( rawHeaders, body );
+				throw;
+			}
 		}
 		#endregion
 
 		#region logging
+		private void LogTraceCreateServicePostRequestAsyncStarted( Dictionary< string, string > rawHeaders, string body )
+		{
+			this.Log().Trace( "[ebay] Create post request async started with headers:{0} body:{1}.", rawHeaders.Aggregate( "", ( ac, item ) => ac + string.Format( "({0}:{1})", item.Key, item.Value ) ), body );
+		}
+
+		private void LogTraceCreateServicePostRequestAsyncEnded( Dictionary< string, string > rawHeaders, string body )
+		{
+			this.Log().Trace( "[ebay] Create post request async ended with headers:{0} body:{1}.", rawHeaders.Aggregate( "", ( ac, item ) => ac + string.Format( "({0}:{1})", item.Key, item.Value ) ), body );
+		}
+
+		private void LogTraceCreateServicePostRequestAsyncException( Dictionary< string, string > rawHeaders, string body )
+		{
+			this.Log().Trace( "[ebay] Create post request async throw an exception: headers{0} body:{1}.", rawHeaders.Aggregate( "", ( ac, item ) => ac + string.Format( "({0}:{1})", item.Key, item.Value ) ), body );
+		}
+
 		private void LogTraceGetResponseStarted( WebRequest webRequest )
 		{
 			this.Log().Trace( "[ebay] Get response url:[0} started.", webRequest.RequestUri );
