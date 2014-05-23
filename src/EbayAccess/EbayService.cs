@@ -114,7 +114,7 @@ namespace EbayAccess
 
 			var productsDetails = await this.GetItemsAsync( products ).ConfigureAwait( false );
 
-			var productsDetailsDevidedByVariations = ProductsDetailsDevideByVariations( productsDetails );
+			var productsDetailsDevidedByVariations = SplitByVariationsOrReturnEmpty( productsDetails );
 
 			return productsDetailsDevidedByVariations;
 		}
@@ -148,14 +148,17 @@ namespace EbayAccess
 
 			var productsDetails = await Task.WhenAll( itemsDetailsTasks ).ConfigureAwait( false );
 
-			var productsDetailsDevidedByVariations = ProductsDetailsDevideByVariations( productsDetails );
+			var productsDetailsDevidedByVariations = SplitByVariationsOrReturnEmpty( productsDetails );
 
 			return productsDetailsDevidedByVariations;
 		}
 
-		protected static List< Item > ProductsDetailsDevideByVariations( IEnumerable< Item > productsDetails )
+		protected static List< Item > SplitByVariationsOrReturnEmpty( IEnumerable< Item > productsDetails )
 		{
 			var productsDetailsDevidedByVariations = new List< Item >();
+
+			if( productsDetails == null || !productsDetails.Any() )
+				return productsDetailsDevidedByVariations;
 
 			foreach( var productDetails in productsDetails )
 			{
