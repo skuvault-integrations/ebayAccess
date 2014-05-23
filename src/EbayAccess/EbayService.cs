@@ -179,7 +179,7 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products )
 		{
-			return await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products );
+			return await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products ).ConfigureAwait( false );
 		}
 		#endregion
 
