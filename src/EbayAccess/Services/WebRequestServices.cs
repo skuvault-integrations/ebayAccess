@@ -71,7 +71,7 @@ namespace EbayAccess.Services
 
 		private void LogTraceGetResponseAsyncStarted( WebRequest webRequest )
 		{
-			this.Log().Trace( "[ebay] Get response async url:[0} started.", webRequest.RequestUri );
+			this.Log().Trace( "[ebay] Get response async url:{0} started.", webRequest.RequestUri );
 		}
 
 		private void LogTraceGetResponseAsyncEnded( WebRequest webRequest, Stream webResponseStream )
