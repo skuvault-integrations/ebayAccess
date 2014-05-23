@@ -124,6 +124,7 @@ namespace EbayAccess
 			return await this.GetProductsDetailsAsync( this._ebayWorkingStart, DateTime.Now ).ConfigureAwait( false );
 		}
 
+		//TODO: try to reverse it to use lasat dates first, and use TotalEntities (to optimize call count)
 		protected static IEnumerable< DateTime > GetListOfTimeRanges( DateTime firstQuartalStart, DateTime lastQuartalEnd )
 		{
 			if( lastQuartalEnd < firstQuartalStart )

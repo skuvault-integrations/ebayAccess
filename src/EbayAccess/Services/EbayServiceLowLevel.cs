@@ -146,6 +146,7 @@ namespace EbayAccess.Services
 			return orders;
 		}
 
+		//TODO: return response structure that contains number of orders etc (helpfull for optimization)
 		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo )
 		{
 			var orders = new List< Order >();
@@ -243,6 +244,8 @@ namespace EbayAccess.Services
 				} );
 
 				pageNumber++;
+
+			//TODO: rid if this,use instead HasModeXXX like in  GetOrders 
 			} while( alreadyReadRecords < totalRecords );
 
 			return orders;
@@ -278,6 +281,7 @@ namespace EbayAccess.Services
 				} ).ConfigureAwait( false );
 
 				pageNumber++;
+			//TODO: rid if this,use instead HasModeXXX like in  GetOrders 
 			} while( items.Count < totalRecords );
 
 			return items;
