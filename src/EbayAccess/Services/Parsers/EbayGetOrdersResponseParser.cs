@@ -14,6 +14,10 @@ namespace EbayAccess.Services.Parsers
 		{
 			try
 			{
+				string temp;
+
+				var getOrdersResponse = new GetOrdersResponse ();
+
 				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
 
 				var streamStartPos = stream.Position;
@@ -24,11 +28,16 @@ namespace EbayAccess.Services.Parsers
 
 				var error = this.ResponseContainsErrors( root, ns );
 				if( error != null )
-					return new GetOrdersResponse { Error = error };
+				{
+					getOrdersResponse.Error = error;
+					return getOrdersResponse;
+				}
+
+				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "HasMoreOrders" ) ) )
+					getOrdersResponse.HasMoreOrders = ( Boolean.Parse( temp ) );
 
 				var orders = xmlOrders.Select( x =>
 				{
-					string temp;
 					var resultOrder = new Order();
 
 					resultOrder.BuyerUserId = GetElementValue( x, ns, "BuyerUserID" );
@@ -209,7 +218,8 @@ namespace EbayAccess.Services.Parsers
 					return resultOrder;
 				} ).ToList();
 
-				return new GetOrdersResponse { Orders = orders };
+				getOrdersResponse.Orders = orders;
+				return getOrdersResponse;
 			}
 			catch( Exception ex )
 			{

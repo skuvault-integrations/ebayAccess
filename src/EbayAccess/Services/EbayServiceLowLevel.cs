@@ -113,6 +113,7 @@ namespace EbayAccess.Services
 			var totalRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
 			var pageNumber = 1;
+			var hasMoreOrders = false;
 
 			do
 			{
@@ -130,14 +131,17 @@ namespace EbayAccess.Services
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var tempOrders = new EbayGetOrdersResponseParser().Parse( memStream );
-						if( tempOrders != null && tempOrders.Orders != null )
-							orders.AddRange( tempOrders.Orders );
+						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
+						if( getOrdersResponseParsed != null && getOrdersResponseParsed.Orders != null )
+						{
+							orders.AddRange( getOrdersResponseParsed.Orders );
+							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
+						}
 					}
 				} );
 
 				pageNumber++;
-			} while( orders.Count < totalRecords );
+			} while( hasMoreOrders );
 
 			return orders;
 		}
@@ -149,6 +153,7 @@ namespace EbayAccess.Services
 			var totalRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
 			var pageNumber = 1;
+			var hasMoreOrders = false;
 
 			do
 			{
@@ -166,15 +171,17 @@ namespace EbayAccess.Services
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var tempOrders = new EbayGetOrdersResponseParser().Parse( memStream );
-						if( tempOrders != null && tempOrders.Orders != null )
-							orders.AddRange( tempOrders.Orders );
+						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
+						if( getOrdersResponseParsed != null && getOrdersResponseParsed.Orders != null )
+						{
+							orders.AddRange( getOrdersResponseParsed.Orders );
+							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
+						}
 					}
 				} ).ConfigureAwait( false );
 
 				pageNumber++;
-				//} while( ( pagination != null ) && pagination.TotalNumberOfPages > pageNumber );
-			} while( totalRecords > orders.Count() );
+			} while( hasMoreOrders );
 
 			return orders;
 		}

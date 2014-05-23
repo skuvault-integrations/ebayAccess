@@ -6,5 +6,6 @@ namespace EbayAccess.Models.GetOrdersResponse
 	public class GetOrdersResponse : EbayBaseResponse
 	{
 		public List< Order > Orders { get; set; }
+		public bool HasMoreOrders { get; set; }
 	}
 }

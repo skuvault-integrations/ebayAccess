@@ -158,10 +158,10 @@ namespace EbayAccessTests.Integration.Services
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 			var saleItems = this._credentials.GetSaleItems();
-			var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
+			//var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 			//A
 			var orders =
-				await ebayService.GetOrdersAsync( item1.OrderedTime.ToDateTime().AddDays( -1 ), item1.OrderedTime.ToDateTime().AddDays( 1 ) ).ConfigureAwait( false );
+				await ebayService.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) ).ConfigureAwait( false );
 
 			//A
 			orders.Count().Should().Be( 1 );
@@ -173,10 +173,10 @@ namespace EbayAccessTests.Integration.Services
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 			var saleItems = this._credentials.GetSaleItems();
-			var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
+			//var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 
 			//A
-			var orders = ebayService.GetOrders( item1.OrderedTime.ToDateTime().AddDays( -1 ), item1.OrderedTime.ToDateTime().AddDays( 1 ) );
+			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
 
 			//A
 			orders.Count().Should().Be( 1 );
