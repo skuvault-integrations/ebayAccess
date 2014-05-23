@@ -30,6 +30,9 @@ namespace EbayAccess
 
 		Task< IEnumerable< Item > > GetProductsDetailsAsync();
 
-		Task< string > GetUserToken();
+		Task< string > GetUserTokenAsync();
+		Task< string > GetUserSessionIdAsync();
+		string GetAuthUri( string sessionId );
+		Task< string > FetchUserTokenAsync( string sessionId );
 	}
 }
