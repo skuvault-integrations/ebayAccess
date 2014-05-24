@@ -16,7 +16,7 @@ namespace EbayAccess.Services.Parsers
 			{
 				string temp;
 
-				var getOrdersResponse = new GetOrdersResponse ();
+				var getOrdersResponse = new GetOrdersResponse();
 
 				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
 

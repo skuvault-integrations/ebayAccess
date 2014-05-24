@@ -157,7 +157,7 @@ namespace EbayAccessTests.Integration.Services
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			var saleItems = this._credentials.GetSaleItems();
+			//var saleItems = this._credentials.GetSaleItems();
 			//var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 			//A
 			var orders =
@@ -172,7 +172,7 @@ namespace EbayAccessTests.Integration.Services
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			var saleItems = this._credentials.GetSaleItems();
+			//var saleItems = this._credentials.GetSaleItems();
 			//var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 
 			//A

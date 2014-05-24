@@ -14,6 +14,10 @@ namespace EbayAccess.Services.Parsers
 		{
 			try
 			{
+				string temp;
+
+				var getSellerListResponse = new GetSellerListResponse();
+
 				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
 
 				var streamStartPos = stream.Position;
@@ -26,9 +30,11 @@ namespace EbayAccess.Services.Parsers
 
 				var xmlItems = root.Descendants( ns + "Item" );
 
+				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "HasMoreItems" ) ) )
+					getSellerListResponse.HasMoreItems = ( Boolean.Parse( temp ) );
+
 				var orders = xmlItems.Select( x =>
 				{
-					string temp;
 					var res = new Item();
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "AutoPay" ) ) )
@@ -135,7 +141,8 @@ namespace EbayAccess.Services.Parsers
 					return res;
 				} ).ToList();
 
-				return new GetSellerListResponse() { Items = orders };
+				getSellerListResponse.Items = orders;
+				return getSellerListResponse;
 			}
 			catch( Exception ex )
 			{

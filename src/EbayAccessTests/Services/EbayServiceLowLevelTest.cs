@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using EbayAccess.Services;
 using EbayAccessTests.TestEnvironment;
 using FluentAssertions;
-using Moq;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -28,12 +27,12 @@ namespace EbayAccessTests.Services
 				var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 				//A
-				var ordersTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
-				ordersTask.Wait();
-				var orders = ordersTask.Result;
+				var getSellerListTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
+				getSellerListTask.Wait();
+				var items = getSellerListTask.Result;
 
 				//A
-				orders.Count().Should().Be( 5, "because on site there are 5 items started in specified time" );
+				items.Count().Should().Be( 5, "because on site there are 5 items started in specified time" );
 			}
 		}
 
@@ -44,10 +43,11 @@ namespace EbayAccessTests.Services
 			string respstring;
 			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTotalNumberOfEntities0AndHasMoreOrdersFalse.xml", FileMode.Open, FileAccess.Read ) )
 				respstring = new StreamReader( fs ).ReadToEnd();
-			var getResponseStreamAsyncCallCounter = 0; ;
+			var getResponseStreamAsyncCallCounter = 0;
+			;
 
-			var stubWebRequestService = Substitute.For<IWebRequestServices>();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >() ).Returns( Task.FromResult( GetStream( respstring ) )).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >() ).Returns( Task.FromResult( this.GetStream( respstring ) ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -60,25 +60,26 @@ namespace EbayAccessTests.Services
 			getResponseStreamAsyncCallCounter.Should().Be( 1 );
 		}
 
-		[Test]
+		[ Test ]
 		public void GetOrders_EbayServiceRespondContainsTotalNumberOfEntitiesZeroAndHasMoreOrdersFalse_Only1WebRequestServiceCallMaked()
 		{
 			//A
 			string respstring;
-			using (var fs = new FileStream(@".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTotalNumberOfEntities0AndHasMoreOrdersFalse.xml", FileMode.Open, FileAccess.Read))
-				respstring = new StreamReader(fs).ReadToEnd();
-			var getResponseStreamCallCounter = 0; ;
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTotalNumberOfEntities0AndHasMoreOrdersFalse.xml", FileMode.Open, FileAccess.Read ) )
+				respstring = new StreamReader( fs ).ReadToEnd();
+			var getResponseStreamCallCounter = 0;
+			;
 
-			var stubWebRequestService = Substitute.For<IWebRequestServices>();
-			stubWebRequestService.GetResponseStream(Arg.Any<WebRequest>()).Returns(GetStream(respstring)).AndDoes(x => getResponseStreamCallCounter++);
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >() ).Returns( this.GetStream( respstring ) ).AndDoes( x => getResponseStreamCallCounter++ );
 
-			var ebayService = new EbayServiceLowLevel(this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService);
-
-			//A
-			var orders = ebayService.GetOrders(new DateTime(2014, 1, 1, 0, 0, 0), new DateTime(2014, 1, 21, 10, 0, 0));
+			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			getResponseStreamCallCounter.Should().Be(1);
+			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ) );
+
+			//A
+			getResponseStreamCallCounter.Should().Be( 1 );
 		}
 	}
 }

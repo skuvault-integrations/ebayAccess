@@ -74,10 +74,10 @@ namespace EbayAccessTests.Integration
 			//------------ Arrange
 			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigSandbox() );
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
-			var saleItems = this._credentials.GetSaleItems().First( x => String.Compare( x.Descr, TestItemsDescriptions.ExistingFixedPriceItemWithVariationsSku, StringComparison.InvariantCultureIgnoreCase ) == 0 );
+			//var saleItems = this._credentials.GetSaleItems().First( x => String.Compare( x.Descr, TestItemsDescriptions.ExistingFixedPriceItemWithVariationsSku, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 
 			//------------ Act
-			var productsAsyncTask = ebayService.GetProductsAsync( saleItems.CreationTime.ToDateTime().AddMinutes( -1 ), saleItems.CreationTime.ToDateTime().AddMinutes( 1 ) );
+			var productsAsyncTask = ebayService.GetProductsAsync( DateTime.Now.AddDays( -1100 ), DateTime.Now.AddDays( -1000 ) );
 			productsAsyncTask.Wait();
 			var products = productsAsyncTask.Result;
 

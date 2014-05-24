@@ -132,10 +132,11 @@ namespace EbayAccess.Services
 							totalRecords = pagination.TotalNumberOfEntries;
 
 						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
-						if( getOrdersResponseParsed != null && getOrdersResponseParsed.Orders != null )
+						if( getOrdersResponseParsed != null )
 						{
-							orders.AddRange( getOrdersResponseParsed.Orders );
 							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
+							if( getOrdersResponseParsed.Orders != null )
+								orders.AddRange( getOrdersResponseParsed.Orders );
 						}
 					}
 				} );
@@ -173,10 +174,11 @@ namespace EbayAccess.Services
 							totalRecords = pagination.TotalNumberOfEntries;
 
 						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
-						if( getOrdersResponseParsed != null && getOrdersResponseParsed.Orders != null )
+						if( getOrdersResponseParsed != null )
 						{
-							orders.AddRange( getOrdersResponseParsed.Orders );
 							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
+							if( getOrdersResponseParsed.Orders != null )
+								orders.AddRange( getOrdersResponseParsed.Orders );
 						}
 					}
 				} ).ConfigureAwait( false );
@@ -212,12 +214,12 @@ namespace EbayAccess.Services
 
 		public IEnumerable< Item > GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
 		{
-			var orders = new List< Item >();
+			var items = new List< Item >();
 
 			var totalRecords = 0;
-			var alreadyReadRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
 			var pageNumber = 1;
+			var hasMoreItems = false;
 			do
 			{
 				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
@@ -235,20 +237,18 @@ namespace EbayAccess.Services
 							totalRecords = pagination.TotalNumberOfEntries;
 
 						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
-						if( getSellerListResponse != null && getSellerListResponse.Items != null )
+						if( getSellerListResponse != null )
 						{
-							orders.AddRange( getSellerListResponse.Items );
-							alreadyReadRecords += getSellerListResponse.Items.Count;
+							hasMoreItems = getSellerListResponse.HasMoreItems;
+							if( getSellerListResponse.Items != null )
+								items.AddRange( getSellerListResponse.Items );
 						}
 					}
 				} );
-
 				pageNumber++;
+			} while( hasMoreItems );
 
-			//TODO: rid if this,use instead HasModeXXX like in  GetOrders 
-			} while( alreadyReadRecords < totalRecords );
-
-			return orders;
+			return items;
 		}
 
 		public async Task< IEnumerable< Item > > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
@@ -258,6 +258,7 @@ namespace EbayAccess.Services
 			var totalRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
 			var pageNumber = 1;
+			var hasMoreItems = false;
 			do
 			{
 				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
@@ -275,14 +276,17 @@ namespace EbayAccess.Services
 							totalRecords = pagination.TotalNumberOfEntries;
 
 						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
-						if( getSellerListResponse != null && getSellerListResponse.Items != null )
-							items.AddRange( getSellerListResponse.Items );
+						if( getSellerListResponse != null )
+						{
+							hasMoreItems = getSellerListResponse.HasMoreItems;
+							if( getSellerListResponse.Items != null )
+								items.AddRange( getSellerListResponse.Items );
+						}
 					}
 				} ).ConfigureAwait( false );
 
 				pageNumber++;
-			//TODO: rid if this,use instead HasModeXXX like in  GetOrders 
-			} while( items.Count < totalRecords );
+			} while( hasMoreItems );
 
 			return items;
 		}
