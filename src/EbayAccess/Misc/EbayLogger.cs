@@ -6,7 +6,7 @@ namespace EbayAccess.Misc
 	{
 		public static ILogger Log()
 		{
-			return NetcoLogger.GetLogger("EbayLogger");
+			return NetcoLogger.GetLogger( "EbayLogger" );
 		}
 	}
 }

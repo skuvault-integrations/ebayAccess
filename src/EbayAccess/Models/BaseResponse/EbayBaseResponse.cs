@@ -1,6 +1,5 @@
 ﻿using System;
 using EbayAccess.Misc;
-using Netco.Logging;
 
 namespace EbayAccess.Models.BaseResponse
 {
@@ -25,7 +24,7 @@ namespace EbayAccess.Models.BaseResponse
 			set
 			{
 				if( value != null )
-					EbayLogger.Log().Error("[ebay] An error occured in response: code={0}, message={1}", value.ErrorCode, value.LongMessage);
+					EbayLogger.Log().Error( "[ebay] An error occured in response: code={0}, message={1}", value.ErrorCode, value.LongMessage );
 				this._error = value;
 			}
 		}

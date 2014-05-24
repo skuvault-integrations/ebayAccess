@@ -76,8 +76,8 @@ namespace EbayAccessTests
 
 			//A
 			getOrdersResponse.Orders.First().TransactionArray.Count.Should().Be( 2 );
-			getOrdersResponse.Orders.First().TransactionArray.Find(x => x.Item.ItemId == "110141553531").QuantityPurchased.Should().Be(2, "Because in re sponse there is 2 items with this id");
-			getOrdersResponse.Orders.First().TransactionArray.Find(x => x.Item.ItemId == "110137091582").QuantityPurchased.Should().Be(3, "Because in re sponse there is 2 items with this id");
+			getOrdersResponse.Orders.First().TransactionArray.Find( x => x.Item.ItemId == "110141553531" ).QuantityPurchased.Should().Be( 2, "Because in re sponse there is 2 items with this id" );
+			getOrdersResponse.Orders.First().TransactionArray.Find( x => x.Item.ItemId == "110137091582" ).QuantityPurchased.Should().Be( 3, "Because in re sponse there is 2 items with this id" );
 		}
 
 		[ Test ]
@@ -106,7 +106,7 @@ namespace EbayAccessTests
 
 			//A
 			orders.Orders.First().TransactionArray.Count.Should().Be( 2 );
-			orders.Orders.First().Total.Should().Be(7.77m);
+			orders.Orders.First().Total.Should().Be( 7.77m );
 		}
 
 		[ Test ]
