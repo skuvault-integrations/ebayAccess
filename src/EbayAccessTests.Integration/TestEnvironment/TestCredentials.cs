@@ -10,7 +10,6 @@ namespace EbayAccessTests.Integration.TestEnvironment
 	{
 		private readonly FlatUserCredentialsCsvLine _flatUserCredentialsCsvLine;
 		private readonly FlatDevCredentialCsvLine _flatDevCredentialCsvLine;
-		private readonly List< FlatSaleItemsCsvLine > _flatSaleItemsCsvLines;
 		private readonly FlatRuNameCsvLine _ruNameCsvLines;
 
 		public TestCredentials( string credentialsFilePath, string devCredentialsFilePath, string saleItemsIdsFilePath, string runameFilePath )
@@ -18,7 +17,6 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			var cc = new CsvContext();
 			this._flatUserCredentialsCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatUserCredentialsCsvLine >( credentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 			this._flatDevCredentialCsvLine = Enumerable.FirstOrDefault( cc.Read< FlatDevCredentialCsvLine >( devCredentialsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
-			this._flatSaleItemsCsvLines = cc.Read< FlatSaleItemsCsvLine >( saleItemsIdsFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ).ToList();
 			this._ruNameCsvLines = Enumerable.FirstOrDefault( cc.Read< FlatRuNameCsvLine >( runameFilePath, new CsvFileDescription { FirstLineHasColumnNames = true } ) );
 		}
 
@@ -35,16 +33,6 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		public EbayConfig GetEbayConfigProduction()
 		{
 			return new EbayConfig( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName, this._ruNameCsvLines.RuName );
-		}
-
-		public IEnumerable< long > GetSaleItemsIds()
-		{
-			return this._flatSaleItemsCsvLines.Select( x => long.Parse( x.Id ) ).ToList();
-		}
-
-		public IEnumerable< FlatSaleItemsCsvLine > GetSaleItems()
-		{
-			return this._flatSaleItemsCsvLines;
 		}
 
 		public string GetRuName()
@@ -80,29 +68,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			[ CsvColumn( Name = "CertName", FieldIndex = 3 ) ]
 			public string CertName { get; set; }
 		}
-
-		public class FlatSaleItemsCsvLine
-		{
-			public FlatSaleItemsCsvLine()
-			{
-			}
-
-			[ CsvColumn( Name = "Id", FieldIndex = 1 ) ]
-			public string Id { get; set; }
-
-			[ CsvColumn( Name = "Sku", FieldIndex = 2 ) ]
-			public string Sku { get; set; }
-
-			[ CsvColumn( Name = "Descr", FieldIndex = 3 ) ]
-			public string Descr { get; set; }
-
-			[ CsvColumn( Name = "CreationTime", FieldIndex = 4 ) ]
-			public string CreationTime { get; set; }
-
-			[ CsvColumn( Name = "OrderedTime", FieldIndex = 5 ) ]
-			public string OrderedTime { get; set; }
-		}
-
+		
 		internal class FlatRuNameCsvLine
 		{
 			public FlatRuNameCsvLine()

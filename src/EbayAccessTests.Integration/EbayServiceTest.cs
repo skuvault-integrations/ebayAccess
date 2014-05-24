@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using EbayAccess;
-using EbayAccess.Misc;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
@@ -19,14 +17,12 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			var saleItems = this._credentials.GetSaleItems();
-			var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 
 			//------------ Act
-			var orders = service.GetOrders( item1.OrderedTime.ToDateTime().AddDays( -1 ), item1.OrderedTime.ToDateTime().AddDays( 1 ) );
+			var orders = service.GetOrders( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
 
 			//------------ Assert
-			orders.Count().Should().Be( 1, "because on site there is 1 orders" );
+			orders.Count().Should().BeGreaterThan( 1, "because on site there are orders" );
 		}
 
 		[ Test ]
@@ -34,15 +30,13 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			var saleItems = this._credentials.GetSaleItems();
-			var item1 = saleItems.First( x => String.Compare( x.Descr, TestItemsDescriptions.AnyExistingNonVariationItem, StringComparison.InvariantCultureIgnoreCase ) == 0 );
 
 			//------------ Act
-			var ordersTask = service.GetOrdersAsync( item1.OrderedTime.ToDateTime().AddDays( -1 ), item1.OrderedTime.ToDateTime().AddDays( 1 ) );
+			var ordersTask = service.GetOrdersAsync( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
 			ordersTask.Wait();
 
 			//------------ Assert
-			ordersTask.Result.Count().Should().Be( 1, "because on site there is 1 orders" );
+			ordersTask.Result.Count().Should().BeGreaterThan( 0, "because on site there are orders" );
 		}
 		#endregion
 
@@ -52,38 +46,57 @@ namespace EbayAccessTests.Integration
 		{
 			//------------ Arrange
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			const int qty1 = 3;
-			const int qty2 = 4;
-			var saleItemsIds = this._credentials.GetSaleItems();
-			var item1 = saleItemsIds.First( x => String.Compare( x.Descr, TestItemsDescriptions.ExistingFixedPriceItemWithVariationsSku, StringComparison.InvariantCultureIgnoreCase ) == 0 );
-			var item2 = saleItemsIds.First( x => String.Compare( x.Descr, TestItemsDescriptions.ExistingFixedPriceItemWithVariationsSku, StringComparison.InvariantCultureIgnoreCase ) == 0 && item1.Sku != x.Sku );
 
 			//------------ Act
-			var inventoryStat1Task = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			var updateProductsAsyncTask1 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
 			{
-				new InventoryStatusRequest { ItemId = item1.Id.ToLong(), Sku = item1.Sku, Quantity = qty1 },
-				new InventoryStatusRequest { ItemId = item2.Id.ToLong(), Sku = item2.Sku, Quantity = qty1 }
+				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation1.Quantity + this.QtyUpdateFor },
+				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation2.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation2.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation2.Quantity + this.QtyUpdateFor },
 			} );
-			inventoryStat1Task.Wait();
+			updateProductsAsyncTask1.Wait();
 
-			var inventoryStat2Task = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			var updateProductsAsyncTask2 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
 			{
-				new InventoryStatusRequest { ItemId = item1.Id.ToLong(), Sku = item1.Sku, Quantity = qty2 },
-				new InventoryStatusRequest { ItemId = item2.Id.ToLong(), Sku = item2.Sku, Quantity = qty2 }
+				ExistingProducts.FixedPrice1WithVariation1,
+				ExistingProducts.FixedPrice1WithVariation2,
 			} );
-			inventoryStat2Task.Wait();
+			updateProductsAsyncTask2.Wait();
 
 			//------------ Assert
-			( inventoryStat2Task.Result.ToList()[ 0 ].Quantity - inventoryStat1Task.Result.ToList()[ 0 ].Quantity ).Should()
-				.Be( qty2 - qty1, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", qty1, qty2 ) );
-			( inventoryStat2Task.Result.ToList()[ 1 ].Quantity - inventoryStat1Task.Result.ToList()[ 1 ].Quantity ).Should()
-				.Be( qty2 - qty1, String.Format( "because we set 1 qty {0}, then set 2 qty {1}", qty1, qty2 ) );
+			( updateProductsAsyncTask1.Result.ToList().First( x => x.ItemId == ExistingProducts.FixedPrice1WithVariation1.ItemId && x.Sku == ExistingProducts.FixedPrice1WithVariation1.Sku ).Quantity - updateProductsAsyncTask2.Result.ToList().First( x => x.ItemId == ExistingProducts.FixedPrice1WithVariation1.ItemId && x.Sku == ExistingProducts.FixedPrice1WithVariation1.Sku ).Quantity ).Should().Be( this.QtyUpdateFor );
+			( updateProductsAsyncTask1.Result.ToList().First( x => x.ItemId == ExistingProducts.FixedPrice1WithVariation2.ItemId && x.Sku == ExistingProducts.FixedPrice1WithVariation2.Sku ).Quantity - updateProductsAsyncTask2.Result.ToList().First( x => x.ItemId == ExistingProducts.FixedPrice1WithVariation2.ItemId && x.Sku == ExistingProducts.FixedPrice1WithVariation2.Sku ).Quantity ).Should().Be( this.QtyUpdateFor );
+		}
+
+		[ Test ]
+		public void UpdateProductsAsync_EbayServiceWithFixedPriceProductsWithoutVariations_ProductsUpdated()
+		{
+			//------------ Arrange
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+			//------------ Act
+			var updateProductsAsyncTask1 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			{
+				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice1WithoutVariations.Quantity + this.QtyUpdateFor },
+				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice2WithoutVariations.Quantity + this.QtyUpdateFor },
+			} );
+			updateProductsAsyncTask1.Wait();
+
+			var updateProductsAsyncTask2 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			{
+				ExistingProducts.FixedPrice1WithoutVariations,
+				ExistingProducts.FixedPrice2WithoutVariations,
+			} );
+			updateProductsAsyncTask2.Wait();
+
+			//------------ Assert
+			( updateProductsAsyncTask1.Result.ToList().First( x => x.ItemId == ExistingProducts.FixedPrice1WithoutVariations.ItemId ).Quantity - updateProductsAsyncTask2.Result.ToList().First( x => x.ItemId == ExistingProducts.FixedPrice1WithoutVariations.ItemId ).Quantity ).Should().Be( this.QtyUpdateFor );
+			( updateProductsAsyncTask1.Result.ToList().First( x => x.ItemId == ExistingProducts.FixedPrice2WithoutVariations.ItemId ).Quantity - updateProductsAsyncTask2.Result.ToList().First( x => x.ItemId == ExistingProducts.FixedPrice2WithoutVariations.ItemId ).Quantity ).Should().Be( this.QtyUpdateFor );
 		}
 		#endregion
 
 		#region GetProductsDetails
 		[ Test ]
-		public void GetProductsDetails()
+		public void GetProductsDetailsAsync_ServiceWithExistingProducts_HookupProducts()
 		{
 			//------------ Arrange
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );

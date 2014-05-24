@@ -429,8 +429,16 @@ namespace EbayAccess.Services
 					productToUpdate => ActionPolicies.Submit.Get( async () => await this.ReviseInventoryStatusAsync( productToUpdate ).ConfigureAwait( false ) ) )
 					.Where( productUpdated => productUpdated != null )
 					.ToList();
-
 			return await Task.WhenAll( reviseInventoryTasks ).ConfigureAwait( false );
+
+			//var reviseInventoryStatussesTask = new List< Task<InventoryStatusResponse> >();
+			//foreach (var inventoryStatus in inventoryStatuses)
+			//{
+			//	var tesk = ActionPolicies.SubmitAsync.Get( async () => await this.ReviseInventoryStatusAsync( inventoryStatus ).ConfigureAwait( false ) );
+			//	reviseInventoryStatussesTask.Add( tesk );
+			//}
+
+			//return await Task.WhenAll(reviseInventoryStatussesTask).ConfigureAwait(false);
 		}
 		#endregion
 
