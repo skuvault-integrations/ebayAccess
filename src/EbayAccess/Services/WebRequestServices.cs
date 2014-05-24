@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using EbayAccess.Misc;
 using Netco.Logging;
 
 namespace EbayAccess.Services
@@ -63,22 +64,22 @@ namespace EbayAccess.Services
 		#region logging
 		private void LogTraceCreateServicePostRequestAsyncStarted( Dictionary< string, string > rawHeaders, string body )
 		{
-			this.Log().Trace( "[ebay] Create post request async started with headers:{0} body:{1}.", rawHeaders.Aggregate( "", ( ac, item ) => ac + string.Format( "({0}:{1})", item.Key, item.Value ) ), body );
+			EbayLogger.Log().Trace("[ebay] Create post request async started with headers:{0} body:{1}.", rawHeaders.Aggregate("", (ac, item) => ac + string.Format("({0}:{1})", item.Key, item.Value)), body);
 		}
 
 		private void LogTraceCreateServicePostRequestAsyncEnded( Dictionary< string, string > rawHeaders, string body )
 		{
-			this.Log().Trace( "[ebay] Create post request async ended with headers:{0} body:{1}.", rawHeaders.Aggregate( "", ( ac, item ) => ac + string.Format( "({0}:{1})", item.Key, item.Value ) ), body );
+			EbayLogger.Log().Trace("[ebay] Create post request async ended with headers:{0} body:{1}.", rawHeaders.Aggregate("", (ac, item) => ac + string.Format("({0}:{1})", item.Key, item.Value)), body);
 		}
 
 		private void LogTraceCreateServicePostRequestAsyncException( Dictionary< string, string > rawHeaders, string body )
 		{
-			this.Log().Trace( "[ebay] Create post request async throw an exception: headers{0} body:{1}.", rawHeaders.Aggregate( "", ( ac, item ) => ac + string.Format( "({0}:{1})", item.Key, item.Value ) ), body );
+			EbayLogger.Log().Trace("[ebay] Create post request async throw an exception: headers{0} body:{1}.", rawHeaders.Aggregate("", (ac, item) => ac + string.Format("({0}:{1})", item.Key, item.Value)), body);
 		}
 
 		private void LogTraceGetResponseStarted( WebRequest webRequest )
 		{
-			this.Log().Trace( "[ebay] Get response url:{0} started.", webRequest.RequestUri );
+			EbayLogger.Log().Trace("[ebay] Get response url:{0} started.", webRequest.RequestUri);
 		}
 
 		private void LogTraceGetResponseEnded( WebRequest webRequest, Stream webResponseStream )
@@ -91,13 +92,13 @@ namespace EbayAccess.Services
 				streamCopy.Position = 0;
 
 				var responseStr = new StreamReader( streamCopy ).ReadToEnd();
-				this.Log().Trace( "[ebay] Get response url:{0} ended with {1}.", webRequest.RequestUri, responseStr );
+				EbayLogger.Log().Trace("[ebay] Get response url:{0} ended with {1}.", webRequest.RequestUri, responseStr);
 			}
 		}
 
 		private void LogTraceGetResponseAsyncStarted( WebRequest webRequest )
 		{
-			this.Log().Trace( "[ebay] Get response async url:{0} started.", webRequest.RequestUri );
+			EbayLogger.Log().Trace("[ebay] Get response async url:{0} started.", webRequest.RequestUri);
 		}
 
 		private void LogTraceGetResponseAsyncEnded( WebRequest webRequest, Stream webResponseStream )
@@ -110,18 +111,18 @@ namespace EbayAccess.Services
 				streamCopy.Position = 0;
 
 				var responseStr = new StreamReader( streamCopy ).ReadToEnd();
-				this.Log().Trace( "[ebay] Get response async url:{0} ended with {1}.", webRequest.RequestUri, responseStr );
+				EbayLogger.Log().Trace("[ebay] Get response async url:{0} ended with {1}.", webRequest.RequestUri, responseStr);
 			}
 		}
 
 		private void LogTraceGetResponseException( WebRequest webRequest )
 		{
-			this.Log().Trace( "[ebay] Get response url:{0} throw an exception .", webRequest.RequestUri );
+			EbayLogger.Log().Trace("[ebay] Get response url:{0} throw an exception .", webRequest.RequestUri);
 		}
 
 		private void LogTraceGetResponseAsyncException( WebRequest webRequest )
 		{
-			this.Log().Trace( "[ebay] Get response async url:{0} throw an exception .", webRequest.RequestUri );
+			EbayLogger.Log().Trace("[ebay] Get response async url:{0} throw an exception .", webRequest.RequestUri);
 		}
 		#endregion
 
