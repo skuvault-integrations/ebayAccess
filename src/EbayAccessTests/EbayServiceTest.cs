@@ -47,7 +47,7 @@ namespace EbayAccessTests
 				new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
 
 			//A
-			orders.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );
+			orders.Items.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );
 		}
 
 		[ Test ]

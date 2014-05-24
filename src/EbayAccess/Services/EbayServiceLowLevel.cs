@@ -133,11 +133,10 @@ namespace EbayAccess.Services
 							totalRecords = pagination.TotalNumberOfEntries;
 
 						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
-						
 
 						if( getOrdersResponseParsed != null )
 						{
-							if (getOrdersResponseParsed.Error != null)
+							if( getOrdersResponseParsed.Error != null )
 							{
 								orders.Error = getOrdersResponseParsed.Error;
 								return;
@@ -145,7 +144,7 @@ namespace EbayAccess.Services
 
 							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
 							if( getOrdersResponseParsed.Orders != null )
-								orders.Orders.AddRange(getOrdersResponseParsed.Orders);
+								orders.Orders.AddRange( getOrdersResponseParsed.Orders );
 						}
 					}
 				} );
@@ -156,7 +155,7 @@ namespace EbayAccess.Services
 			return orders;
 		}
 
-		public async Task<GetOrdersResponse> GetOrdersAsync(DateTime createTimeFrom, DateTime createTimeTo)
+		public async Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo )
 		{
 			var orders = new GetOrdersResponse();
 
@@ -184,14 +183,14 @@ namespace EbayAccess.Services
 						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
 						if( getOrdersResponseParsed != null )
 						{
-							if (getOrdersResponseParsed.Error != null)
+							if( getOrdersResponseParsed.Error != null )
 							{
 								orders.Error = getOrdersResponseParsed.Error;
 								return;
 							}
 							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
-							if (getOrdersResponseParsed.Orders != null)
-								orders.Orders.AddRange(getOrdersResponseParsed.Orders);
+							if( getOrdersResponseParsed.Orders != null )
+								orders.Orders.AddRange( getOrdersResponseParsed.Orders );
 						}
 					}
 				} ).ConfigureAwait( false );
@@ -225,9 +224,9 @@ namespace EbayAccess.Services
 				timeRangeEnum );
 		}
 
-		public IEnumerable< Item > GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
 		{
-			var items = new List< Item >();
+			var items = new GetSellerListResponse();
 
 			var totalRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
@@ -252,9 +251,14 @@ namespace EbayAccess.Services
 						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( getSellerListResponse != null )
 						{
+							if( getSellerListResponse.Error != null )
+							{
+								items.Error = getSellerListResponse.Error;
+								return;
+							}
 							hasMoreItems = getSellerListResponse.HasMoreItems;
 							if( getSellerListResponse.Items != null )
-								items.AddRange( getSellerListResponse.Items );
+								items.Items.AddRange( getSellerListResponse.Items );
 						}
 					}
 				} );
@@ -264,9 +268,9 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public async Task< IEnumerable< Item > > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
 		{
-			var items = new List< Item >();
+			var items = new GetSellerListResponse();
 
 			var totalRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
@@ -291,9 +295,14 @@ namespace EbayAccess.Services
 						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( getSellerListResponse != null )
 						{
+							if( getSellerListResponse.Error != null )
+							{
+								items.Error = getSellerListResponse.Error;
+								return;
+							}
 							hasMoreItems = getSellerListResponse.HasMoreItems;
 							if( getSellerListResponse.Items != null )
-								items.AddRange( getSellerListResponse.Items );
+								items.Items.AddRange( getSellerListResponse.Items );
 						}
 					}
 				} ).ConfigureAwait( false );

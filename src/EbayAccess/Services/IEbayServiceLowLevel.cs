@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.GetSellerListResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
@@ -10,17 +11,17 @@ namespace EbayAccess.Services
 {
 	public interface IEbayServiceLowLevel
 	{
-		GetOrdersResponse GetOrders(DateTime createTimeFrom, DateTime createTimeTo);
+		GetOrdersResponse GetOrders( DateTime createTimeFrom, DateTime createTimeTo );
 
-		Task<GetOrdersResponse> GetOrdersAsync(DateTime createTimeFrom, DateTime createTimeTo);
+		Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo );
 
 		InventoryStatusResponse ReviseInventoryStatus( InventoryStatusRequest inventoryStatusResponse );
 
 		Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusResponse );
 
-		IEnumerable< Item > GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
+		GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
 
-		Task< IEnumerable< Item > > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
+		Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
 
 		Item GetItem( string id );
 

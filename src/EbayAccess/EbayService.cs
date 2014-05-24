@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.GetSellerListResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services;
@@ -78,7 +79,7 @@ namespace EbayAccess
 			var utcNow = DateTime.UtcNow;
 			var createTimeFrom = new DateTime( utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, utcNow.Minute + 1, utcNow.Second, utcNow.Kind );
 			var createTimeTo = new DateTime( createTimeFrom.Year, createTimeFrom.Month + 1, createTimeFrom.Day, createTimeFrom.Hour, createTimeFrom.Minute, createTimeFrom.Second, createTimeFrom.Kind );
-			return this.EbayServiceLowLevel.GetSellerList( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime );
+			return this.EbayServiceLowLevel.GetSellerList( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime ).Items;
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsAsync()
@@ -93,33 +94,52 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
 		{
+			var products = new List< Item >();
+
 			var quartalsStartList = GetListOfTimeRanges( createTimeFromStart, createTimeFromTo ).ToList();
 
-			var getSellerListAsyncTasks = new List< Task< IEnumerable< Item > > >();
-			for( var i = 0; i < quartalsStartList.Count - 1; i++ )
+			var getSellerListAsyncTasks = new List< Task< GetSellerListResponse > >();
+
+			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ).ConfigureAwait( false );
+			if( sellerListAsync.Error != null )
+				return products;
+
+			products.AddRange( sellerListAsync.Items );
+
+			for( var i = 1; i < quartalsStartList.Count - 1; i++ )
 			{
 				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ) );
 			}
+
 			await Task.WhenAll( getSellerListAsyncTasks ).ConfigureAwait( false );
 
-			var products = getSellerListAsyncTasks.SelectMany( task => task.Result ).ToList();
+			products.AddRange( getSellerListAsyncTasks.SelectMany( task => task.Result.Items ).ToList() );
 
 			return products;
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
 		{
+			var products = new List< Item >();
+
 			var quartalsStartList = GetListOfTimeRanges( createTimeFromStart, createTimeFromTo ).ToList();
 
-			var getSellerListAsyncTasks = new List< Task< IEnumerable< Item > > >();
-			for( var i = 0; i < quartalsStartList.Count - 1; i++ )
+			var getSellerListAsyncTasks = new List< Task< GetSellerListResponse > >();
+
+			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ).ConfigureAwait( false );
+			if( sellerListAsync.Error != null )
+				return products;
+
+			products.AddRange( sellerListAsync.Items );
+
+			for( var i = 1; i < quartalsStartList.Count - 1; i++ )
 			{
 				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ) );
 			}
 
 			await Task.WhenAll( getSellerListAsyncTasks ).ConfigureAwait( false );
 
-			var products = getSellerListAsyncTasks.SelectMany( task => task.Result ).ToList();
+			products.AddRange( getSellerListAsyncTasks.SelectMany( task => task.Result.Items ).ToList() );
 
 			var productsDetails = await this.GetItemsAsync( products ).ConfigureAwait( false );
 

@@ -32,7 +32,7 @@ namespace EbayAccessTests.Services
 				var items = getSellerListTask.Result;
 
 				//A
-				items.Count().Should().Be( 5, "because on site there are 5 items started in specified time" );
+				items.Items.Count().Should().Be( 5, "because on site there are 5 items started in specified time" );
 			}
 		}
 
