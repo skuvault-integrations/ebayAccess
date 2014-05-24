@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using EbayAccess;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.TestEnvironment;
@@ -143,7 +144,7 @@ namespace EbayAccessTests
 		}
 
 		[ Test ]
-		public async Task EbayServiceReturnsErrorOnReviseInventoriesStatusReqest_InvokeReviseInventoriesStatusAsync_HaveErrorMessageFromEbayServerInResult()
+		public async Task InvokeReviseInventoriesStatusAsync_EbayServiceReturnsErrorOnReviseInventoriesStatusReqest_HaveErrorMessageFromEbayServerInResult()
 		{
 			//A
 			const int itemsQty1 = 100;
@@ -173,6 +174,28 @@ namespace EbayAccessTests
 
 			//A
 			inventoryStat[ 0 ].Error.ErrorCode.Should().NotBeNullOrWhiteSpace();
+		}
+		
+		[Test]
+		public void GetProductsDetailsAsync_EbayServiceReturnError_Only1CallExecuted(){
+			//A
+			string respstring;
+			using( var fs = new FileStream( @".\Files\AuthTokenIsInvalidResponse.xml", FileMode.Open, FileAccess.Read ) )
+				respstring = new StreamReader( fs ).ReadToEnd();
+			var getResponseStreamAsyncCallCounter = 0;
+
+			var stubWebRequestService = Substitute.For<IWebRequestServices>();
+			stubWebRequestService.GetResponseStreamAsync(Arg.Any<WebRequest>()).Returns(Task.FromResult(this.GetStream(respstring))).AndDoes(x => getResponseStreamAsyncCallCounter++);
+
+			var ebayService = new EbayService(this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService);
+
+			//A
+			var ordersTask = ebayService.GetProductsDetailsAsync();
+			ordersTask.Wait();
+			var orders = ordersTask.Result;
+
+			//A
+			getResponseStreamAsyncCallCounter.Should().Be(1);
 		}
 	}
 }

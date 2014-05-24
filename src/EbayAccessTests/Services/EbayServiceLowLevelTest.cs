@@ -44,7 +44,6 @@ namespace EbayAccessTests.Services
 			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTotalNumberOfEntities0AndHasMoreOrdersFalse.xml", FileMode.Open, FileAccess.Read ) )
 				respstring = new StreamReader( fs ).ReadToEnd();
 			var getResponseStreamAsyncCallCounter = 0;
-			;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >() ).Returns( Task.FromResult( this.GetStream( respstring ) ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
