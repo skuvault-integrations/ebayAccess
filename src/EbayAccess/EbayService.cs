@@ -50,16 +50,25 @@ namespace EbayAccess
 		#region GetOrders
 		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo )
 		{
-			var orders = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo );
-			this.PopulateOrdersItemsDetails( orders );
-			return orders;
+			var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo );
+
+			if( getOrdersResponse.Error != null )
+				return new List< Order >();
+
+			this.PopulateOrdersItemsDetails( getOrdersResponse.Orders );
+
+			return getOrdersResponse.Orders;
 		}
 
 		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
 		{
-			var orders = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo ).ConfigureAwait( false );
-			this.PopulateOrdersItemsDetails( orders );
-			return orders;
+			var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo ).ConfigureAwait( false );
+
+			if( getOrdersResponse.Error != null )
+				return new List< Order >();
+
+			this.PopulateOrdersItemsDetails( getOrdersResponse.Orders );
+			return getOrdersResponse.Orders;
 		}
 		#endregion
 

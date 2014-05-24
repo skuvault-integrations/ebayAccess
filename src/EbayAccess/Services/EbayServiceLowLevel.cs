@@ -9,6 +9,7 @@ using EbayAccess.Misc;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.GetSellerListResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services.Parsers;
@@ -106,9 +107,9 @@ namespace EbayAccess.Services
 			};
 		}
 
-		public IEnumerable< Order > GetOrders( DateTime createTimeFrom, DateTime createTimeTo )
+		public GetOrdersResponse GetOrders( DateTime createTimeFrom, DateTime createTimeTo )
 		{
-			var orders = new List< Order >();
+			var orders = new GetOrdersResponse();
 
 			var totalRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
@@ -132,11 +133,19 @@ namespace EbayAccess.Services
 							totalRecords = pagination.TotalNumberOfEntries;
 
 						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
+						
+
 						if( getOrdersResponseParsed != null )
 						{
+							if (getOrdersResponseParsed.Error != null)
+							{
+								orders.Error = getOrdersResponseParsed.Error;
+								return;
+							}
+
 							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
 							if( getOrdersResponseParsed.Orders != null )
-								orders.AddRange( getOrdersResponseParsed.Orders );
+								orders.Orders.AddRange(getOrdersResponseParsed.Orders);
 						}
 					}
 				} );
@@ -147,10 +156,9 @@ namespace EbayAccess.Services
 			return orders;
 		}
 
-		//TODO: return response structure that contains number of orders etc (helpfull for optimization)
-		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo )
+		public async Task<GetOrdersResponse> GetOrdersAsync(DateTime createTimeFrom, DateTime createTimeTo)
 		{
-			var orders = new List< Order >();
+			var orders = new GetOrdersResponse();
 
 			var totalRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
@@ -176,9 +184,14 @@ namespace EbayAccess.Services
 						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
 						if( getOrdersResponseParsed != null )
 						{
+							if (getOrdersResponseParsed.Error != null)
+							{
+								orders.Error = getOrdersResponseParsed.Error;
+								return;
+							}
 							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
-							if( getOrdersResponseParsed.Orders != null )
-								orders.AddRange( getOrdersResponseParsed.Orders );
+							if (getOrdersResponseParsed.Orders != null)
+								orders.Orders.AddRange(getOrdersResponseParsed.Orders);
 						}
 					}
 				} ).ConfigureAwait( false );

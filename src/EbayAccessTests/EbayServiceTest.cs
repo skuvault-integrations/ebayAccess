@@ -71,13 +71,13 @@ namespace EbayAccessTests
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
+			var getOrdersResponse = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
 				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
 
 			//A
-			orders.First().TransactionArray.Count.Should().Be( 2 );
-			orders.First().TransactionArray.Find( x => x.Item.ItemId == "110141553531" ).QuantityPurchased.Should().Be( 2, "Because in re sponse there is 2 items with this id" );
-			orders.First().TransactionArray.Find( x => x.Item.ItemId == "110137091582" ).QuantityPurchased.Should().Be( 3, "Because in re sponse there is 2 items with this id" );
+			getOrdersResponse.Orders.First().TransactionArray.Count.Should().Be( 2 );
+			getOrdersResponse.Orders.First().TransactionArray.Find(x => x.Item.ItemId == "110141553531").QuantityPurchased.Should().Be(2, "Because in re sponse there is 2 items with this id");
+			getOrdersResponse.Orders.First().TransactionArray.Find(x => x.Item.ItemId == "110137091582").QuantityPurchased.Should().Be(3, "Because in re sponse there is 2 items with this id");
 		}
 
 		[ Test ]
@@ -105,8 +105,8 @@ namespace EbayAccessTests
 				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
 
 			//A
-			orders.First().TransactionArray.Count.Should().Be( 2 );
-			orders.First().Total.Should().Be( 7.77m );
+			orders.Orders.First().TransactionArray.Count.Should().Be( 2 );
+			orders.Orders.First().Total.Should().Be(7.77m);
 		}
 
 		[ Test ]
@@ -135,11 +135,11 @@ namespace EbayAccessTests
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
-			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
+			var getOrdersResponse = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
 				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
 
 			//A
-			orders.Count().Should().Be( 2, "because stub gives 2 pages, 1 item per page" );
+			getOrdersResponse.Orders.Count().Should().Be( 2, "because stub gives 2 pages, 1 item per page" );
 		}
 
 		[ Test ]
