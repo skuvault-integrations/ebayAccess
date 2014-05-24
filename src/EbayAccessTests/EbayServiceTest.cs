@@ -20,7 +20,7 @@ namespace EbayAccessTests
 	public class EbayServiceTest : TestBase
 	{
 		[ Test ]
-		public void EbayServiceExistingItemsDevidedIntoMultiplePages_GetItems_HookUpItemsFromAllPages()
+		public void GetSellerList_EbayServiceExistingItemsDevidedIntoMultiplePages_HookUpItemsFromAllPages()
 		{
 			//A
 			var stubCallCounter = 0;
@@ -111,7 +111,7 @@ namespace EbayAccessTests
 		}
 
 		[ Test ]
-		public void EbayServiceExistingOrdersDevidedIntoMultiplePages_GetOrders_HookUpItemsFromAllPages()
+		public void GetOrders_EbayServiceExistingOrdersDevidedIntoMultiplePages_HookUpItemsFromAllPages()
 		{
 			//A
 			var stubCallCounter = 0;
@@ -175,19 +175,20 @@ namespace EbayAccessTests
 			//A
 			inventoryStat[ 0 ].Error.ErrorCode.Should().NotBeNullOrWhiteSpace();
 		}
-		
-		[Test]
-		public void GetProductsDetailsAsync_EbayServiceReturnError_Only1CallExecuted(){
+
+		[ Test ]
+		public void GetProductsDetailsAsync_EbayServiceReturnError_Only1CallExecuted()
+		{
 			//A
 			string respstring;
 			using( var fs = new FileStream( @".\Files\AuthTokenIsInvalidResponse.xml", FileMode.Open, FileAccess.Read ) )
 				respstring = new StreamReader( fs ).ReadToEnd();
 			var getResponseStreamAsyncCallCounter = 0;
 
-			var stubWebRequestService = Substitute.For<IWebRequestServices>();
-			stubWebRequestService.GetResponseStreamAsync(Arg.Any<WebRequest>()).Returns(Task.FromResult(this.GetStream(respstring))).AndDoes(x => getResponseStreamAsyncCallCounter++);
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >() ).Returns( Task.FromResult( this.GetStream( respstring ) ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
-			var ebayService = new EbayService(this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService);
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
 			var ordersTask = ebayService.GetProductsDetailsAsync();
@@ -195,7 +196,7 @@ namespace EbayAccessTests
 			var orders = ordersTask.Result;
 
 			//A
-			getResponseStreamAsyncCallCounter.Should().Be(1);
+			getResponseStreamAsyncCallCounter.Should().Be( 1 );
 		}
 	}
 }
