@@ -319,46 +319,6 @@ namespace EbayAccess.Services
 
 			return items;
 		}
-
-		public async Task< GetSellerListResponse > GetSellerListDetailedAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
-		{
-			var items = new GetSellerListResponse();
-
-			var recordsPerPage = this._itemsPerPage;
-			var pageNumber = 1;
-			var hasMoreItems = false;
-			do
-			{
-				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber, GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations );
-
-				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
-
-				await ActionPolicies.GetAsync.Do( async () =>
-				{
-					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
-
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
-					{
-						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
-						if( getSellerListResponse != null )
-						{
-							if( getSellerListResponse.Error != null )
-							{
-								items.Error = getSellerListResponse.Error;
-								return;
-							}
-							hasMoreItems = getSellerListResponse.HasMoreItems;
-							if( getSellerListResponse.Items != null )
-								items.Items.AddRange( getSellerListResponse.Items );
-						}
-					}
-				} ).ConfigureAwait( false );
-
-				pageNumber++;
-			} while( hasMoreItems );
-
-			return items;
-		}
 		#endregion
 
 		#region GetItem

@@ -23,8 +23,6 @@ namespace EbayAccess.Services
 
 		Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, GetSellerListDetailsLevelEnum detailsLevel );
 
-		Task< GetSellerListResponse > GetSellerListDetailedAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
-
 		Item GetItem( string id );
 
 		Task< Item > GetItemAsync( string id );
