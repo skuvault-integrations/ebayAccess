@@ -74,17 +74,6 @@ namespace EbayAccess
 		#endregion
 
 		#region GetProducts
-		[ Obsolete ]
-		public IEnumerable< Item > GetActiveProducts()
-		{
-			var sellerListAsync = this.EbayServiceLowLevel.GetSellerList( DateTime.UtcNow, DateTime.UtcNow.AddDays( 120 ), TimeRangeEnum.EndTime, GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations );
-
-			if( sellerListAsync.Error != null )
-				return new List< Item >();
-
-			return sellerListAsync.Items;
-		}
-
 		public async Task< IEnumerable< Item > > GetActiveProductsAsync()
 		{
 			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( 120 ), TimeRangeEnum.EndTime, GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations ).ConfigureAwait( false );

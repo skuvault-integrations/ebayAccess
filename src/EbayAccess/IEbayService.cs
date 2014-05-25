@@ -32,9 +32,6 @@ namespace EbayAccess
 
 		Task< string > FetchUserTokenAsync( string sessionId );
 
-		[ Obsolete ]
-		IEnumerable< Item > GetActiveProducts();
-
 		Task< IEnumerable< Item > > GetActiveProductsAsync();
 	}
 }
