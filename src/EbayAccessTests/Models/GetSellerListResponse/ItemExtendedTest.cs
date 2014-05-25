@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.GetSellerListResponse;
 using FluentAssertions;
 using NUnit.Framework;
-using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccessTests.Models.GetSellerListResponse
 {
