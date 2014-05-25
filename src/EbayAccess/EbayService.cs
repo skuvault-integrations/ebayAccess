@@ -100,7 +100,7 @@ namespace EbayAccess
 
 			var getSellerListAsyncTasks = new List< Task< GetSellerListResponse > >();
 
-			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ).ConfigureAwait( false );
+			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default ).ConfigureAwait( false );
 			if( sellerListAsync.Error != null )
 				return products;
 
@@ -108,7 +108,7 @@ namespace EbayAccess
 
 			for( var i = 1; i < quartalsStartList.Count - 1; i++ )
 			{
-				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ) );
+				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default ) );
 			}
 
 			await Task.WhenAll( getSellerListAsyncTasks ).ConfigureAwait( false );
@@ -126,7 +126,7 @@ namespace EbayAccess
 
 			var getSellerListAsyncTasks = new List< Task< GetSellerListResponse > >();
 
-			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ).ConfigureAwait( false );
+			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default ).ConfigureAwait( false );
 			if( sellerListAsync.Error != null )
 				return products;
 
@@ -134,7 +134,7 @@ namespace EbayAccess
 
 			for( var i = 1; i < quartalsStartList.Count - 1; i++ )
 			{
-				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime ) );
+				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default ) );
 			}
 
 			await Task.WhenAll( getSellerListAsyncTasks ).ConfigureAwait( false );

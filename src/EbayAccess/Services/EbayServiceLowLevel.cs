@@ -280,17 +280,16 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, GetSellerListDetailsLevelEnum detailsLevel )
 		{
 			var items = new GetSellerListResponse();
 
-			var totalRecords = 0;
 			var recordsPerPage = this._itemsPerPage;
 			var pageNumber = 1;
 			var hasMoreItems = false;
 			do
 			{
-				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber, GetSellerListDetailsLevelEnum.Default );
+				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber, detailsLevel );
 
 				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
@@ -300,10 +299,6 @@ namespace EbayAccess.Services
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
 					{
-						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
-						if( pagination != null )
-							totalRecords = pagination.TotalNumberOfEntries;
-
 						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( getSellerListResponse != null )
 						{
