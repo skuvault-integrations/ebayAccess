@@ -107,7 +107,7 @@ namespace EbayAccessTests.Models.GetSellerListResponse
 			};
 
 			//------------ Act
-			var items = item.DevideByVariations();
+			var items = item.SplitByVariations();
 
 			//------------ Assert
 			items.Count().Should().Be( item.Variations.Count );

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,7 @@ namespace EbayAccess.Services.Parsers
 
 		public override GetSellerListResponse Parse( Stream stream, bool keepStremPosition = true )
 		{
-			return parseDelegate( stream, keepStremPosition );
+			return this.parseDelegate( stream, keepStremPosition );
 		}
 
 		public GetSellerListResponse ParseDefault( Stream stream, bool keepStremPosition = true )
@@ -203,11 +204,16 @@ namespace EbayAccess.Services.Parsers
 				{
 					var res = new Item();
 
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "BuyItNowPrice" ) ) )
+					{
+						res.BuyItNowPrice = temp.ToDecimalDotOrComaSeparated();
+						res.BuyItNowPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "BuyItNowPrice" );
+					}
+
 					res.ItemId = GetElementValue( x, ns, "ItemID" );
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "Quantity" ) ) )
 						res.Quantity = long.Parse( temp );
-
 
 					res.Title = GetElementValue( x, ns, "Title" );
 
@@ -221,24 +227,27 @@ namespace EbayAccess.Services.Parsers
 						res.SellingStatus.CurrentPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "CurrentPrice" );
 					}
 
-					//var variations = x.Element(ns + "Variations");
-					//if (variations != null)
-					//{
-					//	res.Variations = new List<Variation>();
+					var variations = x.Element( ns + "Variations" );
+					if( variations != null )
+					{
+						res.Variations = new List< Variation >();
 
-					//	var variationsElem = variations.Descendants(ns + "Variation");
+						var variationsElem = variations.Descendants( ns + "Variation" );
 
-					//	var variationsObj = variationsElem.Select(variat =>
-					//	{
-					//		var tempVariation = new Variation();
+						var variationsObj = variationsElem.Select( variat =>
+						{
+							var tempVariation = new Variation();
 
-					//		tempVariation.Sku = GetElementValue(variat, ns, "SKU");
+							tempVariation.Sku = GetElementValue( variat, ns, "SKU" );
+							tempVariation.StartPrice = GetElementValue( variat, ns, "StartPrice" ).ToDecimalDotOrComaSeparated();
+							tempVariation.Quantity = GetElementValue( variat, ns, "Quantity" ).ToIntOrDefault();
+							tempVariation.QuantitySold = GetElementValue( variat, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault();
 
-					//		return tempVariation;
-					//	});
+							return tempVariation;
+						} );
 
-					//	res.Variations.AddRange(variationsObj);
-					//}
+						res.Variations.AddRange( variationsObj );
+					}
 
 					if( keepStremPosition )
 						stream.Position = streamStartPos;

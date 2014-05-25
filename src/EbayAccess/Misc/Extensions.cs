@@ -28,6 +28,25 @@ namespace EbayAccess.Misc
 			return parsedNumber;
 		}
 
+		public static bool IsZero( this decimal src )
+		{
+			const decimal epsolon = 0.000001m;
+			;
+			return Math.Abs( src ) - epsolon == 0;
+		}
+
+		public static int ToIntOrDefault( this string srcString )
+		{
+			try
+			{
+				return int.Parse( srcString, CultureInfo.InvariantCulture );
+			}
+			catch( Exception )
+			{
+				return default( int );
+			}
+		}
+
 		public static long ToLong( this string srcString )
 		{
 			var parsedNumber = long.Parse( srcString, CultureInfo.InvariantCulture );

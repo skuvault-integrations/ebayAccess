@@ -110,11 +110,11 @@ namespace EbayAccessTests.Integration
 			products.Count().Should().BeGreaterThan( 0, "because on site there are items" );
 		}
 
-		[Test]
+		[ Test ]
 		public void GetActiveProductsAsync_ServiceWithExistingProducts_HookupProducts()
 		{
 			//------------ Arrange
-			var ebayService = new EbayService(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox());
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
 			var inventoryStat1Task = ebayService.GetActiveProductsAsync();
@@ -122,7 +122,7 @@ namespace EbayAccessTests.Integration
 			var products = inventoryStat1Task.Result;
 
 			//------------ Assert
-			products.Count().Should().BeGreaterThan(0, "because on site there are items");
+			products.Count().Should().BeGreaterThan( 0, "because on site there are items" );
 		}
 		#endregion
 	}

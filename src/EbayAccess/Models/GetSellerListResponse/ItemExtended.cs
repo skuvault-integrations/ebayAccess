@@ -8,7 +8,7 @@ namespace EbayAccess.Models.GetSellerListResponse
 {
 	public partial class Item
 	{
-		public IEnumerable< Item > DevideByVariations()
+		public IEnumerable< Item > SplitByVariations()
 		{
 			foreach( var variation in this.Variations )
 			{
@@ -44,6 +44,45 @@ namespace EbayAccess.Models.GetSellerListResponse
 			throw new Exception( "Can't get Sku" );
 		}
 
+		public ItemPrice GetBayItNowOrCurretPrice()
+		{
+			if( this.Variations != null && this.Variations.Count > 1 )
+				throw new Exception( "Can't get Price from multiple variation item" );
+
+			if( this.Variations != null && this.Variations.Count == 1 )
+				return new ItemPrice( true, this.Variations[ 0 ].StartPrice );
+
+			if( this.SellingStatus != null )
+				return new ItemPrice( false, this.SellingStatus.CurrentPrice );
+
+			return new ItemPrice( false, this.BuyItNowPrice );
+		}
+
+		public ItemQuantity GetQuantity()
+		{
+			if( this.Variations != null && this.Variations.Count == 1 )
+				return new ItemQuantity( true, this.Variations[ 0 ].Quantity - this.Variations[ 0 ].QuantitySold );
+
+			if( this.Variations != null && this.Variations.Count > 1 )
+				throw new Exception( "Can't get Price from multiple variation item" );
+
+			return new ItemQuantity( false, this.Quantity );
+		}
+
+		public ItemCurrency GetCurrency()
+		{
+			if( this.Variations != null && this.Variations.Count == 1 )
+				return new ItemCurrency( true, this.Variations[ 0 ].Currency );
+
+			if( this.Variations != null && this.Variations.Count > 1 )
+				throw new Exception( "Can't get Price from multiple variation item" );
+
+			if( this.SellingStatus != null )
+				return new ItemCurrency( false, this.SellingStatus.CurrentPriceCurrencyId );
+
+			return new ItemCurrency( false, this.Currency );
+		}
+
 		public bool HaveMultiVariations()
 		{
 			return ( this.Variations != null && this.Variations.Count > 1 ) ? true : false;
@@ -65,5 +104,41 @@ namespace EbayAccess.Models.GetSellerListResponse
 
 		public bool IsVariationSku { get; set; }
 		public string Sku { get; set; }
+	}
+
+	public class ItemPrice
+	{
+		public ItemPrice( bool isvariation, decimal price )
+		{
+			this.IsVariationPrice = isvariation;
+			this.Price = price;
+		}
+
+		public bool IsVariationPrice { get; set; }
+		public decimal Price { get; set; }
+	}
+
+	public class ItemQuantity
+	{
+		public ItemQuantity( bool isvariation, decimal quantity )
+		{
+			this.IsVariationQuantity = isvariation;
+			this.Quantity = quantity;
+		}
+
+		public bool IsVariationQuantity { get; set; }
+		public decimal Quantity { get; set; }
+	}
+
+	public class ItemCurrency
+	{
+		public ItemCurrency( bool isvariation, string currency )
+		{
+			this.IsVariationQuantity = isvariation;
+			this.Currency = currency;
+		}
+
+		public bool IsVariationQuantity { get; set; }
+		public string Currency { get; set; }
 	}
 }

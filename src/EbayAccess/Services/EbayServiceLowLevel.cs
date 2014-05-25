@@ -260,7 +260,7 @@ namespace EbayAccess.Services
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var getSellerListResponse = new EbayGetSallerListResponseParser(detailsLevel).Parse(memStream);
+						var getSellerListResponse = new EbayGetSallerListResponseParser( detailsLevel ).Parse( memStream );
 						if( getSellerListResponse != null )
 						{
 							if( getSellerListResponse.Error != null )
@@ -299,7 +299,7 @@ namespace EbayAccess.Services
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
 					{
-						var getSellerListResponse = new EbayGetSallerListResponseParser(detailsLevel).Parse(memStream);
+						var getSellerListResponse = new EbayGetSallerListResponseParser( detailsLevel ).Parse( memStream );
 						if( getSellerListResponse != null )
 						{
 							if( getSellerListResponse.Error != null )

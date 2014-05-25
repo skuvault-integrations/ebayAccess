@@ -2,12 +2,12 @@
 
 namespace EbayAccess.Models.GetSellerListResponse
 {
-	[Serializable]
+	[ Serializable ]
 	public class Variation
 	{
 		public string Sku { get; set; }
-		public uint Quantity { get; set; }
-		public uint QuantitySold { get; set; }
+		public int Quantity { get; set; }
+		public int QuantitySold { get; set; }
 		public decimal StartPrice { get; set; }
 		public string Currency { get; set; }
 	}

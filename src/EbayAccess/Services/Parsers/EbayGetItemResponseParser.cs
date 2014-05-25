@@ -6,10 +6,7 @@ using System.Text;
 using System.Xml.Linq;
 using EbayAccess.Misc;
 using EbayAccess.Models.GetItemResponse;
-using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListResponse;
-using Item = EbayAccess.Models.GetSellerListResponse.Item;
-using Variation = EbayAccess.Models.GetOrdersResponse.Variation;
 
 namespace EbayAccess.Services.Parsers
 {
@@ -134,13 +131,13 @@ namespace EbayAccess.Services.Parsers
 				var variations = x.Element( ns + "Variations" );
 				if( variations != null )
 				{
-					res.Variations = new List<Models.GetSellerListResponse.Variation>();
+					res.Variations = new List< Variation >();
 
 					var variationsElem = variations.Descendants( ns + "Variation" );
 
 					var variationsObj = variationsElem.Select( variat =>
 					{
-						var tempVariation = new Models.GetSellerListResponse.Variation();
+						var tempVariation = new Variation();
 
 						tempVariation.Sku = GetElementValue( variat, ns, "SKU" );
 

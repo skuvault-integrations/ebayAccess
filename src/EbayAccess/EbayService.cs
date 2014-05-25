@@ -82,7 +82,9 @@ namespace EbayAccess
 			if( sellerListAsync.Error != null )
 				return new List< Item >();
 
-			return sellerListAsync.Items;
+			var splitedItems = SplitByVariationsOrReturnEmpty( sellerListAsync.Items );
+
+			return splitedItems;
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo )
@@ -108,7 +110,9 @@ namespace EbayAccess
 
 			products.AddRange( getSellerListAsyncTasks.SelectMany( task => task.Result.Items ).ToList() );
 
-			return products;
+			var splitedItems = SplitByVariationsOrReturnEmpty( products );
+
+			return splitedItems;
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
@@ -184,7 +188,7 @@ namespace EbayAccess
 			foreach( var productDetails in productsDetails )
 			{
 				if( productDetails.IsItemWithVariations() && productDetails.HaveMultiVariations() )
-					productsDetailsDevidedByVariations.AddRange( productDetails.DevideByVariations() );
+					productsDetailsDevidedByVariations.AddRange( productDetails.SplitByVariations() );
 				else
 					productsDetailsDevidedByVariations.Add( productDetails );
 			}
