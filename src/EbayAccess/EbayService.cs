@@ -79,7 +79,7 @@ namespace EbayAccess
 			var utcNow = DateTime.UtcNow;
 			var createTimeFrom = new DateTime( utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, utcNow.Minute + 1, utcNow.Second, utcNow.Kind );
 			var createTimeTo = new DateTime( createTimeFrom.Year, createTimeFrom.Month + 1, createTimeFrom.Day, createTimeFrom.Hour, createTimeFrom.Minute, createTimeFrom.Second, createTimeFrom.Kind );
-			return this.EbayServiceLowLevel.GetSellerList( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime ).Items;
+			return this.EbayServiceLowLevel.GetSellerList( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default ).Items;
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsAsync()

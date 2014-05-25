@@ -19,7 +19,7 @@ namespace EbayAccess.Services
 
 		Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusResponse );
 
-		GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
+		GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, GetSellerListDetailsLevelEnum detailsLevel );
 
 		Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, GetSellerListDetailsLevelEnum detailsLevel );
 

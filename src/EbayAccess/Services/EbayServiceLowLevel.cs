@@ -236,7 +236,7 @@ namespace EbayAccess.Services
 			}
 		}
 
-		public GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, GetSellerListDetailsLevelEnum detailsLevel )
 		{
 			var items = new GetSellerListResponse();
 
@@ -246,7 +246,7 @@ namespace EbayAccess.Services
 			var hasMoreItems = false;
 			do
 			{
-				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber, GetSellerListDetailsLevelEnum.Default );
+				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber, detailsLevel );
 
 				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
