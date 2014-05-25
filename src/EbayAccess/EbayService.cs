@@ -15,6 +15,7 @@ namespace EbayAccess
 {
 	public class EbayService : IEbayService
 	{
+		private const int Maxtimerange = 119;
 		private readonly DateTime _ebayWorkingStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
 
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
@@ -76,7 +77,7 @@ namespace EbayAccess
 		#region GetProducts
 		public async Task< IEnumerable< Item > > GetActiveProductsAsync()
 		{
-			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( 120 ), TimeRangeEnum.EndTime, GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations ).ConfigureAwait( false );
+			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), TimeRangeEnum.EndTime, GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations ).ConfigureAwait( false );
 
 			if( sellerListAsync.Error != null )
 				return new List< Item >();
@@ -153,11 +154,9 @@ namespace EbayAccess
 
 			var quartalsStart = new List< DateTime > { firstQuartalStart };
 
-			const int maxtimerange = 119;
-
 			while( firstQuartalStart < lastQuartalEnd )
 			{
-				firstQuartalStart = firstQuartalStart.AddDays( maxtimerange );
+				firstQuartalStart = firstQuartalStart.AddDays( Maxtimerange );
 				quartalsStart.Add( firstQuartalStart < lastQuartalEnd ? firstQuartalStart : lastQuartalEnd );
 			}
 
