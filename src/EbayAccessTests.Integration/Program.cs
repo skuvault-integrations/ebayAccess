@@ -36,7 +36,7 @@ namespace EbayAccessTests.Integration
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
-			var productsAsyncTask = ebayService.GetProductsAsync( ExistsProductsCreatedInRange.DateFrom, ExistsProductsCreatedInRange.DateTo );
+			var productsAsyncTask = ebayService.GetProductsByEndDateAsync( ExistsProductsCreatedInRange.DateFrom, ExistsProductsCreatedInRange.DateTo );
 			productsAsyncTask.Wait();
 			var products = productsAsyncTask.Result;
 

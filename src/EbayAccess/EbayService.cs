@@ -74,33 +74,36 @@ namespace EbayAccess
 		#endregion
 
 		#region GetProducts
-		public IEnumerable< Item > GetProducts()
+		[ Obsolete ]
+		public IEnumerable< Item > GetActiveProducts()
 		{
-			var utcNow = DateTime.UtcNow;
-			var createTimeFrom = new DateTime( utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, utcNow.Minute + 1, utcNow.Second, utcNow.Kind );
-			var createTimeTo = new DateTime( createTimeFrom.Year, createTimeFrom.Month + 1, createTimeFrom.Day, createTimeFrom.Hour, createTimeFrom.Minute, createTimeFrom.Second, createTimeFrom.Kind );
-			return this.EbayServiceLowLevel.GetSellerList( createTimeFrom, createTimeTo, TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default ).Items;
+			var sellerListAsync = this.EbayServiceLowLevel.GetSellerList( DateTime.UtcNow, DateTime.UtcNow.AddDays( 120 ), TimeRangeEnum.EndTime, GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations );
+
+			if( sellerListAsync.Error != null )
+				return new List< Item >();
+
+			return sellerListAsync.Items;
 		}
 
-		public async Task< IEnumerable< Item > > GetProductsAsync()
+		public async Task< IEnumerable< Item > > GetActiveProductsAsync()
 		{
-			return await this.GetProductsAsync( this._ebayWorkingStart, DateTime.Now ).ConfigureAwait( false );
+			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( 120 ), TimeRangeEnum.EndTime, GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations ).ConfigureAwait( false );
+
+			if( sellerListAsync.Error != null )
+				return new List< Item >();
+
+			return sellerListAsync.Items;
 		}
 
-		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFrom )
-		{
-			return await this.GetProductsAsync( createTimeFrom, DateTime.Now ).ConfigureAwait( false );
-		}
-
-		public async Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
+		public async Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo )
 		{
 			var products = new List< Item >();
 
-			var quartalsStartList = GetListOfTimeRanges( createTimeFromStart, createTimeFromTo ).ToList();
+			var quartalsStartList = GetListOfTimeRanges( endDateFrom, endDateTo ).ToList();
 
 			var getSellerListAsyncTasks = new List< Task< GetSellerListResponse > >();
 
-			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default ).ConfigureAwait( false );
+			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), TimeRangeEnum.EndTime, GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations ).ConfigureAwait( false );
 			if( sellerListAsync.Error != null )
 				return products;
 
@@ -108,7 +111,7 @@ namespace EbayAccess
 
 			for( var i = 1; i < quartalsStartList.Count - 1; i++ )
 			{
-				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default ) );
+				getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), TimeRangeEnum.EndTime, GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations ) );
 			}
 
 			await Task.WhenAll( getSellerListAsyncTasks ).ConfigureAwait( false );

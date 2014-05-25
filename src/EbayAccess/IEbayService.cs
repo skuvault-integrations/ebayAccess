@@ -18,21 +18,23 @@ namespace EbayAccess
 
 		Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products );
 
-		IEnumerable< Item > GetProducts();
-
-		Task< IEnumerable< Item > > GetProductsAsync();
-
-		Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFrom );
-
-		Task< IEnumerable< Item > > GetProductsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo );
+		Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo );
 
 		Task< IEnumerable< Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo );
 
 		Task< IEnumerable< Item > > GetProductsDetailsAsync();
 
 		Task< string > GetUserTokenAsync();
+
 		Task< string > GetUserSessionIdAsync();
+
 		string GetAuthUri( string sessionId );
+
 		Task< string > FetchUserTokenAsync( string sessionId );
+
+		[ Obsolete ]
+		IEnumerable< Item > GetActiveProducts();
+
+		Task< IEnumerable< Item > > GetActiveProductsAsync();
 	}
 }
