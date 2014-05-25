@@ -10,7 +10,29 @@ namespace EbayAccess.Services.Parsers
 {
 	public class EbayGetSallerListResponseParser : EbayXmlParser< GetSellerListResponse >
 	{
+		private delegate GetSellerListResponse ParseDelegate( Stream stream, bool keepStremPosition = true );
+
+		private readonly ParseDelegate parseDelegate;
+
+		public EbayGetSallerListResponseParser( GetSellerListDetailsLevelEnum detailsLevel )
+		{
+			switch( detailsLevel )
+			{
+				case GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations:
+					this.parseDelegate = this.ParseIdQtyPriceTitleSkuVariations;
+					break;
+				default:
+					this.parseDelegate = this.ParseDefault;
+					break;
+			}
+		}
+
 		public override GetSellerListResponse Parse( Stream stream, bool keepStremPosition = true )
+		{
+			return parseDelegate( stream, keepStremPosition );
+		}
+
+		public GetSellerListResponse ParseDefault( Stream stream, bool keepStremPosition = true )
 		{
 			try
 			{
@@ -134,6 +156,89 @@ namespace EbayAccess.Services.Parsers
 
 						res.PrimaryCategory.CategoryName = GetElementValue( x, ns, "PrimaryCategory", "CategoryName" );
 					}
+
+					if( keepStremPosition )
+						stream.Position = streamStartPos;
+
+					return res;
+				} ).ToList();
+
+				getSellerListResponse.Items = orders;
+				return getSellerListResponse;
+			}
+			catch( Exception ex )
+			{
+				var buffer = new byte[ stream.Length ];
+				stream.Read( buffer, 0, ( int )stream.Length );
+				var utf8Encoding = new UTF8Encoding();
+				var bufferStr = utf8Encoding.GetString( buffer );
+				throw new Exception( "Can't parse: " + bufferStr, ex );
+			}
+		}
+
+		private GetSellerListResponse ParseIdQtyPriceTitleSkuVariations( Stream stream, bool keepStremPosition = true )
+		{
+			try
+			{
+				string temp;
+
+				var getSellerListResponse = new GetSellerListResponse();
+
+				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
+
+				var streamStartPos = stream.Position;
+
+				var root = XElement.Load( stream );
+
+				var erros = this.ResponseContainsErrors( root, ns );
+				if( erros != null )
+					return new GetSellerListResponse { Error = erros };
+
+				var xmlItems = root.Descendants( ns + "Item" );
+
+				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "HasMoreItems" ) ) )
+					getSellerListResponse.HasMoreItems = ( Boolean.Parse( temp ) );
+
+				var orders = xmlItems.Select( x =>
+				{
+					var res = new Item();
+
+					res.ItemId = GetElementValue( x, ns, "ItemID" );
+
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "Quantity" ) ) )
+						res.Quantity = long.Parse( temp );
+
+
+					res.Title = GetElementValue( x, ns, "Title" );
+
+					res.Sku = GetElementValue( x, ns, "SKU" );
+
+					var sellingStatus = x.Element( ns + "SellingStatus" );
+					if( sellingStatus != null )
+					{
+						res.SellingStatus = new SellingStatus();
+						res.SellingStatus.CurrentPrice = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToDecimalDotOrComaSeparated();
+						res.SellingStatus.CurrentPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "CurrentPrice" );
+					}
+
+					//var variations = x.Element(ns + "Variations");
+					//if (variations != null)
+					//{
+					//	res.Variations = new List<Variation>();
+
+					//	var variationsElem = variations.Descendants(ns + "Variation");
+
+					//	var variationsObj = variationsElem.Select(variat =>
+					//	{
+					//		var tempVariation = new Variation();
+
+					//		tempVariation.Sku = GetElementValue(variat, ns, "SKU");
+
+					//		return tempVariation;
+					//	});
+
+					//	res.Variations.AddRange(variationsObj);
+					//}
 
 					if( keepStremPosition )
 						stream.Position = streamStartPos;
