@@ -140,53 +140,53 @@ namespace EbayAccessTests.Integration.Services
 		public void GetOrdersAsync_EbayServiceWithExistingOrders_HookupOrders()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var ordersTask = ebayService.GetOrdersAsync( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
+			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
 			ordersTask.Wait();
 			//A
-			ordersTask.Result.Count().Should().BeGreaterThan( 0 );
+			ordersTask.Result.Orders.Count().Should().BeGreaterThan( 0 );
 		}
 
 		[ Test ]
 		public void GetOrders_EbayServiceWithExistingOrders_HookupOrders()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var orders = ebayService.GetOrders( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
+			var orders = ebayServiceLowLevel.GetOrders( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
 
 			//A
-			orders.Count().Should().BeGreaterThan( 0 );
+			orders.Orders.Count().Should().BeGreaterThan( 0 );
 		}
 
 		[ Test ]
 		public void GetOrdersAsync_EbayServiceWithNotExistingOrders_EmptyOrdersCollection()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var ordersTask = ebayService.GetOrdersAsync( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo );
+			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo );
 			ordersTask.Wait();
 
 			//A
-			ordersTask.Result.Count().Should().Be( 0 );
+			ordersTask.Result.Orders.Count().Should().Be( 0 );
 		}
 
 		[ Test ]
 		public void GetOrders_EbayServiceWithNotExistingOrders_EmptyOrdersCollection()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var orders = ebayService.GetOrders( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo );
+			var orders = ebayServiceLowLevel.GetOrders( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo );
 
 			//A
-			orders.Count().Should().Be( 0, "because on site there is no orders in specified time" );
+			orders.Orders.Count().Should().Be( 0, "because on site there is no orders in specified time" );
 		}
 		#endregion
 

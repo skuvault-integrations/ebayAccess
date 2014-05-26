@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Netco.ActionPolicyServices;
-using Netco.Logging;
 using Netco.Utils;
 
 namespace EbayAccess.Misc
@@ -10,7 +9,7 @@ namespace EbayAccess.Misc
 	{
 		private static readonly ActionPolicy _ebaySumbitPolicy = ActionPolicy.Handle< Exception >().Retry( 10, ( ex, i ) =>
 		{
-			EbayLogger.Log().Trace(ex, "Retrying Ebay API submit call for the {0} time", i);
+			EbayLogger.Log().Trace( ex, "Retrying Ebay API submit call for the {0} time", i );
 			SystemUtil.Sleep( TimeSpan.FromSeconds( 0.5 + i ) );
 		} );
 
@@ -23,14 +22,14 @@ namespace EbayAccess.Misc
 
 		private static readonly ActionPolicy _ebayGetPolicy = ActionPolicy.Handle< Exception >().Retry( 10, ( ex, i ) =>
 		{
-			EbayLogger.Log().Trace(ex, "Retrying Ebay API get call for the {0} time", i);
+			EbayLogger.Log().Trace( ex, "Retrying Ebay API get call for the {0} time", i );
 			SystemUtil.Sleep( TimeSpan.FromSeconds( 0.5 + i ) );
 		} );
 
 		private static readonly ActionPolicyAsync _ebayGetAsyncPolicy = ActionPolicyAsync.Handle< Exception >()
 			.RetryAsync( 10, async ( ex, i ) =>
 			{
-				EbayLogger.Log().Trace(ex, "Retrying Ebay API get call for the {0} time", i);
+				EbayLogger.Log().Trace( ex, "Retrying Ebay API get call for the {0} time", i );
 				await Task.Delay( TimeSpan.FromSeconds( 0.5 + i ) ).ConfigureAwait( false );
 			} );
 

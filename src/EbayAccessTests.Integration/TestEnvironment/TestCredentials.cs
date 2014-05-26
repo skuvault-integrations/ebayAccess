@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 using LINQtoCSV;
@@ -68,7 +67,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			[ CsvColumn( Name = "CertName", FieldIndex = 3 ) ]
 			public string CertName { get; set; }
 		}
-		
+
 		internal class FlatRuNameCsvLine
 		{
 			public FlatRuNameCsvLine()

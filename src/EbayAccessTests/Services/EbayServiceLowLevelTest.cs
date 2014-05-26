@@ -27,12 +27,12 @@ namespace EbayAccessTests.Services
 				var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 				//A
-				var getSellerListTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
+				var getSellerListTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default );
 				getSellerListTask.Wait();
 				var items = getSellerListTask.Result;
 
 				//A
-				items.Count().Should().Be( 5, "because on site there are 5 items started in specified time" );
+				items.Items.Count().Should().Be( 5, "because on site there are 5 items started in specified time" );
 			}
 		}
 
@@ -44,7 +44,6 @@ namespace EbayAccessTests.Services
 			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTotalNumberOfEntities0AndHasMoreOrdersFalse.xml", FileMode.Open, FileAccess.Read ) )
 				respstring = new StreamReader( fs ).ReadToEnd();
 			var getResponseStreamAsyncCallCounter = 0;
-			;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >() ).Returns( Task.FromResult( this.GetStream( respstring ) ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );

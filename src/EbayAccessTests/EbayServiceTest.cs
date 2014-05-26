@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using EbayAccess;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.TestEnvironment;
@@ -19,7 +20,7 @@ namespace EbayAccessTests
 	public class EbayServiceTest : TestBase
 	{
 		[ Test ]
-		public void EbayServiceExistingItemsDevidedIntoMultiplePages_GetItems_HookUpItemsFromAllPages()
+		public void GetSellerList_EbayServiceExistingItemsDevidedIntoMultiplePages_HookUpItemsFromAllPages()
 		{
 			//A
 			var stubCallCounter = 0;
@@ -44,10 +45,10 @@ namespace EbayAccessTests
 
 			//A
 			var orders = ebayService.GetSellerList( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default );
 
 			//A
-			orders.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );
+			orders.Items.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );
 		}
 
 		[ Test ]
@@ -71,13 +72,13 @@ namespace EbayAccessTests
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
+			var getOrdersResponse = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
 				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
 
 			//A
-			orders.First().TransactionArray.Count.Should().Be( 2 );
-			orders.First().TransactionArray.Find( x => x.Item.ItemId == "110141553531" ).QuantityPurchased.Should().Be( 2, "Because in re sponse there is 2 items with this id" );
-			orders.First().TransactionArray.Find( x => x.Item.ItemId == "110137091582" ).QuantityPurchased.Should().Be( 3, "Because in re sponse there is 2 items with this id" );
+			getOrdersResponse.Orders.First().TransactionArray.Count.Should().Be( 2 );
+			getOrdersResponse.Orders.First().TransactionArray.Find( x => x.Item.ItemId == "110141553531" ).QuantityPurchased.Should().Be( 2, "Because in re sponse there is 2 items with this id" );
+			getOrdersResponse.Orders.First().TransactionArray.Find( x => x.Item.ItemId == "110137091582" ).QuantityPurchased.Should().Be( 3, "Because in re sponse there is 2 items with this id" );
 		}
 
 		[ Test ]
@@ -105,12 +106,12 @@ namespace EbayAccessTests
 				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
 
 			//A
-			orders.First().TransactionArray.Count.Should().Be( 2 );
-			orders.First().Total.Should().Be( 7.77m );
+			orders.Orders.First().TransactionArray.Count.Should().Be( 2 );
+			orders.Orders.First().Total.Should().Be( 7.77m );
 		}
 
 		[ Test ]
-		public void EbayServiceExistingOrdersDevidedIntoMultiplePages_GetOrders_HookUpItemsFromAllPages()
+		public void GetOrders_EbayServiceExistingOrdersDevidedIntoMultiplePages_HookUpItemsFromAllPages()
 		{
 			//A
 			var stubCallCounter = 0;
@@ -135,15 +136,15 @@ namespace EbayAccessTests
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
-			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
+			var getOrdersResponse = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
 				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
 
 			//A
-			orders.Count().Should().Be( 2, "because stub gives 2 pages, 1 item per page" );
+			getOrdersResponse.Orders.Count().Should().Be( 2, "because stub gives 2 pages, 1 item per page" );
 		}
 
 		[ Test ]
-		public async Task EbayServiceReturnsErrorOnReviseInventoriesStatusReqest_InvokeReviseInventoriesStatusAsync_HaveErrorMessageFromEbayServerInResult()
+		public async Task InvokeReviseInventoriesStatusAsync_EbayServiceReturnsErrorOnReviseInventoriesStatusReqest_HaveErrorMessageFromEbayServerInResult()
 		{
 			//A
 			const int itemsQty1 = 100;
@@ -173,6 +174,29 @@ namespace EbayAccessTests
 
 			//A
 			inventoryStat[ 0 ].Error.ErrorCode.Should().NotBeNullOrWhiteSpace();
+		}
+
+		[ Test ]
+		public void GetProductsDetailsAsync_EbayServiceReturnError_Only1CallExecuted()
+		{
+			//A
+			string respstring;
+			using( var fs = new FileStream( @".\Files\AuthTokenIsInvalidResponse.xml", FileMode.Open, FileAccess.Read ) )
+				respstring = new StreamReader( fs ).ReadToEnd();
+			var getResponseStreamAsyncCallCounter = 0;
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >() ).Returns( Task.FromResult( this.GetStream( respstring ) ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			var ordersTask = ebayService.GetProductsDetailsAsync();
+			ordersTask.Wait();
+			var orders = ordersTask.Result;
+
+			//A
+			getResponseStreamAsyncCallCounter.Should().Be( 1 );
 		}
 	}
 }

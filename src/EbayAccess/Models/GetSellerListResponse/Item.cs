@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Models.GetSellerListResponse
 {
