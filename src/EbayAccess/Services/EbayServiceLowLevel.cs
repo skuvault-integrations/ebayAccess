@@ -27,6 +27,7 @@ namespace EbayAccess.Services
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
 		private string _ebaySignInUrl;
+		private readonly string _endPointBulkExhange;
 
 		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
 		{
@@ -37,6 +38,7 @@ namespace EbayAccess.Services
 			this._userCredentials = credentials;
 			this._webRequestServices = webRequestServices;
 			this._endPoint = ebayConfig.EndPoint;
+			this._endPointBulkExhange = ebayConfig.EndPointBulkExhange;
 			this._ebaySignInUrl = ebayConfig.SignInUrl;
 			this._itemsPerPage = 50;
 			this._ebayConfig = ebayConfig;
@@ -78,6 +80,11 @@ namespace EbayAccess.Services
 				headers.Add( EbayHeaders.XEbayApiCertName, this._ebayConfig.CertName );
 
 			return await this.CreateEbayStandartPostRequestAsync( url, headers, body ).ConfigureAwait( false );
+		}
+
+		public async Task< WebRequest > CreateEbayStandartPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body )
+		{
+			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
 		}
 
 		public WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body )
@@ -648,17 +655,110 @@ namespace EbayAccess.Services
 			return result;
 		}
 		#endregion
+
+		#region JobService
+		public async Task< CreateJobResponse > CreateUploadJobAsync( Guid guid )
+		{
+			var result = new CreateJobResponse();
+
+			var body = this.CreateCreateUploadJobRequestBody( guid, UploadJobTypeEnum.ReviseInventoryStatus );
+
+			var headers = this.CreateCreateUploadJobRequestHeaders();
+
+			await ActionPolicies.GetAsync.Do( async () =>
+			{
+				var webRequest = await this.CreateEbayStandartPostRequestToBulkExchangeServerAsync( this._endPointBulkExhange, headers, body ).ConfigureAwait( false );
+
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				{
+					var createJobResponseParsed = new EbayBulkCreateJobParser().Parse( memStream );
+					if( createJobResponseParsed != null )
+					{
+						if( createJobResponseParsed.Error != null )
+						{
+							result.Error = createJobResponseParsed.Error;
+							return;
+						}
+
+						result.JobId = createJobResponseParsed.JobId;
+					}
+				}
+			} );
+
+			return result;
+		}
+
+		public async Task< AbortJobResponse > AbortJobAsync( string jobId )
+		{
+			var result = new AbortJobResponse();
+
+			var body = this.CreateAbortJobRequestBody( jobId );
+
+			var headers = this.CreateAbortJobRequestHeaders();
+
+			await ActionPolicies.GetAsync.Do( async () =>
+			{
+				var webRequest = await this.CreateEbayStandartPostRequestToBulkExchangeServerAsync( this._endPointBulkExhange, headers, body ).ConfigureAwait( false );
+
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				{
+					var abortJobResponse = new EbayBulkAbortJobParser().Parse( memStream );
+					if( abortJobResponse != null )
+					{
+						if( abortJobResponse.Error != null )
+							result.Error = abortJobResponse.Error;
+					}
+				}
+			} );
+
+			return result;
+		}
+
+		private Dictionary< string, string > CreateAbortJobRequestHeaders()
+		{
+			return new Dictionary< string, string >
+			{
+				{ "X-EBAY-SOA-OPERATION-NAME", "abortJob" },
+				{ "X-EBAY-SOA-SECURITY-TOKEN", "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R" },
+			};
+		}
+
+		private string CreateAbortJobRequestBody( string jobId )
+		{
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><abortJobRequest xmlns=\"http://www.ebay.com/marketplace/services\"><!-- Call-specific Input Fields --><jobId>{0}</jobId></abortJobRequest>",
+				jobId
+				);
+		}
+
+		private Dictionary< string, string > CreateCreateUploadJobRequestHeaders()
+		{
+			return new Dictionary< string, string >
+			{
+				{ "X-EBAY-SOA-OPERATION-NAME", "createUploadJob" },
+				{ "X-EBAY-SOA-SECURITY-TOKEN", "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R" },
+			};
+		}
+
+		private string CreateCreateUploadJobRequestBody( Guid guid, UploadJobTypeEnum uploadJobType )
+		{
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><createUploadJobRequest xmlns=\"http://www.ebay.com/marketplace/services\"><fileType>XML</fileType><uploadJobType>{0}</uploadJobType><UUID>{1}</UUID></createUploadJobRequest>",
+				uploadJobType.ToString(),
+				guid.ToString()
+				);
+		}
+		#endregion
+	}
+
+	internal enum UploadJobTypeEnum
+	{
+		ReviseInventoryStatus
 	}
 
 	public enum TimeRangeEnum
 	{
 		StartTime,
 		EndTime
-	}
-
-	public enum GetSellerListDetailsLevelEnum
-	{
-		Default,
-		IdQtyPriceTitleSkuVariations
 	}
 }

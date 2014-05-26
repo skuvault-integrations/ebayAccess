@@ -105,6 +105,8 @@
     <Compile Include="Services\EbayServiceLowLevel.cs" />
     <Compile Include="Services\IEbayServiceLowLevel.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />
+    <Compile Include="Services\Parsers\EbayBulkAbortJobParser.cs" />
+    <Compile Include="Services\Parsers\EbayBulkCreateJobParser.cs" />
     <Compile Include="Services\Parsers\EbayGetSallerListResponseCustomParser.cs" />
     <Compile Include="Services\Parsers\EbayFetchTokenResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetSessionIdResponseParser.cs" />
