@@ -473,7 +473,7 @@ namespace EbayAccess.Services
 				sessionId );
 		}
 
-		public async Task< string > GetSessionIdAsync()
+		public string GetSessionId()
 		{
 			string result = null;
 
@@ -481,11 +481,11 @@ namespace EbayAccess.Services
 
 			var headers = CreateGetSessionIDRequestHeadersWithApiCallName();
 
-			await ActionPolicies.GetAsync.Do( async () =>
+			ActionPolicies.Get.Do( () =>
 			{
-				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+				var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
 				{
 					var tempSessionId = new EbayGetSessionIdResponseParser().Parse( memStream );
 					if( tempSessionId != null )
@@ -508,7 +508,7 @@ namespace EbayAccess.Services
 			Process.Start( uri.AbsoluteUri );
 		}
 
-		public async Task< string > FetchTokenAsync( string sessionId )
+		public string FetchToken( string sessionId )
 		{
 			string result = null;
 
@@ -516,11 +516,11 @@ namespace EbayAccess.Services
 
 			var headers = CreateFetchTokenRequestHeadersWithApiCallName();
 
-			await ActionPolicies.GetAsync.Do( async () =>
+			ActionPolicies.Get.Do(  () =>
 			{
-				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+				var webRequest =  this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				using( var memStream = this._webRequestServices.GetResponseStream( webRequest ))
 				{
 					var tempResponse = new EbayFetchTokenResponseParser().Parse( memStream );
 					if( tempResponse != null && tempResponse.Error == null )

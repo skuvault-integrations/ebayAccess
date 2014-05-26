@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
@@ -136,7 +135,7 @@ namespace EbayAccessTests.Integration
 
 		[ Test ]
 		[ Ignore ]
-		public async Task GetUserTokenLowLevel_EbayServiceWithCorrectRuName_HookupToken()
+		public void GetUserTokenLowLevel_EbayServiceWithCorrectRuName_HookupToken()
 		{
 			////Attention!!! This code will regenerate youe credentials!!!
 
@@ -144,9 +143,9 @@ namespace EbayAccessTests.Integration
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var sessionId = await ebayService.GetSessionIdAsync().ConfigureAwait( false );
+			var sessionId = ebayService.GetSessionId();
 			ebayService.AuthenticateUser( sessionId );
-			var userToken = await ebayService.FetchTokenAsync( sessionId ).ConfigureAwait( false );
+			var userToken = ebayService.FetchToken( sessionId );
 
 			//A
 			sessionId.Should().NotBeNullOrWhiteSpace();
@@ -164,10 +163,8 @@ namespace EbayAccessTests.Integration
 			var ebayService = ebayFactory.CreateService();
 
 			//------------ Act
-			var getUserTokenAsyncTask = ebayService.GetUserTokenAsync();
-			getUserTokenAsyncTask.Wait();
-			var token = getUserTokenAsyncTask.Result;
-
+			var token = ebayService.GetUserToken();
+			
 			//------------ Assert
 			token.Should().NotBeNullOrEmpty();
 			var cc = new CsvContext();
@@ -184,10 +181,8 @@ namespace EbayAccessTests.Integration
 			var ebayService = ebayFactory.CreateService();
 
 			//------------ Act
-			var getUserTokenAsyncTask = ebayService.GetUserTokenAsync();
-			getUserTokenAsyncTask.Wait();
-			var token = getUserTokenAsyncTask.Result;
-
+			var token = ebayService.GetUserToken();
+			
 			//------------ Assert
 			token.Should().NotBeNullOrEmpty();
 			var cc = new CsvContext();
@@ -200,20 +195,14 @@ namespace EbayAccessTests.Integration
 		{
 			////Attention!!! This code will regenerate youe credentials!!!
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigSandbox() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigProduction() );
 			var ebayService = ebayFactory.CreateService();
 
 			//------------ Act
-			var userSessionIdAsyncTask = ebayService.GetUserSessionIdAsync();
-			userSessionIdAsyncTask.Wait();
-			var sessionId = userSessionIdAsyncTask.Result;
-
+			var sessionId = ebayService.GetUserSessionId();
 			var authUri = ebayService.GetAuthUri( sessionId );
-
-			var fetchUserTokenAsyncTask = ebayService.FetchUserTokenAsync( sessionId );
-			fetchUserTokenAsyncTask.Wait();
-			var token = fetchUserTokenAsyncTask.Result;
-
+			var token = ebayService.FetchUserToken(sessionId);
+			
 			//------------ Assert
 			authUri.Should().NotBeNullOrEmpty();
 			token.Should().NotBeNullOrEmpty();

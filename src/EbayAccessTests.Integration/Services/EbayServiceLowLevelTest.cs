@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
@@ -193,13 +192,13 @@ namespace EbayAccessTests.Integration.Services
 
 		#region GetSessionId
 		[ Test ]
-		public async Task GetSessionId_EbayServiceWithCorrectRuName_HookupSessionId()
+		public void GetSessionId_EbayServiceWithCorrectRuName_HookupSessionId()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var sessionId = await ebayService.GetSessionIdAsync().ConfigureAwait( false );
+			var sessionId = ebayService.GetSessionId();
 
 			//A
 			sessionId.Should().NotBeNullOrWhiteSpace();

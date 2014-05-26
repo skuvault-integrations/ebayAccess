@@ -30,11 +30,11 @@ namespace EbayAccess.Services
 
 		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses );
 
-		Task< string > GetSessionIdAsync();
+		string GetSessionId();
 
 		void AuthenticateUser( string sessionId );
 
-		Task< string > FetchTokenAsync( string sessionId );
+		string FetchToken( string sessionId );
 
 		Uri GetAuthenticationUri( string sessionId );
 	}

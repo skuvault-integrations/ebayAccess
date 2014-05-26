@@ -185,17 +185,17 @@ namespace EbayAccess
 		#endregion
 
 		#region Authentication
-		public async Task< string > GetUserTokenAsync()
+		public string GetUserToken()
 		{
-			var sessionId = await this.EbayServiceLowLevel.GetSessionIdAsync().ConfigureAwait( false );
+			var sessionId = this.EbayServiceLowLevel.GetSessionId();
 			this.EbayServiceLowLevel.AuthenticateUser( sessionId );
-			var userToken = await this.EbayServiceLowLevel.FetchTokenAsync( sessionId ).ConfigureAwait( false );
+			var userToken = this.EbayServiceLowLevel.FetchToken( sessionId );
 			return userToken;
 		}
 
-		public async Task< string > GetUserSessionIdAsync()
+		public string GetUserSessionId()
 		{
-			var sessionId = await this.EbayServiceLowLevel.GetSessionIdAsync().ConfigureAwait( false );
+			var sessionId = this.EbayServiceLowLevel.GetSessionId();
 			return sessionId;
 		}
 
@@ -205,9 +205,9 @@ namespace EbayAccess
 			return uri.AbsoluteUri;
 		}
 
-		public async Task< string > FetchUserTokenAsync( string sessionId )
+		public string FetchUserToken( string sessionId )
 		{
-			var userToken = await this.EbayServiceLowLevel.FetchTokenAsync( sessionId ).ConfigureAwait( false );
+			var userToken = this.EbayServiceLowLevel.FetchToken( sessionId );
 			return userToken;
 		}
 		#endregion
