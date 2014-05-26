@@ -73,7 +73,7 @@ namespace EbayAccess.Services.Parsers
 			return default( TParseResult );
 		}
 
-		protected ResponseError ResponseContainsErrors( XElement root, XNamespace ns )
+		protected virtual ResponseError ResponseContainsErrors( XElement root, XNamespace ns )
 		{
 			var isSuccess = root.Element( ns + "Ack" );
 			if( isSuccess != null && isSuccess.Value == "Failure" )

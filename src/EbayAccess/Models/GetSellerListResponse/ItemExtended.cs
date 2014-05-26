@@ -85,7 +85,7 @@ namespace EbayAccess.Models.GetSellerListResponse
 
 		public bool HaveMultiVariations()
 		{
-			return ( this.Variations != null && this.Variations.Count > 1 ) ;
+			return ( this.Variations != null && this.Variations.Count > 1 );
 		}
 
 		public bool IsItemWithVariations()

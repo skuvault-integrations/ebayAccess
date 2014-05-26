@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.GetSellerListResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
+using EbayAccess.Services.Parsers;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services
@@ -39,7 +41,15 @@ namespace EbayAccess.Services
 		string FetchToken( string sessionId );
 
 		Uri GetAuthenticationUri( string sessionId );
+
 		GetSellerListCustomResponse GetSellerListCustom( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
+
 		Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
+
+		Task< WebRequest > CreateEbayStandartPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body );
+
+		Task< CreateJobResponse > CreateUploadJobAsync( Guid guid );
+
+		Task< AbortJobResponse > AbortJobAsync( string jobId );
 	}
 }

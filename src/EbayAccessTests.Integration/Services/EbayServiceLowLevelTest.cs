@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
@@ -202,6 +203,23 @@ namespace EbayAccessTests.Integration.Services
 
 			//A
 			sessionId.Should().NotBeNullOrWhiteSpace();
+		}
+		#endregion
+
+		#region Jobs
+		[ Test ]
+		public async Task CreateUploadJob_EbayServiceWithCorrectRuName_HookupSessionId()
+		{
+			//A
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+			//A
+			var createuploadJobResponse = await ebayService.CreateUploadJobAsync( Guid.NewGuid() ).ConfigureAwait( false );
+			var abortJobResponse = await ebayService.AbortJobAsync( createuploadJobResponse.JobId ).ConfigureAwait( false );
+
+			//A
+			createuploadJobResponse.Error.Should().BeNull();
+			abortJobResponse.Error.Should().BeNull();
 		}
 		#endregion
 	}
