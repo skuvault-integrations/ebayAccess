@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
-using Item = EbayAccess.Models.GetSellerListResponse.Item;
+using Item = EbayAccess.Models.GetSellerListCustomResponse.Item;
 
 namespace EbayAccess
 {
@@ -20,9 +20,9 @@ namespace EbayAccess
 
 		Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo );
 
-		Task< IEnumerable< Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo );
+		Task< IEnumerable< Models.GetSellerListResponse.Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo );
 
-		Task< IEnumerable< Item > > GetProductsDetailsAsync();
+		Task< IEnumerable< Models.GetSellerListResponse.Item > > GetProductsDetailsAsync();
 
 		Task< IEnumerable< Item > > GetActiveProductsAsync();
 
