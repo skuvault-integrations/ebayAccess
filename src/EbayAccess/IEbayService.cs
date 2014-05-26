@@ -24,6 +24,8 @@ namespace EbayAccess
 
 		Task< IEnumerable< Item > > GetProductsDetailsAsync();
 
+		Task< IEnumerable< Item > > GetActiveProductsAsync();
+
 		string GetUserToken();
 
 		string GetUserSessionId();
@@ -31,7 +33,5 @@ namespace EbayAccess
 		string GetAuthUri( string sessionId );
 
 		string FetchUserToken( string sessionId );
-
-		Task< IEnumerable< Item > > GetActiveProductsAsync();
 	}
 }
