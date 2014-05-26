@@ -489,16 +489,39 @@ namespace EbayAccess.Services
 
 		private string CreateReviseInventoryStatusRequestBody( long? itemIdMonad, long? quantityMonad, string sku )
 		{
+			var inventoryStatus = CreateInventoryStatusTag( itemIdMonad, quantityMonad, sku );
+
+			var body = string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials>{1}</ReviseInventoryStatusRequest>",
+				this._userCredentials.Token,
+				inventoryStatus
+				);
+			return body;
+		}
+
+		private static string CreateInventoryStatusTag( long? itemIdMonad, long? quantityMonad, string sku )
+		{
 			var itemIdElement = itemIdMonad.HasValue ? string.Format( "<ItemID>{0}</ItemID>", itemIdMonad.Value ) : string.Empty;
 			var quantityElement = quantityMonad.HasValue ? string.Format( "<Quantity>{0}</Quantity>", quantityMonad.Value ) : string.Empty;
 			var skuElement = !string.IsNullOrWhiteSpace( sku ) ? string.Format( "<SKU>{0}</SKU>", sku ) : string.Empty;
+			var inventoryStatus = string.Format( "<InventoryStatus ComplexType=\"InventoryStatusType\">{0}{1}{2}</InventoryStatus>", itemIdElement, quantityElement, skuElement );
+			return inventoryStatus;
+		}
+
+		private string CreateReviseInventoryStatusRequestBody( InventoryStatusRequest inventoryStatusReq1, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null )
+		{
+			var inv1 = inventoryStatusReq1 != null ? CreateInventoryStatusTag( inventoryStatusReq1.ItemId, inventoryStatusReq1.Quantity, inventoryStatusReq1.Sku ) : string.Empty;
+			var inv2 = inventoryStatusReq2 != null ? CreateInventoryStatusTag( inventoryStatusReq2.ItemId, inventoryStatusReq2.Quantity, inventoryStatusReq2.Sku ) : string.Empty;
+			var inv3 = inventoryStatusReq3 != null ? CreateInventoryStatusTag( inventoryStatusReq3.ItemId, inventoryStatusReq3.Quantity, inventoryStatusReq3.Sku ) : string.Empty;
+			var inv4 = inventoryStatusReq4 != null ? CreateInventoryStatusTag( inventoryStatusReq4.ItemId, inventoryStatusReq4.Quantity, inventoryStatusReq4.Sku ) : string.Empty;
 
 			var body = string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><InventoryStatus ComplexType=\"InventoryStatusType\">{1}{2}{3}</InventoryStatus></ReviseInventoryStatusRequest>",
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials>{1}{2}{3}{4}</ReviseInventoryStatusRequest>",
 				this._userCredentials.Token,
-				itemIdElement,
-				quantityElement,
-				skuElement
+				inv1,
+				inv2,
+				inv3,
+				inv4
 				);
 			return body;
 		}
@@ -519,11 +542,27 @@ namespace EbayAccess.Services
 			}
 		}
 
-		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq )
+		//public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq )
+		//{
+		//	var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
+
+		//	var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq.ItemId, inventoryStatusReq.Quantity, inventoryStatusReq.Sku );
+
+		//	var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+
+		//	using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
+		//	{
+		//		var inventoryStatusResponse =
+		//			new EbayReviseInventoryStatusResponseParser().Parse( memStream );
+		//		return inventoryStatusResponse;
+		//	}
+		//}
+
+		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null )
 		{
 			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
 
-			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq.ItemId, inventoryStatusReq.Quantity, inventoryStatusReq.Sku );
+			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq, inventoryStatusReq2, inventoryStatusReq3, inventoryStatusReq4 );
 
 			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
@@ -546,12 +585,32 @@ namespace EbayAccess.Services
 
 		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses )
 		{
-			var reviseInventoryTasks =
-				inventoryStatuses.Select(
-					productToUpdate => ActionPolicies.Submit.Get( async () => await this.ReviseInventoryStatusAsync( productToUpdate ).ConfigureAwait( false ) ) )
-					.Where( productUpdated => productUpdated != null )
-					.ToList();
-			return await Task.WhenAll( reviseInventoryTasks ).ConfigureAwait( false );
+			const int maxItemsPerCall = 4;
+
+			var inventoryStatusRequests = inventoryStatuses.ToList();
+
+			var tasks = new List< Task< InventoryStatusResponse > >();
+
+			for( var i = 0; i < inventoryStatuses.Count(); i += maxItemsPerCall )
+			{
+				var statusReq = i < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i ] : null;
+				var statusReq2 = i + 1 < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i + 1 ] : null;
+				var statusReq3 = i + 2 < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i + 2 ] : null;
+				var statusReq4 = i + 3 < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i + 3 ] : null;
+
+				tasks.Add( this.ReviseInventoryStatusAsync( statusReq, statusReq2, statusReq3, statusReq4 ) );
+			}
+
+			var commonTask = Task.WhenAll( tasks );
+			var resultResponses = await commonTask.ConfigureAwait( false );
+			return resultResponses;
+
+			//var reviseInventoryTasks =
+			//	inventoryStatuses.Select(
+			//		productToUpdate => ActionPolicies.Submit.Get( async () => await this.ReviseInventoryStatusAsync( productToUpdate ).ConfigureAwait( false ) ) )
+			//		.Where( productUpdated => productUpdated != null )
+			//		.ToList();
+			//return await Task.WhenAll( reviseInventoryTasks ).ConfigureAwait( false );
 
 			//var reviseInventoryStatussesTask = new List< Task<InventoryStatusResponse> >();
 			//foreach (var inventoryStatus in inventoryStatuses)
@@ -638,11 +697,11 @@ namespace EbayAccess.Services
 
 			var headers = CreateFetchTokenRequestHeadersWithApiCallName();
 
-			ActionPolicies.Get.Do(  () =>
+			ActionPolicies.Get.Do( () =>
 			{
-				var webRequest =  this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
+				var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
-				using( var memStream = this._webRequestServices.GetResponseStream( webRequest ))
+				using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
 				{
 					var tempResponse = new EbayFetchTokenResponseParser().Parse( memStream );
 					if( tempResponse != null && tempResponse.Error == null )

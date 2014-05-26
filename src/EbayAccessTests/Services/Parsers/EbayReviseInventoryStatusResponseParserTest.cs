@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
@@ -21,11 +22,17 @@ namespace EbayAccessTests.Services.Parsers
 				//A
 				inventoryStatus.ShouldBeEquivalentTo( new InventoryStatusResponse
 				{
-					ItemId = 110136942332,
-					StartPrice = 1.0,
-					Quantity = 101,
-					Sku = string.Empty
-				}, "because in source file there this data" );
+					Items = new List< Item >
+					{
+						new Item
+						{
+							ItemId = 110136942332,
+							StartPrice = 1.0,
+							Quantity = 101,
+							Sku = string.Empty
+						}
+					}
+				} );
 			}
 		}
 	}
