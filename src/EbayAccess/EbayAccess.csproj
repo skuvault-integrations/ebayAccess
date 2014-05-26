@@ -62,6 +62,11 @@
     <Compile Include="Models\BaseResponse\EbayBaseResponse.cs" />
     <Compile Include="Models\BaseResponse\PaginationResult.cs" />
     <Compile Include="Models\BaseResponse\ResponseError.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\GetSellerListCustomResponse.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\Item.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\ItemExtended.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\SellingStatus.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\Variation.cs" />
     <Compile Include="Models\CredentialsAndConfig\EbayUserCredentials.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -100,6 +105,7 @@
     <Compile Include="Services\EbayServiceLowLevel.cs" />
     <Compile Include="Services\IEbayServiceLowLevel.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />
+    <Compile Include="Services\Parsers\EbayGetSallerListResponseCustomParser.cs" />
     <Compile Include="Services\Parsers\EbayFetchTokenResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetSessionIdResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetItemResponseParser.cs" />
