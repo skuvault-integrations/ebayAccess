@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.GetSellerListResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
@@ -19,9 +20,9 @@ namespace EbayAccess.Services
 
 		Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusResponse );
 
-		GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, GetSellerListDetailsLevelEnum detailsLevel );
+		GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
 
-		Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, GetSellerListDetailsLevelEnum detailsLevel );
+		Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
 
 		Item GetItem( string id );
 
@@ -38,5 +39,7 @@ namespace EbayAccess.Services
 		Task< string > FetchTokenAsync( string sessionId );
 
 		Uri GetAuthenticationUri( string sessionId );
+		GetSellerListCustomResponse GetSellerListCustom( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
+		Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
 	}
 }

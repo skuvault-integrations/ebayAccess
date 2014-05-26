@@ -27,7 +27,7 @@ namespace EbayAccessTests.Services
 				var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 				//A
-				var getSellerListTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default );
+				var getSellerListTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
 				getSellerListTask.Wait();
 				var items = getSellerListTask.Result;
 

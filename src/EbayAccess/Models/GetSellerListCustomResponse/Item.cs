@@ -6,7 +6,6 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 	[ Serializable ]
 	public partial class Item
 	{
-
 		public decimal BuyItNowPrice { get; set; }
 
 		public string BuyItNowPriceCurrencyId { get; set; }

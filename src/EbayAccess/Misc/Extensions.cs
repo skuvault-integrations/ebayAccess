@@ -13,29 +13,52 @@ namespace EbayAccess.Misc
 			return result;
 		}
 
-		public static decimal ToDecimalDotOrComaSeparated( this string srcString )
+		public static decimal ToDecimalDotOrComaSeparated( this string srcString, bool throwException = true )
 		{
-			decimal parsedNumber;
+			decimal parsedNumber = 0;
 			try
 			{
 				parsedNumber = decimal.Parse( srcString, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture );
 			}
-			catch( Exception )
+			catch
 			{
-				parsedNumber = decimal.Parse( srcString, new NumberFormatInfo { NumberDecimalSeparator = "," } );
+				try
+				{
+					parsedNumber = decimal.Parse( srcString, new NumberFormatInfo { NumberDecimalSeparator = "," } );
+				}
+				catch
+				{
+					if( throwException )
+						throw;
+				}
 			}
 
 			return parsedNumber;
 		}
 
+		public static bool ToBool( this string srcString, bool throwException = true )
+		{
+			var parsedBool = default( bool );
+			try
+			{
+				parsedBool = bool.Parse( srcString );
+			}
+			catch
+			{
+				if( throwException )
+					throw;
+			}
+
+			return parsedBool;
+		}
+
 		public static bool IsZero( this decimal src )
 		{
 			const decimal epsolon = 0.000001m;
-			;
 			return Math.Abs( src ) - epsolon == 0;
 		}
 
-		public static int ToIntOrDefault( this string srcString )
+		public static int ToIntOrDefault( this string srcString, bool throwException = true )
 		{
 			try
 			{
@@ -43,8 +66,11 @@ namespace EbayAccess.Misc
 			}
 			catch( Exception )
 			{
-				return default( int );
+				if( throwException )
+					throw;
 			}
+
+			return default( int );
 		}
 
 		public static long ToLong( this string srcString )

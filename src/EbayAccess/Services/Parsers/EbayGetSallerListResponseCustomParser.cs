@@ -9,9 +9,9 @@ using EbayAccess.Models.GetSellerListCustomResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayGetSallerListCustomResponseParser : EbayXmlParser<GetSellerListCustomResponse>
+	public class EbayGetSallerListCustomResponseParser : EbayXmlParser< GetSellerListCustomResponse >
 	{
-		public override GetSellerListCustomResponse Parse(Stream stream, bool keepStremPosition = true)
+		public override GetSellerListCustomResponse Parse( Stream stream, bool keepStremPosition = true )
 		{
 			try
 			{
@@ -31,8 +31,7 @@ namespace EbayAccess.Services.Parsers
 
 				var xmlItems = root.Descendants( ns + "Item" );
 
-				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( root, ns, "HasMoreItems" ) ) )
-					getSellerListResponse.HasMoreItems = ( Boolean.Parse( temp ) );
+				getSellerListResponse.HasMoreItems = GetElementValue( root, ns, "HasMoreItems" ).ToBool( false );
 
 				var orders = xmlItems.Select( x =>
 				{
@@ -40,14 +39,13 @@ namespace EbayAccess.Services.Parsers
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "BuyItNowPrice" ) ) )
 					{
-						res.BuyItNowPrice = temp.ToDecimalDotOrComaSeparated();
+						res.BuyItNowPrice = temp.ToDecimalDotOrComaSeparated( false );
 						res.BuyItNowPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "BuyItNowPrice" );
 					}
 
 					res.ItemId = GetElementValue( x, ns, "ItemID" );
 
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "Quantity" ) ) )
-						res.Quantity = long.Parse( temp );
+					res.Quantity = GetElementValue( x, ns, "Quantity" ).ToIntOrDefault( false );
 
 					res.Title = GetElementValue( x, ns, "Title" );
 
@@ -57,9 +55,9 @@ namespace EbayAccess.Services.Parsers
 					if( sellingStatus != null )
 					{
 						res.SellingStatus = new SellingStatus();
-						res.SellingStatus.CurrentPrice = GetElementValue(x, ns, "SellingStatus", "QuantitySold").ToDecimalDotOrComaSeparated();
+						res.SellingStatus.CurrentPrice = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToDecimalDotOrComaSeparated( false );
 						res.SellingStatus.CurrentPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "CurrentPrice" );
-						res.SellingStatus.QuantitySold = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToIntOrDefault();
+						res.SellingStatus.QuantitySold = GetElementValue( x, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault( false );
 					}
 
 					var variations = x.Element( ns + "Variations" );
@@ -67,20 +65,20 @@ namespace EbayAccess.Services.Parsers
 					{
 						res.Variations = new List< Variation >();
 
-						var variationsElem = variations.Descendants( ns + "Variation" );
+						var variationsElem = variations.Descendants( ns + "Variation" ).ToList();
 
 						var variationsObj = variationsElem.Select( variat =>
 						{
 							var tempVariation = new Variation();
 
 							tempVariation.Sku = GetElementValue( variat, ns, "SKU" );
-							tempVariation.StartPrice = GetElementValue(variat, ns, "StartPrice").ToDecimalDotOrComaSeparated();
-							tempVariation.StartPriceCurrencyId = this.GetElementAttribute("currencyID", x, ns, "SellingStatus", "StartPrice");
-							tempVariation.Quantity = GetElementValue( variat, ns, "Quantity" ).ToIntOrDefault();
-							tempVariation.SellingStatus.QuantitySold = GetElementValue( variat, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault();
+							tempVariation.StartPrice = GetElementValue( variat, ns, "StartPrice" ).ToDecimalDotOrComaSeparated( false );
+							tempVariation.StartPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "StartPrice" );
+							tempVariation.Quantity = GetElementValue( variat, ns, "Quantity" ).ToIntOrDefault( false );
+							tempVariation.SellingStatus = new SellingStatus { QuantitySold = GetElementValue( variat, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault( false ) };
 
 							return tempVariation;
-						} );
+						} ).ToList();
 
 						res.Variations.AddRange( variationsObj );
 					}
