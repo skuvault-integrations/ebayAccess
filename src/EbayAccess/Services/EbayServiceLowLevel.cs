@@ -40,7 +40,7 @@ namespace EbayAccess.Services
 			this._endPoint = ebayConfig.EndPoint;
 			this._endPointBulkExhange = ebayConfig.EndPointBulkExhange;
 			this._ebaySignInUrl = ebayConfig.SignInUrl;
-			this._itemsPerPage = 50;
+			this._itemsPerPage = 200;
 			this._ebayConfig = ebayConfig;
 		}
 
