@@ -58,8 +58,6 @@ namespace EbayAccess
 			if( getOrdersResponse.Error != null )
 				return new List< Order >();
 
-			this.PopulateOrdersItemsDetails( getOrdersResponse.Orders );
-
 			return getOrdersResponse.Orders;
 		}
 
@@ -70,7 +68,6 @@ namespace EbayAccess
 			if( getOrdersResponse.Error != null )
 				return new List< Order >();
 
-			this.PopulateOrdersItemsDetails( getOrdersResponse.Orders );
 			return getOrdersResponse.Orders;
 		}
 		#endregion
