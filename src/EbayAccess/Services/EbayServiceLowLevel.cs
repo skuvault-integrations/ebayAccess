@@ -418,42 +418,29 @@ namespace EbayAccess.Services
 		{
 			var recordsPerPage = this._itemsPerPage;
 			const int pageNumber = 1;
-			var getSellerListResponses = new ConcurrentBag<GetSellerListCustomResponse>();
 
 			var getSellerListResponse = await this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber ).ConfigureAwait( false );
 
-			//var tasks = new List< Task >();
-			var tasks = new ConcurrentBag<Task<GetSellerListCustomResponse>>();
+			var tasks = new ConcurrentBag< Task< GetSellerListCustomResponse > >();
 
-			var pages = new ConcurrentBag<int>();
+			var pages = new ConcurrentBag< int >();
 
 			if( getSellerListResponse != null && getSellerListResponse.Error == null )
 			{
 				if( getSellerListResponse.PaginationResult.TotalNumberOfPages > 1 )
 				{
-					for( int i = 2; i <= getSellerListResponse.PaginationResult.TotalNumberOfPages; i++ )
+					for( var i = 2; i <= getSellerListResponse.PaginationResult.TotalNumberOfPages; i++ )
 					{
-						//await Task.Factory.StartNew( async () => getSellerListResponses.Add( await GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, i ).ConfigureAwait( false ) ) );
 						pages.Add( i );
 					}
 
-					//tasks.Add(Task.Factory.StartNew(async () => getSellerListResponses.Add(await GetSellerListCustomResponseAsync(timeFrom, timeTo, timeRangeEnum, recordsPerPage, i))));
-					//tasks.AddRange(pages.Select( x => GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ));
-					Parallel.ForEach( pages, x => tasks.Add( GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ) );
-					//{
-					//	var getSellerListCustomResponse = GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ).ConfigureAwait( false );
-					//	getSellerListResponses.Add( getSellerListCustomResponse );
-					//}
-					//	) );
+					await Task.Factory.StartNew( () => Parallel.ForEach( pages, new ParallelOptions { MaxDegreeOfParallelism = 100 }, x => tasks.Add( this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ) ) ).ConfigureAwait( false );
 				}
 			}
 
 			await Task.WhenAll( tasks ).ConfigureAwait( false );
 
-			foreach( var task in tasks )
-			{
-				getSellerListResponses.Add( task.Result );
-			}
+			var getSellerListResponses = tasks.Select( task => task.Result ).ToList();
 
 			getSellerListResponses.Add( getSellerListResponse );
 
@@ -473,9 +460,7 @@ namespace EbayAccess.Services
 				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
 				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
-				{
 					getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
-				}
 			} ).ConfigureAwait( false );
 
 			return getSellerListResponse;
