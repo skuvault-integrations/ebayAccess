@@ -542,22 +542,15 @@ namespace EbayAccess.Services
 			string result = null;
 
 			var body = this.CreateFetchTokenRequestBody( sessionId );
-
 			var headers = CreateFetchTokenRequestHeadersWithApiCallName();
+			var webRequest =  this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
-			ActionPolicies.Get.Do(  () =>
+			using( var memStream = this._webRequestServices.GetResponseStream( webRequest ))
 			{
-				var webRequest =  this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
-
-				using( var memStream = this._webRequestServices.GetResponseStream( webRequest ))
-				{
-					var tempResponse = new EbayFetchTokenResponseParser().Parse( memStream );
-					if( tempResponse != null && tempResponse.Error == null )
-						result = tempResponse.EbayAuthToken;
-					else
-						throw new Exception( "Can't fetch token" );
-				}
-			} );
+				var tempResponse = new EbayFetchTokenResponseParser().Parse( memStream );
+				if( tempResponse != null && tempResponse.Error == null )
+					result = tempResponse.EbayAuthToken;
+			}
 
 			return result;
 		}

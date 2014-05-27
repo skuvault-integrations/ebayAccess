@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using EbayAccess;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
@@ -201,6 +202,7 @@ namespace EbayAccessTests.Integration
 			//------------ Act
 			var sessionId = ebayService.GetUserSessionId();
 			var authUri = ebayService.GetAuthUri( sessionId );
+			Process.Start( authUri );
 			var token = ebayService.FetchUserToken(sessionId);
 			
 			//------------ Assert
