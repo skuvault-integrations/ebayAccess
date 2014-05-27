@@ -29,6 +29,10 @@ namespace EbayAccess.Services.Parsers
 				if( erros != null )
 					return new GetSellerListCustomResponse { Error = erros };
 
+				var pagination = this.GetPagination(root, ns);
+				if( pagination != null )
+					getSellerListResponse.PaginationResult = pagination;
+
 				var xmlItems = root.Descendants( ns + "Item" );
 
 				getSellerListResponse.HasMoreItems = GetElementValue( root, ns, "HasMoreItems" ).ToBool( false );

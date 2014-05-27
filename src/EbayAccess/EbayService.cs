@@ -73,7 +73,10 @@ namespace EbayAccess
 		#endregion
 
 		#region GetProducts
-		public async Task< IEnumerable< Item > > GetActiveProductsAsync()
+
+		//todo kill
+		[Obsolete]
+		public async Task< IEnumerable< Item > > GetActiveProductsAsync_old()
 		{
 			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListCustomAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), TimeRangeEnum.EndTime ).ConfigureAwait( false );
 
@@ -83,6 +86,15 @@ namespace EbayAccess
 			var splitedItems = sellerListAsync.ItemsSplitedByVariations;
 
 			return splitedItems;
+		}
+
+		public async Task<IEnumerable<Item>> GetActiveProductsAsync()
+		{
+			var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync(DateTime.UtcNow, DateTime.UtcNow.AddDays(Maxtimerange), TimeRangeEnum.EndTime).ConfigureAwait(false);
+
+			var items = sellerListsAsync.SelectMany( x => x.ItemsSplitedByVariations );
+
+			return items;
 		}
 
 		public async Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo )

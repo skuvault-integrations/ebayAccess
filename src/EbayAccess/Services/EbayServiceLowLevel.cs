@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -411,6 +412,73 @@ namespace EbayAccess.Services
 			} while( hasMoreItems );
 
 			return items;
+		}
+
+		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		{
+			var recordsPerPage = this._itemsPerPage;
+			const int pageNumber = 1;
+			var getSellerListResponses = new ConcurrentBag<GetSellerListCustomResponse>();
+
+			var getSellerListResponse = await this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber ).ConfigureAwait( false );
+
+			//var tasks = new List< Task >();
+			var tasks = new ConcurrentBag<Task<GetSellerListCustomResponse>>();
+
+			var pages = new ConcurrentBag<int>();
+
+			if( getSellerListResponse != null && getSellerListResponse.Error == null )
+			{
+				if( getSellerListResponse.PaginationResult.TotalNumberOfPages > 1 )
+				{
+					for( int i = 2; i <= getSellerListResponse.PaginationResult.TotalNumberOfPages; i++ )
+					{
+						//await Task.Factory.StartNew( async () => getSellerListResponses.Add( await GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, i ).ConfigureAwait( false ) ) );
+						pages.Add( i );
+					}
+
+					//tasks.Add(Task.Factory.StartNew(async () => getSellerListResponses.Add(await GetSellerListCustomResponseAsync(timeFrom, timeTo, timeRangeEnum, recordsPerPage, i))));
+					//tasks.AddRange(pages.Select( x => GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ));
+					Parallel.ForEach( pages, x => tasks.Add( GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ) );
+					//{
+					//	var getSellerListCustomResponse = GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ).ConfigureAwait( false );
+					//	getSellerListResponses.Add( getSellerListCustomResponse );
+					//}
+					//	) );
+				}
+			}
+
+			await Task.WhenAll( tasks ).ConfigureAwait( false );
+
+			foreach( var task in tasks )
+			{
+				getSellerListResponses.Add( task.Result );
+			}
+
+			getSellerListResponses.Add( getSellerListResponse );
+
+			return getSellerListResponses.Where( x => x != null ).ToList();
+		}
+
+		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, int recordsPerPage, int pageNumber )
+		{
+			var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
+
+			var headers = CreateGetSellerListRequestHeadersWithApiCallName();
+
+			GetSellerListCustomResponse getSellerListResponse = null;
+
+			await ActionPolicies.GetAsync.Do( async () =>
+			{
+				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				{
+					getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
+				}
+			} ).ConfigureAwait( false );
+
+			return getSellerListResponse;
 		}
 		#endregion
 
