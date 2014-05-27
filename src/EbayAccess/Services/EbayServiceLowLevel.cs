@@ -635,27 +635,43 @@ namespace EbayAccess.Services
 					.Where( productUpdated => productUpdated != null )
 					.ToList();
 		}
-
+		
 		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses )
 		{
 			const int maxItemsPerCall = 4;
 
 			var inventoryStatusRequests = inventoryStatuses.ToList();
 
-			var tasks = new List< Task< InventoryStatusResponse > >();
+			var resultResponses = new ConcurrentBag< InventoryStatusResponse >();
 
-			for( var i = 0; i < inventoryStatuses.Count(); i += maxItemsPerCall )
+			var chunks = new ConcurrentBag< Tuple< InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest > >();
+
+			var inventoriyStatusesCount = inventoryStatuses.Count();
+			for( var i = 0; i < inventoriyStatusesCount; i += maxItemsPerCall )
 			{
-				var statusReq = i < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i ] : null;
-				var statusReq2 = i + 1 < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i + 1 ] : null;
-				var statusReq3 = i + 2 < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i + 2 ] : null;
-				var statusReq4 = i + 3 < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i + 3 ] : null;
+				var statusReq = i < inventoriyStatusesCount ? inventoryStatusRequests[ i ] : null;
 
-				tasks.Add( this.ReviseInventoryStatusAsync( statusReq, statusReq2, statusReq3, statusReq4 ) );
+				var secondInCortege = i + 1;
+				var statusReq2 = secondInCortege < inventoriyStatusesCount ? inventoryStatusRequests[ secondInCortege ] : null;
+
+				var thirdInCortege = i + 2;
+				var statusReq3 = thirdInCortege < inventoriyStatusesCount ? inventoryStatusRequests[ thirdInCortege ] : null;
+
+				var fourthInCortege = i + 3;
+				var statusReq4 = fourthInCortege < inventoriyStatusesCount ? inventoryStatusRequests[ fourthInCortege ] : null;
+
+				chunks.Add( new Tuple< InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest >( statusReq, statusReq2, statusReq3, statusReq4 ) );
 			}
 
-			var commonTask = Task.WhenAll( tasks );
-			var resultResponses = await commonTask.ConfigureAwait( false );
+			await Task.Factory.StartNew( () =>
+				Parallel.ForEach( chunks, new ParallelOptions { MaxDegreeOfParallelism = 50 }, x =>
+				{
+					var task = this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4 );
+					task.Wait();
+					resultResponses.Add( task.Result );
+				} )
+				).ConfigureAwait( false );
+
 			return resultResponses;
 
 			//var reviseInventoryTasks =
