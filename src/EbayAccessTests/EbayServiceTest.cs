@@ -44,8 +44,7 @@ namespace EbayAccessTests
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
-			var orders = ebayService.GetSellerList( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime, GetSellerListDetailsLevelEnum.Default );
+			var orders = ebayService.GetSellerList( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), TimeRangeEnum.StartTime );
 
 			//A
 			orders.Items.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );

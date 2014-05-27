@@ -9,6 +9,7 @@ using EbayAccess.Misc;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.GetSellerListResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
@@ -26,6 +27,7 @@ namespace EbayAccess.Services
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
 		private string _ebaySignInUrl;
+		private readonly string _endPointBulkExhange;
 
 		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
 		{
@@ -36,8 +38,9 @@ namespace EbayAccess.Services
 			this._userCredentials = credentials;
 			this._webRequestServices = webRequestServices;
 			this._endPoint = ebayConfig.EndPoint;
+			this._endPointBulkExhange = ebayConfig.EndPointBulkExhange;
 			this._ebaySignInUrl = ebayConfig.SignInUrl;
-			this._itemsPerPage = 50;
+			this._itemsPerPage = 200;
 			this._ebayConfig = ebayConfig;
 		}
 
@@ -77,6 +80,11 @@ namespace EbayAccess.Services
 				headers.Add( EbayHeaders.XEbayApiCertName, this._ebayConfig.CertName );
 
 			return await this.CreateEbayStandartPostRequestAsync( url, headers, body ).ConfigureAwait( false );
+		}
+
+		public async Task< WebRequest > CreateEbayStandartPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body )
+		{
+			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
 		}
 
 		public WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body )
@@ -211,32 +219,31 @@ namespace EbayAccess.Services
 			};
 		}
 
-		private string CreateGetSellerListRequestBody( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, int recordsPerPage, int pageNumber, GetSellerListDetailsLevelEnum detailsLevel )
+		private string CreateGetSellerListRequestBody( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, int recordsPerPage, int pageNumber )
 		{
-			switch( detailsLevel )
-			{
-				case GetSellerListDetailsLevelEnum.IdQtyPriceTitleSkuVariations:
-					return string.Format(
-						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><{5}From>{1}</{5}From><{5}To>{2}</{5}To><IncludeVariations>true</IncludeVariations><Pagination ComplexType=\"PaginationType\"><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination>  <DetailLevel>ReturnAll</DetailLevel><OutputSelector>PaginationResult,HasMoreItems,ItemArray.Item.SKU,ItemArray.Item.Variations,ItemArray.Item.Quantity,ItemArray.Item.Title,ItemArray.Item.ItemID,ItemArray.Item.SellingStatus.CurrentPrice</OutputSelector> </GetSellerListRequest>​​​",
-						this._userCredentials.Token,
-						timeFrom.ToStringUtcIso8601(),
-						timeTo.ToStringUtcIso8601(),
-						recordsPerPage,
-						pageNumber,
-						timeRangeEnum );
-				default:
-					return string.Format(
-						"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><{5}From>{1}</{5}From><{5}To>{2}</{5}To><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><DetailLevel>ReturnAll</DetailLevel></GetSellerListRequest>​​",
-						this._userCredentials.Token,
-						timeFrom.ToStringUtcIso8601(),
-						timeTo.ToStringUtcIso8601(),
-						recordsPerPage,
-						pageNumber,
-						timeRangeEnum );
-			}
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><{5}From>{1}</{5}From><{5}To>{2}</{5}To><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><DetailLevel>ReturnAll</DetailLevel></GetSellerListRequest>​​",
+				this._userCredentials.Token,
+				timeFrom.ToStringUtcIso8601(),
+				timeTo.ToStringUtcIso8601(),
+				recordsPerPage,
+				pageNumber,
+				timeRangeEnum );
 		}
 
-		public GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, GetSellerListDetailsLevelEnum detailsLevel )
+		private string CreateGetSellerListCustomRequestBody( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, int recordsPerPage, int pageNumber )
+		{
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><{5}From>{1}</{5}From><{5}To>{2}</{5}To><IncludeVariations>true</IncludeVariations><Pagination ComplexType=\"PaginationType\"><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination>  <DetailLevel>ReturnAll</DetailLevel><OutputSelector>PaginationResult,HasMoreItems,ItemArray.Item.SKU,ItemArray.Item.Variations,ItemArray.Item.Quantity,ItemArray.Item.Title,ItemArray.Item.ItemID,ItemArray.Item.SellingStatus.CurrentPrice</OutputSelector> </GetSellerListRequest>​​​",
+				this._userCredentials.Token,
+				timeFrom.ToStringUtcIso8601(),
+				timeTo.ToStringUtcIso8601(),
+				recordsPerPage,
+				pageNumber,
+				timeRangeEnum );
+		}
+
+		public GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
 		{
 			var items = new GetSellerListResponse();
 
@@ -246,7 +253,7 @@ namespace EbayAccess.Services
 			var hasMoreItems = false;
 			do
 			{
-				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber, detailsLevel );
+				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
 
 				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
@@ -260,7 +267,8 @@ namespace EbayAccess.Services
 						if( pagination != null )
 							totalRecords = pagination.TotalNumberOfEntries;
 
-						var getSellerListResponse = new EbayGetSallerListResponseParser( detailsLevel ).Parse( memStream );
+						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
+
 						if( getSellerListResponse != null )
 						{
 							if( getSellerListResponse.Error != null )
@@ -280,7 +288,7 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, GetSellerListDetailsLevelEnum detailsLevel )
+		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
 		{
 			var items = new GetSellerListResponse();
 
@@ -289,7 +297,7 @@ namespace EbayAccess.Services
 			var hasMoreItems = false;
 			do
 			{
-				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber, detailsLevel );
+				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
 
 				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
@@ -299,7 +307,92 @@ namespace EbayAccess.Services
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
 					{
-						var getSellerListResponse = new EbayGetSallerListResponseParser( detailsLevel ).Parse( memStream );
+						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
+						if( getSellerListResponse != null )
+						{
+							if( getSellerListResponse.Error != null )
+							{
+								items.Error = getSellerListResponse.Error;
+								return;
+							}
+							hasMoreItems = getSellerListResponse.HasMoreItems;
+							if( getSellerListResponse.Items != null )
+								items.Items.AddRange( getSellerListResponse.Items );
+						}
+					}
+				} ).ConfigureAwait( false );
+
+				pageNumber++;
+			} while( hasMoreItems );
+
+			return items;
+		}
+
+		public GetSellerListCustomResponse GetSellerListCustom( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		{
+			var items = new GetSellerListCustomResponse();
+
+			var totalRecords = 0;
+			var recordsPerPage = this._itemsPerPage;
+			var pageNumber = 1;
+			var hasMoreItems = false;
+			do
+			{
+				var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
+
+				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
+
+				ActionPolicies.Get.Do( () =>
+				{
+					var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body );
+
+					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
+					{
+						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
+						if( pagination != null )
+							totalRecords = pagination.TotalNumberOfEntries;
+
+						var getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
+
+						if( getSellerListResponse != null )
+						{
+							if( getSellerListResponse.Error != null )
+							{
+								items.Error = getSellerListResponse.Error;
+								return;
+							}
+							hasMoreItems = getSellerListResponse.HasMoreItems;
+							if( getSellerListResponse.Items != null )
+								items.Items.AddRange( getSellerListResponse.Items );
+						}
+					}
+				} );
+				pageNumber++;
+			} while( hasMoreItems );
+
+			return items;
+		}
+
+		public async Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		{
+			var items = new GetSellerListCustomResponse();
+
+			var recordsPerPage = this._itemsPerPage;
+			var pageNumber = 1;
+			var hasMoreItems = false;
+			do
+			{
+				var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
+
+				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
+
+				await ActionPolicies.GetAsync.Do( async () =>
+				{
+					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+					{
+						var getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
 						if( getSellerListResponse != null )
 						{
 							if( getSellerListResponse.Error != null )
@@ -396,16 +489,39 @@ namespace EbayAccess.Services
 
 		private string CreateReviseInventoryStatusRequestBody( long? itemIdMonad, long? quantityMonad, string sku )
 		{
+			var inventoryStatus = CreateInventoryStatusTag( itemIdMonad, quantityMonad, sku );
+
+			var body = string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials>{1}</ReviseInventoryStatusRequest>",
+				this._userCredentials.Token,
+				inventoryStatus
+				);
+			return body;
+		}
+
+		private static string CreateInventoryStatusTag( long? itemIdMonad, long? quantityMonad, string sku )
+		{
 			var itemIdElement = itemIdMonad.HasValue ? string.Format( "<ItemID>{0}</ItemID>", itemIdMonad.Value ) : string.Empty;
 			var quantityElement = quantityMonad.HasValue ? string.Format( "<Quantity>{0}</Quantity>", quantityMonad.Value ) : string.Empty;
 			var skuElement = !string.IsNullOrWhiteSpace( sku ) ? string.Format( "<SKU>{0}</SKU>", sku ) : string.Empty;
+			var inventoryStatus = string.Format( "<InventoryStatus ComplexType=\"InventoryStatusType\">{0}{1}{2}</InventoryStatus>", itemIdElement, quantityElement, skuElement );
+			return inventoryStatus;
+		}
+
+		private string CreateReviseInventoryStatusRequestBody( InventoryStatusRequest inventoryStatusReq1, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null )
+		{
+			var inv1 = inventoryStatusReq1 != null ? CreateInventoryStatusTag( inventoryStatusReq1.ItemId, inventoryStatusReq1.Quantity, inventoryStatusReq1.Sku ) : string.Empty;
+			var inv2 = inventoryStatusReq2 != null ? CreateInventoryStatusTag( inventoryStatusReq2.ItemId, inventoryStatusReq2.Quantity, inventoryStatusReq2.Sku ) : string.Empty;
+			var inv3 = inventoryStatusReq3 != null ? CreateInventoryStatusTag( inventoryStatusReq3.ItemId, inventoryStatusReq3.Quantity, inventoryStatusReq3.Sku ) : string.Empty;
+			var inv4 = inventoryStatusReq4 != null ? CreateInventoryStatusTag( inventoryStatusReq4.ItemId, inventoryStatusReq4.Quantity, inventoryStatusReq4.Sku ) : string.Empty;
 
 			var body = string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><InventoryStatus ComplexType=\"InventoryStatusType\">{1}{2}{3}</InventoryStatus></ReviseInventoryStatusRequest>",
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials>{1}{2}{3}{4}</ReviseInventoryStatusRequest>",
 				this._userCredentials.Token,
-				itemIdElement,
-				quantityElement,
-				skuElement
+				inv1,
+				inv2,
+				inv3,
+				inv4
 				);
 			return body;
 		}
@@ -426,11 +542,27 @@ namespace EbayAccess.Services
 			}
 		}
 
-		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq )
+		//public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq )
+		//{
+		//	var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
+
+		//	var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq.ItemId, inventoryStatusReq.Quantity, inventoryStatusReq.Sku );
+
+		//	var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+
+		//	using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
+		//	{
+		//		var inventoryStatusResponse =
+		//			new EbayReviseInventoryStatusResponseParser().Parse( memStream );
+		//		return inventoryStatusResponse;
+		//	}
+		//}
+
+		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null )
 		{
 			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
 
-			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq.ItemId, inventoryStatusReq.Quantity, inventoryStatusReq.Sku );
+			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq, inventoryStatusReq2, inventoryStatusReq3, inventoryStatusReq4 );
 
 			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
@@ -453,12 +585,32 @@ namespace EbayAccess.Services
 
 		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses )
 		{
-			var reviseInventoryTasks =
-				inventoryStatuses.Select(
-					productToUpdate => ActionPolicies.Submit.Get( async () => await this.ReviseInventoryStatusAsync( productToUpdate ).ConfigureAwait( false ) ) )
-					.Where( productUpdated => productUpdated != null )
-					.ToList();
-			return await Task.WhenAll( reviseInventoryTasks ).ConfigureAwait( false );
+			const int maxItemsPerCall = 4;
+
+			var inventoryStatusRequests = inventoryStatuses.ToList();
+
+			var tasks = new List< Task< InventoryStatusResponse > >();
+
+			for( var i = 0; i < inventoryStatuses.Count(); i += maxItemsPerCall )
+			{
+				var statusReq = i < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i ] : null;
+				var statusReq2 = i + 1 < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i + 1 ] : null;
+				var statusReq3 = i + 2 < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i + 2 ] : null;
+				var statusReq4 = i + 3 < inventoryStatusRequests.Count() ? inventoryStatusRequests[ i + 3 ] : null;
+
+				tasks.Add( this.ReviseInventoryStatusAsync( statusReq, statusReq2, statusReq3, statusReq4 ) );
+			}
+
+			var commonTask = Task.WhenAll( tasks );
+			var resultResponses = await commonTask.ConfigureAwait( false );
+			return resultResponses;
+
+			//var reviseInventoryTasks =
+			//	inventoryStatuses.Select(
+			//		productToUpdate => ActionPolicies.Submit.Get( async () => await this.ReviseInventoryStatusAsync( productToUpdate ).ConfigureAwait( false ) ) )
+			//		.Where( productUpdated => productUpdated != null )
+			//		.ToList();
+			//return await Task.WhenAll( reviseInventoryTasks ).ConfigureAwait( false );
 
 			//var reviseInventoryStatussesTask = new List< Task<InventoryStatusResponse> >();
 			//foreach (var inventoryStatus in inventoryStatuses)
@@ -555,17 +707,110 @@ namespace EbayAccess.Services
 			return result;
 		}
 		#endregion
+
+		#region JobService
+		public async Task< CreateJobResponse > CreateUploadJobAsync( Guid guid )
+		{
+			var result = new CreateJobResponse();
+
+			var body = this.CreateCreateUploadJobRequestBody( guid, UploadJobTypeEnum.ReviseInventoryStatus );
+
+			var headers = this.CreateCreateUploadJobRequestHeaders();
+
+			await ActionPolicies.GetAsync.Do( async () =>
+			{
+				var webRequest = await this.CreateEbayStandartPostRequestToBulkExchangeServerAsync( this._endPointBulkExhange, headers, body ).ConfigureAwait( false );
+
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				{
+					var createJobResponseParsed = new EbayBulkCreateJobParser().Parse( memStream );
+					if( createJobResponseParsed != null )
+					{
+						if( createJobResponseParsed.Error != null )
+						{
+							result.Error = createJobResponseParsed.Error;
+							return;
+						}
+
+						result.JobId = createJobResponseParsed.JobId;
+					}
+				}
+			} );
+
+			return result;
+		}
+
+		public async Task< AbortJobResponse > AbortJobAsync( string jobId )
+		{
+			var result = new AbortJobResponse();
+
+			var body = this.CreateAbortJobRequestBody( jobId );
+
+			var headers = this.CreateAbortJobRequestHeaders();
+
+			await ActionPolicies.GetAsync.Do( async () =>
+			{
+				var webRequest = await this.CreateEbayStandartPostRequestToBulkExchangeServerAsync( this._endPointBulkExhange, headers, body ).ConfigureAwait( false );
+
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				{
+					var abortJobResponse = new EbayBulkAbortJobParser().Parse( memStream );
+					if( abortJobResponse != null )
+					{
+						if( abortJobResponse.Error != null )
+							result.Error = abortJobResponse.Error;
+					}
+				}
+			} );
+
+			return result;
+		}
+
+		private Dictionary< string, string > CreateAbortJobRequestHeaders()
+		{
+			return new Dictionary< string, string >
+			{
+				{ "X-EBAY-SOA-OPERATION-NAME", "abortJob" },
+				{ "X-EBAY-SOA-SECURITY-TOKEN", "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R" },
+			};
+		}
+
+		private string CreateAbortJobRequestBody( string jobId )
+		{
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><abortJobRequest xmlns=\"http://www.ebay.com/marketplace/services\"><!-- Call-specific Input Fields --><jobId>{0}</jobId></abortJobRequest>",
+				jobId
+				);
+		}
+
+		private Dictionary< string, string > CreateCreateUploadJobRequestHeaders()
+		{
+			return new Dictionary< string, string >
+			{
+				{ "X-EBAY-SOA-OPERATION-NAME", "createUploadJob" },
+				{ "X-EBAY-SOA-SECURITY-TOKEN", "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R" },
+			};
+		}
+
+		private string CreateCreateUploadJobRequestBody( Guid guid, UploadJobTypeEnum uploadJobType )
+		{
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><createUploadJobRequest xmlns=\"http://www.ebay.com/marketplace/services\"><fileType>XML</fileType><uploadJobType>{0}</uploadJobType><UUID>{1}</UUID></createUploadJobRequest>",
+				uploadJobType.ToString(),
+				guid.ToString()
+				);
+		}
+		#endregion
+	}
+
+	internal enum UploadJobTypeEnum
+	{
+		ReviseInventoryStatus
 	}
 
 	public enum TimeRangeEnum
 	{
 		StartTime,
 		EndTime
-	}
-
-	public enum GetSellerListDetailsLevelEnum
-	{
-		Default,
-		IdQtyPriceTitleSkuVariations
 	}
 }

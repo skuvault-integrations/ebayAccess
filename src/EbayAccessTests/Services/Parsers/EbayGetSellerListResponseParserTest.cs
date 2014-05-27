@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using EbayAccess.Services;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
@@ -18,7 +17,7 @@ namespace EbayAccessTests.Services.Parsers
 					FileAccess.Read ) )
 			{
 				//A
-				var orders = new EbayGetSallerListResponseParser( GetSellerListDetailsLevelEnum.Default ).Parse( fs );
+				var orders = new EbayGetSallerListResponseParser().Parse( fs );
 
 				//A
 				orders.Items.Should().HaveCount( 3, "because in source file there is {0} items", 3 );

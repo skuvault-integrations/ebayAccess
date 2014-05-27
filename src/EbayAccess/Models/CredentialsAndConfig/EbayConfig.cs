@@ -11,6 +11,7 @@ namespace EbayAccess.Models.CredentialsAndConfig
 
 		public virtual string EndPoint { get; private set; }
 		public virtual string SignInUrl { get; set; }
+		public virtual string EndPointBulkExhange { get; private set; }
 
 		public EbayConfig( string appName, string devName, string certName )
 		{
@@ -22,6 +23,7 @@ namespace EbayAccess.Models.CredentialsAndConfig
 			this.DevName = devName;
 			this.CertName = certName;
 			this.EndPoint = "https://api.ebay.com/ws/api.dll";
+			this.EndPointBulkExhange = "https://webservices.sandbox.ebay.com/BulkDataExchangeService";
 			this.SignInUrl = "https://signin.ebay.com/ws/eBayISAPI.dll";
 		}
 

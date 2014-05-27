@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace EbayAccess.Models.GetSellerListResponse
+namespace EbayAccess.Models.GetSellerListCustomResponse
 {
 	public partial class Item
 	{
@@ -35,21 +35,21 @@ namespace EbayAccess.Models.GetSellerListResponse
 			if( !string.IsNullOrWhiteSpace( this.Sku ) )
 				return new ItemSku( false, this.Sku );
 
-			if( this.Variations != null && this.Variations.Count == 1 && !string.IsNullOrWhiteSpace( this.Variations[ 0 ].Sku ) )
+			if( this.IsItemWithVariations() && this.Variations.Count == 1 && !string.IsNullOrWhiteSpace( this.Variations[ 0 ].Sku ) )
 				return new ItemSku( true, this.Variations[ 0 ].Sku );
 
-			if( this.Variations != null && this.Variations.Count > 1 )
+			if( this.IsItemWithVariations() && this.HaveMultiVariations() )
 				throw new Exception( "Can't get Sku from multiple variation item" );
 
 			throw new Exception( "Can't get Sku" );
 		}
 
-		public ItemPrice GetBayItNowOrCurretPrice()
+		public ItemPrice GetStartOrCurrentOrBuyItNowPrice()
 		{
-			if( this.Variations != null && this.Variations.Count > 1 )
+			if( this.IsItemWithVariations() && this.HaveMultiVariations() )
 				throw new Exception( "Can't get Price from multiple variation item" );
 
-			if( this.Variations != null && this.Variations.Count == 1 )
+			if( this.IsItemWithVariations() && this.Variations.Count == 1 )
 				return new ItemPrice( true, this.Variations[ 0 ].StartPrice );
 
 			if( this.SellingStatus != null )
@@ -60,32 +60,32 @@ namespace EbayAccess.Models.GetSellerListResponse
 
 		public ItemQuantity GetQuantity()
 		{
-			if( this.Variations != null && this.Variations.Count == 1 )
-				return new ItemQuantity( true, this.Variations[ 0 ].Quantity - this.Variations[ 0 ].QuantitySold );
-
-			if( this.Variations != null && this.Variations.Count > 1 )
+			if( this.IsItemWithVariations() && this.HaveMultiVariations() )
 				throw new Exception( "Can't get Price from multiple variation item" );
+
+			if( this.IsItemWithVariations() && this.Variations.Count == 1 )
+				return new ItemQuantity( true, this.Variations[ 0 ].Quantity - this.Variations[ 0 ].SellingStatus.QuantitySold );
 
 			return new ItemQuantity( false, this.Quantity );
 		}
 
-		public ItemCurrency GetCurrency()
+		public ItemCurrency GetStartOrCurrentOrBuyItNowCurrency()
 		{
-			if( this.Variations != null && this.Variations.Count == 1 )
-				return new ItemCurrency( true, this.Variations[ 0 ].Currency );
+			if( this.IsItemWithVariations() && this.Variations.Count == 1 )
+				return new ItemCurrency( true, this.Variations[ 0 ].StartPriceCurrencyId );
 
-			if( this.Variations != null && this.Variations.Count > 1 )
+			if( this.IsItemWithVariations() && this.HaveMultiVariations() )
 				throw new Exception( "Can't get Price from multiple variation item" );
 
 			if( this.SellingStatus != null )
 				return new ItemCurrency( false, this.SellingStatus.CurrentPriceCurrencyId );
 
-			return new ItemCurrency( false, this.Currency );
+			return new ItemCurrency( false, this.BuyItNowPriceCurrencyId );
 		}
 
 		public bool HaveMultiVariations()
 		{
-			return ( this.Variations != null && this.Variations.Count > 1 );
+			return ( this.IsItemWithVariations() && this.Variations.Count > 1 );
 		}
 
 		public bool IsItemWithVariations()
