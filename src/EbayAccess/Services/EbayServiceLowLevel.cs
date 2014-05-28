@@ -421,7 +421,7 @@ namespace EbayAccess.Services
 
 			var getSellerListResponse = await this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber ).ConfigureAwait( false );
 
-			var tasks = new ConcurrentBag< Task< GetSellerListCustomResponse > >();
+			var tasks = new List< Task< GetSellerListCustomResponse > >();
 
 			var pages = new ConcurrentBag< int >();
 
@@ -433,8 +433,10 @@ namespace EbayAccess.Services
 					{
 						pages.Add( i );
 					}
+					await Task.Factory.StartNew( () =>
+						tasks.AddRange( pages.Select( x => this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ) ) );
 
-					await Task.Factory.StartNew( () => Parallel.ForEach( pages, new ParallelOptions { MaxDegreeOfParallelism = 100 }, x => tasks.Add( this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ) ) ).ConfigureAwait( false );
+					//await Task.Factory.StartNew( () => Parallel.ForEach( pages, new ParallelOptions { MaxDegreeOfParallelism = 100 }, x => tasks.Add( this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ) ) ).ConfigureAwait( false );
 				}
 			}
 
@@ -455,7 +457,7 @@ namespace EbayAccess.Services
 
 			GetSellerListCustomResponse getSellerListResponse = null;
 
-			await ActionPolicies.GetAsync.Do( async () =>
+			await ActionPolicies.SubmitAsync.Do( async () =>
 			{
 				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
 
@@ -635,16 +637,16 @@ namespace EbayAccess.Services
 					.Where( productUpdated => productUpdated != null )
 					.ToList();
 		}
-		
+
 		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses )
 		{
 			const int maxItemsPerCall = 4;
 
 			var inventoryStatusRequests = inventoryStatuses.ToList();
 
-			var resultResponses = new ConcurrentBag< InventoryStatusResponse >();
+			var resultResponses = new List< InventoryStatusResponse >();
 
-			var chunks = new ConcurrentBag< Tuple< InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest > >();
+			var chunks = new List< Tuple< InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest > >();
 
 			var inventoriyStatusesCount = inventoryStatuses.Count();
 			for( var i = 0; i < inventoriyStatusesCount; i += maxItemsPerCall )
@@ -663,32 +665,35 @@ namespace EbayAccess.Services
 				chunks.Add( new Tuple< InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest >( statusReq, statusReq2, statusReq3, statusReq4 ) );
 			}
 
+			var tasks = new List< Task< InventoryStatusResponse > >();
+
 			await Task.Factory.StartNew( () =>
-				Parallel.ForEach( chunks, new ParallelOptions { MaxDegreeOfParallelism = 50 }, x =>
-				{
-					var task = this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4 );
-					task.Wait();
-					resultResponses.Add( task.Result );
-				} )
-				).ConfigureAwait( false );
+			{
+				var reviseInventoryStatusTasks = chunks.Select( x => this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4 ) );
+				tasks.AddRange( reviseInventoryStatusTasks );
+			} ).ConfigureAwait( false );
 
-			return resultResponses;
+			//tasks = chunks.Select(x => this.ReviseInventoryStatusAsync(x.Item1, x.Item2, x.Item3, x.Item4)).ToList();
 
-			//var reviseInventoryTasks =
-			//	inventoryStatuses.Select(
-			//		productToUpdate => ActionPolicies.Submit.Get( async () => await this.ReviseInventoryStatusAsync( productToUpdate ).ConfigureAwait( false ) ) )
-			//		.Where( productUpdated => productUpdated != null )
-			//		.ToList();
-			//return await Task.WhenAll( reviseInventoryTasks ).ConfigureAwait( false );
+			await Task.WhenAll( tasks ).ConfigureAwait( false );
 
-			//var reviseInventoryStatussesTask = new List< Task<InventoryStatusResponse> >();
-			//foreach (var inventoryStatus in inventoryStatuses)
+			resultResponses.AddRange( tasks.Select( x => x.Result ).ToList() );
+
+			//foreach( var x in chunks )
 			//{
-			//	var tesk = ActionPolicies.SubmitAsync.Get( async () => await this.ReviseInventoryStatusAsync( inventoryStatus ).ConfigureAwait( false ) );
-			//	reviseInventoryStatussesTask.Add( tesk );
+			//	resultResponses.Add(await this.ReviseInventoryStatusAsync(x.Item1, x.Item2, x.Item3, x.Item4).ConfigureAwait(false));
 			//}
 
-			//return await Task.WhenAll(reviseInventoryStatussesTask).ConfigureAwait(false);
+			//await Task.Factory.StartNew( () =>
+			//	Parallel.ForEach( chunks, new ParallelOptions { MaxDegreeOfParallelism = 50 }, x =>
+			//	{
+			//		var task = this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4 );
+			//		task.Wait();
+			//		resultResponses.Add( task.Result );
+			//	} )
+			//	).ConfigureAwait( false );
+
+			return resultResponses;
 		}
 		#endregion
 

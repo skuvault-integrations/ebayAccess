@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EbayAccess;
+using EbayAccess.Misc;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
@@ -21,7 +22,9 @@ namespace EbayAccessTests.Integration
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
-			var orders = ebayService.GetOrders( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
+			var ordersTask = ebayService.GetOrdersAsync( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
+			ordersTask.Wait();
+			var orders = ordersTask.Result;
 
 			//------------ Assert
 			orders.Count().Should().BeGreaterThan( 0 );
@@ -211,6 +214,33 @@ namespace EbayAccessTests.Integration
 			token.Should().NotBeNullOrEmpty();
 			var cc = new CsvContext();
 			cc.Write( new List< TestCredentials.FlatUserCredentialsCsvLine > { new TestCredentials.FlatUserCredentialsCsvLine { AccountName = "", Token = token } }, this.FilesEbayTestCredentialsCsv );
+		}
+
+		[ Test ]
+		[Ignore]
+		public void UpdateQty_UpdateForAllActiveProducts_AllActiveUpdated()
+		{
+			//------------ Arrange
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigSandbox() );
+			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
+
+			//------------ Act
+			var activeproductsTask = ebayService.GetActiveProductsAsync();
+			activeproductsTask.Wait();
+			var activeProducts = activeproductsTask.Result;
+
+			var updateResultsaTask1 = ebayService.UpdateProductsAsync( activeProducts.Select( x => new InventoryStatusRequest { ItemId = x.ItemId.ToLong(), Quantity = 10050, Sku = x.Sku } ) );
+			updateResultsaTask1.Wait();
+			var updateResultsa1 = updateResultsaTask1.Result;
+
+			var updateResultsaTask2 = ebayService.UpdateProductsAsync( activeProducts.Select( x => new InventoryStatusRequest { ItemId = x.ItemId.ToLong(), Quantity = 100, Sku = x.Sku } ) );
+			updateResultsaTask1.Wait();
+			var updateResultsa2 = updateResultsaTask2.Result;
+
+			//------------ Assert
+			activeProducts.Count().Should().Be( 4999 );
+			updateResultsa1.Count().Should().Be( 1250 );
+			updateResultsa2.Count().Should().Be( 1250 );
 		}
 	}
 }

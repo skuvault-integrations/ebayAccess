@@ -74,23 +74,9 @@ namespace EbayAccess
 
 		#region GetProducts
 
-		//todo kill
-		[Obsolete]
-		public async Task< IEnumerable< Item > > GetActiveProductsAsync_old()
+		public async Task< IEnumerable< Item > > GetActiveProductsAsync()
 		{
-			var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListCustomAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), TimeRangeEnum.EndTime ).ConfigureAwait( false );
-
-			if( sellerListAsync.Error != null )
-				return new List< Item >();
-
-			var splitedItems = sellerListAsync.ItemsSplitedByVariations;
-
-			return splitedItems;
-		}
-
-		public async Task<IEnumerable<Item>> GetActiveProductsAsync()
-		{
-			var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync(DateTime.UtcNow, DateTime.UtcNow.AddDays(Maxtimerange), TimeRangeEnum.EndTime).ConfigureAwait(false);
+			var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), TimeRangeEnum.EndTime ).ConfigureAwait( false );
 
 			var items = sellerListsAsync.SelectMany( x => x.ItemsSplitedByVariations );
 

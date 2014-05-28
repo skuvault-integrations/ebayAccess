@@ -117,9 +117,9 @@ namespace EbayAccess.Services.Parsers
 				{
 					var pagination = new PaginationResult();
 
-					pagination.TotalNumberOfPages = EbayXmlParser<InventoryStatusResponse>.GetElementValue(isSuccess, ns, "TotalNumberOfPages").ToIntOrDefault();
+					pagination.TotalNumberOfPages = EbayXmlParser< InventoryStatusResponse >.GetElementValue( isSuccess, ns, "TotalNumberOfPages" ).ToIntOrDefault();
 
-					pagination.TotalNumberOfEntries = EbayXmlParser<InventoryStatusResponse>.GetElementValue(isSuccess, ns, "TotalNumberOfEntries").ToIntOrDefault();
+					pagination.TotalNumberOfEntries = EbayXmlParser< InventoryStatusResponse >.GetElementValue( isSuccess, ns, "TotalNumberOfEntries" ).ToIntOrDefault();
 
 					return pagination;
 				}

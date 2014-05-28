@@ -29,7 +29,7 @@ namespace EbayAccess.Services.Parsers
 				if( erros != null )
 					return new GetSellerListCustomResponse { Error = erros };
 
-				var pagination = this.GetPagination(root, ns);
+				var pagination = this.GetPagination( root, ns );
 				if( pagination != null )
 					getSellerListResponse.PaginationResult = pagination;
 
