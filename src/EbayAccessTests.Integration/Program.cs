@@ -123,6 +123,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
+		[ Ignore ]
 		public void GetProductsDetailsAsync_EbayServiceWithProducts_HookupProductsThatEitherSingleVariationEitherNonVariation()
 		{
 			//------------ Arrange

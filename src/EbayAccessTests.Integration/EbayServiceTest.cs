@@ -100,6 +100,7 @@ namespace EbayAccessTests.Integration
 
 		#region GetProductsDetails
 		[ Test ]
+		[ Ignore ]
 		public void GetProductsDetailsAsync_ServiceWithExistingProducts_HookupProducts()
 		{
 			//------------ Arrange
