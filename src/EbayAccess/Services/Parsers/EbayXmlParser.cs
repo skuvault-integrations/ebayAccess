@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
+using EbayAccess.Misc;
 using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 
@@ -105,6 +106,29 @@ namespace EbayAccess.Services.Parsers
 				return ResponseError;
 			}
 			return null;
+		}
+
+		protected virtual PaginationResult GetPagination( XElement root, XNamespace ns )
+		{
+			try
+			{
+				var isSuccess = root.Element( ns + "PaginationResult" );
+				if( isSuccess != null )
+				{
+					var pagination = new PaginationResult();
+
+					pagination.TotalNumberOfPages = EbayXmlParser< InventoryStatusResponse >.GetElementValue( isSuccess, ns, "TotalNumberOfPages" ).ToIntOrDefault();
+
+					pagination.TotalNumberOfEntries = EbayXmlParser< InventoryStatusResponse >.GetElementValue( isSuccess, ns, "TotalNumberOfEntries" ).ToIntOrDefault();
+
+					return pagination;
+				}
+				return null;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 	}
 }

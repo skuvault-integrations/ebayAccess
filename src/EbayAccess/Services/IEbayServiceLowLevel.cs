@@ -51,5 +51,7 @@ namespace EbayAccess.Services
 		Task< CreateJobResponse > CreateUploadJobAsync( Guid guid );
 
 		Task< AbortJobResponse > AbortJobAsync( string jobId );
+
+		Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum );
 	}
 }
