@@ -27,7 +27,7 @@ namespace EbayAccess.Services
 		private readonly string _endPoint;
 		private readonly int _itemsPerPage;
 		private readonly IWebRequestServices _webRequestServices;
-		private string _ebaySignInUrl;
+		private readonly string _ebaySignInUrl;
 		private readonly string _endPointBulkExhange;
 
 		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
@@ -770,9 +770,9 @@ namespace EbayAccess.Services
 
 			var body = this.CreateFetchTokenRequestBody( sessionId );
 			var headers = CreateFetchTokenRequestHeadersWithApiCallName();
-			var webRequest =  this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
+			var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
 
-			using( var memStream = this._webRequestServices.GetResponseStream( webRequest ))
+			using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
 			{
 				var tempResponse = new EbayFetchTokenResponseParser().Parse( memStream );
 				if( tempResponse != null && tempResponse.Error == null )
