@@ -58,13 +58,9 @@ namespace EbayAccess.Services.Parsers
 						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( elCheckoutStatus, ns, "IntegratedMerchantCreditCardEnabled" ) ) )
 							obCheckoutStatus.IntegratedMerchantCreditCardEnabled = bool.Parse( temp );
 
-						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( elCheckoutStatus, ns, "LastModifiedTime" ) ) )
-							obCheckoutStatus.LastModifiedTime = ( DateTime.Parse( temp ) );
-
+						obCheckoutStatus.LastModifiedTime = GetElementValue( elCheckoutStatus, ns, "LastModifiedTime" ).ToDateTime();
 						obCheckoutStatus.PaymentMethod = GetElementValue( elCheckoutStatus, ns, "PaymentMethod" );
-
 						obCheckoutStatus.Status = GetElementValue( elCheckoutStatus, ns, "Status" );
-
 						resultOrder.CheckoutStatus = obCheckoutStatus;
 					}
 					#endregion
@@ -74,17 +70,11 @@ namespace EbayAccess.Services.Parsers
 					{
 						var shipToAddress = x.Element( ns + "ShippingAddress" );
 						var address = new ShippingAddress();
-
 						address.Country = GetElementValue( shipToAddress, ns, "Country" );
-
 						address.City = GetElementValue( shipToAddress, ns, "CityName" );
-
 						address.PostalCode = GetElementValue( shipToAddress, ns, "PostalCode" );
-
 						address.State = GetElementValue( shipToAddress, ns, "StateOrProvince" );
-
 						address.Street1 = GetElementValue( shipToAddress, ns, "Street1" );
-
 						address.Street2 = GetElementValue( shipToAddress, ns, "Street2" );
 					}
 					#endregion
@@ -94,23 +84,16 @@ namespace EbayAccess.Services.Parsers
 					{
 						var paymentHoldDetails = x.Element( ns + "PaymentHoldDetails" );
 						var address = new PaymentHoldDetails();
-
-						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( paymentHoldDetails, ns, "ExpectedReleaseDate" ) ) )
-							address.ExpectedReleaseDate = ( DateTime.Parse( temp ) );
+						address.ExpectedReleaseDate = GetElementValue( paymentHoldDetails, ns, "ExpectedReleaseDate" ).ToDateTime();
 					}
 
 					resultOrder.PaymentMethods = GetElementValue( x, ns, "PaymentMethods" );
 					#endregion
 
 					#region XXXTime
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "CreatedTime" ) ) )
-						resultOrder.CreatedTime = ( DateTime.Parse( temp ) );
-
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "PaidTime" ) ) )
-						resultOrder.PaidTime = ( DateTime.Parse( temp ) );
-
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippedTime" ) ) )
-						resultOrder.ShippedTime = ( DateTime.Parse( temp ) );
+					resultOrder.CreatedTime = GetElementValue( x, ns, "CreatedTime" ).ToDateTime();
+					resultOrder.PaidTime = GetElementValue( x, ns, "PaidTime" ).ToDateTime();
+					resultOrder.ShippedTime = GetElementValue( x, ns, "ShippedTime" ).ToDateTime();
 					#endregion
 
 					#region Refunds
@@ -123,14 +106,9 @@ namespace EbayAccess.Services.Parsers
 						resultOrder.MonetaryDetails.Refunds = refunds.Select( refund =>
 						{
 							var resRefund = new Refund();
-
-							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( refund, ns, "RefundAmount" ) ) )
-								resRefund.RefundAmount = temp.ToDecimalDotOrComaSeparated();
-
+							resRefund.RefundAmount = GetElementValue( refund, ns, "RefundAmount" ).ToDecimalDotOrComaSeparated();
 							resRefund.RefundAmountCurrencyID = this.GetElementAttribute( "CurrencyCodeType", refund, ns, "RefundAmount" );
-
-							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( refund, ns, "RefundTime" ) ) )
-								resRefund.RefundTime = ( DateTime.Parse( temp ) );
+							resRefund.RefundTime = GetElementValue( refund, ns, "RefundTime" ).ToDateTime();
 
 							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( refund, ns, "RefundStatus" ) ) )
 								resRefund.RefundStatus = ( RefundStatus )Enum.Parse( typeof( RefundStatus ), temp );
@@ -150,15 +128,9 @@ namespace EbayAccess.Services.Parsers
 								resultOrder.ShippingDetails = new ShippingDetails();
 								resultOrder.ShippingDetails.ShippingServiceOptions = new ShippingServiceOptions();
 								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo = new ShippingPackageInfo();
-
-								if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ActualDeliveryTime" ) ) )
-									resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ActualDeliveryTime = ( DateTime.Parse( temp ) );
-
-								if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMax" ) ) )
-									resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMax = ( DateTime.Parse( temp ) );
-
-								if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMin" ) ) )
-									resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMin = ( DateTime.Parse( temp ) );
+								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ActualDeliveryTime = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ActualDeliveryTime" ).ToDateTime();
+								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMax = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMax" ).ToDateTime();
+								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMin = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMin" ).ToDateTime();
 							}
 						}
 					}
@@ -179,8 +151,7 @@ namespace EbayAccess.Services.Parsers
 								resTransaction.Buyer.Email = GetElementValue( elBuyer, ns, "Email" );
 							}
 
-							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( transaction, ns, "TransactionPrice" ) ) )
-								resTransaction.TransactionPrice = double.Parse( temp.Replace( '.', ',' ) );
+							resTransaction.TransactionPrice = GetElementValue( transaction, ns, "TransactionPrice" ).ToDecimalDotOrComaSeparated( false );
 
 							var elItem = transaction.Element( ns + "Item" );
 							if( elItem != null )

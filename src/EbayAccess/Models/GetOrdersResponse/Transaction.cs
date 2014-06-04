@@ -10,7 +10,7 @@
 
 		public int TransactionId { get; set; }
 
-		public double TransactionPrice { get; set; }
+		public decimal TransactionPrice { get; set; }
 
 		public string CurrencyId { get; set; }
 
