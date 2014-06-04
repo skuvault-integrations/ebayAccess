@@ -15,7 +15,7 @@ namespace EbayAccess.Misc
 
 		public static decimal ToDecimalDotOrComaSeparated( this string srcString, bool throwException = true )
 		{
-			decimal parsedNumber = 0;
+			decimal parsedNumber = default ( decimal );
 			try
 			{
 				parsedNumber = decimal.Parse( srcString, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture );
@@ -79,25 +79,29 @@ namespace EbayAccess.Misc
 			return parsedNumber;
 		}
 
-		public static DateTime ToDateTime( this string srcString )
+		public static DateTime ToDateTime( this string srcString, bool throwException = false )
 		{
+			DateTime dateTime;
 			try
 			{
-				var dateTime = DateTime.Parse( srcString, CultureInfo.InvariantCulture );
+				dateTime = DateTime.Parse( srcString, CultureInfo.InvariantCulture );
 				return dateTime;
 			}
 			catch
 			{
 				try
 				{
-					var result = XmlConvert.ToDateTime( srcString, XmlDateTimeSerializationMode.RoundtripKind | XmlDateTimeSerializationMode.Utc );
-					return result;
+					dateTime = XmlConvert.ToDateTime(srcString, XmlDateTimeSerializationMode.RoundtripKind | XmlDateTimeSerializationMode.Utc);
 				}
 				catch
 				{
-					return default( DateTime );
+					dateTime = default(DateTime);
+					if( throwException )
+						throw;
 				}
 			}
+
+			return dateTime;
 		}
 	}
 }
