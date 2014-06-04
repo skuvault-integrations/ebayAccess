@@ -90,14 +90,11 @@ namespace EbayAccess.Services.Parsers
 
 						res.ListingDetails.CheckoutEnabled = GetElementValue( x, ns, "ListingDetails", "CheckoutEnabled" ).ToBool();
 
-						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "ConvertedBuyItNowPrice" ) ) )
-							res.ListingDetails.ConvertedBuyItNowPrice = decimal.Parse( temp.Replace( '.', ',' ) );
+						res.ListingDetails.ConvertedBuyItNowPrice = GetElementValue( x, ns, "ListingDetails", "ConvertedBuyItNowPrice" ).ToDecimalDotOrComaSeparated();
 
-						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "ConvertedReservePrice" ) ) )
-							res.ListingDetails.ConvertedReservePrice = decimal.Parse( temp.Replace( '.', ',' ) );
+						res.ListingDetails.ConvertedReservePrice = GetElementValue( x, ns, "ListingDetails", "ConvertedReservePrice" ).ToDecimalDotOrComaSeparated();
 
-						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "ConvertedStartPrice" ) ) )
-							res.ListingDetails.ConvertedStartPrice = decimal.Parse( temp.Replace( '.', ',' ) );
+						res.ListingDetails.ConvertedStartPrice = GetElementValue( x, ns, "ListingDetails", "ConvertedStartPrice" ).ToDecimalDotOrComaSeparated();
 
 						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "EndTime" ) ) )
 							res.ListingDetails.EndTime = ( DateTime.Parse( temp ) );
