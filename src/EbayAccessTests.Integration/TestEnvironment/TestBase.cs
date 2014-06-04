@@ -38,6 +38,12 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		public static readonly DateTime DateTo = new DateTime( 2014, 5, 27, 15, 0, 0, DateTimeKind.Local );
 	}
 
+	internal static class ExistingOrdersModifiedInRange
+	{
+		public static readonly DateTime DateFrom = new DateTime( 2014, 6, 2, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateTo = new DateTime( 2014, 6, 4, 15, 0, 0, DateTimeKind.Local );
+	}
+
 	internal static class NotExistingOrdersInRange
 	{
 		public static readonly DateTime DateFrom = new DateTime( 2000, 4, 14, 15, 0, 0, DateTimeKind.Local );

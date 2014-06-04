@@ -19,7 +19,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var orders = service.GetOrders( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
+			var orders = service.GetOrders( ExistingOrdersModifiedInRange.DateFrom, ExistingOrdersModifiedInRange.DateTo );
 
 			//------------ Assert
 			orders.Count().Should().BeGreaterThan( 1, "because on site there are orders" );
@@ -32,7 +32,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersTask = service.GetOrdersAsync( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
+			var ordersTask = service.GetOrdersAsync( ExistingOrdersModifiedInRange.DateFrom, ExistingOrdersModifiedInRange.DateTo );
 			ordersTask.Wait();
 
 			//------------ Assert
