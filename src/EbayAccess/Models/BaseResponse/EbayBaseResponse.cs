@@ -24,11 +24,12 @@ namespace EbayAccess.Models.BaseResponse
 			set
 			{
 				if( value != null )
+				{
 					switch( value.ErrorCode )
 					{
-						// Auth exception must appears only in trace
+							// Auth exception must appears only in trace
 						case "21916017":
-						// Experied session Id exception must appears only in trace
+							// Experied session Id exception must appears only in trace
 						case "21916016":
 							EbayLogger.Log().Trace( "[ebay] An error occured in response: code={0}, message={1}", value.ErrorCode, value.LongMessage );
 							break;
@@ -36,6 +37,7 @@ namespace EbayAccess.Models.BaseResponse
 							EbayLogger.Log().Error( "[ebay] An error occured in response: code={0}, message={1}", value.ErrorCode, value.LongMessage );
 							break;
 					}
+				}
 				this._error = value;
 			}
 		}

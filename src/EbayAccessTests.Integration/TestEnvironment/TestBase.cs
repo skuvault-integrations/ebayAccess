@@ -44,15 +44,6 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		public static readonly DateTime DateTo = new DateTime( 2000, 5, 24, 15, 0, 0, DateTimeKind.Local );
 	}
 
-	//internal static class ExistingProducts
-	//{
-	//	public static readonly InventoryStatusRequest FixedPrice1WithVariation1 = new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_W", Quantity = 30 };
-	//	public static readonly InventoryStatusRequest FixedPrice1WithVariation2 = new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_B", Quantity = 30 };
-	//	public static readonly InventoryStatusRequest FixedPrice1WithVariation3 = new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_Y", Quantity = 30 };
-	//	public static readonly InventoryStatusRequest FixedPrice1WithoutVariations = new InventoryStatusRequest { ItemId = 110141553531, Sku = "testSku11014", Quantity = 50 };
-	//	public static readonly InventoryStatusRequest FixedPrice2WithoutVariations = new InventoryStatusRequest { ItemId = 110141989389, Sku = "testSku110141989389", Quantity = 80 };
-	//}
-
 	internal static class ExistingProducts
 	{
 		public static readonly InventoryStatusRequest FixedPrice1WithVariation1 = new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_W", Quantity = 30 };

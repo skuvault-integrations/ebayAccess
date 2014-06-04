@@ -73,7 +73,6 @@ namespace EbayAccess
 		#endregion
 
 		#region GetProducts
-
 		public async Task< IEnumerable< Item > > GetActiveProductsAsync()
 		{
 			var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), TimeRangeEnum.EndTime ).ConfigureAwait( false );
