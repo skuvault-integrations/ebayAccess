@@ -13,9 +13,9 @@ namespace EbayAccess.Misc
 			return result;
 		}
 
-		public static decimal ToDecimalDotOrComaSeparated( this string srcString, bool throwException = true )
+		public static decimal ToDecimalDotOrComaSeparated( this string srcString, bool throwException = false )
 		{
-			decimal parsedNumber = default ( decimal );
+			var parsedNumber = default ( decimal );
 			try
 			{
 				parsedNumber = decimal.Parse( srcString, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture );
@@ -91,11 +91,11 @@ namespace EbayAccess.Misc
 			{
 				try
 				{
-					dateTime = XmlConvert.ToDateTime(srcString, XmlDateTimeSerializationMode.RoundtripKind | XmlDateTimeSerializationMode.Utc);
+					dateTime = XmlConvert.ToDateTime( srcString, XmlDateTimeSerializationMode.RoundtripKind | XmlDateTimeSerializationMode.Utc );
 				}
 				catch
 				{
-					dateTime = default(DateTime);
+					dateTime = default( DateTime );
 					if( throwException )
 						throw;
 				}

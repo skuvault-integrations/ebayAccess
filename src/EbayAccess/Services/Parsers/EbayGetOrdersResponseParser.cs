@@ -151,7 +151,7 @@ namespace EbayAccess.Services.Parsers
 								resTransaction.Buyer.Email = GetElementValue( elBuyer, ns, "Email" );
 							}
 
-							resTransaction.TransactionPrice = GetElementValue( transaction, ns, "TransactionPrice" ).ToDecimalDotOrComaSeparated( false );
+							resTransaction.TransactionPrice = GetElementValue( transaction, ns, "TransactionPrice" ).ToDecimalDotOrComaSeparated();
 
 							var elItem = transaction.Element( ns + "Item" );
 							if( elItem != null )
