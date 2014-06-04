@@ -30,8 +30,7 @@ namespace EbayAccess.Services.Parsers
 				string temp;
 				var res = new Item();
 
-				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "AutoPay" ) ) )
-					res.AutoPay = bool.Parse( temp );
+				res.AutoPay = GetElementValue( x, ns, "AutoPay" ).ToBool();
 
 				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "BuyItNowPrice" ) ) )
 				{
@@ -43,8 +42,7 @@ namespace EbayAccess.Services.Parsers
 
 				res.Currency = GetElementValue( x, ns, "Currency" );
 
-				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "HideFromSearch" ) ) )
-					res.HideFromSearch = bool.Parse( temp );
+				res.HideFromSearch = GetElementValue( x, ns, "HideFromSearch" ).ToBool();
 
 				res.ItemId = GetElementValue( x, ns, "ItemID" );
 
@@ -79,14 +77,11 @@ namespace EbayAccess.Services.Parsers
 				{
 					res.ListingDetails = new ListingDetails();
 
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "Adult" ) ) )
-						res.ListingDetails.Adult = bool.Parse( temp );
+					res.ListingDetails.Adult = GetElementValue( x, ns, "ListingDetails", "Adult" ).ToBool();
 
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "BindingAuction" ) ) )
-						res.ListingDetails.BindingAuction = bool.Parse( temp );
+					res.ListingDetails.BindingAuction = GetElementValue( x, ns, "ListingDetails", "BindingAuction" ).ToBool();
 
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "CheckoutEnabled" ) ) )
-						res.ListingDetails.CheckoutEnabled = bool.Parse( temp );
+					res.ListingDetails.CheckoutEnabled = GetElementValue( x, ns, "ListingDetails", "CheckoutEnabled" ).ToBool();
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "ConvertedBuyItNowPrice" ) ) )
 						res.ListingDetails.ConvertedBuyItNowPrice = decimal.Parse( temp.Replace( '.', ',' ) );
@@ -100,14 +95,11 @@ namespace EbayAccess.Services.Parsers
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "EndTime" ) ) )
 						res.ListingDetails.EndTime = ( DateTime.Parse( temp ) );
 
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "HasPublicMessages" ) ) )
-						res.ListingDetails.HasPublicMessages = bool.Parse( temp );
+					res.ListingDetails.HasPublicMessages = GetElementValue( x, ns, "ListingDetails", "HasPublicMessages" ).ToBool();
 
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "HasReservePrice" ) ) )
-						res.ListingDetails.HasReservePrice = bool.Parse( temp );
+					res.ListingDetails.HasReservePrice = GetElementValue( x, ns, "ListingDetails", "HasReservePrice" ).ToBool();
 
-					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "HasUnansweredQuestions" ) ) )
-						res.ListingDetails.HasUnansweredQuestions = bool.Parse( temp );
+					res.ListingDetails.HasUnansweredQuestions = GetElementValue( x, ns, "ListingDetails", "HasUnansweredQuestions" ).ToBool();
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "StartTime" ) ) )
 						res.ListingDetails.StartTime = ( DateTime.Parse( temp ) );

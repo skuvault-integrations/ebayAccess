@@ -35,7 +35,7 @@ namespace EbayAccess.Services.Parsers
 
 				var xmlItems = root.Descendants( ns + "Item" );
 
-				getSellerListResponse.HasMoreItems = GetElementValue( root, ns, "HasMoreItems" ).ToBool( false );
+				getSellerListResponse.HasMoreItems = GetElementValue( root, ns, "HasMoreItems" ).ToBool();
 
 				var orders = xmlItems.Select( x =>
 				{

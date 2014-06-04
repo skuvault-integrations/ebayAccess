@@ -52,12 +52,8 @@ namespace EbayAccess.Services.Parsers
 					{
 						var elCheckoutStatus = x.Element( ns + "CheckoutStatus" );
 						var obCheckoutStatus = new CheckoutStatus();
-
 						obCheckoutStatus.EBayPaymentStatus = GetElementValue( elCheckoutStatus, ns, "eBayPaymentStatus" );
-
-						if( !string.IsNullOrWhiteSpace( temp = GetElementValue( elCheckoutStatus, ns, "IntegratedMerchantCreditCardEnabled" ) ) )
-							obCheckoutStatus.IntegratedMerchantCreditCardEnabled = bool.Parse( temp );
-
+						obCheckoutStatus.IntegratedMerchantCreditCardEnabled = GetElementValue( elCheckoutStatus, ns, "IntegratedMerchantCreditCardEnabled" ).ToBool();
 						obCheckoutStatus.LastModifiedTime = GetElementValue( elCheckoutStatus, ns, "LastModifiedTime" ).ToDateTime();
 						obCheckoutStatus.PaymentMethod = GetElementValue( elCheckoutStatus, ns, "PaymentMethod" );
 						obCheckoutStatus.Status = GetElementValue( elCheckoutStatus, ns, "Status" );

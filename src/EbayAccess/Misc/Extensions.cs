@@ -36,7 +36,7 @@ namespace EbayAccess.Misc
 			return parsedNumber;
 		}
 
-		public static bool ToBool( this string srcString, bool throwException = true )
+		public static bool ToBool( this string srcString, bool throwException = false )
 		{
 			var parsedBool = default( bool );
 			try
