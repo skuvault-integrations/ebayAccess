@@ -147,7 +147,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
+			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime );
 			ordersTask.Wait();
 			//A
 			ordersTask.Result.Orders.Count().Should().BeGreaterThan( 0 );
@@ -160,7 +160,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var orders = ebayServiceLowLevel.GetOrders( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo );
+			var orders = ebayServiceLowLevel.GetOrders( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime );
 
 			//A
 			orders.Orders.Count().Should().BeGreaterThan( 0 );
@@ -173,7 +173,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo );
+			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime );
 			ordersTask.Wait();
 
 			//A
@@ -187,7 +187,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var orders = ebayServiceLowLevel.GetOrders( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo );
+			var orders = ebayServiceLowLevel.GetOrders( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime );
 
 			//A
 			orders.Orders.Count().Should().Be( 0, "because on site there is no orders in specified time" );

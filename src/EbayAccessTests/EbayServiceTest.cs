@@ -72,7 +72,7 @@ namespace EbayAccessTests
 
 			//A
 			var getOrdersResponse = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime );
 
 			//A
 			getOrdersResponse.Orders.First().TransactionArray.Count.Should().Be( 2 );
@@ -102,7 +102,7 @@ namespace EbayAccessTests
 
 			//A
 			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime );
 
 			//A
 			orders.Orders.First().TransactionArray.Count.Should().Be( 2 );
@@ -136,7 +136,7 @@ namespace EbayAccessTests
 
 			//A
 			var getOrdersResponse = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ) );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime );
 
 			//A
 			getOrdersResponse.Orders.Count().Should().Be( 2, "because stub gives 2 pages, 1 item per page" );

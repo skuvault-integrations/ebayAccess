@@ -53,7 +53,7 @@ namespace EbayAccess
 		#region GetOrders
 		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo )
 		{
-			var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo );
+			var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo, GetOrdersTimeRangeEnum.CreateTime );
 
 			if( getOrdersResponse.Error != null )
 				return new List< Order >();
@@ -63,7 +63,7 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
 		{
-			var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo ).ConfigureAwait( false );
+			var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.CreateTime ).ConfigureAwait( false );
 
 			if( getOrdersResponse.Error != null )
 				return new List< Order >();

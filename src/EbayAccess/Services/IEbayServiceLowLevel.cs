@@ -14,9 +14,9 @@ namespace EbayAccess.Services
 {
 	public interface IEbayServiceLowLevel
 	{
-		GetOrdersResponse GetOrders( DateTime createTimeFrom, DateTime createTimeTo );
+		GetOrdersResponse GetOrders( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum );
 
-		Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo );
+		Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum );
 
 		InventoryStatusResponse ReviseInventoryStatus( InventoryStatusRequest inventoryStatusResponse );
 
