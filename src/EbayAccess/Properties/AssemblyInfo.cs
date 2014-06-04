@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -7,6 +8,8 @@ using System.Runtime.InteropServices;
 
 [ assembly : AssemblyTitle( "ebayAccess" ) ]
 [ assembly : AssemblyConfiguration( "" ) ]
+[ assembly : InternalsVisibleTo( "EbayAccessTests" ) ]
+[ assembly : InternalsVisibleTo( "EbayAccessTests.Integration" ) ]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 

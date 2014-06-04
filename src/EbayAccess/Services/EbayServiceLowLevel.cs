@@ -20,7 +20,7 @@ using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services
 {
-	public sealed class EbayServiceLowLevel : IEbayServiceLowLevel
+	internal sealed class EbayServiceLowLevel : IEbayServiceLowLevel
 	{
 		private readonly EbayUserCredentials _userCredentials;
 		private readonly EbayConfig _ebayConfig;
@@ -883,13 +883,13 @@ namespace EbayAccess.Services
 		ReviseInventoryStatus
 	}
 
-	public enum GetSellerListTimeRangeEnum
+	internal enum GetSellerListTimeRangeEnum
 	{
 		StartTime,
 		EndTime
 	}
 
-	public enum GetOrdersTimeRangeEnum
+	internal enum GetOrdersTimeRangeEnum
 	{
 		CreateTime,
 		ModTime

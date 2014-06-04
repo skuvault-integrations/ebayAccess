@@ -12,7 +12,7 @@ using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services
 {
-	public interface IEbayServiceLowLevel
+	internal interface IEbayServiceLowLevel
 	{
 		GetOrdersResponse GetOrders( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum );
 
