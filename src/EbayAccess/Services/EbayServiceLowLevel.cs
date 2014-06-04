@@ -221,7 +221,7 @@ namespace EbayAccess.Services
 			};
 		}
 
-		private string CreateGetSellerListRequestBody( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, int recordsPerPage, int pageNumber )
+		private string CreateGetSellerListRequestBody( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber )
 		{
 			return string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><{5}From>{1}</{5}From><{5}To>{2}</{5}To><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination><DetailLevel>ReturnAll</DetailLevel></GetSellerListRequest>​​",
@@ -230,10 +230,10 @@ namespace EbayAccess.Services
 				timeTo.ToStringUtcIso8601(),
 				recordsPerPage,
 				pageNumber,
-				timeRangeEnum );
+				getSellerListTimeRangeEnum );
 		}
 
-		private string CreateGetSellerListCustomRequestBody( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, int recordsPerPage, int pageNumber )
+		private string CreateGetSellerListCustomRequestBody( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber )
 		{
 			return string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><{5}From>{1}</{5}From><{5}To>{2}</{5}To><IncludeVariations>true</IncludeVariations><Pagination ComplexType=\"PaginationType\"><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination>  <DetailLevel>ReturnAll</DetailLevel><OutputSelector>PaginationResult,HasMoreItems,ItemArray.Item.SKU,ItemArray.Item.Variations,ItemArray.Item.Quantity,ItemArray.Item.Title,ItemArray.Item.ItemID,ItemArray.Item.SellingStatus.CurrentPrice</OutputSelector> </GetSellerListRequest>​​​",
@@ -242,10 +242,10 @@ namespace EbayAccess.Services
 				timeTo.ToStringUtcIso8601(),
 				recordsPerPage,
 				pageNumber,
-				timeRangeEnum );
+				getSellerListTimeRangeEnum );
 		}
 
-		public GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum )
 		{
 			var items = new GetSellerListResponse();
 
@@ -255,7 +255,7 @@ namespace EbayAccess.Services
 			var hasMoreItems = false;
 			do
 			{
-				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
+				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
 
 				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
@@ -290,7 +290,7 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum )
 		{
 			var items = new GetSellerListResponse();
 
@@ -299,7 +299,7 @@ namespace EbayAccess.Services
 			var hasMoreItems = false;
 			do
 			{
-				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
+				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
 
 				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
@@ -330,7 +330,7 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public GetSellerListCustomResponse GetSellerListCustom( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public GetSellerListCustomResponse GetSellerListCustom( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum )
 		{
 			var items = new GetSellerListCustomResponse();
 
@@ -340,7 +340,7 @@ namespace EbayAccess.Services
 			var hasMoreItems = false;
 			do
 			{
-				var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
+				var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
 
 				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
@@ -375,7 +375,7 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public async Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public async Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum )
 		{
 			var items = new GetSellerListCustomResponse();
 
@@ -384,7 +384,7 @@ namespace EbayAccess.Services
 			var hasMoreItems = false;
 			do
 			{
-				var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
+				var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
 
 				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
@@ -415,12 +415,12 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum )
+		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum )
 		{
 			var recordsPerPage = this._itemsPerPage;
 			const int pageNumber = 1;
 
-			var getSellerListResponse = await this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber ).ConfigureAwait( false );
+			var getSellerListResponse = await this.GetSellerListCustomResponseAsync( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber ).ConfigureAwait( false );
 
 			var tasks = new List< Task< GetSellerListCustomResponse > >();
 
@@ -435,7 +435,7 @@ namespace EbayAccess.Services
 						pages.Add( i );
 					}
 					await Task.Factory.StartNew( () =>
-						tasks.AddRange( pages.Select( x => this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ) ) );
+						tasks.AddRange( pages.Select( x => this.GetSellerListCustomResponseAsync( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, x ) ) ) );
 
 					//await Task.Factory.StartNew( () => Parallel.ForEach( pages, new ParallelOptions { MaxDegreeOfParallelism = 100 }, x => tasks.Add( this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ) ) ).ConfigureAwait( false );
 				}
@@ -450,9 +450,9 @@ namespace EbayAccess.Services
 			return getSellerListResponses.Where( x => x != null ).ToList();
 		}
 
-		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( DateTime timeFrom, DateTime timeTo, TimeRangeEnum timeRangeEnum, int recordsPerPage, int pageNumber )
+		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber )
 		{
-			var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, timeRangeEnum, recordsPerPage, pageNumber );
+			var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
 
 			var headers = CreateGetSellerListRequestHeadersWithApiCallName();
 
@@ -883,7 +883,7 @@ namespace EbayAccess.Services
 		ReviseInventoryStatus
 	}
 
-	public enum TimeRangeEnum
+	public enum GetSellerListTimeRangeEnum
 	{
 		StartTime,
 		EndTime
