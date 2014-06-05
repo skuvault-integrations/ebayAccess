@@ -141,6 +141,19 @@ namespace EbayAccessTests.Integration.Services
 
 		#region GetOrders
 		[ Test ]
+		public void GetOrdersAsync_GetByIdEbayServiceWithExistingOrders_HookupOrders()
+		{
+			//A
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+			//A
+			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( ExistingOrdersIds.OrdersIds.ToArray() );
+			ordersTask.Wait();
+			//A
+			ordersTask.Result.Orders.Count().Should().BeGreaterThan( 0 );
+		}
+
+		[ Test ]
 		public void GetOrdersAsync_EbayServiceWithExistingOrders_HookupOrders()
 		{
 			//A

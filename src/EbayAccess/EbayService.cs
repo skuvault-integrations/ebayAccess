@@ -70,6 +70,47 @@ namespace EbayAccess
 
 			return getOrdersResponse.Orders;
 		}
+
+		public async Task< List< string > > GetOrdersIdsAsync( params string[] sourceOrdersIds )
+		{
+			var existsOrders = new List< string >();
+
+			var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( sourceOrdersIds ).ConfigureAwait( false );
+
+			if( getOrdersResponse.Error != null || getOrdersResponse.Orders == null )
+				return existsOrders;
+
+			var distinctOrdersIds = getOrdersResponse.Orders.Distinct( new OrderEqualityComparerById() ).Select( x => x.OrderId ).ToList();
+
+			existsOrders = ( from s in sourceOrdersIds join d in distinctOrdersIds on s equals d select s ).ToList();
+
+			return existsOrders;
+		}
+
+		internal class OrderEqualityComparerById : IEqualityComparer< Order >
+		{
+			public bool Equals( Order x, Order y )
+			{
+				if( ReferenceEquals( x, y ) )
+					return true;
+
+				if( ReferenceEquals( x, null ) || ReferenceEquals( y, null ) )
+					return false;
+
+				//Check whether the products' properties are equal. 
+				return x.OrderId == y.OrderId;
+			}
+
+			public int GetHashCode( Order order )
+			{
+				if( ReferenceEquals( order, null ) )
+					return 0;
+
+				var hashProductName = string.IsNullOrWhiteSpace( order.OrderId ) ? 0 : order.OrderId.GetHashCode();
+
+				return hashProductName;
+			}
+		}
 		#endregion
 
 		#region GetProducts

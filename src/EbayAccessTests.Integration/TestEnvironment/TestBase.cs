@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using Netco.Logging;
 using Netco.Logging.NLogIntegration;
@@ -36,6 +37,36 @@ namespace EbayAccessTests.Integration.TestEnvironment
 	{
 		public static readonly DateTime DateFrom = new DateTime( 2014, 4, 14, 15, 0, 0, DateTimeKind.Local );
 		public static readonly DateTime DateTo = new DateTime( 2014, 5, 27, 15, 0, 0, DateTimeKind.Local );
+	}
+
+	internal static class ExistingOrdersIds
+	{
+		public static readonly List< string > OrdersIds = new List< string >
+		{
+			"110141989389-27286939001",
+			"110143658228-27291236001",
+			"110143658380-27291239001",
+			"271269010",
+			"110142503362-27291905001",
+			"110142503362-27291907001",
+			"110142503362-27291908001",
+			"110142503362-27292237001",
+			"110142503362-27292246001",
+			"110142503362-27292300001",
+			"110142503362-27292302001",
+			"271289010",
+			"271293010",
+			"110143660198-27292342001"
+		};
+	}
+
+	internal static class NotExistingBecauseOfCombinedOrdersIds
+	{
+		public static readonly List< string > OrdersIds = new List< string >
+		{
+			"110142503362-27292309001",
+			"110142503362-27292308001"
+		};
 	}
 
 	internal static class ExistingOrdersModifiedInRange

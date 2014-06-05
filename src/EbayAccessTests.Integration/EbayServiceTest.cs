@@ -13,6 +13,34 @@ namespace EbayAccessTests.Integration
 	{
 		#region GetOrders
 		[ Test ]
+		public void GetOrdersIds_ServiceWithExistingOrders_HookupOrdersIds()
+		{
+			//------------ Arrange
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+			//------------ Act
+			var ordersIdsAsync = service.GetOrdersIdsAsync( ExistingOrdersIds.OrdersIds.ToArray() );
+			ordersIdsAsync.Wait();
+
+			//------------ Assert
+			ordersIdsAsync.Result.Count().Should().Be( ExistingOrdersIds.OrdersIds.Count );
+		}
+
+		[ Test ]
+		public void GetOrdersIds_ServiceWithNotExistingOrders_HookupZeroOrdersIds()
+		{
+			//------------ Arrange
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+			//------------ Act
+			var ordersIdsAsync = service.GetOrdersIdsAsync( NotExistingBecauseOfCombinedOrdersIds.OrdersIds.ToArray() );
+			ordersIdsAsync.Wait();
+
+			//------------ Assert
+			ordersIdsAsync.Result.Count().Should().Be( 0 );
+		}
+
+		[ Test ]
 		public void GetOrders_ServiceWithExistingOrdersInSpecifiedTimeRange_HookupOrders()
 		{
 			//------------ Arrange

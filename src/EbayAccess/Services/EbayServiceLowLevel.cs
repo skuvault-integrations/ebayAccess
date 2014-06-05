@@ -109,6 +109,17 @@ namespace EbayAccess.Services
 				getOrdersTimeRangeEnum );
 		}
 
+		private string CreateGetOrdersRequestBody( int recordsPerPage, int pageNumber, params string[] ordersIds )
+		{
+			var ordersIdsTags = ordersIds.Aggregate( "", ( ac, x ) => ac + string.Format( "<OrderID>{0}</OrderID>", x ) );
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><OrderIDArray>{1}</OrderIDArray><Pagination><EntriesPerPage>{2}</EntriesPerPage><PageNumber>{3}</PageNumber></Pagination></GetOrdersRequest>​",
+				this._userCredentials.Token,
+				ordersIdsTags,
+				recordsPerPage,
+				pageNumber );
+		}
+
 		private static Dictionary< string, string > CreateEbayGetOrdersRequestHeadersWithApiCallName()
 		{
 			return new Dictionary< string, string >
@@ -179,6 +190,52 @@ namespace EbayAccess.Services
 				var headers = CreateEbayGetOrdersRequestHeadersWithApiCallName();
 
 				var body = this.CreateGetOrdersRequestBody( createTimeFrom, createTimeTo, recordsPerPage, pageNumber, getOrdersTimeRangeEnum );
+
+				await ActionPolicies.GetAsync.Do( async () =>
+				{
+					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+					{
+						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
+						if( pagination != null )
+							totalRecords = pagination.TotalNumberOfEntries;
+
+						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
+						if( getOrdersResponseParsed != null )
+						{
+							if( getOrdersResponseParsed.Error != null )
+							{
+								orders.Error = getOrdersResponseParsed.Error;
+								return;
+							}
+							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
+							if( getOrdersResponseParsed.Orders != null )
+								orders.Orders.AddRange( getOrdersResponseParsed.Orders );
+						}
+					}
+				} ).ConfigureAwait( false );
+
+				pageNumber++;
+			} while( hasMoreOrders );
+
+			return orders;
+		}
+
+		public async Task< GetOrdersResponse > GetOrdersAsync( params string[] ordersIds )
+		{
+			var orders = new GetOrdersResponse();
+
+			var totalRecords = 0;
+			var recordsPerPage = this._itemsPerPage;
+			var pageNumber = 1;
+			var hasMoreOrders = false;
+
+			do
+			{
+				var headers = CreateEbayGetOrdersRequestHeadersWithApiCallName();
+
+				var body = this.CreateGetOrdersRequestBody( recordsPerPage, pageNumber, ordersIds );
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
