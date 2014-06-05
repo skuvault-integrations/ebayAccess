@@ -84,21 +84,13 @@ namespace EbayAccess.Misc
 			DateTime dateTime;
 			try
 			{
-				dateTime = DateTime.Parse( srcString, CultureInfo.InvariantCulture );
-				return dateTime;
+				dateTime = XmlConvert.ToDateTime( srcString, XmlDateTimeSerializationMode.RoundtripKind | XmlDateTimeSerializationMode.Utc );
 			}
 			catch
 			{
-				try
-				{
-					dateTime = XmlConvert.ToDateTime( srcString, XmlDateTimeSerializationMode.RoundtripKind | XmlDateTimeSerializationMode.Utc );
-				}
-				catch
-				{
-					dateTime = default( DateTime );
-					if( throwException )
-						throw;
-				}
+				dateTime = default( DateTime );
+				if( throwException )
+					throw;
 			}
 
 			return dateTime;
