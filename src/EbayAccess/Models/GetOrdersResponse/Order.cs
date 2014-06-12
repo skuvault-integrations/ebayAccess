@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace EbayAccess.Models.GetOrdersResponse
 {
@@ -28,10 +27,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 
 		public DateTime ShippedTime { get; set; }
 
-		public decimal Total
-		{
-			get { return this.TransactionArray.Aggregate( 0m, ( ac, item ) => ac + ( decimal )item.TransactionPrice * ( decimal )item.QuantityPurchased ); }
-		}
+		public decimal Total { get; set; }
 
 		public ShippingDetails ShippingDetails { get; set; }
 

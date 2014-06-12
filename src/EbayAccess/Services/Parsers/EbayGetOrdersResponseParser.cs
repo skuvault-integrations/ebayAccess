@@ -90,7 +90,7 @@ namespace EbayAccess.Services.Parsers
 					}
 					#endregion
 
-					#region PaymentDetails
+					#region Payment
 					if( x.Element( ns + "PaymentHoldDetails" ) != null )
 					{
 						var paymentHoldDetails = x.Element( ns + "PaymentHoldDetails" );
@@ -99,6 +99,8 @@ namespace EbayAccess.Services.Parsers
 					}
 
 					resultOrder.PaymentMethods = GetElementValue( x, ns, "PaymentMethods" );
+
+					resultOrder.Total = GetElementValue( x, ns, "Total" ).ToDecimalDotOrComaSeparated();
 					#endregion
 
 					#region XXXTime
