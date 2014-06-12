@@ -45,7 +45,18 @@ namespace EbayAccess.Services.Parsers
 					resultOrder.OrderId = GetElementValue( x, ns, "OrderID" );
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "OrderStatus" ) ) )
-						resultOrder.Status = ( EbayOrderStatusEnum )Enum.Parse( typeof( EbayOrderStatusEnum ), temp );
+					{
+						EbayOrderStatusEnum tempEbayOrderStatusEnum;
+						if( Enum.TryParse( temp, true, out tempEbayOrderStatusEnum ) )
+							resultOrder.Status = tempEbayOrderStatusEnum;
+					}
+
+					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "CancelStatus" ) ) )
+					{
+						CancelStatusEnum tempCancelStatus;
+						if( Enum.TryParse( temp, true, out tempCancelStatus ) )
+							resultOrder.CancelStatus = tempCancelStatus;
+					}
 
 					#region ChecoutStatus
 					if( x.Element( ns + "CheckoutStatus" ) != null )
@@ -56,7 +67,11 @@ namespace EbayAccess.Services.Parsers
 						obCheckoutStatus.IntegratedMerchantCreditCardEnabled = GetElementValue( elCheckoutStatus, ns, "IntegratedMerchantCreditCardEnabled" ).ToBool();
 						obCheckoutStatus.LastModifiedTime = GetElementValue( elCheckoutStatus, ns, "LastModifiedTime" ).ToDateTime();
 						obCheckoutStatus.PaymentMethod = GetElementValue( elCheckoutStatus, ns, "PaymentMethod" );
-						obCheckoutStatus.Status = GetElementValue( elCheckoutStatus, ns, "Status" );
+
+						CompleteStatusCodeEnum tempCompleteStatusCodeEnum;
+						if( Enum.TryParse( GetElementValue( elCheckoutStatus, ns, "Status" ), true, out tempCompleteStatusCodeEnum ) )
+							obCheckoutStatus.Status = tempCompleteStatusCodeEnum;
+
 						resultOrder.CheckoutStatus = obCheckoutStatus;
 					}
 					#endregion

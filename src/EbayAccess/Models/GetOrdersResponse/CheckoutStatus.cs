@@ -10,8 +10,16 @@ namespace EbayAccess.Models.GetOrdersResponse
 
 		public string PaymentMethod { get; set; }
 
-		public string Status { get; set; }
+		public CompleteStatusCodeEnum Status { get; set; }
 
 		public bool? IntegratedMerchantCreditCardEnabled { get; set; }
+	}
+
+	public enum CompleteStatusCodeEnum
+	{
+		Unknown,
+		Incomplete,
+		Pending,
+		Complete
 	}
 }

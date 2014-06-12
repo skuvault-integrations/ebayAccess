@@ -12,6 +12,8 @@ namespace EbayAccess.Models.GetOrdersResponse
 
 		public CheckoutStatus CheckoutStatus { get; set; }
 
+		public CancelStatusEnum CancelStatus { get; set; }
+
 		public DateTime CreatedTime { get; set; }
 
 		public string PaymentMethods { get; set; }
@@ -34,6 +36,14 @@ namespace EbayAccess.Models.GetOrdersResponse
 		public ShippingDetails ShippingDetails { get; set; }
 
 		public MonetaryDetails MonetaryDetails { get; set; }
+	}
+
+	public enum CancelStatusEnum
+	{
+		Undefined,
+		CancelComplete,
+		CancelFailed,
+		CancelPending
 	}
 
 	public enum EbayOrderStatusEnum
