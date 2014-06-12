@@ -41,6 +41,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 				switch( sourceOrder.CheckoutStatus.Status )
 				{
 					case CompleteStatusCodeEnum.Incomplete:
+						return OrderCommonStatusEnum.CheckoutIncomplete;
 					case CompleteStatusCodeEnum.Pending:
 						return OrderCommonStatusEnum.PendingPayment;
 				}
@@ -57,6 +58,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 		{
 			Unknown,
 			Pendinng,
+			CheckoutIncomplete,
 			PendingPayment,
 			Paid,
 			Shipped,
