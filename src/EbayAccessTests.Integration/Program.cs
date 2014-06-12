@@ -143,25 +143,6 @@ namespace EbayAccessTests.Integration
 
 		[ Test ]
 		[ Ignore ]
-		public void GetUserTokenLowLevel_EbayServiceWithCorrectRuName_HookupToken()
-		{
-			////Attention!!! This code will regenerate youe credentials!!!
-
-			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-
-			//A
-			var sessionId = ebayService.GetSessionId();
-			ebayService.AuthenticateUser( sessionId );
-			var userToken = ebayService.FetchToken( sessionId );
-
-			//A
-			sessionId.Should().NotBeNullOrWhiteSpace();
-			userToken.Should().NotBeNullOrWhiteSpace();
-		}
-
-		[ Test ]
-		[ Ignore ]
 		public void GetUserToken_EbaySandBoxServiceWithCorrectRuName_HookupToken()
 		{
 			////Attention!!! This code will regenerate youe credentials!!!

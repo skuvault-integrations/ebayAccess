@@ -238,5 +238,24 @@ namespace EbayAccessTests.Integration.Services
 			abortJobResponse.Error.Should().BeNull();
 		}
 		#endregion
+
+		[ Test ]
+		[ Ignore ]
+		public void FetchToken_EbayServiceWithCorrectRuName_HookupToken()
+		{
+			////Attention!!! This code will regenerate youe credentials!!!
+
+			//A
+			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+			//A
+			var sessionId = ebayService.GetSessionId();
+			ebayService.AuthenticateUser( sessionId );
+			var userToken = ebayService.FetchToken( sessionId );
+
+			//A
+			sessionId.Should().NotBeNullOrWhiteSpace();
+			userToken.Should().NotBeNullOrWhiteSpace();
+		}
 	}
 }
