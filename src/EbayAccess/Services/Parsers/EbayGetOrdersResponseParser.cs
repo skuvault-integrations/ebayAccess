@@ -101,6 +101,8 @@ namespace EbayAccess.Services.Parsers
 					resultOrder.PaymentMethods = GetElementValue( x, ns, "PaymentMethods" );
 
 					resultOrder.Total = GetElementValue( x, ns, "Total" ).ToDecimalDotOrComaSeparated();
+
+					resultOrder.Subtotal = GetElementValue( x, ns, "Subtotal" ).ToDecimalDotOrComaSeparated();
 					#endregion
 
 					#region XXXTime
