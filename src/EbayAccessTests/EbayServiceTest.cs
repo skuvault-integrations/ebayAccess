@@ -106,7 +106,8 @@ namespace EbayAccessTests
 
 			//A
 			orders.Orders.First().TransactionArray.Count.Should().Be( 2 );
-			orders.Orders.First().Total.Should().Be( 7.77m );
+			orders.Orders.First().Subtotal.Should().Be( 7.77m );
+			orders.Orders.First().Total.Should().Be( 10.67m );
 		}
 
 		[ Test ]

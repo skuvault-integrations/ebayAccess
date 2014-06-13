@@ -32,6 +32,8 @@ namespace EbayAccess.Models.GetOrdersResponse
 		public ShippingDetails ShippingDetails { get; set; }
 
 		public MonetaryDetails MonetaryDetails { get; set; }
+
+		public decimal Subtotal { get; set; }
 	}
 
 	public enum CancelStatusEnum
