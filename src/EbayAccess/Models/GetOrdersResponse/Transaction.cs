@@ -21,15 +21,27 @@
 
 	public partial class Transaction
 	{
-		public string GetSku()
+		public EbaySku GetSku()
 		{
-			if( this.Item != null && !string.IsNullOrWhiteSpace( this.Item.Sku ) )
-				return this.Item.Sku;
-
 			if( this.Variation != null && !string.IsNullOrWhiteSpace( this.Variation.Sku ) )
-				return this.Variation.Sku;
+				return new EbaySku( this.Variation.Sku, true );
 
-			return string.Empty;
+			if( this.Item != null && !string.IsNullOrWhiteSpace( this.Item.Sku ) )
+				return new EbaySku( this.Item.Sku, false );
+
+			return new EbaySku( string.Empty, false );
 		}
+	}
+
+	public class EbaySku
+	{
+		public EbaySku( string sku, bool isVariationSku )
+		{
+			this.Sku = sku;
+			this.IsVariationSku = isVariationSku;
+		}
+
+		public string Sku { get; set; }
+		public bool IsVariationSku { get; set; }
 	}
 }
