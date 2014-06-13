@@ -23,7 +23,7 @@ namespace EbayAccess.Models.CredentialsAndConfig
 			this.DevName = devName;
 			this.CertName = certName;
 			this.EndPoint = "https://api.ebay.com/ws/api.dll";
-			this.EndPointBulkExhange = "https://webservices.sandbox.ebay.com/BulkDataExchangeService";
+			this.EndPointBulkExhange = "https://webservices.ebay.com/BulkDataExchangeService";
 			this.SignInUrl = "https://signin.ebay.com/ws/eBayISAPI.dll";
 		}
 
