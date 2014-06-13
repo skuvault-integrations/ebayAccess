@@ -19,15 +19,15 @@
 		public Variation Variation { get; set; }
 	}
 
-	public partial class Transaction
+	public static class TransactionExtensions
 	{
-		public EbaySku GetSku()
+		public static EbaySku GetSku( this Transaction transaction )
 		{
-			if( this.Variation != null && !string.IsNullOrWhiteSpace( this.Variation.Sku ) )
-				return new EbaySku( this.Variation.Sku, true );
+			if( transaction.Variation != null && !string.IsNullOrWhiteSpace( transaction.Variation.Sku ) )
+				return new EbaySku( transaction.Variation.Sku, true );
 
-			if( this.Item != null && !string.IsNullOrWhiteSpace( this.Item.Sku ) )
-				return new EbaySku( this.Item.Sku, false );
+			if( transaction.Item != null && !string.IsNullOrWhiteSpace( transaction.Item.Sku ) )
+				return new EbaySku( transaction.Item.Sku, false );
 
 			return new EbaySku( string.Empty, false );
 		}
