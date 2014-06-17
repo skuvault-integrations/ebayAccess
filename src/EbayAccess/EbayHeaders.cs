@@ -25,11 +25,52 @@
 		public static string XEbayApiCallName { get; private set; }
 	}
 
+	public enum ebaySites
+	{
+		AU = 15, //AUD
+		AT = 16, //EUR
+		BENL = 123, //EUR
+		BEFR = 23, //EUR
+		CA = 2, //CAD USD
+		CAFR = 210, //CAD USD
+		FR = 71, //EUR
+		DE = 77, //EUR
+		HK = 201, //HKD
+		IN = 203, //INR
+		IE = 205, //EUR
+		IT = 101, //EUR
+		MY = 207, //MYR
+		NL = 146, //EUR
+		PH = 211, //PHP
+		PL = 212, //PLN
+		SG = 216, //SGD
+		ES = 186, //EUR
+		CH = 193, //CHF
+		UK = 3, //GBP
+		US = 0, //USD
+	}
+
+	public enum ebayCurrency
+	{
+		AUD,
+		EUR,
+		CAD,
+		HKD,
+		INR,
+		MYR,
+		PHP,
+		PLN,
+		SGD,
+		CHF,
+		GBP,
+		USD,
+	}
+
 	public static class EbayHeadersValues
 	{
 		static EbayHeadersValues()
 		{
-			XEbayApiSiteid = "0";
+			XEbayApiSiteid = ( ( int )ebaySites.US ).ToString();
 			XEbayApiCompatibilityLevel = "853";
 		}
 
