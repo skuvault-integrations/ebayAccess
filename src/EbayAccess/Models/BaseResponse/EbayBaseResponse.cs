@@ -33,8 +33,9 @@ namespace EbayAccess.Models.BaseResponse
 						case "21916016":
 							EbayLogger.Log().Trace( "[ebay] An error occured in response: code={0}, message={1}", value.ErrorCode, value.LongMessage );
 							break;
+							// All errors in trace mode
 						default:
-							EbayLogger.Log().Error( "[ebay] An error occured in response: code={0}, message={1}", value.ErrorCode, value.LongMessage );
+							EbayLogger.Log().Trace( "[ebay] An error occured in response: code={0}, message={1}", value.ErrorCode, value.LongMessage );
 							break;
 					}
 				}
