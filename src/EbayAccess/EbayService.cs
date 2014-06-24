@@ -75,6 +75,9 @@ namespace EbayAccess
 		{
 			var existsOrders = new List< string >();
 
+			if( sourceOrdersIds == null || !sourceOrdersIds.Any() )
+				return existsOrders;
+
 			var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( sourceOrdersIds ).ConfigureAwait( false );
 
 			if( getOrdersResponse.Error != null || getOrdersResponse.Orders == null )
