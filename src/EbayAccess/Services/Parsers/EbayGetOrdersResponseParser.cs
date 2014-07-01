@@ -136,12 +136,15 @@ namespace EbayAccess.Services.Parsers
 					#region Delivery
 					if( x.Element( ns + "ShippingDetails" ) != null )
 					{
+						resultOrder.ShippingDetails = new ShippingDetails();
+
+						resultOrder.ShippingDetails.SellingManagerSalesRecordNumber = GetElementValue( x, ns, "ShippingDetails", "SellingManagerSalesRecordNumber" ).ToIntOrDefault();
+
 						if( x.Element( ns + "ShippingServiceOptions" ) != null )
 						{
+							resultOrder.ShippingDetails.ShippingServiceOptions = new ShippingServiceOptions();
 							if( x.Element( ns + "ShippingPackageInfo" ) != null )
 							{
-								resultOrder.ShippingDetails = new ShippingDetails();
-								resultOrder.ShippingDetails.ShippingServiceOptions = new ShippingServiceOptions();
 								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo = new ShippingPackageInfo();
 								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ActualDeliveryTime = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ActualDeliveryTime" ).ToDateTime();
 								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMax = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMax" ).ToDateTime();

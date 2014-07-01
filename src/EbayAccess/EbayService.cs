@@ -83,7 +83,7 @@ namespace EbayAccess
 			if( getOrdersResponse.Error != null || getOrdersResponse.Orders == null )
 				return existsOrders;
 
-			var distinctOrdersIds = getOrdersResponse.Orders.Distinct( new OrderEqualityComparerById() ).Select( x => x.OrderId ).ToList();
+			var distinctOrdersIds = getOrdersResponse.Orders.Distinct( new OrderEqualityComparerById() ).Select( x => x.GetOrderId() ).ToList();
 
 			existsOrders = ( from s in sourceOrdersIds join d in distinctOrdersIds on s equals d select s ).ToList();
 
@@ -101,7 +101,7 @@ namespace EbayAccess
 					return false;
 
 				//Check whether the products' properties are equal. 
-				return x.OrderId == y.OrderId;
+				return x.GetOrderId() == y.GetOrderId();
 			}
 
 			public int GetHashCode( Order order )
@@ -109,7 +109,7 @@ namespace EbayAccess
 				if( ReferenceEquals( order, null ) )
 					return 0;
 
-				var hashProductName = string.IsNullOrWhiteSpace( order.OrderId ) ? 0 : order.OrderId.GetHashCode();
+				var hashProductName = string.IsNullOrWhiteSpace( order.GetOrderId() ) ? 0 : order.GetOrderId().GetHashCode();
 
 				return hashProductName;
 			}
