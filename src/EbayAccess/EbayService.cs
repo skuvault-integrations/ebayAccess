@@ -90,33 +90,66 @@ namespace EbayAccess
 			}
 		}
 
-		public async Task< List< string > > GetOrdersIdsAsync( params string[] sourceOrdersIds )
+		public async Task< List< string > > GetSaleRecordNumbersAsync( params string[] salerecordsNumbers )
 		{
 			try
 			{
-				var existsOrders = new List< string >();
 
-				if( sourceOrdersIds == null || !sourceOrdersIds.Any() )
-					return existsOrders;
+				//todo:implement
+				//var existsOrders = new List< string >();
 
-				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( sourceOrdersIds ).ConfigureAwait( false );
+				//if( salerecordsNumbers == null || !salerecordsNumbers.Any() )
+				//	return existsOrders;
 
-				if( getOrdersResponse.Error != null )
-					throw new Exception( string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", getOrdersResponse.Error.ErrorCode, getOrdersResponse.Error.ShortMessage, getOrdersResponse.Error.LongMessage ) );
+				//var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( salerecordsNumbers ).ConfigureAwait( false );
 
-				if( getOrdersResponse.Orders == null )
-					return existsOrders;
+				//if( getOrdersResponse.Error != null )
+				//	throw new Exception( string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", getOrdersResponse.Error.ErrorCode, getOrdersResponse.Error.ShortMessage, getOrdersResponse.Error.LongMessage ) );
 
-				var distinctOrdersIds = getOrdersResponse.Orders.Distinct( new OrderEqualityComparerById() ).Select( x => x.GetOrderId() ).ToList();
+				//if( getOrdersResponse.Orders == null )
+				//	return existsOrders;
 
-				existsOrders = ( from s in sourceOrdersIds join d in distinctOrdersIds on s equals d select s ).ToList();
+				//var distinctOrdersIds = getOrdersResponse.Orders.Distinct( new OrderEqualityComparerById() ).Select( x => x.GetOrderId() ).ToList();
+
+				//existsOrders = ( from s in salerecordsNumbers join d in distinctOrdersIds on s equals d select s ).ToList();
 
 				return existsOrders;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called with({0})", string.Join( ",", sourceOrdersIds ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called with({0})", string.Join( ",", salerecordsNumbers ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
+				throw ebayException;
+			}
+		}
+
+		public async Task<List<string>> GetOrdersIdsAsync(params string[] sourceOrdersIds)
+		{
+			try
+			{
+				var existsOrders = new List<string>();
+
+				if (sourceOrdersIds == null || !sourceOrdersIds.Any())
+					return existsOrders;
+
+				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync(sourceOrdersIds).ConfigureAwait(false);
+
+				if (getOrdersResponse.Error != null)
+					throw new Exception(string.Format("Code:{0},ShortMessage:{1},LongMaeesage:{2}", getOrdersResponse.Error.ErrorCode, getOrdersResponse.Error.ShortMessage, getOrdersResponse.Error.LongMessage));
+
+				if (getOrdersResponse.Orders == null)
+					return existsOrders;
+
+				var distinctOrdersIds = getOrdersResponse.Orders.Distinct(new OrderEqualityComparerById()).Select(x => x.GetOrderId()).ToList();
+
+				existsOrders = (from s in sourceOrdersIds join d in distinctOrdersIds on s equals d select s).ToList();
+
+				return existsOrders;
+			}
+			catch (Exception exception)
+			{
+				var ebayException = new EbayCommonException(string.Format("Error. Was called with({0})", string.Join(",", sourceOrdersIds)), exception);
+				LogTraceException(ebayException.Message, ebayException);
 				throw ebayException;
 			}
 		}

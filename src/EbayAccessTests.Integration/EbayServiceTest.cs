@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EbayAccess;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
@@ -19,7 +20,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetOrdersIdsAsync( ExistingOrdersIds.OrdersIds.ToArray() );
+			var ordersIdsAsync = service.GetOrdersIdsAsync( new string[] { "115" } );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
@@ -60,7 +61,9 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersTask = service.GetOrdersAsync( ExistingOrdersModifiedInRange.DateFrom, ExistingOrdersModifiedInRange.DateTo );
+			var dateTime = new DateTime( 2014, 6, 2, 19, 57, 00, DateTimeKind.Local );
+			var dateFrom = new DateTime(2014, 6, 2, 19, 56, 00, DateTimeKind.Local);
+			var ordersTask = service.GetOrdersAsync(dateFrom, dateTime);
 			ordersTask.Wait();
 
 			//------------ Assert
