@@ -56,6 +56,7 @@
     <Compile Include="EbayService.cs" />
     <Compile Include="IEbayFactory.cs" />
     <Compile Include="IEbayService.cs" />
+    <Compile Include="EbayException.cs" />
     <Compile Include="Misc\ActionPolicies.cs" />
     <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\EbayLogger.cs" />

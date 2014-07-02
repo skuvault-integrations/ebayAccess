@@ -191,9 +191,15 @@ namespace EbayAccessTests
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var ordersTask = ebayService.GetProductsDetailsAsync();
-			ordersTask.Wait();
-			var orders = ordersTask.Result;
+			try
+			{
+				var ordersTask = ebayService.GetProductsDetailsAsync();
+				ordersTask.Wait();
+				var orders = ordersTask.Result;
+			}
+			catch( Exception )
+			{
+			}
 
 			//A
 			getResponseStreamAsyncCallCounter.Should().Be( 1 );

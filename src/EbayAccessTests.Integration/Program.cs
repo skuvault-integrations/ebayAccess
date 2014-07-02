@@ -4,7 +4,6 @@ using System.Linq;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
-using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
 using LINQtoCSV;
