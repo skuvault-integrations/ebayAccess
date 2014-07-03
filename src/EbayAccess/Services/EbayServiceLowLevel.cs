@@ -12,11 +12,13 @@ using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.GetSellerListResponse;
+using EbayAccess.Models.GetSellingManagerSoldListingsResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services.Parsers;
 using Netco.Extensions;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
+using Order = EbayAccess.Models.GetSellingManagerSoldListingsResponse.Order;
 
 namespace EbayAccess.Services
 {
@@ -118,6 +120,22 @@ namespace EbayAccess.Services
 				ordersIdsTags,
 				recordsPerPage,
 				pageNumber );
+		}
+
+		private string CreateGetSellingManagerSoldListingsRequestBody( string orderSellingManagerRecordNumber )
+		{
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellingManagerSoldListingsRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Search><SearchType>SaleRecordID</SearchType><SearchValue>{1}</SearchValue></Search></GetSellingManagerSoldListingsRequest>​",
+				this._userCredentials.Token,
+				orderSellingManagerRecordNumber );
+		}
+
+		private static Dictionary< string, string > CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName()
+		{
+			return new Dictionary< string, string >
+			{
+				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.GetSellingManagerSoldListings },
+			};
 		}
 
 		private static Dictionary< string, string > CreateEbayGetOrdersRequestHeadersWithApiCallName()
@@ -264,6 +282,40 @@ namespace EbayAccess.Services
 
 				pageNumber++;
 			} while( hasMoreOrders );
+
+			return orders;
+		}
+
+		public async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber )
+		{
+			var orders = new GetSellingManagerSoldListingsResponse();
+
+			orders.Orders = new List< Order >();
+
+			var headers = CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName();
+
+			var body = this.CreateGetSellingManagerSoldListingsRequestBody( salerecordNumber );
+
+			await ActionPolicies.GetAsync.Do( async () =>
+			{
+				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				{
+					var getOrdersResponseParsed = new EbayGetSellingManagerSoldListingsResponseParser().Parse( memStream );
+					if( getOrdersResponseParsed != null )
+					{
+						if( getOrdersResponseParsed.Error != null )
+						{
+							orders.Error = getOrdersResponseParsed.Error;
+							return;
+						}
+
+						if( getOrdersResponseParsed.Orders != null )
+							orders.Orders.AddRange( getOrdersResponseParsed.Orders );
+					}
+				}
+			} ).ConfigureAwait( false );
 
 			return orders;
 		}

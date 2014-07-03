@@ -14,6 +14,20 @@ namespace EbayAccessTests.Integration
 	{
 		#region GetOrders
 		[ Test ]
+		public void GetSaleRecordsNumbers_ServiceWithExistingOrders_HookupOrdersIds()
+		{
+			//------------ Arrange
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+			//------------ Act
+			var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( new string[] { "186", "190", "191", "189" } );
+			ordersIdsAsync.Wait();
+
+			//------------ Assert
+			ordersIdsAsync.Result.Count().Should().BeGreaterThan( 0 );
+		}
+
+		[ Test ]
 		public void GetOrdersIds_ServiceWithExistingOrders_HookupOrdersIds()
 		{
 			//------------ Arrange
@@ -62,8 +76,8 @@ namespace EbayAccessTests.Integration
 
 			//------------ Act
 			var dateTime = new DateTime( 2014, 6, 2, 19, 57, 00, DateTimeKind.Local );
-			var dateFrom = new DateTime(2014, 6, 2, 19, 56, 00, DateTimeKind.Local);
-			var ordersTask = service.GetOrdersAsync(dateFrom, dateTime);
+			var dateFrom = new DateTime( 2014, 6, 2, 19, 56, 00, DateTimeKind.Local );
+			var ordersTask = service.GetOrdersAsync( dateFrom, dateTime );
 			ordersTask.Wait();
 
 			//------------ Assert

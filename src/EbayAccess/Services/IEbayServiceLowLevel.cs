@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.GetSellerListResponse;
+using EbayAccess.Models.GetSellingManagerSoldListingsResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services.Parsers;
@@ -55,5 +56,7 @@ namespace EbayAccess.Services
 		Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum );
 
 		Task< GetOrdersResponse > GetOrdersAsync( params string[] ordersIds );
+
+		Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber );
 	}
 }

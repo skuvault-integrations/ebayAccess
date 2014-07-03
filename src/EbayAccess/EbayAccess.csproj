@@ -98,6 +98,9 @@
     <Compile Include="Models\GetSellerListResponse\SellingStatus.cs" />
     <Compile Include="Models\GetOrdersResponse\OrderItemExtended.cs" />
     <Compile Include="Models\GetSellerListResponse\Variation.cs" />
+    <Compile Include="Models\GetSellingManagerSoldListingsResponse\GetSellingManagerSoldListingsResponse.cs" />
+    <Compile Include="Models\GetSellingManagerSoldListingsResponse\Order.cs" />
+    <Compile Include="Models\GetSellingManagerSoldListingsResponse\OrderEqualityComparerByRecordId.cs" />
     <Compile Include="Models\GetSessionIdResponse\GetSessionIdResponse.cs" />
     <Compile Include="Models\ReviseInventoryStatusRequest\InventoryStatusRequest.cs" />
     <Compile Include="Models\ReviseInventoryStatusResponse\InventoryStatusResponse.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="Services\EbayServiceLowLevel.cs" />
     <Compile Include="Services\IEbayServiceLowLevel.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />
+    <Compile Include="Services\Parsers\EbayGetSellingManagerSoldListingsResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayBulkAbortJobParser.cs" />
     <Compile Include="Services\Parsers\EbayBulkCreateJobParser.cs" />
     <Compile Include="Services\Parsers\EbayGetSallerListResponseCustomParser.cs" />
