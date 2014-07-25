@@ -8,12 +8,13 @@ namespace EbayAccess.Models.CredentialsAndConfig
 		public string DevName { get; private set; }
 		public string CertName { get; private set; }
 		public string RuName { get; private set; }
+		public int SiteId { get; private set; }
 
 		public virtual string EndPoint { get; private set; }
 		public virtual string SignInUrl { get; set; }
 		public virtual string EndPointBulkExhange { get; private set; }
 
-		public EbayConfig( string appName, string devName, string certName )
+		public EbayConfig( string appName, string devName, string certName, int siteId = ( int )ebaySites.US )
 		{
 			Condition.Requires( appName, "appName" ).IsNotNullOrWhiteSpace();
 			Condition.Requires( devName, "devName" ).IsNotNullOrWhiteSpace();
@@ -27,7 +28,8 @@ namespace EbayAccess.Models.CredentialsAndConfig
 			this.SignInUrl = "https://signin.ebay.com/ws/eBayISAPI.dll";
 		}
 
-		public EbayConfig( string appName, string devName, string certName, string ruName ) : this( appName, devName, certName )
+		public EbayConfig( string appName, string devName, string certName, string ruName, int siteId = ( int )ebaySites.US )
+			: this( appName, devName, certName, siteId )
 		{
 			Condition.Requires( ruName, "ruName" ).IsNotNullOrWhiteSpace();
 			this.RuName = ruName;
