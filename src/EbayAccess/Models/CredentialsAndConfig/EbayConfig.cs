@@ -26,6 +26,7 @@ namespace EbayAccess.Models.CredentialsAndConfig
 			this.EndPoint = "https://api.ebay.com/ws/api.dll";
 			this.EndPointBulkExhange = "https://webservices.ebay.com/BulkDataExchangeService";
 			this.SignInUrl = "https://signin.ebay.com/ws/eBayISAPI.dll";
+			this.SiteId = siteId;
 		}
 
 		public EbayConfig( string appName, string devName, string certName, string ruName, int siteId = ( int )ebaySites.US )
