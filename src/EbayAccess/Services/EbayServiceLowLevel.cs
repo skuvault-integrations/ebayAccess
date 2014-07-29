@@ -707,22 +707,6 @@ namespace EbayAccess.Services
 			}
 		}
 
-		//public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq )
-		//{
-		//	var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
-
-		//	var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq.ItemId, inventoryStatusReq.Quantity, inventoryStatusReq.Sku );
-
-		//	var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
-
-		//	using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
-		//	{
-		//		var inventoryStatusResponse =
-		//			new EbayReviseInventoryStatusResponseParser().Parse( memStream );
-		//		return inventoryStatusResponse;
-		//	}
-		//}
-
 		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null )
 		{
 			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
@@ -788,20 +772,6 @@ namespace EbayAccess.Services
 			await Task.WhenAll( tasks ).ConfigureAwait( false );
 
 			resultResponses.AddRange( tasks.Select( x => x.Result ).ToList() );
-
-			//foreach( var x in chunks )
-			//{
-			//	resultResponses.Add(await this.ReviseInventoryStatusAsync(x.Item1, x.Item2, x.Item3, x.Item4).ConfigureAwait(false));
-			//}
-
-			//await Task.Factory.StartNew( () =>
-			//	Parallel.ForEach( chunks, new ParallelOptions { MaxDegreeOfParallelism = 50 }, x =>
-			//	{
-			//		var task = this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4 );
-			//		task.Wait();
-			//		resultResponses.Add( task.Result );
-			//	} )
-			//	).ConfigureAwait( false );
 
 			return resultResponses;
 		}
