@@ -52,18 +52,19 @@
 
 	public enum ebayCurrency
 	{
-		AUD,
-		EUR,
-		CAD,
-		HKD,
-		INR,
-		MYR,
-		PHP,
-		PLN,
-		SGD,
-		CHF,
-		GBP,
-		USD,
+		Unknown = 0,
+		AUD = 1,
+		EUR = 2,
+		CAD = 3,
+		HKD = 4,
+		INR = 5,
+		MYR = 6,
+		PHP = 7,
+		PLN = 8,
+		SGD = 9,
+		CHF = 10,
+		GBP = 11,
+		USD = 12,
 	}
 
 	public static class EbayHeadersValues

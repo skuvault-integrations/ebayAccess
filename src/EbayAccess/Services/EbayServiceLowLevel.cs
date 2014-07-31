@@ -65,7 +65,7 @@ namespace EbayAccess.Services
 				headers.Add( EbayHeaders.XEbayApiAppName, this._ebayConfig.AppName );
 
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiSiteid ) )
-				headers.Add( EbayHeaders.XEbayApiSiteid, this._ebayConfig.SiteId.ToString() );
+				headers.Add( EbayHeaders.XEbayApiSiteid, this._userCredentials.SiteId.ToString() );
 
 			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
 		}
