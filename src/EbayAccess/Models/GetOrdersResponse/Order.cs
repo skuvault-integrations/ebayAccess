@@ -34,6 +34,10 @@ namespace EbayAccess.Models.GetOrdersResponse
 		public MonetaryDetails MonetaryDetails { get; set; }
 
 		public decimal Subtotal { get; set; }
+
+		public ebayCurrency SubtotalCurrencyId { get; set; }
+
+		public ebayCurrency TotalCurrencyId { get; set; }
 	}
 
 	public enum CancelStatusEnum

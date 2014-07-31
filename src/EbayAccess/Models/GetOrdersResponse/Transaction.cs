@@ -12,7 +12,7 @@
 
 		public decimal TransactionPrice { get; set; }
 
-		public string CurrencyId { get; set; }
+		public ebayCurrency CurrencyId { get; set; }
 
 		public string OrderLineItemId { get; set; }
 
