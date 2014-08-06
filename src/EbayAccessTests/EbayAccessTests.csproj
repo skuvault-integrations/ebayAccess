@@ -63,6 +63,7 @@
     <Compile Include="Models\GetSellerListResponse\ItemExtendedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EbayServiceLowLevelTest.cs" />
+    <Compile Include="Services\Parsers\EbayXmlParserTest.cs" />
     <Compile Include="Services\Parsers\EbayGetItemResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayGetOrdersResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayGetSellerListResponseParserTest.cs" />
@@ -82,6 +83,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Files\AuthTokenIsInvalidResponse.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\EbayServiceGetAnyResponseWithMultipleErrors.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\GetItemResponse\EbayServiceGetItemResponseWithItemSku.xml">

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<GeteBayOfficialTimeResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+	<Timestamp>2014-05-24T16:50:30.259Z</Timestamp>
+	<Ack>Failure</Ack>
+	<Errors>
+		<ShortMessage>1 Auth token is invalid.</ShortMessage>
+		<LongMessage>1 Validation of the authentication token in API request failed.</LongMessage>
+		<ErrorCode>1 931</ErrorCode>
+		<SeverityCode>1 Error</SeverityCode>
+		<ErrorClassification>1 RequestError</ErrorClassification>
+	</Errors>
+	<Errors>
+		<ShortMessage>1 Auth token is invalid.</ShortMessage>
+		<LongMessage>1 Validation of the authentication token in API request failed.</LongMessage>
+		<ErrorCode>1 931</ErrorCode>
+		<SeverityCode>1 Error</SeverityCode>
+		<ErrorClassification>RequestError</ErrorClassification>
+	</Errors>
+	<Version>869</Version>
+	<Build>E869_CORE_API_16786567_R1</Build>
+</GeteBayOfficialTimeResponse>
