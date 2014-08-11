@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
@@ -41,7 +42,7 @@ namespace EbayAccess.Services.Parsers
 			}
 		}
 
-		protected override ResponseError ResponseContainsErrors( XElement root, XNamespace ns )
+		protected override IEnumerable< ResponseError > ResponseContainsErrors( XElement root, XNamespace ns )
 		{
 			var isSuccess = root.Element( ns + "ack" );
 			if( isSuccess != null && isSuccess.Value == "Failure" )
@@ -55,7 +56,7 @@ namespace EbayAccess.Services.Parsers
 				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "errorMessage", "error", "errorId" ) ) )
 					ResponseError.ErrorCode = temp;
 
-				return ResponseError;
+				return new List< ResponseError > { ResponseError };
 			}
 			return null;
 		}

@@ -60,8 +60,8 @@ namespace EbayAccess
 			{
 				var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime );
 
-				if( getOrdersResponse.Error != null )
-					throw new Exception( string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", getOrdersResponse.Error.ErrorCode, getOrdersResponse.Error.ShortMessage, getOrdersResponse.Error.LongMessage ) );
+				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
+					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
 
 				return getOrdersResponse.Orders;
 			}
@@ -79,8 +79,8 @@ namespace EbayAccess
 			{
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime ).ConfigureAwait( false );
 
-				if( getOrdersResponse.Error != null )
-					throw new Exception( string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", getOrdersResponse.Error.ErrorCode, getOrdersResponse.Error.ShortMessage, getOrdersResponse.Error.LongMessage ) );
+				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
+					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
 
 				return getOrdersResponse.Orders;
 			}
@@ -110,9 +110,11 @@ namespace EbayAccess
 
 				var getSellingManagerSoldListingsResponses = commonTask.Result;
 
-				if( getSellingManagerSoldListingsResponses.Any( x => x.Error != null ) )
+				if( getSellingManagerSoldListingsResponses.Any( x => x.Error != null && x.Error.Any() ) )
 				{
-					var errrosInfo = getSellingManagerSoldListingsResponses.Where( x => x.Error != null ).Select( x => string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", x.Error.ErrorCode, x.Error.ShortMessage, x.Error.LongMessage ) );
+					var aggregatedErrors = getSellingManagerSoldListingsResponses.SelectMany( x => x.Error );
+
+					var errrosInfo = aggregatedErrors.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) );
 
 					throw new Exception( string.Join( "; ", errrosInfo ) );
 				}
@@ -147,8 +149,8 @@ namespace EbayAccess
 
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( sourceOrdersIds ).ConfigureAwait( false );
 
-				if( getOrdersResponse.Error != null )
-					throw new Exception( string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", getOrdersResponse.Error.ErrorCode, getOrdersResponse.Error.ShortMessage, getOrdersResponse.Error.LongMessage ) );
+				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
+					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
 
 				if( getOrdersResponse.Orders == null )
 					return existsOrders;
@@ -200,10 +202,10 @@ namespace EbayAccess
 			{
 				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime ).ConfigureAwait( false );
 
-				if( sellerListsAsync.Any( x => x.Error != null ) )
+				if( sellerListsAsync.Any( x => x.Error != null && x.Error.Any() ) )
 				{
-					var requestsWithErrors = sellerListsAsync.Where( x => x.Error != null ).ToList();
-					var requestsWithErrorsInfo = string.Join( "|", requestsWithErrors.Select( x => string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", x.Error.ErrorCode, x.Error.ShortMessage, x.Error.LongMessage ) ) );
+					var aggregatedErrors = sellerListsAsync.Where( x => x.Error != null ).ToList().SelectMany( x => x.Error ).ToList();
+					var requestsWithErrorsInfo = string.Join( ",", aggregatedErrors.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) );
 					throw new Exception( requestsWithErrorsInfo );
 				}
 
@@ -231,11 +233,8 @@ namespace EbayAccess
 
 				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListCustomAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.EndTime ).ConfigureAwait( false );
 
-				if( sellerListAsync.Error != null )
-				{
-					var errorinfo = string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", sellerListAsync.Error.ErrorCode, sellerListAsync.Error.ShortMessage, sellerListAsync.Error.LongMessage );
-					throw new Exception( errorinfo );
-				}
+				if( sellerListAsync.Error != null && sellerListAsync.Error.Any() )
+					throw new Exception( string.Join( ",", sellerListAsync.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
 
 				products.AddRange( sellerListAsync.Items );
 
@@ -270,11 +269,8 @@ namespace EbayAccess
 
 				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.StartTime ).ConfigureAwait( false );
 
-				if( sellerListAsync.Error != null )
-				{
-					var errorinfo = string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", sellerListAsync.Error.ErrorCode, sellerListAsync.Error.ShortMessage, sellerListAsync.Error.LongMessage );
-					throw new Exception( errorinfo );
-				}
+				if( sellerListAsync.Error != null && sellerListAsync.Error.Any() )
+					throw new Exception( string.Join( ",", sellerListAsync.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
 
 				products.AddRange( sellerListAsync.Items );
 
@@ -372,10 +368,10 @@ namespace EbayAccess
 
 				var reviseInventoriesStatus = this.EbayServiceLowLevel.ReviseInventoriesStatus( products );
 
-				if( reviseInventoriesStatus.Any( x => x.Error != null ) )
+				if( reviseInventoriesStatus.Any( x => x.Error != null && x.Error.Any() ) )
 				{
-					var requestsWithErrors = reviseInventoriesStatus.Where( x => x.Error != null ).ToList();
-					var requestsWithErrorsInfo = string.Join( "|", requestsWithErrors.Select( x => string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", x.Error.ErrorCode, x.Error.ShortMessage, x.Error.LongMessage ) ) );
+					var errors = reviseInventoriesStatus.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
+					var requestsWithErrorsInfo = string.Join( ",", errors.Select( x => string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) );
 					throw new Exception( requestsWithErrorsInfo );
 				}
 			}
@@ -398,10 +394,10 @@ namespace EbayAccess
 
 				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products ).ConfigureAwait( false );
 
-				if( reviseInventoriesStatus.Any( x => x.Error != null ) )
+				if( reviseInventoriesStatus.Any( x => x.Error != null && x.Error.Any() ) )
 				{
-					var requestsWithErrors = reviseInventoriesStatus.Where( x => x.Error != null ).ToList();
-					var requestsWithErrorsInfo = string.Join( "|", requestsWithErrors.Select( x => string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", x.Error.ErrorCode, x.Error.ShortMessage, x.Error.LongMessage ) ) );
+					var errors = reviseInventoriesStatus.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
+					var requestsWithErrorsInfo = string.Join( ",", errors.Select( x => string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) );
 					throw new Exception( requestsWithErrorsInfo );
 				}
 

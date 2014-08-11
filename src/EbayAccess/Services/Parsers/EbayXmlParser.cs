@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -74,38 +75,44 @@ namespace EbayAccess.Services.Parsers
 			return default( TParseResult );
 		}
 
-		protected virtual ResponseError ResponseContainsErrors( XElement root, XNamespace ns )
+		protected virtual IEnumerable< ResponseError > ResponseContainsErrors( XElement root, XNamespace ns )
 		{
 			var isSuccess = root.Element( ns + "Ack" );
-			if( isSuccess != null && isSuccess.Value == "Failure" )
-			{
-				var ResponseError = new ResponseError();
-				string temp = null;
+			if( isSuccess == null || isSuccess.Value != "Failure" )
+				return null;
 
-				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "ShortMessage" ) ) )
-					ResponseError.ShortMessage = temp;
+			var errorsElements = root.Descendants( ns + "Errors" );
+			var parsedErrors = errorsElements.Select( x => ParseError( x, ns ) ).ToList();
 
-				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "LongMessage" ) ) )
-					ResponseError.LongMessage = temp;
+			return parsedErrors;
+		}
 
-				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "ErrorCode" ) ) )
-					ResponseError.ErrorCode = temp;
+		private static ResponseError ParseError( XElement root, XNamespace ns )
+		{
+			var ResponseError = new ResponseError();
+			string temp = null;
 
-				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "UserDisplayHint" ) ) )
-					ResponseError.UserDisplayHint = temp;
+			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "ShortMessage" ) ) )
+				ResponseError.ShortMessage = temp;
 
-				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "ServerityCode" ) ) )
-					ResponseError.ServerityCode = temp;
+			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "LongMessage" ) ) )
+				ResponseError.LongMessage = temp;
 
-				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "ErrorClassification" ) ) )
-					ResponseError.ErrorClassification = temp;
+			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "ErrorCode" ) ) )
+				ResponseError.ErrorCode = temp;
 
-				if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "Errors", "ErrorParameters" ) ) )
-					ResponseError.ErrorParameters = temp;
+			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "UserDisplayHint" ) ) )
+				ResponseError.UserDisplayHint = temp;
 
-				return ResponseError;
-			}
-			return null;
+			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "ServerityCode" ) ) )
+				ResponseError.ServerityCode = temp;
+
+			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "ErrorClassification" ) ) )
+				ResponseError.ErrorClassification = temp;
+
+			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "ErrorParameters" ) ) )
+				ResponseError.ErrorParameters = temp;
+			return ResponseError;
 		}
 
 		protected virtual PaginationResult GetPagination( XElement root, XNamespace ns )
