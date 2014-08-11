@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Xml;
+using EbayAccess.Models.GetOrdersResponse;
+using EbayAccess.Models.GetSellerListCustomResponse;
+using EbayAccess.Models.ReviseInventoryStatusRequest;
+using Item = EbayAccess.Models.GetOrdersResponse.Item;
 
 namespace EbayAccess.Misc
 {
@@ -94,6 +100,25 @@ namespace EbayAccess.Misc
 			}
 
 			return dateTime;
+		}
+
+		public static string ToJson( this IEnumerable< Order > source )
+		{
+			var orders = source as IList< Order > ?? source.ToList();
+			var items = string.Join( ",", orders.Select( x => string.Format( "{{id:{0},saleRecNum:{1},createdAt:{2}}}",
+				string.IsNullOrWhiteSpace( x.GetOrderId( false ) ) ? PredefinedValues.NotAvailable : x.GetOrderId( false ),
+				string.IsNullOrWhiteSpace( x.GetOrderId() ) ? PredefinedValues.NotAvailable : x.GetOrderId(),
+				x.CreatedTime ) ) );
+			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", orders.Count(), items );
+			return res;
+		}
+
+		public static string ToJson(this IEnumerable<string> source)
+		{
+			var orders = source as IList<string> ?? source.ToList();
+			var items = string.Join( ",", source );
+			var res = string.Format("{{Count:{0}, Items:[{1}]}}", orders.Count(), items);
+			return res;
 		}
 	}
 }

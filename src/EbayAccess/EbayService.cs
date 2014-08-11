@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using EbayAccess.Misc;
@@ -56,12 +57,21 @@ namespace EbayAccess
 		#region GetOrders
 		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo )
 		{
+			var methodParameters = string.Format( "{{dateFrom:{0},dateTo:{1}}}", dateFrom, dateTo );
+			var restInfo = this.EbayServiceLowLevel.ToJson();
+			const string currentMenthodName = "GetOrders";
+			var mark = Guid.NewGuid().ToString();
 			try
 			{
+				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+
 				var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime );
 
 				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
 					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
+
+				var resultOrdersBriefInfo = getOrdersResponse.Orders.ToJson();
+				EbayLogger.LogTraceEnded( string.Format( "MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}", currentMenthodName, restInfo, methodParameters, mark, resultOrdersBriefInfo ) );
 
 				return getOrdersResponse.Orders;
 			}
@@ -75,18 +85,27 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
 		{
+			var methodParameters = string.Format( "{{dateFrom:{0},dateTo:{1}}}", dateFrom, dateTo );
+			var restInfo = this.EbayServiceLowLevel.ToJson();
+			const string currentMenthodName = "GetOrdersAsync";
+			var mark = Guid.NewGuid().ToString();
 			try
 			{
+				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime ).ConfigureAwait( false );
 
 				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
 					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
 
+				var resultOrdersBriefInfo = getOrdersResponse.Orders.ToJson();
+				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, resultOrdersBriefInfo ) );
+
 				return getOrdersResponse.Orders;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called with({0},{1})", dateFrom, dateTo ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
@@ -94,8 +113,14 @@ namespace EbayAccess
 
 		public async Task< List< string > > GetSaleRecordsNumbersAsync( params string[] saleRecordsIDs )
 		{
+			var methodParameters = string.Format( "{{}}", string.Join( ",", saleRecordsIDs ) );
+			var restInfo = this.EbayServiceLowLevel.ToJson();
+			const string currentMenthodName = "GetSaleRecordsNumbersAsync";
+			var mark = Guid.NewGuid().ToString();
 			try
 			{
+				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+
 				var seleRecordsIdsFilteredOnlyExisting = new List< string >();
 
 				if( saleRecordsIDs == null || !saleRecordsIDs.Any() )
@@ -128,11 +153,14 @@ namespace EbayAccess
 
 				seleRecordsIdsFilteredOnlyExisting = ( from s in saleRecordsIDs join d in alllReceivedOrdersDistinct on s equals d select s ).ToList();
 
+				var resultSaleRecordNumbersBriefInfo = seleRecordsIdsFilteredOnlyExisting.ToJson();
+				EbayLogger.LogTraceEnded( string.Format( "MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}", currentMenthodName, restInfo, methodParameters, mark, resultSaleRecordNumbersBriefInfo ) );
+
 				return seleRecordsIdsFilteredOnlyExisting;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called with({0})", string.Join( ", ", saleRecordsIDs ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
@@ -140,8 +168,14 @@ namespace EbayAccess
 
 		public async Task< List< string > > GetOrdersIdsAsync( params string[] sourceOrdersIds )
 		{
+			var methodParameters = string.Format( "{{}}", string.Join( ",", sourceOrdersIds ) );
+			var restInfo = this.EbayServiceLowLevel.ToJson();
+			const string currentMenthodName = "GetOrdersIdsAsync";
+			var mark = Guid.NewGuid().ToString();
 			try
 			{
+				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+
 				var existsOrders = new List< string >();
 
 				if( sourceOrdersIds == null || !sourceOrdersIds.Any() )
@@ -159,11 +193,14 @@ namespace EbayAccess
 
 				existsOrders = ( from s in sourceOrdersIds join d in distinctOrdersIds on s equals d select s ).ToList();
 
+				var resultSaleRecordNumbersBriefInfo = existsOrders.ToJson();
+				EbayLogger.LogTraceEnded( string.Format( "MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}", currentMenthodName, restInfo, methodParameters, mark, resultSaleRecordNumbersBriefInfo ) );
+
 				return existsOrders;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called with({0})", string.Join( ",", sourceOrdersIds ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
@@ -198,8 +235,14 @@ namespace EbayAccess
 		#region GetProducts
 		public async Task< IEnumerable< Item > > GetActiveProductsAsync()
 		{
+			var methodParameters = string.Format( "{{{0}}}", PredefinedValues.NotAvailable );
+			var restInfo = this.EbayServiceLowLevel.ToJson();
+			const string currentMenthodName = "GetActiveProductsAsync";
+			var mark = Guid.NewGuid().ToString();
 			try
 			{
+				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+
 				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime ).ConfigureAwait( false );
 
 				if( sellerListsAsync.Any( x => x.Error != null && x.Error.Any() ) )
@@ -211,11 +254,14 @@ namespace EbayAccess
 
 				var items = sellerListsAsync.SelectMany( x => x.ItemsSplitedByVariations );
 
+				var resultSellerListBriefInfo = ToJson( items );
+				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, resultSellerListBriefInfo ) );
+
 				return items;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called with()" ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
@@ -385,12 +431,14 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products )
 		{
-			var commonCallInfo = string.Empty;
+			var methodParameters = ToJson( products );
+			var restInfo = this.EbayServiceLowLevel.ToJson();
+			const string currentMenthodName = "UpdateProductsAsync";
+			var mark = Guid.NewGuid().ToString();
+
 			try
 			{
-				var productsCount = products.Count();
-				var productsTemp = products.ToList();
-				commonCallInfo = String.Format( "Products count {0} : {1}", productsCount, string.Join( "|", productsTemp.Select( x => string.Format( "Sku:{0},Qty{1}", x.Sku, x.Quantity ) ).ToList() ) );
+				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
 				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products ).ConfigureAwait( false );
 
@@ -401,11 +449,14 @@ namespace EbayAccess
 					throw new Exception( requestsWithErrorsInfo );
 				}
 
+				var resultOrdersBriefInfo = ToJson( reviseInventoriesStatus.SelectMany( x => x.Items ) );
+				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, resultOrdersBriefInfo ) );
+
 				return reviseInventoriesStatus;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called with({0})", commonCallInfo ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error.{0})", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
@@ -479,6 +530,39 @@ namespace EbayAccess
 		private static void LogTraceException( string message, EbayException ebayException )
 		{
 			EbayLogger.Log().Trace( message, ebayException );
+		}
+
+		private static string ToJson( IEnumerable< InventoryStatusRequest > source )
+		{
+			var orders = source as IList< InventoryStatusRequest > ?? source.ToList();
+			var items = string.Join( ",", orders.Select( x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
+				x.ItemId == null ? PredefinedValues.NotAvailable : x.ItemId.Value.ToString( CultureInfo.InvariantCulture ),
+				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
+				x.Quantity == null ? PredefinedValues.NotAvailable : x.Quantity.ToString() ) ) );
+			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", orders.Count(), items );
+			return res;
+		}
+
+		private static string ToJson( IEnumerable< Models.ReviseInventoryStatusResponse.Item > source )
+		{
+			var orders = source as IList< Models.ReviseInventoryStatusResponse.Item > ?? source.ToList();
+			var items = string.Join( ",", orders.Select( x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
+				x.ItemId.HasValue ? x.ItemId.Value.ToString( CultureInfo.InvariantCulture ) : PredefinedValues.NotAvailable,
+				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
+				x.Quantity.ToString() ) ) );
+			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", orders.Count(), items );
+			return res;
+		}
+
+		private static string ToJson( IEnumerable< Item > source )
+		{
+			var orders = source as IList< Item > ?? source.ToList();
+			var items = string.Join( ",", orders.Select( x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
+				string.IsNullOrWhiteSpace( x.ItemId ) ? PredefinedValues.NotAvailable : x.ItemId,
+				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
+				x.Quantity.ToString( CultureInfo.InvariantCulture ) ) ) );
+			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", orders.Count(), items );
+			return res;
 		}
 	}
 }

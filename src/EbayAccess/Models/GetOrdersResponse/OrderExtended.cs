@@ -24,7 +24,16 @@ namespace EbayAccess.Models.GetOrdersResponse
 	{
 		public static string GetOrderId( this Order sourceOrder, bool useSellingManagerRecordNumberInstead = true )
 		{
-			return useSellingManagerRecordNumberInstead ? sourceOrder.ShippingDetails.SellingManagerSalesRecordNumber.ToString() : sourceOrder.OrderId;
+			string result = null;
+			if( useSellingManagerRecordNumberInstead )
+			{
+				if( sourceOrder.ShippingDetails != null )
+					result = sourceOrder.ShippingDetails.SellingManagerSalesRecordNumber.ToString();
+			}
+			else
+				result = sourceOrder.OrderId;
+
+			return result;
 		}
 
 		public static OrderCommonStatusEnum GetOrderStatus( this Order sourceOrder )

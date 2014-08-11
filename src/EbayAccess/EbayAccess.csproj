@@ -60,6 +60,7 @@
     <Compile Include="Misc\ActionPolicies.cs" />
     <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\EbayLogger.cs" />
+    <Compile Include="Misc\PredefinedValues.cs" />
     <Compile Include="Models\BaseResponse\EbayBaseResponse.cs" />
     <Compile Include="Models\BaseResponse\PaginationResult.cs" />
     <Compile Include="Models\BaseResponse\ResponseError.cs" />

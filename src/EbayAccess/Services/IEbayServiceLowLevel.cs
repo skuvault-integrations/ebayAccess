@@ -58,5 +58,7 @@ namespace EbayAccess.Services
 		Task< GetOrdersResponse > GetOrdersAsync( params string[] ordersIds );
 
 		Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber );
+
+		string ToJson();
 	}
 }

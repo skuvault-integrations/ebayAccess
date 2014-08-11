@@ -319,6 +319,15 @@ namespace EbayAccess.Services
 
 			return orders;
 		}
+
+		public string ToJson()
+		{
+			return string.Format( "{{AccountName:{0},SiteId:{1},Token:{2}}}",
+				( this._userCredentials == null || string.IsNullOrWhiteSpace( this._userCredentials.AccountName ) ) ? PredefinedValues.NotAvailable : this._userCredentials.AccountName,
+				this._userCredentials == null ? PredefinedValues.NotAvailable : this._userCredentials.SiteId.ToString(),
+				( this._userCredentials == null || string.IsNullOrWhiteSpace( this._userCredentials.Token ) ) ? PredefinedValues.NotAvailable : this._userCredentials.Token
+				);
+		}
 		#endregion
 
 		#region GetSellerList
