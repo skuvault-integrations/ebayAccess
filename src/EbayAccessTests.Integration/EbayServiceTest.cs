@@ -85,7 +85,6 @@ namespace EbayAccessTests.Integration
 		}
 		#endregion
 
-		#region UpdateProducts
 		[ Test ]
 		public void UpdateProductsAsync_EbayServiceWithFixedPriceProductsWithVariation_ProductsUpdated()
 		{
@@ -112,6 +111,41 @@ namespace EbayAccessTests.Integration
 			updateProductsAsyncTask2.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
 			//(updateProductsAsyncTask1.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithVariation1.ItemId && x.Items[0].Sku == ExistingProducts.FixedPrice1WithVariation1.Sku).Items[0].Quantity - updateProductsAsyncTask2.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithVariation1.ItemId && x.Items[0].Sku == ExistingProducts.FixedPrice1WithVariation1.Sku).Items[0].Quantity).Should().Be(this.QtyUpdateFor);
 			//(updateProductsAsyncTask1.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithVariation2.ItemId && x.Items[0].Sku == ExistingProducts.FixedPrice1WithVariation2.Sku).Items[0].Quantity - updateProductsAsyncTask2.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithVariation2.ItemId && x.Items[0].Sku == ExistingProducts.FixedPrice1WithVariation2.Sku).Items[0].Quantity).Should().Be(this.QtyUpdateFor);
+		}
+
+		#region UpdateProducts
+		[Test]
+		public void UpdateProductsAsync_EbayServiceWithFixedPriceProductsWithQtysLikeInUpdate_NoExceptionOccured()
+		{
+			try
+			{
+				//------------ Arrange
+				var ebayService = new EbayService(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox());
+
+				//------------ Act
+				var updateProductsAsyncTask1 = ebayService.UpdateProductsAsync(new List<InventoryStatusRequest>
+			{
+				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation1.Quantity },
+				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation2.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation2.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation2.Quantity },
+			});
+				//updateProductsAsyncTask1.Wait();
+				Action act = () => updateProductsAsyncTask1.Wait();
+
+				//------------ Assert
+				var v = updateProductsAsyncTask1.Result.ToList();
+				act.ShouldNotThrow<Exception>();
+
+				//updateProductsAsyncTask1.Invoking(x=>x.Wait()).ShouldNotThrow<Exception>().WithMessage
+
+				//updateProductsAsyncTask1.Result.ToList().TrueForAll(x => x.Items.Count == 2);
+				//updateProductsAsyncTask1.ShouldRaisePropertyChangeFor
+			}
+			catch (Exception)
+			{
+				
+				throw;
+			}
+
 		}
 
 		[ Test ]
