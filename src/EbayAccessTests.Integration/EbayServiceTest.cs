@@ -20,11 +20,11 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( new string[] { "186", "190", "191", "189" } );
+			var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( ExistingOrdersIds.SaleNumers.ToArray() );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
-			ordersIdsAsync.Result.Count().Should().BeGreaterThan( 0 );
+			ordersIdsAsync.Result.Should().BeEquivalentTo( ExistingOrdersIds.SaleNumers.ToArray() );
 		}
 
 		[ Test ]
@@ -34,7 +34,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetOrdersIdsAsync( new string[] { "115" } );
+			var ordersIdsAsync = service.GetOrdersIdsAsync( ExistingOrdersIds.OrdersIds.ToArray() );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert

@@ -58,6 +58,17 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			"271293010",
 			"110143660198-27292342001"
 		};
+
+		public static readonly List< string > SaleNumers = new List< string >
+		{
+			//"186",
+			//"190",
+			//"191",
+			//"189"
+			"237",
+			"235",
+			"239"
+		};
 	}
 
 	internal static class NotExistingBecauseOfCombinedOrdersIds
