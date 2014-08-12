@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EbayAccess.Misc;
 using Netco.Extensions;
 
@@ -25,26 +26,9 @@ namespace EbayAccess.Models.BaseResponse
 
 			set
 			{
-				if( value != null )
-				{
-					value.ForEach( x =>
-					{
-						switch( x.ErrorCode )
-						{
-								// Auth exception must appears only in trace
-							case "21916017":
-								// Experied session Id exception must appears only in trace
-							case "21916016":
-								EbayLogger.Log().Trace( "[ebay] An error occured in response: code={0}, message={1}", x.ErrorCode, x.LongMessage );
-								break;
-								// All errors in trace mode
-							default:
-								EbayLogger.Log().Trace( "[ebay] An error occured in response: code={0}, message={1}", x.ErrorCode, x.LongMessage );
-								break;
-						}
-					} );
-				}
 				this._error = value;
+				var errorsText = this._error.ToJson();
+				EbayLogger.LogTraceInnerError( errorsText );
 			}
 		}
 	}

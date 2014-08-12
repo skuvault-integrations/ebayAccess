@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.GetOrdersResponse;
 
 namespace EbayAccess.Misc
@@ -139,6 +140,19 @@ namespace EbayAccess.Misc
 				responseStr = new StreamReader( streamCopy ).ReadToEnd();
 			}
 			return responseStr;
+		}
+
+		public static string ToJson( this IEnumerable<ResponseError> sourceErrors)
+		{
+			var errors = sourceErrors.Select(x => string.Format("{{ErrorCode:{0},ShortMessage:{1},LongMessage:{2},ErrorClassification:{3},ServerityCode:{4},ErrorParameters:{5}}}",
+				x.ErrorCode,
+				x.ShortMessage,
+				x.LongMessage,
+				x.ErrorClassification,
+				x.ServerityCode,
+				x.ErrorParameters)
+				);
+			return string.Format("{{Count:{0}, Errors:[{1}]}}", errors.Count(), string.Join(",", errors));
 		}
 	}
 }

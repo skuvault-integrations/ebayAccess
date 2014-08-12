@@ -68,7 +68,7 @@ namespace EbayAccess
 				var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark );
 
 				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
-					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
+					throw new Exception( getOrdersResponse.Error.ToJson() );
 
 				var resultOrdersBriefInfo = getOrdersResponse.Orders.ToJson();
 				EbayLogger.LogTraceEnded( string.Format( "MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}", currentMenthodName, restInfo, methodParameters, mark, resultOrdersBriefInfo ) );
@@ -96,7 +96,7 @@ namespace EbayAccess
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark ).ConfigureAwait( false );
 
 				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
-					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
+					throw new Exception( getOrdersResponse.Error.ToJson() );
 
 				var resultOrdersBriefInfo = getOrdersResponse.Orders.ToJson();
 				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, resultOrdersBriefInfo ) );
@@ -138,10 +138,7 @@ namespace EbayAccess
 				if( getSellingManagerSoldListingsResponses.Any( x => x.Error != null && x.Error.Any() ) )
 				{
 					var aggregatedErrors = getSellingManagerSoldListingsResponses.SelectMany( x => x.Error );
-
-					var errrosInfo = aggregatedErrors.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) );
-
-					throw new Exception( string.Join( "; ", errrosInfo ) );
+					throw new Exception( aggregatedErrors.ToJson() );
 				}
 
 				if( !getSellingManagerSoldListingsResponses.Any() )
@@ -184,7 +181,7 @@ namespace EbayAccess
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( mark, sourceOrdersIds ).ConfigureAwait( false );
 
 				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
-					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
+					throw new Exception( getOrdersResponse.Error.ToJson() );
 
 				if( getOrdersResponse.Orders == null )
 					return existsOrders;
@@ -248,8 +245,7 @@ namespace EbayAccess
 				if( sellerListsAsync.Any( x => x.Error != null && x.Error.Any() ) )
 				{
 					var aggregatedErrors = sellerListsAsync.Where( x => x.Error != null ).ToList().SelectMany( x => x.Error ).ToList();
-					var requestsWithErrorsInfo = string.Join( ",", aggregatedErrors.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) );
-					throw new Exception( requestsWithErrorsInfo );
+					throw new Exception( aggregatedErrors.ToJson() );
 				}
 
 				var items = sellerListsAsync.SelectMany( x => x.ItemsSplitedByVariations );
@@ -281,7 +277,7 @@ namespace EbayAccess
 				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListCustomAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
 
 				if( sellerListAsync.Error != null && sellerListAsync.Error.Any() )
-					throw new Exception( string.Join( ",", sellerListAsync.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
+					throw new Exception( sellerListAsync.Error.ToJson() );
 
 				products.AddRange( sellerListAsync.Items );
 
@@ -318,7 +314,7 @@ namespace EbayAccess
 				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.StartTime, mark ).ConfigureAwait( false );
 
 				if( sellerListAsync.Error != null && sellerListAsync.Error.Any() )
-					throw new Exception( string.Join( ",", sellerListAsync.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
+					throw new Exception( sellerListAsync.Error.ToJson() );
 
 				products.AddRange( sellerListAsync.Items );
 
@@ -419,9 +415,8 @@ namespace EbayAccess
 
 				if( reviseInventoriesStatus.Any( x => x.Error != null && x.Error.Any() ) )
 				{
-					var errors = reviseInventoriesStatus.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
-					var requestsWithErrorsInfo = string.Join( ",", errors.Select( x => string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) );
-					throw new Exception( requestsWithErrorsInfo );
+					var responseErrors = reviseInventoriesStatus.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
+					throw new Exception( responseErrors.ToJson() );
 				}
 			}
 			catch( Exception exception )
@@ -447,9 +442,8 @@ namespace EbayAccess
 
 				if( reviseInventoriesStatus.Any( x => x.Error != null && x.Error.Any() ) )
 				{
-					var errors = reviseInventoriesStatus.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
-					var requestsWithErrorsInfo = string.Join( ",", errors.Select( x => string.Format( "Code:{0},ShortMessage:{1},LongMaeesage:{2}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) );
-					throw new Exception( requestsWithErrorsInfo );
+					var responseErrors = reviseInventoriesStatus.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
+					throw new Exception( responseErrors.ToJson() );
 				}
 
 				var resultOrdersBriefInfo = ToJson( reviseInventoriesStatus.SelectMany( x => x.Items ) );
@@ -535,7 +529,7 @@ namespace EbayAccess
 
 		private static void LogTraceException( string message, EbayException ebayException )
 		{
-			EbayLogger.Log().Trace( message, ebayException );
+			EbayLogger.Log().Trace( ebayException, message );
 		}
 
 		private static string ToJson( IEnumerable< InventoryStatusRequest > source )
