@@ -446,8 +446,9 @@ namespace EbayAccess
 					throw new Exception( responseErrors.ToJson() );
 				}
 
-				var resultOrdersBriefInfo = ToJson( reviseInventoriesStatus.SelectMany( x => x.Items ) );
-				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, resultOrdersBriefInfo ) );
+				var items = reviseInventoriesStatus.Where( y => y.Items != null ).SelectMany( x => x.Items ).ToList();
+				var briefInfo = ToJson( items );
+				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
 
 				return reviseInventoriesStatus;
 			}
@@ -545,6 +546,9 @@ namespace EbayAccess
 
 		private static string ToJson( IEnumerable< Models.ReviseInventoryStatusResponse.Item > source )
 		{
+			if( source == null )
+				source = new Models.ReviseInventoryStatusResponse.Item[ 0 ];
+
 			var orders = source as IList< Models.ReviseInventoryStatusResponse.Item > ?? source.ToList();
 			var items = string.Join( ",", orders.Select( x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
 				x.ItemId.HasValue ? x.ItemId.Value.ToString( CultureInfo.InvariantCulture ) : PredefinedValues.NotAvailable,
