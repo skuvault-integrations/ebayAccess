@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using EbayAccess.Misc;
-using Netco.Extensions;
 
 namespace EbayAccess.Models.BaseResponse
 {
@@ -27,8 +25,8 @@ namespace EbayAccess.Models.BaseResponse
 			set
 			{
 				this._error = value;
-				var errorsText = this._error.ToJson();
-				EbayLogger.LogTraceInnerError( errorsText );
+				//var errorsText = this._error.ToJson();
+				//EbayLogger.LogTraceInnerError( errorsText );
 			}
 		}
 	}
