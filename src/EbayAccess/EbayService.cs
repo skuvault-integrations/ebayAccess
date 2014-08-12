@@ -25,13 +25,13 @@ namespace EbayAccess
 
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
 
-		private void PopulateOrdersItemsDetails( IEnumerable< Order > orders )
+		private void PopulateOrdersItemsDetails( IEnumerable< Order > orders, string mark )
 		{
 			foreach( var order in orders )
 			{
 				foreach( var transaction in order.TransactionArray )
 				{
-					transaction.Item.ItemDetails = this.EbayServiceLowLevel.GetItem( transaction.Item.ItemId );
+					transaction.Item.ItemDetails = this.EbayServiceLowLevel.GetItem( transaction.Item.ItemId, mark );
 					transaction.Item.Sku = transaction.Item.ItemDetails.Sku;
 				}
 			}
@@ -65,7 +65,7 @@ namespace EbayAccess
 			{
 				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
-				var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime );
+				var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark );
 
 				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
 					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
@@ -93,7 +93,7 @@ namespace EbayAccess
 			{
 				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
-				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime ).ConfigureAwait( false );
+				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark ).ConfigureAwait( false );
 
 				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
 					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
@@ -113,7 +113,7 @@ namespace EbayAccess
 
 		public async Task< List< string > > GetSaleRecordsNumbersAsync( params string[] saleRecordsIDs )
 		{
-			var methodParameters = string.Format( "{{}}", string.Join( ",", saleRecordsIDs ) );
+			var methodParameters = saleRecordsIDs.ToJson();
 			var restInfo = this.EbayServiceLowLevel.ToJson();
 			const string currentMenthodName = "GetSaleRecordsNumbersAsync";
 			var mark = Guid.NewGuid().ToString();
@@ -128,7 +128,7 @@ namespace EbayAccess
 
 				var salerecordIds = saleRecordsIDs.ToList();
 
-				var getSellingManagerOrdersByRecordNumberTasks = salerecordIds.Select( x => this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x ) );
+				var getSellingManagerOrdersByRecordNumberTasks = salerecordIds.Select( x => this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x, mark ) );
 
 				var commonTask = Task.WhenAll( getSellingManagerOrdersByRecordNumberTasks );
 				await commonTask.ConfigureAwait( false );
@@ -168,7 +168,7 @@ namespace EbayAccess
 
 		public async Task< List< string > > GetOrdersIdsAsync( params string[] sourceOrdersIds )
 		{
-			var methodParameters = string.Format( "{{}}", string.Join( ",", sourceOrdersIds ) );
+			var methodParameters = sourceOrdersIds.ToJson();
 			var restInfo = this.EbayServiceLowLevel.ToJson();
 			const string currentMenthodName = "GetOrdersIdsAsync";
 			var mark = Guid.NewGuid().ToString();
@@ -181,7 +181,7 @@ namespace EbayAccess
 				if( sourceOrdersIds == null || !sourceOrdersIds.Any() )
 					return existsOrders;
 
-				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( sourceOrdersIds ).ConfigureAwait( false );
+				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( mark, sourceOrdersIds ).ConfigureAwait( false );
 
 				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
 					throw new Exception( string.Join( ",", getOrdersResponse.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
@@ -243,7 +243,7 @@ namespace EbayAccess
 			{
 				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
-				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime ).ConfigureAwait( false );
+				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
 
 				if( sellerListsAsync.Any( x => x.Error != null && x.Error.Any() ) )
 				{
@@ -269,6 +269,7 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo )
 		{
+			var mark = new Guid().ToString();
 			try
 			{
 				var products = new List< Item >();
@@ -277,7 +278,7 @@ namespace EbayAccess
 
 				var getSellerListAsyncTasks = new List< Task< GetSellerListCustomResponse > >();
 
-				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListCustomAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.EndTime ).ConfigureAwait( false );
+				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListCustomAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
 
 				if( sellerListAsync.Error != null && sellerListAsync.Error.Any() )
 					throw new Exception( string.Join( ",", sellerListAsync.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
@@ -286,7 +287,7 @@ namespace EbayAccess
 
 				for( var i = 1; i < quartalsStartList.Count - 1; i++ )
 				{
-					getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListCustomAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.EndTime ) );
+					getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListCustomAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.EndTime, mark ) );
 				}
 
 				await Task.WhenAll( getSellerListAsyncTasks ).ConfigureAwait( false );
@@ -305,6 +306,7 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Models.GetSellerListResponse.Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
 		{
+			var mark = new Guid().ToString();
 			try
 			{
 				var products = new List< Models.GetSellerListResponse.Item >();
@@ -313,7 +315,7 @@ namespace EbayAccess
 
 				var getSellerListAsyncTasks = new List< Task< GetSellerListResponse > >();
 
-				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.StartTime ).ConfigureAwait( false );
+				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.StartTime, mark ).ConfigureAwait( false );
 
 				if( sellerListAsync.Error != null && sellerListAsync.Error.Any() )
 					throw new Exception( string.Join( ",", sellerListAsync.Error.Select( x => string.Format( "{{Code:{0},ShortMessage:{1},LongMaeesage:{2}}}", x.ErrorCode, x.ShortMessage, x.LongMessage ) ) ) );
@@ -322,14 +324,14 @@ namespace EbayAccess
 
 				for( var i = 1; i < quartalsStartList.Count - 1; i++ )
 				{
-					getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.StartTime ) );
+					getSellerListAsyncTasks.Add( this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ i ], quartalsStartList[ i + 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.StartTime, mark ) );
 				}
 
 				await Task.WhenAll( getSellerListAsyncTasks ).ConfigureAwait( false );
 
 				products.AddRange( getSellerListAsyncTasks.SelectMany( task => task.Result.Items ).ToList() );
 
-				var productsDetails = await this.GetItemsAsync( products ).ConfigureAwait( false );
+				var productsDetails = await this.GetItemsAsync( products, mark ).ConfigureAwait( false );
 
 				var productsDetailsDevidedByVariations = SplitByVariationsOrReturnEmpty( productsDetails );
 
@@ -373,9 +375,9 @@ namespace EbayAccess
 			return quartalsStart;
 		}
 
-		protected async Task< IEnumerable< Models.GetSellerListResponse.Item > > GetItemsAsync( IEnumerable< Models.GetSellerListResponse.Item > items )
+		protected async Task< IEnumerable< Models.GetSellerListResponse.Item > > GetItemsAsync( IEnumerable< Models.GetSellerListResponse.Item > items, string mark )
 		{
-			var itemsDetailsTasks = items.Select( x => this.EbayServiceLowLevel.GetItemAsync( x.ItemId ) );
+			var itemsDetailsTasks = items.Select( x => this.EbayServiceLowLevel.GetItemAsync( x.ItemId, mark ) );
 
 			var productsDetails = await Task.WhenAll( itemsDetailsTasks ).ConfigureAwait( false );
 
@@ -406,13 +408,14 @@ namespace EbayAccess
 		public void UpdateProducts( IEnumerable< InventoryStatusRequest > products )
 		{
 			var commonCallInfo = string.Empty;
+			var mark = new Guid().ToString();
 			try
 			{
 				var productsCount = products.Count();
 				var productsTemp = products.ToList();
 				commonCallInfo = String.Format( "Products count {0} : {1}", productsCount, string.Join( "|", productsTemp.Select( x => string.Format( "Sku:{0},Qty{1}", x.Sku, x.Quantity ) ).ToList() ) );
 
-				var reviseInventoriesStatus = this.EbayServiceLowLevel.ReviseInventoriesStatus( products );
+				var reviseInventoriesStatus = this.EbayServiceLowLevel.ReviseInventoriesStatus( products, mark );
 
 				if( reviseInventoriesStatus.Any( x => x.Error != null && x.Error.Any() ) )
 				{
@@ -440,7 +443,7 @@ namespace EbayAccess
 			{
 				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
-				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products ).ConfigureAwait( false );
+				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products, mark ).ConfigureAwait( false );
 
 				if( reviseInventoriesStatus.Any( x => x.Error != null && x.Error.Any() ) )
 				{
@@ -466,11 +469,12 @@ namespace EbayAccess
 		#region Authentication
 		public string GetUserToken()
 		{
+			var mark = new Guid().ToString();
 			try
 			{
-				var sessionId = this.EbayServiceLowLevel.GetSessionId();
+				var sessionId = this.EbayServiceLowLevel.GetSessionId( mark );
 				this.EbayServiceLowLevel.AuthenticateUser( sessionId );
-				var userToken = this.EbayServiceLowLevel.FetchToken( sessionId );
+				var userToken = this.EbayServiceLowLevel.FetchToken( sessionId, mark );
 				return userToken;
 			}
 			catch( Exception exception )
@@ -483,9 +487,10 @@ namespace EbayAccess
 
 		public string GetUserSessionId()
 		{
+			var mark = new Guid().ToString();
 			try
 			{
-				var sessionId = this.EbayServiceLowLevel.GetSessionId();
+				var sessionId = this.EbayServiceLowLevel.GetSessionId( mark );
 				return sessionId;
 			}
 			catch( Exception exception )
@@ -513,9 +518,10 @@ namespace EbayAccess
 
 		public string FetchUserToken( string sessionId )
 		{
+			var mark = new Guid().ToString();
 			try
 			{
-				var userToken = this.EbayServiceLowLevel.FetchToken( sessionId );
+				var userToken = this.EbayServiceLowLevel.FetchToken( sessionId, mark );
 				return userToken;
 			}
 			catch( Exception exception )

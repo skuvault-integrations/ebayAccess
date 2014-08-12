@@ -13,7 +13,7 @@ namespace EbayAccess.Models.CredentialsAndConfig
 		public virtual string SignInUrl { get; private set; }
 		public virtual string EndPointBulkExhange { get; private set; }
 
-		public EbayConfig( string appName, string devName, string certName)
+		public EbayConfig( string appName, string devName, string certName )
 		{
 			Condition.Requires( appName, "appName" ).IsNotNullOrWhiteSpace();
 			Condition.Requires( devName, "devName" ).IsNotNullOrWhiteSpace();

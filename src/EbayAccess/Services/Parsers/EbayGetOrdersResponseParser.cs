@@ -101,10 +101,10 @@ namespace EbayAccess.Services.Parsers
 					resultOrder.PaymentMethods = GetElementValue( x, ns, "PaymentMethods" );
 
 					ebayCurrency tempCurrency;
-					resultOrder.TotalCurrencyId = Enum.TryParse( GetElementAttribute( "currencyID", x, ns, "Total" ), out tempCurrency ) ? tempCurrency : default( ebayCurrency );
+					resultOrder.TotalCurrencyId = Enum.TryParse( this.GetElementAttribute( "currencyID", x, ns, "Total" ), out tempCurrency ) ? tempCurrency : default( ebayCurrency );
 					resultOrder.Total = GetElementValue( x, ns, "Total" ).ToDecimalDotOrComaSeparated();
 
-					resultOrder.SubtotalCurrencyId = Enum.TryParse(GetElementAttribute("currencyID", x, ns, "Subtotal"), out tempCurrency) ? tempCurrency : default(ebayCurrency);
+					resultOrder.SubtotalCurrencyId = Enum.TryParse( this.GetElementAttribute( "currencyID", x, ns, "Subtotal" ), out tempCurrency ) ? tempCurrency : default( ebayCurrency );
 					resultOrder.Subtotal = GetElementValue( x, ns, "Subtotal" ).ToDecimalDotOrComaSeparated();
 					#endregion
 
@@ -172,7 +172,7 @@ namespace EbayAccess.Services.Parsers
 								resTransaction.Buyer.Email = GetElementValue( elBuyer, ns, "Email" );
 							}
 
-							resTransaction.CurrencyId = Enum.TryParse(GetElementAttribute("currencyID", transaction, ns, "TransactionPrice"), out tempCurrency) ? tempCurrency : default(ebayCurrency);
+							resTransaction.CurrencyId = Enum.TryParse( this.GetElementAttribute( "currencyID", transaction, ns, "TransactionPrice" ), out tempCurrency ) ? tempCurrency : default( ebayCurrency );
 							resTransaction.TransactionPrice = GetElementValue( transaction, ns, "TransactionPrice" ).ToDecimalDotOrComaSeparated();
 
 							var elItem = transaction.Element( ns + "Item" );

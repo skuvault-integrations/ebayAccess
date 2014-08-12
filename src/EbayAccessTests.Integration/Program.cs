@@ -165,7 +165,7 @@ namespace EbayAccessTests.Integration
 		{
 			////Attention!!! This code will regenerate youe credentials!!!
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigProduction() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigSandbox() );
 			var ebayService = ebayFactory.CreateService();
 
 			//------------ Act
@@ -183,7 +183,7 @@ namespace EbayAccessTests.Integration
 		{
 			////Attention!!! This code will regenerate youe credentials!!!
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigProduction() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigSandbox() );
 			var ebayService = ebayFactory.CreateService();
 
 			//------------ Act

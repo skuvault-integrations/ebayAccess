@@ -25,12 +25,12 @@ namespace EbayAccessTests.Integration.Services
 			{
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice1WithoutVariations.Quantity + this.QtyUpdateFor },
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice2WithoutVariations.Quantity + this.QtyUpdateFor },
-			} );
+			}, new Guid().ToString() );
 			var updateProductsAsyncTask2 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
 				ExistingProducts.FixedPrice1WithoutVariations,
 				ExistingProducts.FixedPrice2WithoutVariations,
-			} );
+			}, new Guid().ToString() );
 
 			//A
 			updateProductsAsyncTask1.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
@@ -50,12 +50,12 @@ namespace EbayAccessTests.Integration.Services
 			{
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice1WithoutVariations.Quantity + this.QtyUpdateFor },
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice2WithoutVariations.Quantity + this.QtyUpdateFor },
-			} );
+			}, new Guid().ToString() );
 			var reviseInventoryStatusResponse2 = ebayService.ReviseInventoriesStatus( new List< InventoryStatusRequest >
 			{
 				ExistingProducts.FixedPrice1WithoutVariations,
 				ExistingProducts.FixedPrice2WithoutVariations,
-			} );
+			}, new Guid().ToString() );
 
 			//A
 			( reviseInventoryStatusResponse1.ToList().First( x => x.Items[ 0 ].ItemId == ExistingProducts.FixedPrice1WithoutVariations.ItemId ).Items[ 0 ].Quantity - reviseInventoryStatusResponse2.ToList().First( x => x.Items[ 0 ].ItemId == ExistingProducts.FixedPrice1WithoutVariations.ItemId ).Items[ 0 ].Quantity ).Should().Be( this.QtyUpdateFor );
@@ -73,13 +73,13 @@ namespace EbayAccessTests.Integration.Services
 			{
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation1.Quantity + this.QtyUpdateFor },
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation2.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation2.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation2.Quantity + this.QtyUpdateFor },
-			} );
+			}, new Guid().ToString() );
 			updateProductsAsyncTask1.Wait();
 			var updateProductsAsyncTask2 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
 				ExistingProducts.FixedPrice1WithVariation1,
 				ExistingProducts.FixedPrice1WithVariation2,
-			} );
+			}, new Guid().ToString() );
 			updateProductsAsyncTask2.Wait();
 
 			//A
@@ -98,12 +98,12 @@ namespace EbayAccessTests.Integration.Services
 			{
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation1.Quantity + this.QtyUpdateFor },
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation2.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation2.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation2.Quantity + this.QtyUpdateFor },
-			} );
+			}, new Guid().ToString() );
 			var reviseInventoryStatusResponse2 = ebayService.ReviseInventoriesStatus( new List< InventoryStatusRequest >
 			{
 				ExistingProducts.FixedPrice1WithVariation1,
 				ExistingProducts.FixedPrice1WithVariation2,
-			} );
+			}, new Guid().ToString() );
 
 			//A
 			( reviseInventoryStatusResponse1.ToList().First( x => x.Items[ 0 ].ItemId == ExistingProducts.FixedPrice1WithVariation1.ItemId ).Items[ 0 ].Quantity - reviseInventoryStatusResponse2.ToList().First( x => x.Items[ 0 ].ItemId == ExistingProducts.FixedPrice1WithVariation1.ItemId ).Items[ 0 ].Quantity ).Should().Be( this.QtyUpdateFor );
@@ -119,7 +119,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var inventoryStat1 = ebayService.GetItem( ExistingProducts.FixedPrice1WithVariation1.ItemId.ToString() );
+			var inventoryStat1 = ebayService.GetItem( ExistingProducts.FixedPrice1WithVariation1.ItemId.ToString(), new Guid().ToString() );
 
 			//A
 			inventoryStat1.ItemId.Should().Be( ExistingProducts.FixedPrice1WithVariation1.ItemId.ToString() );
@@ -132,7 +132,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var inventoryStat1 = ebayService.GetItem( ExistingProducts.FixedPrice1WithVariation1.ItemId.ToString() );
+			var inventoryStat1 = ebayService.GetItem( ExistingProducts.FixedPrice1WithVariation1.ItemId.ToString(), new Guid().ToString() );
 
 			//A
 			inventoryStat1.Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue();
@@ -147,7 +147,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( ExistingOrdersIds.OrdersIds.ToArray() );
+			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( "", ExistingOrdersIds.OrdersIds.ToArray() );
 			ordersTask.Wait();
 			//A
 			ordersTask.Result.Orders.Count().Should().BeGreaterThan( 0 );
@@ -173,7 +173,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var orders = ebayServiceLowLevel.GetOrders( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime );
+			var orders = ebayServiceLowLevel.GetOrders( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
 
 			//A
 			orders.Orders.Count().Should().BeGreaterThan( 0 );
@@ -200,7 +200,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var orders = ebayServiceLowLevel.GetOrders( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime );
+			var orders = ebayServiceLowLevel.GetOrders( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
 
 			//A
 			orders.Orders.Count().Should().Be( 0, "because on site there is no orders in specified time" );
@@ -215,7 +215,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var sessionId = ebayService.GetSessionId();
+			var sessionId = ebayService.GetSessionId( new Guid().ToString() );
 
 			//A
 			sessionId.Should().NotBeNullOrWhiteSpace();
@@ -227,11 +227,11 @@ namespace EbayAccessTests.Integration.Services
 		public async Task CreateUploadJob_EbayServiceWithCorrectRuName_HookupSessionId()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var createuploadJobResponse = await ebayService.CreateUploadJobAsync( Guid.NewGuid() ).ConfigureAwait( false );
-			var abortJobResponse = await ebayService.AbortJobAsync( createuploadJobResponse.JobId ).ConfigureAwait( false );
+			var createuploadJobResponse = await ebayServiceLowLevel.CreateUploadJobAsync( Guid.NewGuid(), new Guid().ToString() ).ConfigureAwait( false );
+			var abortJobResponse = await ebayServiceLowLevel.AbortJobAsync( createuploadJobResponse.JobId, new Guid().ToString() ).ConfigureAwait( false );
 
 			//A
 			createuploadJobResponse.Error.Should().BeNull();
@@ -249,9 +249,9 @@ namespace EbayAccessTests.Integration.Services
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var sessionId = ebayService.GetSessionId();
+			var sessionId = ebayService.GetSessionId( new Guid().ToString() );
 			ebayService.AuthenticateUser( sessionId );
-			var userToken = ebayService.FetchToken( sessionId );
+			var userToken = ebayService.FetchToken( sessionId, new Guid().ToString() );
 
 			//A
 			sessionId.Should().NotBeNullOrWhiteSpace();

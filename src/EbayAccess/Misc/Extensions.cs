@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using EbayAccess.Models.GetOrdersResponse;
-using EbayAccess.Models.GetSellerListCustomResponse;
-using EbayAccess.Models.ReviseInventoryStatusRequest;
-using Item = EbayAccess.Models.GetOrdersResponse.Item;
 
 namespace EbayAccess.Misc
 {
@@ -113,12 +111,34 @@ namespace EbayAccess.Misc
 			return res;
 		}
 
-		public static string ToJson(this IEnumerable<string> source)
+		public static string ToJson( this IEnumerable< string > source )
 		{
-			var orders = source as IList<string> ?? source.ToList();
+			var orders = source as IList< string > ?? source.ToList();
 			var items = string.Join( ",", source );
-			var res = string.Format("{{Count:{0}, Items:[{1}]}}", orders.Count(), items);
+			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", orders.Count(), items );
 			return res;
+		}
+
+		public static string ToJson( this Dictionary< string, string > source )
+		{
+			var keysAndValues = source.ToArray().Select( x => string.Format( "{{{0}:{1}}}", x.Key, x.Value ) );
+			var items = string.Join( ",", keysAndValues );
+			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", keysAndValues.Count(), items );
+			return res;
+		}
+
+		public static string ToStringSafe( this Stream webResponseStream )
+		{
+			string responseStr;
+			using( Stream streamCopy = new MemoryStream( ( int )webResponseStream.Length ) )
+			{
+				var sourcePos = webResponseStream.Position;
+				webResponseStream.CopyTo( streamCopy );
+				webResponseStream.Position = sourcePos;
+				streamCopy.Position = 0;
+				responseStr = new StreamReader( streamCopy ).ReadToEnd();
+			}
+			return responseStr;
 		}
 	}
 }

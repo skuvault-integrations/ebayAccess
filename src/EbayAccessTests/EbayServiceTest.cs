@@ -32,7 +32,7 @@ namespace EbayAccessTests
 			};
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStream( It.IsAny< WebRequest >() ) ).Returns( () =>
+			stubWebRequestService.Setup( x => x.GetResponseStream( It.IsAny< WebRequest >(), It.IsAny< string >() ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
 				var buf = new UTF8Encoding().GetBytes( serverResponsePages[ stubCallCounter ] );
@@ -44,7 +44,7 @@ namespace EbayAccessTests
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
-			var orders = ebayService.GetSellerList( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), GetSellerListTimeRangeEnum.StartTime );
+			var orders = ebayService.GetSellerList( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), GetSellerListTimeRangeEnum.StartTime, new Guid().ToString() );
 
 			//A
 			orders.Items.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );
@@ -58,7 +58,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >() ).Returns( x =>
+			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( x =>
 			{
 				var ms = new MemoryStream();
 				var utf8Encoding = new UTF8Encoding();
@@ -68,11 +68,11 @@ namespace EbayAccessTests
 				return ms;
 			} );
 
-			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var getOrdersResponse = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime );
+			var getOrdersResponse = ebayServiceLowLevel.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
 
 			//A
 			getOrdersResponse.Orders.First().TransactionArray.Count.Should().Be( 2 );
@@ -88,7 +88,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >() ).Returns( x =>
+			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( x =>
 			{
 				var ms = new MemoryStream();
 				var utf8Encoding = new UTF8Encoding();
@@ -98,11 +98,11 @@ namespace EbayAccessTests
 				return ms;
 			} );
 
-			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime );
+			var orders = ebayServiceLowLevel.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
 
 			//A
 			orders.Orders.First().TransactionArray.Count.Should().Be( 2 );
@@ -123,7 +123,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
 
-			stubWebRequestService.Setup( x => x.GetResponseStream( It.IsAny< WebRequest >() ) ).Returns( () =>
+			stubWebRequestService.Setup( x => x.GetResponseStream( It.IsAny< WebRequest >(), It.IsAny< string >() ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
 				var encoding = new UTF8Encoding();
@@ -133,11 +133,11 @@ namespace EbayAccessTests
 				return ms;
 			} ).Callback( () => stubCallCounter++ );
 
-			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
-			var getOrdersResponse = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime );
+			var getOrdersResponse = ebayServiceLowLevel.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ),
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
 
 			//A
 			getOrdersResponse.Orders.Count().Should().Be( 2, "because stub gives 2 pages, 1 item per page" );
@@ -153,7 +153,7 @@ namespace EbayAccessTests
 			const string serverResponse = "<ReviseInventoryStatusResponse xmlns=\"urn:ebay:apis:eBLBaseComponents\"><Timestamp>2014-02-17T18:49:00.346Z</Timestamp><Ack>Failure</Ack><Errors><ShortMessage>FixedPrice item ended.</ShortMessage><LongMessage>You are not allowed to revise an ended item \"110136942332\".</LongMessage><ErrorCode>21916750</ErrorCode><SeverityCode>Error</SeverityCode><ErrorParameters ParamID=\"0\"><Value>110136942332</Value></ErrorParameters><ErrorClassification>RequestError</ErrorClassification></Errors><Version>859</Version><Build>E859_UNI_API5_16675060_R1</Build></ReviseInventoryStatusResponse>";
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >() ) ).Returns(
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >() ) ).Returns(
 				() =>
 				{
 					var ms = new MemoryStream();
@@ -170,7 +170,7 @@ namespace EbayAccessTests
 			{
 				new InventoryStatusRequest { ItemId = item1Id, Quantity = itemsQty1 },
 				new InventoryStatusRequest { ItemId = item2Id, Quantity = itemsQty1 }
-			} ).ConfigureAwait( false ) ).ToArray();
+			}, new Guid().ToString() ).ConfigureAwait( false ) ).ToArray();
 
 			//A
 			inventoryStat[ 0 ].Error.Any( x => !string.IsNullOrWhiteSpace( x.ErrorCode ) ).Should().BeTrue();
@@ -186,7 +186,7 @@ namespace EbayAccessTests
 			var getResponseStreamAsyncCallCounter = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >() ).Returns( Task.FromResult( this.GetStream( respstring ) ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.FromResult( this.GetStream( respstring ) ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 

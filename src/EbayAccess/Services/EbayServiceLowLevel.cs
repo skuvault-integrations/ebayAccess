@@ -53,7 +53,7 @@ namespace EbayAccess.Services
 		}
 
 		#region EbayStandartRequest
-		private async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body )
+		private async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body, string mark )
 		{
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCompatibilityLevel ) )
 				headers.Add( EbayHeaders.XEbayApiCompatibilityLevel, EbayHeadersValues.XEbayApiCompatibilityLevel );
@@ -67,32 +67,32 @@ namespace EbayAccess.Services
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiSiteid ) )
 				headers.Add( EbayHeaders.XEbayApiSiteid, this._userCredentials.SiteId.ToString() );
 
-			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
+			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, mark ).ConfigureAwait( false );
 		}
 
-		public WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body )
+		public WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body, string mark )
 		{
-			var resultTask = this.CreateEbayStandartPostRequestAsync( url, headers, body );
+			var resultTask = this.CreateEbayStandartPostRequestAsync( url, headers, body, mark );
 			resultTask.Wait();
 			return resultTask.Result;
 		}
 
-		public async Task< WebRequest > CreateEbayStandartPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body )
+		public async Task< WebRequest > CreateEbayStandartPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body, string mark )
 		{
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCertName ) )
 				headers.Add( EbayHeaders.XEbayApiCertName, this._ebayConfig.CertName );
 
-			return await this.CreateEbayStandartPostRequestAsync( url, headers, body ).ConfigureAwait( false );
+			return await this.CreateEbayStandartPostRequestAsync( url, headers, body, mark ).ConfigureAwait( false );
 		}
 
-		public async Task< WebRequest > CreateEbayStandartPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body )
+		public async Task< WebRequest > CreateEbayStandartPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body, string mark = "" )
 		{
-			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers ).ConfigureAwait( false );
+			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, mark ).ConfigureAwait( false );
 		}
 
-		public WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body )
+		public WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body, string mark )
 		{
-			var requestTask = this.CreateEbayStandartPostRequestWithCertAsync( url, headers, body );
+			var requestTask = this.CreateEbayStandartPostRequestWithCertAsync( url, headers, body, mark );
 			requestTask.Wait();
 			return requestTask.Result;
 		}
@@ -146,7 +146,7 @@ namespace EbayAccess.Services
 			};
 		}
 
-		public GetOrdersResponse GetOrders( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum )
+		public GetOrdersResponse GetOrders( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, string mark )
 		{
 			var orders = new GetOrdersResponse();
 
@@ -163,9 +163,9 @@ namespace EbayAccess.Services
 
 				ActionPolicies.Get.Do( () =>
 				{
-					var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
+					var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body, mark );
 
-					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
+					using( var memStream = this._webRequestServices.GetResponseStream( webRequest, mark ) )
 					{
 						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
@@ -194,7 +194,7 @@ namespace EbayAccess.Services
 			return orders;
 		}
 
-		public async Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum )
+		public async Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, string mark = "" )
 		{
 			var orders = new GetOrdersResponse();
 
@@ -211,9 +211,9 @@ namespace EbayAccess.Services
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
 					{
 						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
@@ -240,7 +240,7 @@ namespace EbayAccess.Services
 			return orders;
 		}
 
-		public async Task< GetOrdersResponse > GetOrdersAsync( params string[] ordersIds )
+		public async Task< GetOrdersResponse > GetOrdersAsync( string mark = "", params string[] ordersIds )
 		{
 			var orders = new GetOrdersResponse();
 
@@ -257,9 +257,9 @@ namespace EbayAccess.Services
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
 					{
 						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
@@ -286,7 +286,7 @@ namespace EbayAccess.Services
 			return orders;
 		}
 
-		public async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber )
+		public async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber, string mark )
 		{
 			var orders = new GetSellingManagerSoldListingsResponse();
 
@@ -298,9 +298,9 @@ namespace EbayAccess.Services
 
 			await ActionPolicies.GetAsync.Do( async () =>
 			{
-				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
 				{
 					var getOrdersResponseParsed = new EbayGetSellingManagerSoldListingsResponseParser().Parse( memStream );
 					if( getOrdersResponseParsed != null )
@@ -363,7 +363,7 @@ namespace EbayAccess.Services
 				getSellerListTimeRangeEnum );
 		}
 
-		public GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum )
+		public GetSellerListResponse GetSellerList( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
 			var items = new GetSellerListResponse();
 
@@ -379,9 +379,9 @@ namespace EbayAccess.Services
 
 				ActionPolicies.Get.Do( () =>
 				{
-					var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body );
+					var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body, mark );
 
-					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
+					using( var memStream = this._webRequestServices.GetResponseStream( webRequest, mark ) )
 					{
 						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
@@ -408,7 +408,7 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum )
+		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
 			var items = new GetSellerListResponse();
 
@@ -423,9 +423,9 @@ namespace EbayAccess.Services
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
 					{
 						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( getSellerListResponse != null )
@@ -448,7 +448,7 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public GetSellerListCustomResponse GetSellerListCustom( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum )
+		public GetSellerListCustomResponse GetSellerListCustom( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
 			var items = new GetSellerListCustomResponse();
 
@@ -464,9 +464,9 @@ namespace EbayAccess.Services
 
 				ActionPolicies.Get.Do( () =>
 				{
-					var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body );
+					var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body, mark );
 
-					using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
+					using( var memStream = this._webRequestServices.GetResponseStream( webRequest, mark ) )
 					{
 						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
@@ -493,7 +493,7 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public async Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum )
+		public async Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
 			var items = new GetSellerListCustomResponse();
 
@@ -508,9 +508,9 @@ namespace EbayAccess.Services
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
 					{
 						var getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
 						if( getSellerListResponse != null )
@@ -533,12 +533,12 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum )
+		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
 			var recordsPerPage = this._itemsPerPage;
 			const int pageNumber = 1;
 
-			var getSellerListResponse = await this.GetSellerListCustomResponseAsync( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber ).ConfigureAwait( false );
+			var getSellerListResponse = await this.GetSellerListCustomResponseAsync( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber, mark ).ConfigureAwait( false );
 
 			var tasks = new List< Task< GetSellerListCustomResponse > >();
 
@@ -553,7 +553,7 @@ namespace EbayAccess.Services
 						pages.Add( i );
 					}
 					await Task.Factory.StartNew( () =>
-						tasks.AddRange( pages.Select( x => this.GetSellerListCustomResponseAsync( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, x ) ) ) );
+						tasks.AddRange( pages.Select( x => this.GetSellerListCustomResponseAsync( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, x, mark ) ) ) );
 
 					//await Task.Factory.StartNew( () => Parallel.ForEach( pages, new ParallelOptions { MaxDegreeOfParallelism = 100 }, x => tasks.Add( this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ) ) ).ConfigureAwait( false );
 				}
@@ -568,7 +568,7 @@ namespace EbayAccess.Services
 			return getSellerListResponses.Where( x => x != null ).ToList();
 		}
 
-		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber )
+		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, string mark )
 		{
 			var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
 
@@ -578,9 +578,9 @@ namespace EbayAccess.Services
 
 			await ActionPolicies.SubmitAsync.Do( async () =>
 			{
-				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
 					getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
 			} ).ConfigureAwait( false );
 
@@ -605,7 +605,7 @@ namespace EbayAccess.Services
 				id );
 		}
 
-		public Item GetItem( string id )
+		public Item GetItem( string id, string mark )
 		{
 			var order = new Item();
 
@@ -615,9 +615,9 @@ namespace EbayAccess.Services
 
 			ActionPolicies.Get.Do( () =>
 			{
-				var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body );
+				var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body, mark );
 
-				using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
+				using( var memStream = this._webRequestServices.GetResponseStream( webRequest, mark ) )
 				{
 					var tempOrders = new EbayGetItemResponseParser().Parse( memStream );
 					if( tempOrders != null )
@@ -628,7 +628,7 @@ namespace EbayAccess.Services
 			return order;
 		}
 
-		public async Task< Item > GetItemAsync( string id )
+		public async Task< Item > GetItemAsync( string id, string mark )
 		{
 			var order = new Item();
 
@@ -638,9 +638,9 @@ namespace EbayAccess.Services
 
 			await ActionPolicies.GetAsync.Do( async () =>
 			{
-				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
 				{
 					var tempOrders = new EbayGetItemResponseParser().Parse( memStream );
 					if( tempOrders != null )
@@ -700,15 +700,15 @@ namespace EbayAccess.Services
 			return body;
 		}
 
-		public InventoryStatusResponse ReviseInventoryStatus( InventoryStatusRequest inventoryStatusReq )
+		public InventoryStatusResponse ReviseInventoryStatus( InventoryStatusRequest inventoryStatusReq, string mark )
 		{
 			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
 
 			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq.ItemId, inventoryStatusReq.Quantity, inventoryStatusReq.Sku );
 
-			var request = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
+			var request = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body, mark );
 
-			using( var memStream = this._webRequestServices.GetResponseStream( request ) )
+			using( var memStream = this._webRequestServices.GetResponseStream( request, mark ) )
 			{
 				var inventoryStatusResponse =
 					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
@@ -716,15 +716,15 @@ namespace EbayAccess.Services
 			}
 		}
 
-		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null )
+		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null, string mark = "" )
 		{
 			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
 
 			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq, inventoryStatusReq2, inventoryStatusReq3, inventoryStatusReq4 );
 
-			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body ).ConfigureAwait( false );
+			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request ).ConfigureAwait( false ) )
+			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request, mark ).ConfigureAwait( false ) )
 			{
 				var inventoryStatusResponse =
 					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
@@ -732,16 +732,16 @@ namespace EbayAccess.Services
 			}
 		}
 
-		public IEnumerable< InventoryStatusResponse > ReviseInventoriesStatus( IEnumerable< InventoryStatusRequest > inventoryStatuses )
+		public IEnumerable< InventoryStatusResponse > ReviseInventoriesStatus( IEnumerable< InventoryStatusRequest > inventoryStatuses, string mark )
 		{
 			return
 				inventoryStatuses.Select(
-					productToUpdate => ActionPolicies.Submit.Get( () => this.ReviseInventoryStatus( productToUpdate ) ) )
+					productToUpdate => ActionPolicies.Submit.Get( () => this.ReviseInventoryStatus( productToUpdate, mark ) ) )
 					.Where( productUpdated => productUpdated != null )
 					.ToList();
 		}
 
-		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses )
+		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses, string mark )
 		{
 			const int maxItemsPerCall = 4;
 
@@ -772,7 +772,7 @@ namespace EbayAccess.Services
 
 			await Task.Factory.StartNew( () =>
 			{
-				var reviseInventoryStatusTasks = chunks.Select( x => this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4 ) );
+				var reviseInventoryStatusTasks = chunks.Select( x => this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4, mark ) );
 				tasks.AddRange( reviseInventoryStatusTasks );
 			} ).ConfigureAwait( false );
 
@@ -817,7 +817,7 @@ namespace EbayAccess.Services
 				sessionId );
 		}
 
-		public string GetSessionId()
+		public string GetSessionId( string mark )
 		{
 			string result = null;
 
@@ -827,9 +827,9 @@ namespace EbayAccess.Services
 
 			ActionPolicies.Get.Do( () =>
 			{
-				var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
+				var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body, mark );
 
-				using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
+				using( var memStream = this._webRequestServices.GetResponseStream( webRequest, mark ) )
 				{
 					var tempSessionId = new EbayGetSessionIdResponseParser().Parse( memStream );
 					if( tempSessionId != null )
@@ -852,15 +852,15 @@ namespace EbayAccess.Services
 			Process.Start( uri.AbsoluteUri );
 		}
 
-		public string FetchToken( string sessionId )
+		public string FetchToken( string sessionId, string mark )
 		{
 			string result = null;
 
 			var body = this.CreateFetchTokenRequestBody( sessionId );
 			var headers = CreateFetchTokenRequestHeadersWithApiCallName();
-			var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body );
+			var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body, mark );
 
-			using( var memStream = this._webRequestServices.GetResponseStream( webRequest ) )
+			using( var memStream = this._webRequestServices.GetResponseStream( webRequest, mark ) )
 			{
 				var tempResponse = new EbayFetchTokenResponseParser().Parse( memStream );
 				if( tempResponse != null && tempResponse.Error == null )
@@ -872,7 +872,7 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region JobService
-		public async Task< CreateJobResponse > CreateUploadJobAsync( Guid guid )
+		public async Task< CreateJobResponse > CreateUploadJobAsync( Guid guid, string mark )
 		{
 			var result = new CreateJobResponse();
 
@@ -884,7 +884,7 @@ namespace EbayAccess.Services
 			{
 				var webRequest = await this.CreateEbayStandartPostRequestToBulkExchangeServerAsync( this._endPointBulkExhange, headers, body ).ConfigureAwait( false );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
 				{
 					var createJobResponseParsed = new EbayBulkCreateJobParser().Parse( memStream );
 					if( createJobResponseParsed != null )
@@ -903,7 +903,7 @@ namespace EbayAccess.Services
 			return result;
 		}
 
-		public async Task< AbortJobResponse > AbortJobAsync( string jobId )
+		public async Task< AbortJobResponse > AbortJobAsync( string jobId, string mark )
 		{
 			var result = new AbortJobResponse();
 
@@ -915,7 +915,7 @@ namespace EbayAccess.Services
 			{
 				var webRequest = await this.CreateEbayStandartPostRequestToBulkExchangeServerAsync( this._endPointBulkExhange, headers, body ).ConfigureAwait( false );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
 				{
 					var abortJobResponse = new EbayBulkAbortJobParser().Parse( memStream );
 					if( abortJobResponse != null )

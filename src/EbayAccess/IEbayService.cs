@@ -35,6 +35,7 @@ namespace EbayAccess
 		string FetchUserToken( string sessionId );
 
 		Task< List< string > > GetOrdersIdsAsync( params string[] sourceOrdersIds );
+
 		Task< List< string > > GetSaleRecordsNumbersAsync( params string[] saleRecordsIDs );
 	}
 }

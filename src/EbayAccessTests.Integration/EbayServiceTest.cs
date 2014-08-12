@@ -75,8 +75,8 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var dateTime = new DateTime( 2014, 6, 2, 19, 57, 00, DateTimeKind.Local );
-			var dateFrom = new DateTime( 2014, 6, 2, 19, 56, 00, DateTimeKind.Local );
+			var dateTime = new DateTime( 2014, 7, 30, 19, 57, 00, DateTimeKind.Local );
+			var dateFrom = new DateTime( 2014, 7, 5, 19, 56, 00, DateTimeKind.Local );
 			var ordersTask = service.GetOrdersAsync( dateFrom, dateTime );
 			ordersTask.Wait();
 
@@ -114,38 +114,36 @@ namespace EbayAccessTests.Integration
 		}
 
 		#region UpdateProducts
-		[Test]
+		[ Test ]
 		public void UpdateProductsAsync_EbayServiceWithFixedPriceProductsWithQtysLikeInUpdate_NoExceptionOccured()
 		{
 			try
 			{
 				//------------ Arrange
-				var ebayService = new EbayService(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox());
+				var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 				//------------ Act
-				var updateProductsAsyncTask1 = ebayService.UpdateProductsAsync(new List<InventoryStatusRequest>
-			{
-				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation1.Quantity },
-				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation2.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation2.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation2.Quantity },
-			});
+				var updateProductsAsyncTask1 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+				{
+					new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation1.Quantity },
+					new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation2.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation2.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation2.Quantity },
+				} );
 				//updateProductsAsyncTask1.Wait();
 				Action act = () => updateProductsAsyncTask1.Wait();
 
 				//------------ Assert
 				var v = updateProductsAsyncTask1.Result.ToList();
-				act.ShouldNotThrow<Exception>();
+				act.ShouldNotThrow< Exception >();
 
 				//updateProductsAsyncTask1.Invoking(x=>x.Wait()).ShouldNotThrow<Exception>().WithMessage
 
 				//updateProductsAsyncTask1.Result.ToList().TrueForAll(x => x.Items.Count == 2);
 				//updateProductsAsyncTask1.ShouldRaisePropertyChangeFor
 			}
-			catch (Exception)
+			catch( Exception )
 			{
-				
 				throw;
 			}
-
 		}
 
 		[ Test ]

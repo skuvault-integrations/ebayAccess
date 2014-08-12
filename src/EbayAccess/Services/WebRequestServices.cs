@@ -27,11 +27,15 @@ namespace EbayAccess.Services
 			return serviceRequest;
 		}
 
-		public async Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders )
+		public async Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders, string mark = "" )
 		{
+			const string currentMenthodName = "CreateServicePostRequestAsync";
+			var methodParameters = string.Format( "{{Url:{0},Body:{1},Headers:{2}}}", serviceUrl, body, rawHeaders.ToJson() );
+
 			try
 			{
-				this.LogTraceCreateServicePostRequestAsyncStarted( rawHeaders, body );
+				EbayLogger.LogTraceInnerStarted( string.Format( "MethodName:{0},MethodParameters:{1},From:{2}", currentMenthodName, methodParameters, mark ?? PredefinedValues.NotAvailable ) );
+
 				var encoding = new UTF8Encoding();
 				var encodedBody = encoding.GetBytes( body );
 
@@ -49,88 +53,29 @@ namespace EbayAccess.Services
 				using( var newStream = await serviceRequest.GetRequestStreamAsync().ConfigureAwait( false ) )
 					newStream.Write( encodedBody, 0, encodedBody.Length );
 
-				this.LogTraceCreateServicePostRequestAsyncEnded( rawHeaders, body );
+				EbayLogger.LogTraceInnerEnded( string.Format( "MethodName:{0},MethodParameters:{1},From:{2}", currentMenthodName, methodParameters, mark ?? PredefinedValues.NotAvailable ) );
 				return serviceRequest;
 			}
 			catch( Exception )
 			{
-				this.LogTraceCreateServicePostRequestAsyncException( rawHeaders, body );
+				EbayLogger.LogTraceInnerError( string.Format( "MethodName:{0},MethodParameters:{1},From:{2}", currentMenthodName, methodParameters, mark ?? PredefinedValues.NotAvailable ) );
 				throw;
 			}
 		}
 		#endregion
 
 		#region logging
-		private void LogTraceCreateServicePostRequestAsyncStarted( Dictionary< string, string > rawHeaders, string body )
-		{
-			EbayLogger.Log().Trace( "[ebay] Create post request async started with headers:{0} body:{1}.", rawHeaders.Aggregate( "", ( ac, item ) => ac + string.Format( "({0}:{1})", item.Key, item.Value ) ), body );
-		}
-
-		private void LogTraceCreateServicePostRequestAsyncEnded( Dictionary< string, string > rawHeaders, string body )
-		{
-			EbayLogger.Log().Trace( "[ebay] Create post request async ended with headers:{0} body:{1}.", rawHeaders.Aggregate( "", ( ac, item ) => ac + string.Format( "({0}:{1})", item.Key, item.Value ) ), body );
-		}
-
-		private void LogTraceCreateServicePostRequestAsyncException( Dictionary< string, string > rawHeaders, string body )
-		{
-			EbayLogger.Log().Trace( "[ebay] Create post request async throw an exception: headers{0} body:{1}.", rawHeaders.Aggregate( "", ( ac, item ) => ac + string.Format( "({0}:{1})", item.Key, item.Value ) ), body );
-		}
-
-		private void LogTraceGetResponseStarted( WebRequest webRequest )
-		{
-			EbayLogger.Log().Trace( "[ebay] Get response url:{0} started.", webRequest.RequestUri );
-		}
-
-		private void LogTraceGetResponseEnded( WebRequest webRequest, Stream webResponseStream )
-		{
-			using( Stream streamCopy = new MemoryStream( ( int )webResponseStream.Length ) )
-			{
-				var sourcePos = webResponseStream.Position;
-				webResponseStream.CopyTo( streamCopy );
-				webResponseStream.Position = sourcePos;
-				streamCopy.Position = 0;
-
-				var responseStr = new StreamReader( streamCopy ).ReadToEnd();
-				EbayLogger.Log().Trace( "[ebay] Get response url:{0} ended with {1}.", webRequest.RequestUri, responseStr );
-			}
-		}
-
-		private void LogTraceGetResponseAsyncStarted( WebRequest webRequest )
-		{
-			EbayLogger.Log().Trace( "[ebay] Get response async url:{0} started.", webRequest.RequestUri );
-		}
-
-		private void LogTraceGetResponseAsyncEnded( WebRequest webRequest, Stream webResponseStream )
-		{
-			using( Stream streamCopy = new MemoryStream( ( int )webResponseStream.Length ) )
-			{
-				var sourcePos = webResponseStream.Position;
-				webResponseStream.CopyTo( streamCopy );
-				webResponseStream.Position = sourcePos;
-				streamCopy.Position = 0;
-
-				var responseStr = new StreamReader( streamCopy ).ReadToEnd();
-				EbayLogger.Log().Trace( "[ebay] Get response async url:{0} ended with {1}.", webRequest.RequestUri, responseStr );
-			}
-		}
-
-		private void LogTraceGetResponseException( WebRequest webRequest )
-		{
-			EbayLogger.Log().Trace( "[ebay] Get response url:{0} throw an exception .", webRequest.RequestUri );
-		}
-
-		private void LogTraceGetResponseAsyncException( WebRequest webRequest )
-		{
-			EbayLogger.Log().Trace( "[ebay] Get response async url:{0} throw an exception .", webRequest.RequestUri );
-		}
 		#endregion
 
 		#region ResponseHanding
-		public Stream GetResponseStream( WebRequest webRequest )
+		public Stream GetResponseStream( WebRequest webRequest, string mark )
 		{
-			this.LogTraceGetResponseStarted( webRequest );
+			const string currentMenthodName = "GetResponseStream";
+
 			try
 			{
+				EbayLogger.LogTraceInnerStarted( string.Format( "MethodName:{0},MethodParameters:{1},From:{2}", currentMenthodName, webRequest.RequestUri, mark ?? PredefinedValues.NotAvailable ) );
+
 				using( var response = ( HttpWebResponse )webRequest.GetResponse() )
 				using( var dataStream = response.GetResponseStream() )
 				{
@@ -138,35 +83,51 @@ namespace EbayAccess.Services
 					if( dataStream != null )
 						dataStream.CopyTo( memoryStream, 0x100 );
 					memoryStream.Position = 0;
-					this.LogTraceGetResponseEnded( webRequest, memoryStream );
+
+					EbayLogger.LogTraceInnerEnded( string.Format(
+						"MethodName:{0},MethodParameters:{1},From:{2},Result:{3}",
+						currentMenthodName,
+						webRequest.RequestUri,
+						mark ?? PredefinedValues.NotAvailable,
+						memoryStream.ToStringSafe() ) );
+
 					return memoryStream;
 				}
 			}
 			catch
 			{
-				this.LogTraceGetResponseException( webRequest );
+				EbayLogger.LogTraceInnerError( string.Format( "MethodName:{0},MethodParameters:{1},From:{2}", currentMenthodName, webRequest.RequestUri, mark ?? PredefinedValues.NotAvailable ) );
 				throw;
 			}
 		}
 
-		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest )
+		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest, string mark )
 		{
+			const string currentMenthodName = "GetResponseStreamAsync";
 			try
 			{
-				this.LogTraceGetResponseAsyncStarted( webRequest );
+				EbayLogger.LogTraceInnerStarted( string.Format( "MethodName:{0},MethodParameters:{1},From:{2}", currentMenthodName, webRequest.RequestUri, mark ?? PredefinedValues.NotAvailable ) );
+
 				using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync().ConfigureAwait( false ) )
 				using( var dataStream = await new TaskFactory< Stream >().StartNew( () => response != null ? response.GetResponseStream() : null ).ConfigureAwait( false ) )
 				{
 					var memoryStream = new MemoryStream();
 					await dataStream.CopyToAsync( memoryStream, 0x100 ).ConfigureAwait( false );
 					memoryStream.Position = 0;
-					this.LogTraceGetResponseAsyncEnded( webRequest, memoryStream );
+
+					EbayLogger.LogTraceInnerEnded( string.Format(
+						"MethodName:{0},MethodParameters:{1},From:{2},Result:{3}",
+						currentMenthodName,
+						webRequest.RequestUri,
+						mark ?? PredefinedValues.NotAvailable,
+						memoryStream.ToStringSafe() ) );
+
 					return memoryStream;
 				}
 			}
 			catch
 			{
-				this.LogTraceGetResponseAsyncException( webRequest );
+				EbayLogger.LogTraceInnerError( string.Format( "MethodName:{0},MethodParameters:{1},From:{2}", currentMenthodName, webRequest.RequestUri, mark ?? PredefinedValues.NotAvailable ) );
 				throw;
 			}
 		}

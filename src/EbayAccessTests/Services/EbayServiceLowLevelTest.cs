@@ -22,12 +22,12 @@ namespace EbayAccessTests.Services
 			{
 				var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-				stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >() ).Returns( Task.Factory.StartNew< Stream >( () => fs ) );
+				stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.Factory.StartNew< Stream >( () => fs ) );
 
 				var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 				//A
-				var getSellerListTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), GetSellerListTimeRangeEnum.StartTime );
+				var getSellerListTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), GetSellerListTimeRangeEnum.StartTime, new Guid().ToString() );
 				getSellerListTask.Wait();
 				var items = getSellerListTask.Result;
 
@@ -46,7 +46,7 @@ namespace EbayAccessTests.Services
 			var getResponseStreamAsyncCallCounter = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >() ).Returns( Task.FromResult( this.GetStream( respstring ) ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.FromResult( this.GetStream( respstring ) ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -70,12 +70,12 @@ namespace EbayAccessTests.Services
 			;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >() ).Returns( this.GetStream( respstring ) ).AndDoes( x => getResponseStreamCallCounter++ );
+			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( this.GetStream( respstring ) ).AndDoes( x => getResponseStreamCallCounter++ );
 
-			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var orders = ebayService.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime );
+			var orders = ebayServiceLowLevel.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
 
 			//A
 			getResponseStreamCallCounter.Should().Be( 1 );

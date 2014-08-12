@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using EbayAccess;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 using LINQtoCSV;
@@ -21,7 +22,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 		public EbayUserCredentials GetEbayUserCredentials()
 		{
-			return new EbayUserCredentials( this._flatUserCredentialsCsvLine.AccountName, this._flatUserCredentialsCsvLine.Token );
+			return new EbayUserCredentials( this._flatUserCredentialsCsvLine.AccountName, this._flatUserCredentialsCsvLine.Token, ( int )ebaySites.AU );
 		}
 
 		public EbayConfig GetEbayConfigSandbox()
