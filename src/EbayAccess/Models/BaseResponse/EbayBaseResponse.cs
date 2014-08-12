@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using EbayAccess.Misc;
 
 namespace EbayAccess.Models.BaseResponse
 {
