@@ -142,17 +142,17 @@ namespace EbayAccess.Misc
 			return responseStr;
 		}
 
-		public static string ToJson( this IEnumerable<ResponseError> sourceErrors)
+		public static string ToJson( this IEnumerable< ResponseError > sourceErrors )
 		{
-			var errors = sourceErrors.Select(x => string.Format("{{ErrorCode:{0},ShortMessage:{1},LongMessage:{2},ErrorClassification:{3},ServerityCode:{4},ErrorParameters:{5}}}",
+			var errors = sourceErrors.Select( x => string.Format( "{{ErrorCode:{0},ShortMessage:{1},LongMessage:{2},ErrorClassification:{3},ServerityCode:{4},ErrorParameters:{5}}}",
 				x.ErrorCode,
 				x.ShortMessage,
 				x.LongMessage,
 				x.ErrorClassification,
 				x.ServerityCode,
-				x.ErrorParameters)
+				x.ErrorParameters )
 				);
-			return string.Format("{{Count:{0}, Errors:[{1}]}}", errors.Count(), string.Join(",", errors));
+			return string.Format( "{{Count:{0}, Errors:[{1}]}}", errors.Count(), string.Join( ",", errors ) );
 		}
 	}
 }

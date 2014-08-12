@@ -44,7 +44,7 @@ namespace EbayAccess.Services.Parsers
 		protected override IEnumerable< ResponseError > ResponseContainsErrors( XElement root, XNamespace ns )
 		{
 			var isSuccess = root.Element( ns + "ack" );
-			if (isSuccess != null && (isSuccess.Value == "Failure" || isSuccess.Value == "PartialFailure"))
+			if( isSuccess != null && ( isSuccess.Value == "Failure" || isSuccess.Value == "PartialFailure" ) )
 			{
 				var ResponseError = new ResponseError();
 				string temp = null;
