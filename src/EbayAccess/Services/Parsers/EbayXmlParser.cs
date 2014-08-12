@@ -78,7 +78,7 @@ namespace EbayAccess.Services.Parsers
 		protected virtual IEnumerable< ResponseError > ResponseContainsErrors( XElement root, XNamespace ns )
 		{
 			var isSuccess = root.Element( ns + "Ack" );
-			if (isSuccess == null || (isSuccess.Value == "Failure" || isSuccess.Value == "PartialFailure"))
+			if( isSuccess == null || ( isSuccess.Value != "Failure" && isSuccess.Value != "PartialFailure" ) )
 				return null;
 
 			var errorsElements = root.Descendants( ns + "Errors" );
