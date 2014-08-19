@@ -6,6 +6,8 @@ using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.GetSellerListResponse;
 using EbayAccess.Models.GetSellingManagerSoldListingsResponse;
+using EbayAccess.Models.ReviseFixedPriceItemRequest;
+using EbayAccess.Models.ReviseFixedPriceItemResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services.Parsers;
@@ -34,6 +36,8 @@ namespace EbayAccess.Services
 		IEnumerable< InventoryStatusResponse > ReviseInventoriesStatus( IEnumerable< InventoryStatusRequest > inventoryStatuses, string mark );
 
 		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses, string mark );
+
+		Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, string mark, bool isVariation );
 
 		string GetSessionId( string mark );
 

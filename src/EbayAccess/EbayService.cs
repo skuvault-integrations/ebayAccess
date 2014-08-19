@@ -4,15 +4,19 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using EbayAccess.Misc;
+using EbayAccess.Models;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.GetSellerListResponse;
 using EbayAccess.Models.GetSellingManagerSoldListingsResponse;
+using EbayAccess.Models.ReviseFixedPriceItemRequest;
+using EbayAccess.Models.ReviseFixedPriceItemResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services;
+using Netco.Extensions;
 using Item = EbayAccess.Models.GetSellerListCustomResponse.Item;
 using Order = EbayAccess.Models.GetOrdersResponse.Order;
 
@@ -427,6 +431,50 @@ namespace EbayAccess
 			}
 		}
 
+		protected async Task< IEnumerable< ReviseFixedPriceItemResponse > > UpdateFixePriceProductsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
+		{
+			var methodParameters = products.ToJson();
+			var restInfo = this.EbayServiceLowLevel.ToJson();
+			const string currentMenthodName = "UpdateFixePriceProductsAsync";
+			var mark = Guid.NewGuid().ToString();
+
+			try
+			{
+				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+
+				var fixedPriceItemResponses = await products.ProcessInBatchAsync( 18, async x =>
+				{
+					var res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, false ).ConfigureAwait( false );
+					if( res.Error.Exists( y => y.ErrorCode == "21916585" ) )
+						res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, true ).ConfigureAwait( false );
+
+					return res;
+				} ).ConfigureAwait( false );
+
+				var reviseFixedPriceItemResponses = fixedPriceItemResponses as IList< ReviseFixedPriceItemResponse > ?? fixedPriceItemResponses.ToList();
+
+				if( reviseFixedPriceItemResponses.Any( x => x.Error != null && x.Error.Any() ) )
+				{
+					var responseErrors = reviseFixedPriceItemResponses.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
+					throw new Exception( responseErrors.ToJson() );
+				}
+
+				var items = reviseFixedPriceItemResponses.Where( y => y.Item != null ).Select( x => x.Item ).ToList();
+
+				var briefInfo = items.ToJson();
+
+				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
+
+				return fixedPriceItemResponses;
+			}
+			catch( Exception exception )
+			{
+				var ebayException = new EbayCommonException( string.Format( "Error.{0})", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
+				LogTraceException( ebayException.Message, ebayException );
+				throw ebayException;
+			}
+		}
+
 		public async Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products )
 		{
 			var methodParameters = ToJson( products );
@@ -451,6 +499,36 @@ namespace EbayAccess
 				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
 
 				return reviseInventoriesStatus;
+			}
+			catch( Exception exception )
+			{
+				var ebayException = new EbayCommonException( string.Format( "Error.{0})", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
+				LogTraceException( ebayException.Message, ebayException );
+				throw ebayException;
+			}
+		}
+
+		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products )
+		{
+			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
+			var methodParameters = updateInventoryRequests.ToJson();
+			var restInfo = this.EbayServiceLowLevel.ToJson();
+			const string currentMenthodName = "UpdateInventoryAsync";
+			var mark = Guid.NewGuid().ToString();
+
+			try
+			{
+				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+
+				var reviseFixedPriceItemResponses = await this.UpdateFixePriceProductsAsync( updateInventoryRequests.Select( x => new ReviseFixedPriceItemRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } ) ).ConfigureAwait( false );
+
+				var updateInventoryResponses = reviseFixedPriceItemResponses.Select( x => new UpdateInventoryResponse() { ItemId = x.Item.ItemId } ).ToList();
+
+				var briefInfo = updateInventoryResponses.ToJson();
+
+				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
+
+				return updateInventoryResponses;
 			}
 			catch( Exception exception )
 			{

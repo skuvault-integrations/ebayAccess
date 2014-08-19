@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EbayAccess.Models;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
@@ -37,5 +38,7 @@ namespace EbayAccess
 		Task< List< string > > GetOrdersIdsAsync( params string[] sourceOrdersIds );
 
 		Task< List< string > > GetSaleRecordsNumbersAsync( params string[] saleRecordsIDs );
+
+		Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products );
 	}
 }

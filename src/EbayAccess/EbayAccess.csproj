@@ -65,6 +65,10 @@
     <Compile Include="Models\BaseResponse\EbayBaseResponse.cs" />
     <Compile Include="Models\BaseResponse\PaginationResult.cs" />
     <Compile Include="Models\BaseResponse\ResponseError.cs" />
+    <Compile Include="Models\UpdateInventoryResponse.cs" />
+    <Compile Include="Models\UpdateInventoryRequest.cs" />
+    <Compile Include="Models\ReviseFixedPriceItemRequest\ReviseFixedPriceItemRequest.cs" />
+    <Compile Include="Models\ReviseFixedPriceItemResponse\InventoryStatusResponse.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\GetSellerListCustomResponse.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\Item.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\ItemExtended.cs" />
@@ -104,6 +108,7 @@
     <Compile Include="Models\GetSellingManagerSoldListingsResponse\Order.cs" />
     <Compile Include="Models\GetSellingManagerSoldListingsResponse\OrderEqualityComparerByRecordId.cs" />
     <Compile Include="Models\GetSessionIdResponse\GetSessionIdResponse.cs" />
+    <Compile Include="Models\ReviseFixedPriceItemResponse\Item.cs" />
     <Compile Include="Models\ReviseInventoryStatusRequest\InventoryStatusRequest.cs" />
     <Compile Include="Models\ReviseInventoryStatusResponse\InventoryStatusResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -111,6 +116,7 @@
     <Compile Include="Services\EbayServiceLowLevel.cs" />
     <Compile Include="Services\IEbayServiceLowLevel.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />
+    <Compile Include="Services\Parsers\EbayReviseFixedPriceItemResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetSellingManagerSoldListingsResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayBulkAbortJobParser.cs" />
     <Compile Include="Services\Parsers\EbayBulkCreateJobParser.cs" />

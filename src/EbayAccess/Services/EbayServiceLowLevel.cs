@@ -13,6 +13,8 @@ using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.GetSellerListResponse;
 using EbayAccess.Models.GetSellingManagerSoldListingsResponse;
+using EbayAccess.Models.ReviseFixedPriceItemRequest;
+using EbayAccess.Models.ReviseFixedPriceItemResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services.Parsers;
@@ -661,6 +663,14 @@ namespace EbayAccess.Services
 			};
 		}
 
+		private static Dictionary< string, string > CreateReviseFixedPriceItemHeadersWithApiCallName()
+		{
+			return new Dictionary< string, string >
+			{
+				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.ReviseInventoryStatus },
+			};
+		}
+
 		private string CreateReviseInventoryStatusRequestBody( long? itemIdMonad, long? quantityMonad, string sku )
 		{
 			var inventoryStatus = CreateInventoryStatusTag( itemIdMonad, quantityMonad, sku );
@@ -670,6 +680,25 @@ namespace EbayAccess.Services
 				this._userCredentials.Token,
 				inventoryStatus
 				);
+			return body;
+		}
+
+		private string CreateReviseFixedPriceItemRequestBody( ReviseFixedPriceItemRequest inventoryStatusReq, bool isVariation )
+		{
+			var body = isVariation ? string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations><Variation><SKU>{2}</SKU><Quantity>{3}</Quantity></Variation></Variations></Item></ReviseFixedPriceItemRequest>",
+				this._userCredentials.Token,
+				inventoryStatusReq.ItemId,
+				inventoryStatusReq.Sku,
+				inventoryStatusReq.Quantity
+				) :
+				string.Format(
+					"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Quantity>{2}</Quantity><SKU>{3}</SKU></Item></ReviseFixedPriceItemRequest>",
+					this._userCredentials.Token,
+					inventoryStatusReq.ItemId,
+					inventoryStatusReq.Quantity,
+					inventoryStatusReq.Sku
+					);
 			return body;
 		}
 
@@ -783,6 +812,22 @@ namespace EbayAccess.Services
 			resultResponses.AddRange( tasks.Select( x => x.Result ).ToList() );
 
 			return resultResponses;
+		}
+
+		public async Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, string mark, bool isVariation )
+		{
+			var headers = CreateReviseFixedPriceItemHeadersWithApiCallName();
+
+			var body = this.CreateReviseFixedPriceItemRequestBody( fixedPriceItem, isVariation );
+
+			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
+
+			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request, mark ).ConfigureAwait( false ) )
+			{
+				var inventoryStatusResponse =
+					new EbayReviseFixedPriceItemResponseParser().Parse( memStream );
+				return inventoryStatusResponse;
+			}
 		}
 		#endregion
 
