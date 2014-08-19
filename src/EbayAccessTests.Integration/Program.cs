@@ -46,6 +46,7 @@ namespace EbayAccessTests.Integration
 			products.Count().Should().BeGreaterThan( 0 );
 		}
 
+		#region UpdateProductsAsync
 		[ Test ]
 		public void UpdateProductsAsync_EbayServiceWithFixedPriceProductVariations_ProductsUpdated()
 		{
@@ -103,6 +104,7 @@ namespace EbayAccessTests.Integration
 			//(updateProductsAsyncTask1.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithoutVariations.ItemId).Items[0].Quantity - updateProductsAsyncTask2.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithoutVariations.ItemId).Items[0].Quantity).Should().Be(this.QtyUpdateFor);
 			//(updateProductsAsyncTask1.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice2WithoutVariations.ItemId).Items[0].Quantity - updateProductsAsyncTask2.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice2WithoutVariations.ItemId).Items[0].Quantity).Should().Be(this.QtyUpdateFor);
 		}
+		#endregion
 
 		#region GetProductsDetails
 		[ Test ]
@@ -183,7 +185,7 @@ namespace EbayAccessTests.Integration
 		{
 			////Attention!!! This code will regenerate youe credentials!!!
 			//------------ Arrange
-			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigSandbox() );
+			var ebayFactory = new EbayFactory( this._credentials.GetEbayConfigProduction() );
 			var ebayService = ebayFactory.CreateService();
 
 			//------------ Act

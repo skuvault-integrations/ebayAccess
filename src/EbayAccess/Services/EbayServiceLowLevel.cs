@@ -101,13 +101,13 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region GetOrders
-		private string CreateGetOrdersRequestBody( DateTime createTimeFrom, DateTime createTimeTo, int recordsPerPage, int pageNumber, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum )
+		private string CreateGetOrdersRequestBody( DateTime timeRangeFrom, DateTime timeRangeTo, int recordsPerPage, int pageNumber, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum )
 		{
 			return string.Format(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetOrdersRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><{5}From>{1}</{5}From><{5}To>{2}</{5}To><Pagination><EntriesPerPage>{3}</EntriesPerPage><PageNumber>{4}</PageNumber></Pagination></GetOrdersRequest>​",
 				this._userCredentials.Token,
-				createTimeFrom.ToStringUtcIso8601(),
-				createTimeTo.ToStringUtcIso8601(),
+				timeRangeFrom.ToStringUtcIso8601(),
+				timeRangeTo.ToStringUtcIso8601(),
 				recordsPerPage,
 				pageNumber,
 				getOrdersTimeRangeEnum );
