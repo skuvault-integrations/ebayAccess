@@ -23,7 +23,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		public void Init()
 		{
 			this._credentials = new TestCredentials( this.FilesEbayTestCredentialsCsv, this.FilesEbayTestDevcredentialsCsv, this.FilesEbayTestSaleitemsidsCsv, this.FilesEbayTestRunameCsv );
-			NetcoLogger.LoggerFactory = new NLogLoggerFactory();
+			NetcoLogger.LoggerFactory = ( ILoggerFactory )new NLogLoggerFactory();
 		}
 	}
 
