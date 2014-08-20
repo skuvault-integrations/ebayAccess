@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EbayAccess;
+using EbayAccess.Models;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
@@ -115,35 +116,51 @@ namespace EbayAccessTests.Integration
 
 		#region UpdateProducts
 		[ Test ]
-		public void UpdateProductsAsync_EbayServiceWithFixedPriceProductsWithQtysLikeInUpdate_NoExceptionOccured()
+		public void UpdateProductsAsync_UpdateFixedPriceItemWithVariationsAndNonvariation_NoExceptionOccuredAndResponseNotEmpty()
 		{
-			try
+			//------------ Arrange
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+			//------------ Act
+			var updateProductsAsyncTask1 = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
 			{
-				//------------ Arrange
-				var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+				new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId.Value, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = 0 },
+				new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId.Value, Sku = ExistingProducts.FixedPrice1WithoutVariations.Sku, Quantity = 0 },
+			} );
 
-				//------------ Act
-				var updateProductsAsyncTask1 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
-				{
-					new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation1.Quantity },
-					new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation2.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation2.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation2.Quantity },
-				} );
-				//updateProductsAsyncTask1.Wait();
-				Action act = () => updateProductsAsyncTask1.Wait();
-
-				//------------ Assert
-				var v = updateProductsAsyncTask1.Result.ToList();
-				act.ShouldNotThrow< Exception >();
-
-				//updateProductsAsyncTask1.Invoking(x=>x.Wait()).ShouldNotThrow<Exception>().WithMessage
-
-				//updateProductsAsyncTask1.Result.ToList().TrueForAll(x => x.Items.Count == 2);
-				//updateProductsAsyncTask1.ShouldRaisePropertyChangeFor
-			}
-			catch( Exception )
+			var resp = Enumerable.Empty< UpdateInventoryResponse >();
+			Action act = () =>
 			{
-				throw;
-			}
+				updateProductsAsyncTask1.Wait();
+				resp = updateProductsAsyncTask1.Result.ToList();
+			};
+
+			//------------ Assert
+			act.Invoke();
+			act.ShouldNotThrow< Exception >();
+			resp.Should().NotBeEmpty();
+		}
+
+		[ Test ]
+		public void UpdateProductsAsync_Update2itemsOneOfThemDoesNotExist_NoExceptionOccuredAndResponseContainsOnlyUpdatedItemId()
+		{
+			//------------ Arrange
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+			//------------ Act
+			var updateInventoryRequestExistingItem = new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId.Value, Sku = ExistingProducts.FixedPrice1WithoutVariations.Sku, Quantity = 0 };
+			var updateInventoryRequestNotExistingItem = new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId.Value + 50000, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku + "qwe", Quantity = 0 };
+			var updateProductsAsyncTask1 = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest > { updateInventoryRequestNotExistingItem, updateInventoryRequestExistingItem, } );
+
+			var resp = Enumerable.Empty< UpdateInventoryResponse >();
+			Action act = () =>
+			{
+				updateProductsAsyncTask1.Wait();
+				resp = updateProductsAsyncTask1.Result.ToList();
+			};
+
+			//------------ Assert
+			act.ShouldThrow< Exception >();
 		}
 
 		[ Test ]
