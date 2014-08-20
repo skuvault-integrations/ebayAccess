@@ -33,6 +33,13 @@ namespace EbayAccess.Misc
 				await Task.Delay( TimeSpan.FromSeconds( 0.5 + i ) ).ConfigureAwait( false );
 			} );
 
+		private static readonly ActionPolicyAsync _ebayGetAsyncPolicyShort = ActionPolicyAsync.Handle< Exception >()
+			.RetryAsync( 3, async ( ex, i ) =>
+			{
+				EbayLogger.Log().Trace( ex, "Retrying Ebay API get call for the {0} time", i );
+				await Task.Delay( TimeSpan.FromSeconds( 0.5 + i ) ).ConfigureAwait( false );
+			} );
+
 		public static ActionPolicy Submit
 		{
 			get { return _ebaySumbitPolicy; }
@@ -51,6 +58,11 @@ namespace EbayAccess.Misc
 		public static ActionPolicyAsync GetAsync
 		{
 			get { return _ebayGetAsyncPolicy; }
+		}
+
+		public static ActionPolicyAsync GetAsyncShort
+		{
+			get { return _ebayGetAsyncPolicyShort; }
 		}
 	}
 }
