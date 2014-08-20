@@ -437,42 +437,45 @@ namespace EbayAccess
 			var restInfo = this.EbayServiceLowLevel.ToJson();
 			const string currentMenthodName = "UpdateFixePriceProductsAsync";
 			var mark = Guid.NewGuid().ToString();
+			EbayLogger.LogTraceInnerStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
-			try
+			var fixedPriceItemResponses = await products.ProcessInBatchAsync( 18, async x =>
 			{
-				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
-
-				var fixedPriceItemResponses = await products.ProcessInBatchAsync( 18, async x =>
+				ReviseFixedPriceItemResponse res = null;
+				var IsItVariationItem = false;
+				await ActionPolicies.GetAsyncShort.Do( async () =>
 				{
-					var res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, false ).ConfigureAwait( false );
-					if( res.Error.Exists( y => y.ErrorCode == "21916585" ) )
-						res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, true ).ConfigureAwait( false );
+					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, IsItVariationItem ).ConfigureAwait( false );
 
-					return res;
+					if( res.Error == null || !res.Error.Any() )
+						return;
+
+					if( res.Error.Exists( y => y.ErrorCode == "21916585" ) )
+						IsItVariationItem = true;
+
+					var itemToUpdate = string.Format( "{{Id:{0},Sku:{1},Qty:{2}}}", x.ItemId, x.Sku, x.Quantity );
+					var updateError = res.Error.ToJson();
+					throw new EbayCommonException( string.Format( "Error.{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, TryingToUpdate:{2}, GettingError:{3}, Mark:{4}}}", currentMenthodName, restInfo, itemToUpdate, updateError, mark ) ) );
 				} ).ConfigureAwait( false );
 
-				var reviseFixedPriceItemResponses = fixedPriceItemResponses as IList< ReviseFixedPriceItemResponse > ?? fixedPriceItemResponses.ToList();
+				return res;
+			} ).ConfigureAwait( false );
 
-				if( reviseFixedPriceItemResponses.Any( x => x.Error != null && x.Error.Any() ) )
-				{
-					var responseErrors = reviseFixedPriceItemResponses.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
-					throw new Exception( responseErrors.ToJson() );
-				}
+			var reviseFixedPriceItemResponses = fixedPriceItemResponses as IList< ReviseFixedPriceItemResponse > ?? fixedPriceItemResponses.ToList();
 
-				var items = reviseFixedPriceItemResponses.Where( y => y.Item != null ).Select( x => x.Item ).ToList();
-
-				var briefInfo = items.ToJson();
-
-				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
-
-				return fixedPriceItemResponses;
-			}
-			catch( Exception exception )
+			if( reviseFixedPriceItemResponses.Any( x => x.Error != null && x.Error.Any() ) )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error.{0})", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
-				LogTraceException( ebayException.Message, ebayException );
-				throw ebayException;
+				var responseErrors = reviseFixedPriceItemResponses.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
+				throw new Exception( responseErrors.ToJson() );
 			}
+
+			var items = reviseFixedPriceItemResponses.Where( y => y.Item != null ).Select( x => x.Item ).ToList();
+
+			var briefInfo = items.ToJson();
+
+			EbayLogger.LogTraceInnerEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
+
+			return fixedPriceItemResponses;
 		}
 
 		public async Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products )

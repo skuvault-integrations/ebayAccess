@@ -667,7 +667,7 @@ namespace EbayAccess.Services
 		{
 			return new Dictionary< string, string >
 			{
-				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.ReviseInventoryStatus },
+				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.ReviseFixedPriceItem },
 			};
 		}
 
