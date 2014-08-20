@@ -523,9 +523,20 @@ namespace EbayAccess
 			{
 				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
-				var reviseFixedPriceItemResponses = await this.UpdateFixePriceProductsAsync( updateInventoryRequests.Select( x => new ReviseFixedPriceItemRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } ) ).ConfigureAwait( false );
+				updateInventoryRequests.ForEach( x => x.Quantity = x.Quantity < 0 ? 0 : x.Quantity );
+				
+				var inventoryStatusRequests = updateInventoryRequests.Where( x => x.Quantity > 0 ).Select( x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } );
+				var reviseFixedPriceItemRequests = updateInventoryRequests.Where( x => x.Quantity == 0 ).Select( x => new ReviseFixedPriceItemRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } );
+				
+				var updateProductsResponses = await this.UpdateProductsAsync( inventoryStatusRequests ).ConfigureAwait( false );
+				var updateFixedPriceItemResponses = await this.UpdateFixePriceProductsAsync( reviseFixedPriceItemRequests ).ConfigureAwait( false );
 
-				var updateInventoryResponses = reviseFixedPriceItemResponses.Select( x => new UpdateInventoryResponse() { ItemId = x.Item.ItemId } ).ToList();
+				var updateProductsResponsesConverted = updateProductsResponses.SelectMany( x => x.Items ).Select( x => new UpdateInventoryResponse() { ItemId = x.ItemId.Value } ).ToList();
+				var updateFixedPriceItemResponsesConverted = updateFixedPriceItemResponses.Select( x => new UpdateInventoryResponse() { ItemId = x.Item.ItemId } ).ToList();
+				
+				var updateInventoryResponses = new List< UpdateInventoryResponse >();
+				updateInventoryResponses.AddRange( updateProductsResponsesConverted );
+				updateInventoryResponses.AddRange( updateFixedPriceItemResponsesConverted );
 
 				var briefInfo = updateInventoryResponses.ToJson();
 
