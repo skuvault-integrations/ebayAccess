@@ -9,6 +9,11 @@ namespace EbayAccess
 			: base( message, exception )
 		{
 		}
+
+		protected EbayException( string message )
+			: base( message )
+		{
+		}
 	}
 
 	public class EbayAuthException : EbayException
@@ -23,6 +28,11 @@ namespace EbayAccess
 	{
 		public EbayCommonException( string message, Exception exception, [ CallerMemberName ] string memberName = "" )
 			: base( string.Format( "{0}:{1}", memberName, message ), exception )
+		{
+		}
+
+		public EbayCommonException( string message, [ CallerMemberName ] string memberName = "" )
+			: base( string.Format( "{0}:{1}", memberName, message ) )
 		{
 		}
 	}
