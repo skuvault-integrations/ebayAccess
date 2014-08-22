@@ -8,6 +8,7 @@ using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseFixedPriceItemRequest;
+using EbayAccess.Models.ReviseInventoryStatusRequest;
 using Item = EbayAccess.Models.ReviseFixedPriceItemResponse.Item;
 
 namespace EbayAccess.Misc
@@ -133,7 +134,8 @@ namespace EbayAccess.Misc
 
 		private static string ToJson< T >( this IEnumerable< T > source, Func< T, string > elementToString )
 		{
-			var values = source.ToArray().Select( elementToString ).ToList();
+			var sourceList = source as IList< T > ?? source.ToList();
+			var values = sourceList.ToArray().Select( elementToString ).ToList();
 			var items = string.Join( ",", values );
 			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", values.Count(), items );
 			return res;
@@ -184,6 +186,30 @@ namespace EbayAccess.Misc
 		public static string ToJson( this IEnumerable< ReviseFixedPriceItemRequest > source )
 		{
 			return ToJson( source, x => string.Format( "{{Id:{0},Sku:{1},Quantity:{2}}}", x.ItemId, x.Sku, x.Quantity ) );
+		}
+
+		public static string ToJson( this IEnumerable< InventoryStatusRequest > source )
+		{
+			return ToJson( source, x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
+				x.ItemId == null ? PredefinedValues.NotAvailable : x.ItemId.Value.ToString( CultureInfo.InvariantCulture ),
+				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
+				x.Quantity == null ? PredefinedValues.NotAvailable : x.Quantity.ToString() ) );
+		}
+
+		public static string ToJson( this IEnumerable< Models.GetSellerListCustomResponse.Item > source )
+		{
+			return ToJson( source, x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
+				string.IsNullOrWhiteSpace( x.ItemId ) ? PredefinedValues.NotAvailable : x.ItemId,
+				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
+				x.Quantity.ToString( CultureInfo.InvariantCulture ) ) );
+		}
+
+		public static string ToJson( this IEnumerable< Models.ReviseInventoryStatusResponse.Item > source )
+		{
+			return ToJson( source, x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
+				x.ItemId.HasValue ? x.ItemId.Value.ToString( CultureInfo.InvariantCulture ) : PredefinedValues.NotAvailable,
+				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
+				x.Quantity.ToString() ) );
 		}
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using EbayAccess.Misc;
@@ -254,7 +253,7 @@ namespace EbayAccess
 
 				var items = sellerListsAsync.SelectMany( x => x.ItemsSplitedByVariations );
 
-				var resultSellerListBriefInfo = ToJson( items );
+				var resultSellerListBriefInfo = items.ToJson();
 				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, resultSellerListBriefInfo ) );
 
 				return items;
@@ -480,7 +479,7 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products )
 		{
-			var methodParameters = ToJson( products );
+			var methodParameters = products.ToJson();
 			var restInfo = this.EbayServiceLowLevel.ToJson();
 			const string currentMenthodName = "UpdateProductsAsync";
 			var mark = Guid.NewGuid().ToString();
@@ -498,7 +497,7 @@ namespace EbayAccess
 				}
 
 				var items = reviseInventoriesStatus.Where( y => y.Items != null ).SelectMany( x => x.Items ).ToList();
-				var briefInfo = ToJson( items );
+				var briefInfo = items.ToJson();
 				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
 
 				return reviseInventoriesStatus;
@@ -524,16 +523,16 @@ namespace EbayAccess
 				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
 				updateInventoryRequests.ForEach( x => x.Quantity = x.Quantity < 0 ? 0 : x.Quantity );
-				
+
 				var inventoryStatusRequests = updateInventoryRequests.Where( x => x.Quantity > 0 ).Select( x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } );
 				var reviseFixedPriceItemRequests = updateInventoryRequests.Where( x => x.Quantity == 0 ).Select( x => new ReviseFixedPriceItemRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } );
-				
+
 				var updateProductsResponses = await this.UpdateProductsAsync( inventoryStatusRequests ).ConfigureAwait( false );
 				var updateFixedPriceItemResponses = await this.UpdateFixePriceProductsAsync( reviseFixedPriceItemRequests ).ConfigureAwait( false );
 
 				var updateProductsResponsesConverted = updateProductsResponses.SelectMany( x => x.Items ).Select( x => new UpdateInventoryResponse() { ItemId = x.ItemId.Value } ).ToList();
 				var updateFixedPriceItemResponsesConverted = updateFixedPriceItemResponses.Select( x => new UpdateInventoryResponse() { ItemId = x.Item.ItemId } ).ToList();
-				
+
 				var updateInventoryResponses = new List< UpdateInventoryResponse >();
 				updateInventoryResponses.AddRange( updateProductsResponsesConverted );
 				updateInventoryResponses.AddRange( updateFixedPriceItemResponsesConverted );
@@ -623,42 +622,6 @@ namespace EbayAccess
 		private static void LogTraceException( string message, EbayException ebayException )
 		{
 			EbayLogger.Log().Trace( ebayException, message );
-		}
-
-		private static string ToJson( IEnumerable< InventoryStatusRequest > source )
-		{
-			var orders = source as IList< InventoryStatusRequest > ?? source.ToList();
-			var items = string.Join( ",", orders.Select( x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
-				x.ItemId == null ? PredefinedValues.NotAvailable : x.ItemId.Value.ToString( CultureInfo.InvariantCulture ),
-				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
-				x.Quantity == null ? PredefinedValues.NotAvailable : x.Quantity.ToString() ) ) );
-			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", orders.Count(), items );
-			return res;
-		}
-
-		private static string ToJson( IEnumerable< Models.ReviseInventoryStatusResponse.Item > source )
-		{
-			if( source == null )
-				source = new Models.ReviseInventoryStatusResponse.Item[ 0 ];
-
-			var orders = source as IList< Models.ReviseInventoryStatusResponse.Item > ?? source.ToList();
-			var items = string.Join( ",", orders.Select( x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
-				x.ItemId.HasValue ? x.ItemId.Value.ToString( CultureInfo.InvariantCulture ) : PredefinedValues.NotAvailable,
-				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
-				x.Quantity.ToString() ) ) );
-			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", orders.Count(), items );
-			return res;
-		}
-
-		private static string ToJson( IEnumerable< Item > source )
-		{
-			var orders = source as IList< Item > ?? source.ToList();
-			var items = string.Join( ",", orders.Select( x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
-				string.IsNullOrWhiteSpace( x.ItemId ) ? PredefinedValues.NotAvailable : x.ItemId,
-				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
-				x.Quantity.ToString( CultureInfo.InvariantCulture ) ) ) );
-			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", orders.Count(), items );
-			return res;
 		}
 	}
 }
