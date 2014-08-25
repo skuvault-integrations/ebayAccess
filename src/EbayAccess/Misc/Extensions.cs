@@ -155,12 +155,12 @@ namespace EbayAccess.Misc
 
 		public static string ToJson( this IEnumerable< ResponseError > sourceErrors )
 		{
-			return ToJson( sourceErrors, x => string.Format( "{{ErrorCode:{0},ShortMessage:{1},LongMessage:{2},ErrorClassification:{3},ServerityCode:{4},ErrorParameters:{5}}}",
+			return ToJson( sourceErrors, x => string.Format( "{{ErrorCode:{0},ShortMessage:{1},LongMessage:{2},ErrorClassification:{3},SeverityCode:{4},ErrorParameters:{5}}}",
 				string.IsNullOrWhiteSpace( x.ErrorCode ) ? PredefinedValues.NotAvailable : x.ErrorCode,
 				string.IsNullOrWhiteSpace( x.ShortMessage ) ? PredefinedValues.NotAvailable : x.ShortMessage,
 				string.IsNullOrWhiteSpace( x.LongMessage ) ? PredefinedValues.NotAvailable : x.LongMessage,
 				string.IsNullOrWhiteSpace( x.ErrorClassification ) ? PredefinedValues.NotAvailable : x.ErrorClassification,
-				string.IsNullOrWhiteSpace( x.ServerityCode ) ? PredefinedValues.NotAvailable : x.ServerityCode,
+				string.IsNullOrWhiteSpace( x.SeverityCode ) ? PredefinedValues.NotAvailable : x.SeverityCode,
 				string.IsNullOrWhiteSpace( x.ErrorParameters ) ? PredefinedValues.NotAvailable : x.ErrorParameters ) );
 		}
 

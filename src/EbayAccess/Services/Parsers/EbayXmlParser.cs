@@ -104,8 +104,8 @@ namespace EbayAccess.Services.Parsers
 			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "UserDisplayHint" ) ) )
 				ResponseError.UserDisplayHint = temp;
 
-			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "ServerityCode" ) ) )
-				ResponseError.ServerityCode = temp;
+			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "SeverityCode" ) ) )
+				ResponseError.SeverityCode = temp;
 
 			if( !string.IsNullOrWhiteSpace( temp = EbayXmlParser< InventoryStatusResponse >.GetElementValue( root, ns, "ErrorClassification" ) ) )
 				ResponseError.ErrorClassification = temp;
