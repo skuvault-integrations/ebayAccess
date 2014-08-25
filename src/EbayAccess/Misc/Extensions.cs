@@ -115,15 +115,16 @@ namespace EbayAccess.Misc
 
 		public static string ToJson( this IEnumerable< string > source )
 		{
-			return ToJson( source, x => x );
+			return ToJson( source, x => string.IsNullOrWhiteSpace( x ) ? PredefinedValues.NotAvailable : x );
 		}
 
 		public static string ToJson( this Dictionary< string, string > source )
 		{
 			if( source == null )
 				source = new Dictionary< string, string >();
+
 			var sourceList = source as IList< KeyValuePair< string, string > > ?? source.ToList();
-			return ToJson( sourceList, x => string.Format( "{{{0}:{1}}}", x.Key == null ? "null" : x.Key, x.Value == null ? "null" : x.Value ) );
+			return ToJson( sourceList, x => string.Format( "{{{0}:{1}}}", string.IsNullOrWhiteSpace( x.Key ) ? PredefinedValues.NotAvailable : x.Key, string.IsNullOrWhiteSpace( x.Value ) ? PredefinedValues.NotAvailable : x.Value ) );
 		}
 
 		private static string ToJson< T >( this IEnumerable< T > source, Func< T, string > elementToString )
@@ -155,22 +156,22 @@ namespace EbayAccess.Misc
 		public static string ToJson( this IEnumerable< ResponseError > sourceErrors )
 		{
 			return ToJson( sourceErrors, x => string.Format( "{{ErrorCode:{0},ShortMessage:{1},LongMessage:{2},ErrorClassification:{3},ServerityCode:{4},ErrorParameters:{5}}}",
-				x.ErrorCode,
-				x.ShortMessage,
-				x.LongMessage,
-				x.ErrorClassification,
-				x.ServerityCode,
-				x.ErrorParameters ) );
+				string.IsNullOrWhiteSpace( x.ErrorCode ) ? PredefinedValues.NotAvailable : x.ErrorCode,
+				string.IsNullOrWhiteSpace( x.ShortMessage ) ? PredefinedValues.NotAvailable : x.ShortMessage,
+				string.IsNullOrWhiteSpace( x.LongMessage ) ? PredefinedValues.NotAvailable : x.LongMessage,
+				string.IsNullOrWhiteSpace( x.ErrorClassification ) ? PredefinedValues.NotAvailable : x.ErrorClassification,
+				string.IsNullOrWhiteSpace( x.ServerityCode ) ? PredefinedValues.NotAvailable : x.ServerityCode,
+				string.IsNullOrWhiteSpace( x.ErrorParameters ) ? PredefinedValues.NotAvailable : x.ErrorParameters ) );
 		}
 
 		public static string ToJson( this IEnumerable< Item > source )
 		{
-			return ToJson( source, x => string.Format( "{{Id:{0},EndTime:{1}}}", x.ItemId, x.EndTime ) );
+			return ToJson( source, x => string.Format( "{{Id:{0},EndTime:{1}}}", x.ItemId, x.EndTime.HasValue ? x.EndTime.Value.ToString( CultureInfo.InvariantCulture ) : PredefinedValues.NotAvailable ) );
 		}
 
 		public static string ToJson( this IEnumerable< UpdateInventoryRequest > source )
 		{
-			return ToJson( source, x => string.Format( "{{Id:{0},Sku:{1},Qty{2}}}", x.ItemId, x.Sku, x.Quantity ) );
+			return ToJson( source, x => string.Format( "{{Id:{0},Sku:{1},Qty{2}}}", x.ItemId, string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku, x.Quantity ) );
 		}
 
 		public static string ToJson( this IEnumerable< UpdateInventoryResponse > source )
@@ -180,15 +181,15 @@ namespace EbayAccess.Misc
 
 		public static string ToJson( this IEnumerable< ReviseFixedPriceItemRequest > source )
 		{
-			return ToJson( source, x => string.Format( "{{Id:{0},Sku:{1},Quantity:{2}}}", x.ItemId, x.Sku, x.Quantity ) );
+			return ToJson( source, x => string.Format( "{{Id:{0},Sku:{1},Quantity:{2}}}", x.ItemId, string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku, x.Quantity ) );
 		}
 
 		public static string ToJson( this IEnumerable< InventoryStatusRequest > source )
 		{
 			return ToJson( source, x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
-				x.ItemId == null ? PredefinedValues.NotAvailable : x.ItemId.Value.ToString( CultureInfo.InvariantCulture ),
+				x.ItemId,
 				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
-				x.Quantity == null ? PredefinedValues.NotAvailable : x.Quantity.ToString() ) );
+				x.Quantity ) );
 		}
 
 		public static string ToJson( this IEnumerable< Models.GetSellerListCustomResponse.Item > source )

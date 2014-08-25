@@ -128,8 +128,8 @@ namespace EbayAccessTests.Integration
 			{
 				var updayeInv = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
 				{
-					new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId.Value, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = 0 },
-					new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId.Value, Sku = ExistingProducts.FixedPrice1WithoutVariations.Sku, Quantity = 0 },
+					new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = 0 },
+					new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Sku = ExistingProducts.FixedPrice1WithoutVariations.Sku, Quantity = 0 },
 				} );
 				updayeInv.Wait();
 				resp = updayeInv.Result.ToList();
@@ -147,8 +147,8 @@ namespace EbayAccessTests.Integration
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var updateInventoryRequestExistingItem = new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId.Value, Sku = ExistingProducts.FixedPrice1WithoutVariations.Sku, Quantity = 0 };
-			var updateInventoryRequestNotExistingItem = new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId.Value + 50000, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku + "qwe", Quantity = 0 };
+			var updateInventoryRequestExistingItem = new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Sku = ExistingProducts.FixedPrice1WithoutVariations.Sku, Quantity = 0 };
+			var updateInventoryRequestNotExistingItem = new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId + 50000, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku + "qwe", Quantity = 0 };
 			var updateProductsAsyncTask1 = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest > { updateInventoryRequestNotExistingItem, updateInventoryRequestExistingItem, } );
 
 			var resp = Enumerable.Empty< UpdateInventoryResponse >();
