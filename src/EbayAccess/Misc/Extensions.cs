@@ -107,35 +107,32 @@ namespace EbayAccess.Misc
 
 		public static string ToJson( this IEnumerable< Order > source )
 		{
-			var orders = source as IList< Order > ?? source.ToList();
-			var items = string.Join( ",", orders.Select( x => string.Format( "{{id:{0},saleRecNum:{1},createdAt:{2}}}",
+			return ToJson( source, x => string.Format( "{{id:{0},saleRecNum:{1},createdAt:{2}}}",
 				string.IsNullOrWhiteSpace( x.GetOrderId( false ) ) ? PredefinedValues.NotAvailable : x.GetOrderId( false ),
 				string.IsNullOrWhiteSpace( x.GetOrderId() ) ? PredefinedValues.NotAvailable : x.GetOrderId(),
-				x.CreatedTime ) ) );
-			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", orders.Count(), items );
-			return res;
+				x.CreatedTime ) );
 		}
 
 		public static string ToJson( this IEnumerable< string > source )
 		{
-			var orders = source as IList< string > ?? source.ToList();
-			var items = string.Join( ",", source );
-			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", orders.Count(), items );
-			return res;
+			return ToJson( source, x => x );
 		}
 
 		public static string ToJson( this Dictionary< string, string > source )
 		{
-			var keysAndValues = source.ToArray().Select( x => string.Format( "{{{0}:{1}}}", x.Key, x.Value ) );
-			var items = string.Join( ",", keysAndValues );
-			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", keysAndValues.Count(), items );
-			return res;
+			if( source == null )
+				source = new Dictionary< string, string >();
+			var sourceList = source as IList< KeyValuePair< string, string > > ?? source.ToList();
+			return ToJson( sourceList, x => string.Format( "{{{0}:{1}}}", x.Key == null ? "null" : x.Key, x.Value == null ? "null" : x.Value ) );
 		}
 
 		private static string ToJson< T >( this IEnumerable< T > source, Func< T, string > elementToString )
 		{
+			if( source == null )
+				source = new List< T >();
+
 			var sourceList = source as IList< T > ?? source.ToList();
-			var values = sourceList.ToArray().Select( elementToString ).ToList();
+			var values = sourceList.ToArray().Select( x => x != null ? elementToString( x ) : "null" ).ToList();
 			var items = string.Join( ",", values );
 			var res = string.Format( "{{Count:{0}, Items:[{1}]}}", values.Count(), items );
 			return res;
@@ -157,15 +154,13 @@ namespace EbayAccess.Misc
 
 		public static string ToJson( this IEnumerable< ResponseError > sourceErrors )
 		{
-			var errors = sourceErrors.Select( x => string.Format( "{{ErrorCode:{0},ShortMessage:{1},LongMessage:{2},ErrorClassification:{3},ServerityCode:{4},ErrorParameters:{5}}}",
+			return ToJson( sourceErrors, x => string.Format( "{{ErrorCode:{0},ShortMessage:{1},LongMessage:{2},ErrorClassification:{3},ServerityCode:{4},ErrorParameters:{5}}}",
 				x.ErrorCode,
 				x.ShortMessage,
 				x.LongMessage,
 				x.ErrorClassification,
 				x.ServerityCode,
-				x.ErrorParameters )
-				);
-			return string.Format( "{{Count:{0}, Errors:[{1}]}}", errors.Count(), string.Join( ",", errors ) );
+				x.ErrorParameters ) );
 		}
 
 		public static string ToJson( this IEnumerable< Item > source )
