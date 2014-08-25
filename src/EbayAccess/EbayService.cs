@@ -131,16 +131,13 @@ namespace EbayAccess
 
 				var salerecordIds = saleRecordsIDs.ToList();
 
-				var getSellingManagerOrdersByRecordNumberTasks = salerecordIds.Select( x => this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x, mark ) );
+				var getSellingManagerSoldListingsResponses = await salerecordIds.ProcessInBatchAsync( 18, async x => await this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
 
-				var commonTask = Task.WhenAll( getSellingManagerOrdersByRecordNumberTasks );
-				await commonTask.ConfigureAwait( false );
+				var responsesWithErrors = getSellingManagerSoldListingsResponses.Where( x => x != null ).ToList().Where( y => y.Error != null && y.Error.Any() ).ToList();
 
-				var getSellingManagerSoldListingsResponses = commonTask.Result;
-
-				if( getSellingManagerSoldListingsResponses.Any( x => x.Error != null && x.Error.Any() ) )
+				if( responsesWithErrors.Any() )
 				{
-					var aggregatedErrors = getSellingManagerSoldListingsResponses.SelectMany( x => x.Error );
+					var aggregatedErrors = responsesWithErrors.SelectMany( x => x.Error ).ToList();
 					throw new Exception( aggregatedErrors.ToJson() );
 				}
 
