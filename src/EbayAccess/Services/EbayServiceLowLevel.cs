@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Misc;
+using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
@@ -309,7 +310,18 @@ namespace EbayAccess.Services
 					{
 						if( getOrdersResponseParsed.Error != null )
 						{
-							orders.Error = getOrdersResponseParsed.Error;
+							var temp = getOrdersResponseParsed.Error.ToList();
+							temp.Add( new ResponseError
+							{
+								LongMessage = string.Format( "Occudred when getting:{0};Mark:{1}", salerecordNumber, mark ),
+								ErrorClassification = "EbayAcces Trace",
+								ErrorCode = "EbayAcces Trace",
+								ErrorParameters = "EbayAcces Trace",
+								SeverityCode = "EbayAcces Trace",
+								ShortMessage = "EbayAcces Trace",
+								UserDisplayHint = "EbayAcces Trace"
+							} );
+							orders.Error = temp;
 							return;
 						}
 
