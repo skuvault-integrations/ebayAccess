@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
+using EbayAccess.Models;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.TestEnvironment;
@@ -212,6 +213,30 @@ namespace EbayAccessTests
 
 			//A
 			inventoryStat[ 0 ].Errors.Any( x => !string.IsNullOrWhiteSpace( x.ErrorCode ) ).Should().BeTrue();
+		}
+
+		[ Test ]
+		public void InvokeReviseInventoriesStatusAsync_EbayServiceReturnsImageSizeError_NoExceptionOccurs()
+		{
+			//A
+			const int itemsQty1 = 0;
+			const long item1Id = 110136942332;
+			const long item2Id = 110137091582;
+
+			var stubWebRequestService = new Mock< IWebRequestServices >();
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >() ) ).Returns( () => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsPictureError.ToStream() ) );
+
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
+
+			//A
+			var updateInventoryAsync = ebayService.UpdateInventoryAsync(new List<UpdateInventoryRequest>
+			{
+				new UpdateInventoryRequest { ItemId = item1Id, Quantity = itemsQty1, Sku = "123" },
+				new UpdateInventoryRequest { ItemId = item2Id, Quantity = itemsQty1, Sku = "qwe" }
+			});
+			updateInventoryAsync.Wait();
+
+			//A
 		}
 
 		[ Test ]
