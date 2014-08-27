@@ -439,6 +439,7 @@ namespace EbayAccess
 			{
 				ReviseFixedPriceItemResponse res = null;
 				var IsItVariationItem = false;
+				var repeatCount = 0;
 				await ActionPolicies.GetAsyncShort.Do( async () =>
 				{
 					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, IsItVariationItem ).ConfigureAwait( false );
@@ -449,9 +450,12 @@ namespace EbayAccess
 					if( res.Errors.Exists( y => y.ErrorCode == "21916585" ) )
 						IsItVariationItem = true;
 
-					var itemToUpdate = string.Format( "{{Id:{0},Sku:{1},Qty:{2}}}", x.ItemId, x.Sku, x.Quantity );
-					var updateError = res.Errors.ToJson();
-					throw new EbayCommonException( string.Format( "Error.{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, TryingToUpdate:{2}, GettingError:{3}, Mark:{4}}}", currentMenthodName, restInfo, itemToUpdate, updateError, mark ) ) );
+					if( repeatCount++ < 3 )
+					{
+						var itemToUpdate = string.Format( "{{Id:{0},Sku:{1},Qty:{2}}}", x.ItemId, x.Sku, x.Quantity );
+						var updateError = res.Errors.ToJson();
+						throw new EbayCommonException( string.Format( "Error.{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, TryingToUpdate:{2}, GettingError:{3}, Mark:{4}}}", currentMenthodName, restInfo, itemToUpdate, updateError, mark ) ) );
+					}
 				} ).ConfigureAwait( false );
 
 				return res;
