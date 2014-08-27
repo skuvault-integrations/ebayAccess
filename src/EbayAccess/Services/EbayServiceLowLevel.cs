@@ -299,7 +299,9 @@ namespace EbayAccess.Services
 
 			var body = this.CreateGetSellingManagerSoldListingsRequestBody( salerecordNumber );
 
-			await ActionPolicies.GetAsync.Do( async () =>
+			var repeatsByTheReasonOfInternalError = 0;
+
+			await ActionPolicies.GetAsyncShort.Do( async () =>
 			{
 				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
@@ -310,6 +312,14 @@ namespace EbayAccess.Services
 					{
 						if( getOrdersResponseParsed.Errors != null )
 						{
+							var internalErrors = getOrdersResponseParsed.Errors.Where( x => x.SeverityCode == "Error" && x.ErrorCode == "10007" ).ToList();
+							var otherErrors = getOrdersResponseParsed.Errors.Where( x => x.SeverityCode == "Error" && x.ErrorCode != "10007" ).ToList();
+
+							var containsOnlyInternalErrors = internalErrors.Count > 0 && otherErrors.Count == 0;
+
+							if( repeatsByTheReasonOfInternalError++ == 0 && containsOnlyInternalErrors )
+								throw new EbayCommonException( string.Format( "Occudred when getting:{0};Mark:{1};Errors:{2}", salerecordNumber, mark, internalErrors.ToJson() ) );
+
 							var temp = getOrdersResponseParsed.Errors.ToList();
 							temp.Add( new ResponseError
 							{
