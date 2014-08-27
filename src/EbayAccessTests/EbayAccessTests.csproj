@@ -71,6 +71,7 @@
     <Compile Include="Services\Parsers\EbayReviseInventoryStatusResponseParserTest.cs" />
     <Compile Include="TestEnvironment\TestBase.cs" />
     <Compile Include="TestEnvironment\TestEmptyCredentials.cs" />
+    <Compile Include="TestEnvironment\TestResponses\GetSellingManagerSoldListingsResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
