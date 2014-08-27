@@ -7,7 +7,6 @@ using System.Net;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Misc;
-using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
@@ -321,7 +320,13 @@ namespace EbayAccess.Services
 								throw new EbayCommonException( string.Format( "Occudred when getting:{0};Mark:{1};Errors:{2}", salerecordNumber, mark, internalErrors.ToJson() ) );
 
 							var message = string.Format( "Occudred when getting:{0};Mark:{1}", salerecordNumber, mark );
-							orders.Errors.ForEach( x => x.UserDisplayHint = string.IsNullOrWhiteSpace( x.UserDisplayHint ) ? message : x.UserDisplayHint + ";" + message );
+							getOrdersResponseParsed.Errors.ForEach( x =>
+							{
+								x.UserDisplayHint = string.IsNullOrWhiteSpace( x.UserDisplayHint ) ? message : x.UserDisplayHint + ";" + message;
+							} );
+
+							orders.Errors = getOrdersResponseParsed.Errors;
+
 							return;
 						}
 

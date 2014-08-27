@@ -97,7 +97,7 @@ namespace EbayAccessTests
 
 			//A
 			stubWebRequestService.ReceivedWithAnyArgs( 3 ).GetResponseStreamAsync( null, new Guid().ToString() );
-			sellngManagerOrderByRecordNumberAsync.Result.Errors.Count().Should().Be( 2 );
+			sellngManagerOrderByRecordNumberAsync.Result.Errors.Count().Should().Be( 1 );
 			sellngManagerOrderByRecordNumberAsync.Result.Errors.Count( x => x.ErrorCode == "10007" ).Should().Be( 1 );
 		}
 
