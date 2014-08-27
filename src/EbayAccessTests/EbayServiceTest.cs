@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using EbayAccess;
+using EbayAccess.Misc;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.TestEnvironment;
@@ -78,6 +79,148 @@ namespace EbayAccessTests
 			getOrdersResponse.Orders.First().TransactionArray.Count.Should().Be( 2 );
 			getOrdersResponse.Orders.First().TransactionArray.Find( x => x.Item.ItemId == "110141553531" ).QuantityPurchased.Should().Be( 2, "Because in re sponse there is 2 items with this id" );
 			getOrdersResponse.Orders.First().TransactionArray.Find( x => x.Item.ItemId == "110137091582" ).QuantityPurchased.Should().Be( 3, "Because in re sponse there is 2 items with this id" );
+		}
+
+		[ Test ]
+		public void GetOrdersBySellingManagerNumbers_EbayServiceResponseContainsInternalError_CallRepeatsAndGetResponseWith2Errors()
+		{
+			//A
+			const string serverResponsePages = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+													<GetSellingManagerSoldListingsResponse xmlns=""urn:ebay:apis:eBLBaseComponents"">
+														<Timestamp>2014-08-26T05:19:22.883Z</Timestamp>
+														<Ack>Failure</Ack>
+														<Errors>
+															<ShortMessage>Internal error to the application.</ShortMessage>
+															<LongMessage>Internal error to the application.</LongMessage>
+															<ErrorCode>10007</ErrorCode>
+															<SeverityCode>Error</SeverityCode>
+															<ErrorParameters ParamID=""0"">
+																<Value>Web Service framework internal error.</Value>
+															</ErrorParameters>
+															<ErrorClassification>RequestError</ErrorClassification>
+														</Errors>
+														<Version>887</Version>
+														<Build>E887_CORE_APISELLING_17004199_R1</Build>
+													</GetSellingManagerSoldListingsResponse>";
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( x =>
+			{
+				var ms = new MemoryStream();
+				var utf8Encoding = new UTF8Encoding();
+				var buf = utf8Encoding.GetBytes( serverResponsePages );
+				ms.Write( buf, 0, buf.Length );
+				ms.Position = 0;
+				return Task.FromResult< Stream >( ms );
+			} );
+
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			var sellngManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( "123", new Guid().ToString() );
+			sellngManagerOrderByRecordNumberAsync.Wait();
+
+			//A
+			stubWebRequestService.ReceivedWithAnyArgs( 2 ).GetResponseStreamAsync( null, new Guid().ToString() );
+			sellngManagerOrderByRecordNumberAsync.Result.Errors.Count().Should().Be( 2 );
+			sellngManagerOrderByRecordNumberAsync.Result.Errors.Count( x => x.ErrorCode == "10007" ).Should().Be( 1 );
+		}
+
+		[ Test ]
+		public void GetOrdersBySellingManagerNumbers_EbayServiceFirstResponseCOntainsInternalErrorSecondSuccess_GetSoldListingWithoutExceptions()
+		{
+			//A
+			const string serverResponsePagesError = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+													<GetSellingManagerSoldListingsResponse xmlns=""urn:ebay:apis:eBLBaseComponents"">
+														<Timestamp>2014-08-26T05:19:22.883Z</Timestamp>
+														<Ack>Failure</Ack>
+														<Errors>
+															<ShortMessage>Internal error to the application.</ShortMessage>
+															<LongMessage>Internal error to the application.</LongMessage>
+															<ErrorCode>10007</ErrorCode>
+															<SeverityCode>Error</SeverityCode>
+															<ErrorParameters ParamID=""0"">
+																<Value>Web Service framework internal error.</Value>
+															</ErrorParameters>
+															<ErrorClassification>RequestError</ErrorClassification>
+														</Errors>
+														<Version>887</Version>
+														<Build>E887_CORE_APISELLING_17004199_R1</Build>
+													</GetSellingManagerSoldListingsResponse>";
+
+			const string serverResponsePages = @"<GetSellingManagerSoldListingsResponse xmlns=""urn:ebay:apis:eBLBaseComponents"">
+													<Timestamp>2014-08-26T05:19:17.977Z</Timestamp>
+													<Ack>Success</Ack>
+													<Version>887</Version>
+													<Build>E887_CORE_APISELLING_17004199_R1</Build>
+													<SaleRecord>
+														<SellingManagerSoldTransaction>
+															<TransactionID>0000000000000</TransactionID>
+															<SaleRecordID>00000</SaleRecordID>
+															<ItemID>000000000000</ItemID>
+															<QuantitySold>1</QuantitySold>
+															<ItemTitle>GALAXY NOTE 2 I317 T889 LCD DIGITIZER TOUCH SCREEN ASSEMBLY FRAME WHITE - B</ItemTitle>
+															<ListingType>StoresFixedPrice</ListingType>
+															<Relisted>false</Relisted>
+															<SecondChanceOfferSent>false</SecondChanceOfferSent>
+															<CustomLabel>SRN-SAM-334</CustomLabel>
+															<SoldOn>eBay</SoldOn>
+															<ListedOn>eBay</ListedOn>
+															<CharityListing>false</CharityListing>
+															<OrderLineItemID>000000000000-0000000000000</OrderLineItemID>
+														</SellingManagerSoldTransaction>
+														<ShippingAddress>
+															<Name>xxx</Name>
+															<PostalCode>00000</PostalCode>
+														</ShippingAddress>
+														<ShippingDetails>
+															<ShippingType>Flat</ShippingType>
+														</ShippingDetails>
+														<TotalAmount currencyID=""USD"">133.65</TotalAmount>
+														<TotalQuantity>1</TotalQuantity>
+														<ActualShippingCost currencyID=""USD"">0.0</ActualShippingCost>
+														<OrderStatus>
+															<CheckoutStatus>CheckoutComplete</CheckoutStatus>
+															<PaidStatus>Paid</PaidStatus>
+															<ShippedStatus>Shipped</ShippedStatus>
+															<PaymentMethodUsed>PayPal</PaymentMethodUsed>
+															<FeedbackSent>false</FeedbackSent>
+															<TotalEmailsSent>3</TotalEmailsSent>
+															<ShippedTime>2014-08-18T15:24:50.000Z</ShippedTime>
+															<PaidTime>2014-08-18T03:14:38.000Z</PaidTime>
+														</OrderStatus>
+														<SalePrice currencyID=""USD"">133.65</SalePrice>
+														<DaysSinceSale>8</DaysSinceSale>
+														<BuyerID>eaglefind</BuyerID>
+														<BuyerEmail>xxx@xxx.xxx</BuyerEmail>
+														<SaleRecordID>40343</SaleRecordID>
+														<CreationTime>2014-08-18T03:14:37.000Z</CreationTime>
+													</SaleRecord>
+													<PaginationResult>
+														<TotalNumberOfPages>1</TotalNumberOfPages>
+														<TotalNumberOfEntries>1</TotalNumberOfEntries>
+													</PaginationResult>
+												</GetSellingManagerSoldListingsResponse>";
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			var callCounter = 0;
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( x =>
+			{
+				if( callCounter++ == 0 )
+					return Task.FromResult( serverResponsePagesError.ToStream() );
+				return Task.FromResult( serverResponsePages.ToStream() );
+			} );
+
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			var sellngManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( "123", new Guid().ToString() );
+			sellngManagerOrderByRecordNumberAsync.Wait();
+
+			//A
+			stubWebRequestService.ReceivedWithAnyArgs( 2 ).GetResponseStreamAsync( null, new Guid().ToString() );
+			sellngManagerOrderByRecordNumberAsync.Result.Errors.Should().BeNull();
 		}
 
 		[ Test ]
