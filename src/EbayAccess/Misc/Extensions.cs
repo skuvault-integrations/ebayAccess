@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
@@ -15,6 +16,19 @@ namespace EbayAccess.Misc
 {
 	public static class Extensions
 	{
+		public static Stream ToStream( this string source, Encoding encoding = null )
+		{
+			var ms = new MemoryStream();
+
+			if( encoding == null )
+				encoding = new UTF8Encoding();
+
+			var buf = encoding.GetBytes( source );
+			ms.Write( buf, 0, buf.Length );
+			ms.Position = 0;
+			return ms;
+		}
+
 		public static string ToStringUtcIso8601( this DateTime dateTime )
 		{
 			var universalTime = dateTime.ToUniversalTime();
