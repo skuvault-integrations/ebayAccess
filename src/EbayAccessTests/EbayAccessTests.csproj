@@ -72,6 +72,7 @@
     <Compile Include="TestEnvironment\TestBase.cs" />
     <Compile Include="TestEnvironment\TestEmptyCredentials.cs" />
     <Compile Include="TestEnvironment\TestResponses\GetSellingManagerSoldListingsResponse.cs" />
+    <Compile Include="TestEnvironment\TestResponses\ReviseFixedPriceItemResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
