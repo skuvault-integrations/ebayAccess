@@ -316,7 +316,7 @@ namespace EbayAccess.Services
 
 							var containsOnlyInternalErrors = internalErrors.Count > 0 && otherErrors.Count == 0;
 
-							if( repeatsByTheReasonOfInternalError++ < 2 && containsOnlyInternalErrors )
+							if( repeatsByTheReasonOfInternalError++ < 3 && containsOnlyInternalErrors )
 								throw new EbayCommonException( string.Format( "Occudred when getting:{0};Mark:{1};Errors:{2}", salerecordNumber, mark, internalErrors.ToJson() ) );
 
 							var message = string.Format( "Occudred when getting:{0};Mark:{1}", salerecordNumber, mark );
