@@ -451,11 +451,7 @@ namespace EbayAccess
 						IsItVariationItem = true;
 
 					if( repeatCount++ < 3 )
-					{
-						var itemToUpdate = string.Format( "{{Id:{0},Sku:{1},Qty:{2}}}", x.ItemId, x.Sku, x.Quantity );
-						var updateError = res.Errors.ToJson();
-						throw new EbayCommonException( string.Format( "Error.{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, TryingToUpdate:{2}, GettingError:{3}, Mark:{4}}}", currentMenthodName, restInfo, itemToUpdate, updateError, mark ) ) );
-					}
+						throw new EbayCommonException( string.Format( "Error.{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, TryingToUpdate:{2}, GettingError:{3}, Mark:{4}}}", currentMenthodName, restInfo, x.ToJson(), res.Errors.ToJson(), mark ) ) );
 				} ).ConfigureAwait( false );
 
 				return res;
@@ -538,9 +534,7 @@ namespace EbayAccess
 				updateInventoryResponses.AddRange( updateProductsResponsesConverted );
 				updateInventoryResponses.AddRange( updateFixedPriceItemResponsesConverted );
 
-				var briefInfo = updateInventoryResponses.ToJson();
-
-				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
+				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, updateInventoryResponses.ToJson() ) );
 
 				return updateInventoryResponses;
 			}

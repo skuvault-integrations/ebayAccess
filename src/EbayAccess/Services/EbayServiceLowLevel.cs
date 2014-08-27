@@ -320,18 +320,8 @@ namespace EbayAccess.Services
 							if( repeatsByTheReasonOfInternalError++ < 2 && containsOnlyInternalErrors )
 								throw new EbayCommonException( string.Format( "Occudred when getting:{0};Mark:{1};Errors:{2}", salerecordNumber, mark, internalErrors.ToJson() ) );
 
-							var temp = getOrdersResponseParsed.Errors.ToList();
-							temp.Add( new ResponseError
-							{
-								LongMessage = string.Format( "Occudred when getting:{0};Mark:{1}", salerecordNumber, mark ),
-								ErrorClassification = "EbayAcces Trace",
-								ErrorCode = "EbayAcces Trace",
-								ErrorParameters = "EbayAcces Trace",
-								SeverityCode = "EbayAcces Trace",
-								ShortMessage = "EbayAcces Trace",
-								UserDisplayHint = "EbayAcces Trace"
-							} );
-							orders.Errors = temp;
+							var message = string.Format( "Occudred when getting:{0};Mark:{1}", salerecordNumber, mark );
+							orders.Errors.ForEach( x => x.UserDisplayHint = string.IsNullOrWhiteSpace( x.UserDisplayHint ) ? message : x.UserDisplayHint + ";" + message );
 							return;
 						}
 

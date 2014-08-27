@@ -119,6 +119,11 @@ namespace EbayAccess.Misc
 			return dateTime;
 		}
 
+		public static string ToJson( this ReviseFixedPriceItemRequest source )
+		{
+			return string.Format( "{{Id:{0},Sku:{1},Qty:{2}}}", source.ItemId, source.Sku, source.Quantity );
+		}
+
 		public static string ToJson( this IEnumerable< Order > source )
 		{
 			return ToJson( source, x => string.Format( "{{id:{0},saleRecNum:{1},createdAt:{2}}}",
