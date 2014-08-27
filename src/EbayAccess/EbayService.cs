@@ -444,6 +444,13 @@ namespace EbayAccess
 				{
 					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, IsItVariationItem ).ConfigureAwait( false );
 
+					// skip such errors
+					if( res.Errors.Exists( y => y.ErrorCode == EbayErrors.EbayPixelSizeError.ErrorCode ) )
+					{
+						EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) );
+						res.Errors = res.Errors.Where( y => y.ErrorCode != EbayErrors.EbayPixelSizeError.ErrorCode );
+					}
+
 					if( res.Errors == null || !res.Errors.Any() )
 						return;
 
