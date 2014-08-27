@@ -116,7 +116,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void UpdateProductsAsync_UpdateFixedPriceItemWithVariationsAndNonvariation_NoExceptionOccuredAndResponseNotEmpty()
+		public void UpdateInventoryAsync_UpdateFixedPriceItemWithVariationsAndNonvariation_NoExceptionOccuredAndResponseNotEmpty()
 		{
 			//------------ Arrange
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
@@ -141,7 +141,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void UpdateProductsAsync_Update2itemsOneOfThemDoesNotExist_NoExceptionOccuredAndResponseContainsOnlyUpdatedItemId()
+		public void UpdateInventoryAsync_Update2itemsOneOfThemDoesNotExist_NoExceptionOccuredAndResponseContainsOnlyUpdatedItemId()
 		{
 			//------------ Arrange
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
