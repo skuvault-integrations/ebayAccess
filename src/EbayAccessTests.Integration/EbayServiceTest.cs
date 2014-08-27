@@ -86,6 +86,7 @@ namespace EbayAccessTests.Integration
 		}
 		#endregion
 
+		#region UpdateProducts
 		[ Test ]
 		public void UpdateProductsAsync_EbayServiceWithFixedPriceProductsWithVariation_ProductsUpdated()
 		{
@@ -114,7 +115,6 @@ namespace EbayAccessTests.Integration
 			//(updateProductsAsyncTask1.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithVariation2.ItemId && x.Items[0].Sku == ExistingProducts.FixedPrice1WithVariation2.Sku).Items[0].Quantity - updateProductsAsyncTask2.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithVariation2.ItemId && x.Items[0].Sku == ExistingProducts.FixedPrice1WithVariation2.Sku).Items[0].Quantity).Should().Be(this.QtyUpdateFor);
 		}
 
-		#region UpdateProducts
 		[ Test ]
 		public void UpdateProductsAsync_UpdateFixedPriceItemWithVariationsAndNonvariation_NoExceptionOccuredAndResponseNotEmpty()
 		{
