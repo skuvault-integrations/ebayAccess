@@ -21,7 +21,7 @@ namespace EbayAccess.Services.Parsers
 
 				var error = this.ResponseContainsErrors( root, ns );
 				if( error != null )
-					return new ReviseFixedPriceItemResponse() { Error = error };
+					return new ReviseFixedPriceItemResponse() { Errors = error };
 
 				inventoryStatusResponse = new ReviseFixedPriceItemResponse();
 

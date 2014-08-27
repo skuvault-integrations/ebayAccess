@@ -21,7 +21,7 @@ namespace EbayAccess.Services.Parsers
 
 				var erros = this.ResponseContainsErrors( root, ns );
 				if( erros != null )
-					return new FetchTokenResponse { Error = erros };
+					return new FetchTokenResponse { Errors = erros };
 
 				var res = new FetchTokenResponse { EbayAuthToken = GetElementValue( root, ns, "eBayAuthToken" ), HardExpirationTime = GetElementValue( root, ns, "HardExpirationTime" ).ToDateTime() };
 

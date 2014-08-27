@@ -26,7 +26,7 @@ namespace EbayAccess.Services.Parsers
 				var error = this.ResponseContainsErrors( root, ns );
 				if( error != null )
 				{
-					getOrdersResponse.Error = error;
+					getOrdersResponse.Errors = error;
 					return getOrdersResponse;
 				}
 

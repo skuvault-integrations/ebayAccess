@@ -234,8 +234,8 @@ namespace EbayAccessTests.Integration.Services
 			var abortJobResponse = await ebayServiceLowLevel.AbortJobAsync( createuploadJobResponse.JobId, new Guid().ToString() ).ConfigureAwait( false );
 
 			//A
-			createuploadJobResponse.Error.Should().BeNull();
-			abortJobResponse.Error.Should().BeNull();
+			createuploadJobResponse.Errors.Should().BeNull();
+			abortJobResponse.Errors.Should().BeNull();
 		}
 		#endregion
 

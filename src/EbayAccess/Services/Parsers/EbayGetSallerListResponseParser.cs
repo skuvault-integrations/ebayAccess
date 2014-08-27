@@ -26,7 +26,7 @@ namespace EbayAccess.Services.Parsers
 
 				var erros = this.ResponseContainsErrors( root, ns );
 				if( erros != null )
-					return new GetSellerListResponse { Error = erros };
+					return new GetSellerListResponse { Errors = erros };
 
 				var xmlItems = root.Descendants( ns + "Item" );
 

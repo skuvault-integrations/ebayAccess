@@ -15,15 +15,15 @@ namespace EbayAccess.Models.BaseResponse
 
 		public PaginationResult PaginationResult { get; set; }
 
-		public IEnumerable< ResponseError > _error;
+		public IEnumerable< ResponseError > _errors;
 
-		public IEnumerable< ResponseError > Error
+		public IEnumerable< ResponseError > Errors
 		{
-			get { return this._error; }
+			get { return this._errors; }
 
 			set
 			{
-				this._error = value;
+				this._errors = value;
 				//var errorsText = this._error.ToJson();
 				//EbayLogger.LogTraceInnerError( errorsText );
 			}

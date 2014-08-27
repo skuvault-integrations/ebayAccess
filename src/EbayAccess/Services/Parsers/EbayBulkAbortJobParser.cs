@@ -22,7 +22,7 @@ namespace EbayAccess.Services.Parsers
 
 				var erros = this.ResponseContainsErrors( root, ns );
 				if( erros != null )
-					return new AbortJobResponse { Error = erros };
+					return new AbortJobResponse { Errors = erros };
 
 				var res = new AbortJobResponse();
 

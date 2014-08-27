@@ -173,7 +173,7 @@ namespace EbayAccessTests
 			}, new Guid().ToString() ).ConfigureAwait( false ) ).ToArray();
 
 			//A
-			inventoryStat[ 0 ].Error.Any( x => !string.IsNullOrWhiteSpace( x.ErrorCode ) ).Should().BeTrue();
+			inventoryStat[ 0 ].Errors.Any( x => !string.IsNullOrWhiteSpace( x.ErrorCode ) ).Should().BeTrue();
 		}
 
 		[ Test ]

@@ -20,7 +20,7 @@ namespace EbayAccess.Services.Parsers
 
 				var erros = this.ResponseContainsErrors( root, ns );
 				if( erros != null )
-					return new GetSessionIdResponse { Error = erros };
+					return new GetSessionIdResponse { Errors = erros };
 
 				var res = new GetSessionIdResponse { SessionId = GetElementValue( root, ns, "SessionID" ), Build = GetElementValue( root, ns, "Build" ) };
 

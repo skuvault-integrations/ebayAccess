@@ -70,8 +70,8 @@ namespace EbayAccess
 
 				var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark );
 
-				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
-					throw new Exception( getOrdersResponse.Error.ToJson() );
+				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
+					throw new Exception( getOrdersResponse.Errors.ToJson() );
 
 				var resultOrdersBriefInfo = getOrdersResponse.Orders.ToJson();
 				EbayLogger.LogTraceEnded( string.Format( "MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}", currentMenthodName, restInfo, methodParameters, mark, resultOrdersBriefInfo ) );
@@ -98,8 +98,8 @@ namespace EbayAccess
 
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark ).ConfigureAwait( false );
 
-				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
-					throw new Exception( getOrdersResponse.Error.ToJson() );
+				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
+					throw new Exception( getOrdersResponse.Errors.ToJson() );
 
 				var resultOrdersBriefInfo = getOrdersResponse.Orders.ToJson();
 				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, resultOrdersBriefInfo ) );
@@ -133,11 +133,11 @@ namespace EbayAccess
 
 				var getSellingManagerSoldListingsResponses = await salerecordIds.ProcessInBatchAsync( 18, async x => await this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
 
-				var responsesWithErrors = getSellingManagerSoldListingsResponses.Where( x => x != null ).ToList().Where( y => y.Error != null && y.Error.Any() ).ToList();
+				var responsesWithErrors = getSellingManagerSoldListingsResponses.Where( x => x != null ).ToList().Where( y => y.Errors != null && y.Errors.Any() ).ToList();
 
 				if( responsesWithErrors.Any() )
 				{
-					var aggregatedErrors = responsesWithErrors.SelectMany( x => x.Error ).ToList();
+					var aggregatedErrors = responsesWithErrors.SelectMany( x => x.Errors ).ToList();
 					throw new Exception( aggregatedErrors.ToJson() );
 				}
 
@@ -180,8 +180,8 @@ namespace EbayAccess
 
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( mark, sourceOrdersIds ).ConfigureAwait( false );
 
-				if( getOrdersResponse.Error != null && getOrdersResponse.Error.Any() )
-					throw new Exception( getOrdersResponse.Error.ToJson() );
+				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
+					throw new Exception( getOrdersResponse.Errors.ToJson() );
 
 				if( getOrdersResponse.Orders == null )
 					return existsOrders;
@@ -242,9 +242,9 @@ namespace EbayAccess
 
 				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
 
-				if( sellerListsAsync.Any( x => x.Error != null && x.Error.Any() ) )
+				if( sellerListsAsync.Any( x => x.Errors != null && x.Errors.Any() ) )
 				{
-					var aggregatedErrors = sellerListsAsync.Where( x => x.Error != null ).ToList().SelectMany( x => x.Error ).ToList();
+					var aggregatedErrors = sellerListsAsync.Where( x => x.Errors != null ).ToList().SelectMany( x => x.Errors ).ToList();
 					throw new Exception( aggregatedErrors.ToJson() );
 				}
 
@@ -276,8 +276,8 @@ namespace EbayAccess
 
 				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListCustomAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
 
-				if( sellerListAsync.Error != null && sellerListAsync.Error.Any() )
-					throw new Exception( sellerListAsync.Error.ToJson() );
+				if( sellerListAsync.Errors != null && sellerListAsync.Errors.Any() )
+					throw new Exception( sellerListAsync.Errors.ToJson() );
 
 				products.AddRange( sellerListAsync.Items );
 
@@ -313,8 +313,8 @@ namespace EbayAccess
 
 				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.StartTime, mark ).ConfigureAwait( false );
 
-				if( sellerListAsync.Error != null && sellerListAsync.Error.Any() )
-					throw new Exception( sellerListAsync.Error.ToJson() );
+				if( sellerListAsync.Errors != null && sellerListAsync.Errors.Any() )
+					throw new Exception( sellerListAsync.Errors.ToJson() );
 
 				products.AddRange( sellerListAsync.Items );
 
@@ -413,9 +413,9 @@ namespace EbayAccess
 
 				var reviseInventoriesStatus = this.EbayServiceLowLevel.ReviseInventoriesStatus( products, mark );
 
-				if( reviseInventoriesStatus.Any( x => x.Error != null && x.Error.Any() ) )
+				if( reviseInventoriesStatus.Any( x => x.Errors != null && x.Errors.Any() ) )
 				{
-					var responseErrors = reviseInventoriesStatus.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
+					var responseErrors = reviseInventoriesStatus.Where( x => x.Errors != null ).SelectMany( x => x.Errors ).ToList();
 					throw new Exception( responseErrors.ToJson() );
 				}
 			}
@@ -443,14 +443,14 @@ namespace EbayAccess
 				{
 					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, IsItVariationItem ).ConfigureAwait( false );
 
-					if( res.Error == null || !res.Error.Any() )
+					if( res.Errors == null || !res.Errors.Any() )
 						return;
 
-					if( res.Error.Exists( y => y.ErrorCode == "21916585" ) )
+					if( res.Errors.Exists( y => y.ErrorCode == "21916585" ) )
 						IsItVariationItem = true;
 
 					var itemToUpdate = string.Format( "{{Id:{0},Sku:{1},Qty:{2}}}", x.ItemId, x.Sku, x.Quantity );
-					var updateError = res.Error.ToJson();
+					var updateError = res.Errors.ToJson();
 					throw new EbayCommonException( string.Format( "Error.{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, TryingToUpdate:{2}, GettingError:{3}, Mark:{4}}}", currentMenthodName, restInfo, itemToUpdate, updateError, mark ) ) );
 				} ).ConfigureAwait( false );
 
@@ -459,9 +459,9 @@ namespace EbayAccess
 
 			var reviseFixedPriceItemResponses = fixedPriceItemResponses as IList< ReviseFixedPriceItemResponse > ?? fixedPriceItemResponses.ToList();
 
-			if( reviseFixedPriceItemResponses.Any( x => x.Error != null && x.Error.Any() ) )
+			if( reviseFixedPriceItemResponses.Any( x => x.Errors != null && x.Errors.Any() ) )
 			{
-				var responseErrors = reviseFixedPriceItemResponses.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
+				var responseErrors = reviseFixedPriceItemResponses.Where( x => x.Errors != null ).SelectMany( x => x.Errors ).ToList();
 				throw new Exception( responseErrors.ToJson() );
 			}
 
@@ -487,9 +487,9 @@ namespace EbayAccess
 
 				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products, mark ).ConfigureAwait( false );
 
-				if( reviseInventoriesStatus.Any( x => x.Error != null && x.Error.Any() ) )
+				if( reviseInventoriesStatus.Any( x => x.Errors != null && x.Errors.Any() ) )
 				{
-					var responseErrors = reviseInventoriesStatus.Where( x => x.Error != null ).SelectMany( x => x.Error ).ToList();
+					var responseErrors = reviseInventoriesStatus.Where( x => x.Errors != null ).SelectMany( x => x.Errors ).ToList();
 					throw new Exception( responseErrors.ToJson() );
 				}
 

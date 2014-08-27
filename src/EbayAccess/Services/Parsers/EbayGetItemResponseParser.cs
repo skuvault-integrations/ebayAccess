@@ -24,7 +24,7 @@ namespace EbayAccess.Services.Parsers
 
 				var erros = this.ResponseContainsErrors( root, ns );
 				if( erros != null )
-					return new GetItemResponse { Error = erros };
+					return new GetItemResponse { Errors = erros };
 
 				var x = root.Descendants( ns + "Item" ).First();
 				string temp;

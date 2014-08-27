@@ -23,7 +23,7 @@ namespace EbayAccess.Services.Parsers
 
 				var erros = this.ResponseContainsErrors( root, ns );
 				if( erros != null )
-					return new CreateJobResponse { Error = erros };
+					return new CreateJobResponse { Errors = erros };
 
 				var res = new CreateJobResponse { JobId = GetElementValue( root, ns, "jobId" ) };
 

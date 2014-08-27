@@ -178,9 +178,9 @@ namespace EbayAccess.Services
 
 						if( getOrdersResponseParsed != null )
 						{
-							if( getOrdersResponseParsed.Error != null )
+							if( getOrdersResponseParsed.Errors != null )
 							{
-								orders.Error = getOrdersResponseParsed.Error;
+								orders.Errors = getOrdersResponseParsed.Errors;
 								return;
 							}
 
@@ -225,9 +225,9 @@ namespace EbayAccess.Services
 						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
 						if( getOrdersResponseParsed != null )
 						{
-							if( getOrdersResponseParsed.Error != null )
+							if( getOrdersResponseParsed.Errors != null )
 							{
-								orders.Error = getOrdersResponseParsed.Error;
+								orders.Errors = getOrdersResponseParsed.Errors;
 								return;
 							}
 							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
@@ -271,9 +271,9 @@ namespace EbayAccess.Services
 						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
 						if( getOrdersResponseParsed != null )
 						{
-							if( getOrdersResponseParsed.Error != null )
+							if( getOrdersResponseParsed.Errors != null )
 							{
-								orders.Error = getOrdersResponseParsed.Error;
+								orders.Errors = getOrdersResponseParsed.Errors;
 								return;
 							}
 							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
@@ -308,9 +308,9 @@ namespace EbayAccess.Services
 					var getOrdersResponseParsed = new EbayGetSellingManagerSoldListingsResponseParser().Parse( memStream );
 					if( getOrdersResponseParsed != null )
 					{
-						if( getOrdersResponseParsed.Error != null )
+						if( getOrdersResponseParsed.Errors != null )
 						{
-							var temp = getOrdersResponseParsed.Error.ToList();
+							var temp = getOrdersResponseParsed.Errors.ToList();
 							temp.Add( new ResponseError
 							{
 								LongMessage = string.Format( "Occudred when getting:{0};Mark:{1}", salerecordNumber, mark ),
@@ -321,7 +321,7 @@ namespace EbayAccess.Services
 								ShortMessage = "EbayAcces Trace",
 								UserDisplayHint = "EbayAcces Trace"
 							} );
-							orders.Error = temp;
+							orders.Errors = temp;
 							return;
 						}
 
@@ -405,9 +405,9 @@ namespace EbayAccess.Services
 
 						if( getSellerListResponse != null )
 						{
-							if( getSellerListResponse.Error != null )
+							if( getSellerListResponse.Errors != null )
 							{
-								items.Error = getSellerListResponse.Error;
+								items.Errors = getSellerListResponse.Errors;
 								return;
 							}
 							hasMoreItems = getSellerListResponse.HasMoreItems;
@@ -444,9 +444,9 @@ namespace EbayAccess.Services
 						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( getSellerListResponse != null )
 						{
-							if( getSellerListResponse.Error != null )
+							if( getSellerListResponse.Errors != null )
 							{
-								items.Error = getSellerListResponse.Error;
+								items.Errors = getSellerListResponse.Errors;
 								return;
 							}
 							hasMoreItems = getSellerListResponse.HasMoreItems;
@@ -490,9 +490,9 @@ namespace EbayAccess.Services
 
 						if( getSellerListResponse != null )
 						{
-							if( getSellerListResponse.Error != null )
+							if( getSellerListResponse.Errors != null )
 							{
-								items.Error = getSellerListResponse.Error;
+								items.Errors = getSellerListResponse.Errors;
 								return;
 							}
 							hasMoreItems = getSellerListResponse.HasMoreItems;
@@ -529,9 +529,9 @@ namespace EbayAccess.Services
 						var getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
 						if( getSellerListResponse != null )
 						{
-							if( getSellerListResponse.Error != null )
+							if( getSellerListResponse.Errors != null )
 							{
-								items.Error = getSellerListResponse.Error;
+								items.Errors = getSellerListResponse.Errors;
 								return;
 							}
 							hasMoreItems = getSellerListResponse.HasMoreItems;
@@ -558,7 +558,7 @@ namespace EbayAccess.Services
 
 			var pages = new ConcurrentBag< int >();
 
-			if( getSellerListResponse != null && getSellerListResponse.Error == null )
+			if( getSellerListResponse != null && getSellerListResponse.Errors == null )
 			{
 				if( getSellerListResponse.PaginationResult.TotalNumberOfPages > 1 )
 				{
@@ -922,7 +922,7 @@ namespace EbayAccess.Services
 			using( var memStream = this._webRequestServices.GetResponseStream( webRequest, mark ) )
 			{
 				var tempResponse = new EbayFetchTokenResponseParser().Parse( memStream );
-				if( tempResponse != null && tempResponse.Error == null )
+				if( tempResponse != null && tempResponse.Errors == null )
 					result = tempResponse.EbayAuthToken;
 			}
 
@@ -948,9 +948,9 @@ namespace EbayAccess.Services
 					var createJobResponseParsed = new EbayBulkCreateJobParser().Parse( memStream );
 					if( createJobResponseParsed != null )
 					{
-						if( createJobResponseParsed.Error != null )
+						if( createJobResponseParsed.Errors != null )
 						{
-							result.Error = createJobResponseParsed.Error;
+							result.Errors = createJobResponseParsed.Errors;
 							return;
 						}
 
@@ -979,8 +979,8 @@ namespace EbayAccess.Services
 					var abortJobResponse = new EbayBulkAbortJobParser().Parse( memStream );
 					if( abortJobResponse != null )
 					{
-						if( abortJobResponse.Error != null )
-							result.Error = abortJobResponse.Error;
+						if( abortJobResponse.Errors != null )
+							result.Errors = abortJobResponse.Errors;
 					}
 				}
 			} );

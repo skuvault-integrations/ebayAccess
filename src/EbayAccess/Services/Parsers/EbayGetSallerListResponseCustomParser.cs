@@ -27,7 +27,7 @@ namespace EbayAccess.Services.Parsers
 
 				var erros = this.ResponseContainsErrors( root, ns );
 				if( erros != null )
-					return new GetSellerListCustomResponse { Error = erros };
+					return new GetSellerListCustomResponse { Errors = erros };
 
 				var pagination = this.GetPagination( root, ns );
 				if( pagination != null )

@@ -22,7 +22,7 @@ namespace EbayAccess.Services.Parsers
 
 				var error = this.ResponseContainsErrors( root, ns );
 				if( error != null )
-					return new InventoryStatusResponse() { Error = error };
+					return new InventoryStatusResponse() { Errors = error };
 
 				inventoryStatusResponse = new InventoryStatusResponse();
 
