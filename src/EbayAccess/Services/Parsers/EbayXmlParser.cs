@@ -82,7 +82,7 @@ namespace EbayAccess.Services.Parsers
 				return null;
 
 			var errorsElements = root.Descendants( ns + "Errors" );
-			var parsedErrors = errorsElements.Select( x => ParseError( x, ns ) ).ToList();
+			var parsedErrors = errorsElements.Select( x => ParseError( x, ns ) ).ToList().Where( x => x.SeverityCode == "Error" ).ToList();
 
 			return parsedErrors;
 		}
