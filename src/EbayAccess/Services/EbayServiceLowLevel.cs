@@ -703,7 +703,7 @@ namespace EbayAccess.Services
 		private string CreateReviseFixedPriceItemRequestBody( ReviseFixedPriceItemRequest inventoryStatusReq, bool isVariation )
 		{
 			var body = isVariation ? string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations><Variation><SKU>{2}</SKU><Quantity>{3}</Quantity><OutOfStockControl>{4}</OutOfStockControl></Variation></Variations></Item></ReviseFixedPriceItemRequest>",
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations><Variation><SKU>{2}</SKU><Quantity>{3}</Quantity></Variation></Variations><OutOfStockControl>{4}</OutOfStockControl></Item></ReviseFixedPriceItemRequest>",
 				this._userCredentials.Token,
 				inventoryStatusReq.ItemId,
 				inventoryStatusReq.Sku,
