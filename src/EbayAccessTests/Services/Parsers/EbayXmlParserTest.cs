@@ -12,7 +12,7 @@ namespace EbayAccessTests.Services.Parsers
 	public class EbayXmlParserTest : EbayXmlParser< object >
 	{
 		[ Test ]
-		public void Parse_GetItemResponseWithSku_HookupSku()
+		public void Parse_ResponseWithOneErrorAndOneWarning_GetOnlyOneErrorRecord()
 		{
 			//A
 				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
