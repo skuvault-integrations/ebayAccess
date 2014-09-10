@@ -229,14 +229,41 @@ namespace EbayAccessTests
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
-			var updateInventoryAsync = ebayService.UpdateInventoryAsync(new List<UpdateInventoryRequest>
+			var updateInventoryAsync = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
 			{
 				new UpdateInventoryRequest { ItemId = item1Id, Quantity = itemsQty1, Sku = "123" },
 				new UpdateInventoryRequest { ItemId = item2Id, Quantity = itemsQty1, Sku = "qwe" }
-			});
+			} );
 			updateInventoryAsync.Wait();
 
 			//A
+		}
+
+		[ Test ]
+		public void UpdateFixePriceProductsAsync_EbayServiceReturnsLvsBlockError_ErrorSkipedAndNoExceptionOccurs()
+		{
+			//A
+			const int itemsQty1 = 0;
+			const long item1Id = 110136942332;
+			const long item2Id = 110137091582;
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsLvsBlockError.ToStream() ) );
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			Action action = () =>
+			{
+				var updateInventoryAsync = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
+				{
+					new UpdateInventoryRequest { ItemId = item1Id, Quantity = itemsQty1, Sku = "123" },
+					new UpdateInventoryRequest { ItemId = item2Id, Quantity = itemsQty1, Sku = "qwe" }
+				} );
+				updateInventoryAsync.Wait();
+			};
+
+			//A
+			action.ShouldNotThrow< EbayCommonException >();
 		}
 
 		[ Test ]
