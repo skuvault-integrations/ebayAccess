@@ -17,5 +17,19 @@ namespace EbayAccess.Models
 				};
 			}
 		}
+
+		public static ResponseError LvisBlockedError
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "21916293",
+					LongMessage = "Lvis validation blocked",
+					ShortMessage = "Lvis blocked",
+					SeverityCode = "Error"
+				};
+			}
+		}
 	}
 }

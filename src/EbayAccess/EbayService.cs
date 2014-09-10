@@ -449,10 +449,11 @@ namespace EbayAccess
 						return;
 
 					// skip such errors
-					if( DoesResponseContainErrors( res, EbayErrors.EbayPixelSizeError ) )
+					var updateInventoryErrorsToSkip = new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError };
+					if( DoesResponseContainErrors( res, updateInventoryErrorsToSkip.ToArray() ) )
 					{
 						EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) );
-						RemoveErrorsFromResponse( res, EbayErrors.EbayPixelSizeError );
+						RemoveErrorsFromResponse( res, updateInventoryErrorsToSkip.ToArray() );
 					}
 
 					if( res.Errors != null && res.Errors.Exists( y => y.ErrorCode == "21916585" ) )
@@ -490,7 +491,7 @@ namespace EbayAccess
 			return res.Errors = res.Errors.Where( y => !errors.Exists( x => x.ErrorCode == y.ErrorCode ) );
 		}
 
-		private static bool DoesResponseContainErrors( ReviseFixedPriceItemResponse res, params ResponseError[] errors )
+		private static bool DoesResponseContainErrors( EbayBaseResponse res, params ResponseError[] errors )
 		{
 			if( errors == null || errors.Length == 0 )
 				return false;
