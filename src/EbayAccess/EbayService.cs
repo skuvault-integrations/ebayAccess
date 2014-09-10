@@ -449,13 +449,13 @@ namespace EbayAccess
 						return;
 
 					// skip such errors
-					if( ResponseContainsErrorsThatMustBeSkipped( res ) )
+					if( ResponseContainsErrorsThatMustBeSkipped( res, EbayErrors.EbayPixelSizeError ) )
 					{
 						EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) );
-						RemoveErrorsFromResponse( res );
+						RemoveErrorsFromResponse( res, EbayErrors.EbayPixelSizeError );
 					}
 
-					if (res.Errors != null && res.Errors.Exists(y => y.ErrorCode == "21916585"))
+					if( res.Errors != null && res.Errors.Exists( y => y.ErrorCode == "21916585" ) )
 						IsItVariationItem = true;
 
 					if( repeatCount++ < 3 )
@@ -482,19 +482,20 @@ namespace EbayAccess
 			return fixedPriceItemResponses;
 		}
 
-		private static IEnumerable< ResponseError > RemoveErrorsFromResponse( ReviseFixedPriceItemResponse res )
+		private static IEnumerable< ResponseError > RemoveErrorsFromResponse( ReviseFixedPriceItemResponse res, params ResponseError[] errors )
 		{
-			if( res == null )
-				res = new ReviseFixedPriceItemResponse();
-			if( res.Errors == null )
-				res.Errors = new List< ResponseError >();
+			if( res == null || res.Errors == null )
+				return new List< ResponseError >();
 
-			return res.Errors = res.Errors.Where( y => y.ErrorCode != EbayErrors.EbayPixelSizeError.ErrorCode );
+			return res.Errors = res.Errors.Where( y => !errors.Exists( x => x.ErrorCode == y.ErrorCode ) );
 		}
 
-		private static bool ResponseContainsErrorsThatMustBeSkipped( ReviseFixedPriceItemResponse res )
+		private static bool ResponseContainsErrorsThatMustBeSkipped( ReviseFixedPriceItemResponse res, params ResponseError[] errors )
 		{
-			return res != null && res.Errors != null && res.Errors.Exists( y => y.ErrorCode == EbayErrors.EbayPixelSizeError.ErrorCode );
+			if( errors == null || errors.Length == 0 )
+				return false;
+
+			return res != null && res.Errors != null && res.Errors.Exists( y => errors.Exists( x => x.ErrorCode == y.ErrorCode ) );
 		}
 
 		public async Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products )
