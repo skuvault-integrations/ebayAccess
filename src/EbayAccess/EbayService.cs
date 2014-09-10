@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EbayAccess.Misc;
 using EbayAccess.Models;
+using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
@@ -448,10 +449,10 @@ namespace EbayAccess
 						return;
 
 					// skip such errors
-					if (res.Errors != null && res.Errors.Exists(y => y.ErrorCode == EbayErrors.EbayPixelSizeError.ErrorCode))
+					if( ResponseContainsErrorsThatMustBeSkipped( res ) )
 					{
 						EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) );
-						res.Errors = res.Errors.Where( y => y.ErrorCode != EbayErrors.EbayPixelSizeError.ErrorCode );
+						RemoveErrorsFromResponse( res );
 					}
 
 					if (res.Errors != null && res.Errors.Exists(y => y.ErrorCode == "21916585"))
@@ -479,6 +480,21 @@ namespace EbayAccess
 			EbayLogger.LogTraceInnerEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
 
 			return fixedPriceItemResponses;
+		}
+
+		private static IEnumerable< ResponseError > RemoveErrorsFromResponse( ReviseFixedPriceItemResponse res )
+		{
+			if( res == null )
+				res = new ReviseFixedPriceItemResponse();
+			if( res.Errors == null )
+				res.Errors = new List< ResponseError >();
+
+			return res.Errors = res.Errors.Where( y => y.ErrorCode != EbayErrors.EbayPixelSizeError.ErrorCode );
+		}
+
+		private static bool ResponseContainsErrorsThatMustBeSkipped( ReviseFixedPriceItemResponse res )
+		{
+			return res != null && res.Errors != null && res.Errors.Exists( y => y.ErrorCode == EbayErrors.EbayPixelSizeError.ErrorCode );
 		}
 
 		public async Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products )
