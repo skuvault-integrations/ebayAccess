@@ -449,7 +449,7 @@ namespace EbayAccess
 						return;
 
 					// skip such errors
-					if( ResponseContainsErrorsThatMustBeSkipped( res, EbayErrors.EbayPixelSizeError ) )
+					if( DoesResponseContainErrors( res, EbayErrors.EbayPixelSizeError ) )
 					{
 						EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) );
 						RemoveErrorsFromResponse( res, EbayErrors.EbayPixelSizeError );
@@ -490,7 +490,7 @@ namespace EbayAccess
 			return res.Errors = res.Errors.Where( y => !errors.Exists( x => x.ErrorCode == y.ErrorCode ) );
 		}
 
-		private static bool ResponseContainsErrorsThatMustBeSkipped( ReviseFixedPriceItemResponse res, params ResponseError[] errors )
+		private static bool DoesResponseContainErrors( ReviseFixedPriceItemResponse res, params ResponseError[] errors )
 		{
 			if( errors == null || errors.Length == 0 )
 				return false;
