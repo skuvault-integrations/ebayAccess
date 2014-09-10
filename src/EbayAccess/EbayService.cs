@@ -445,16 +445,10 @@ namespace EbayAccess
 				{
 					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, IsItVariationItem ).ConfigureAwait( false );
 
+					SkipErrorsAndDo( res, () => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError } );
+
 					if( res.Errors == null || !res.Errors.Any() )
 						return;
-
-					// skip such errors
-					var updateInventoryErrorsToSkip = new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError };
-					if( DoesResponseContainErrors( res, updateInventoryErrorsToSkip.ToArray() ) )
-					{
-						EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) );
-						RemoveErrorsFromResponse( res, updateInventoryErrorsToSkip.ToArray() );
-					}
 
 					if( res.Errors != null && res.Errors.Exists( y => y.ErrorCode == "21916585" ) )
 						IsItVariationItem = true;
@@ -483,7 +477,16 @@ namespace EbayAccess
 			return fixedPriceItemResponses;
 		}
 
-		private static IEnumerable< ResponseError > RemoveErrorsFromResponse( ReviseFixedPriceItemResponse res, params ResponseError[] errors )
+		private void SkipErrorsAndDo( EbayBaseResponse response, Action action, List< ResponseError > updateInventoryErrorsToSkip )
+		{
+			if( DoesResponseContainErrors( response, updateInventoryErrorsToSkip.ToArray() ) )
+			{
+				action();
+				RemoveErrorsFromResponse( response, updateInventoryErrorsToSkip.ToArray() );
+			}
+		}
+
+		private static IEnumerable< ResponseError > RemoveErrorsFromResponse( EbayBaseResponse res, params ResponseError[] errors )
 		{
 			if( res == null || res.Errors == null )
 				return new List< ResponseError >();
