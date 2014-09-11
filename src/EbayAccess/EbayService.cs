@@ -568,7 +568,7 @@ namespace EbayAccess
 				var updateProductsResponses = await this.UpdateProductsAsync( inventoryStatusRequests ).ConfigureAwait( false );
 				var updateFixedPriceItemResponses = await this.UpdateFixePriceProductsAsync( reviseFixedPriceItemRequests ).ConfigureAwait( false );
 
-				var updateProductsResponsesConverted = updateProductsResponses.SelectMany( x => x.Items ).Select( x => new UpdateInventoryResponse() { ItemId = x.ItemId.Value } ).ToList();
+				var updateProductsResponsesConverted = updateProductsResponses.SelectMany( x => x.Items ?? new List< Models.ReviseInventoryStatusResponse.Item >() ).Select( x => new UpdateInventoryResponse() { ItemId = x.ItemId.Value } ).ToList();
 				var updateFixedPriceItemResponsesConverted = updateFixedPriceItemResponses.Select( x => new UpdateInventoryResponse() { ItemId = x.Item.ItemId } ).ToList();
 
 				var updateInventoryResponses = new List< UpdateInventoryResponse >();
