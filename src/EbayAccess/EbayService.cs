@@ -406,6 +406,9 @@ namespace EbayAccess
 		{
 			var commonCallInfo = string.Empty;
 			var mark = new Guid().ToString();
+			string currentMenthodName = "UpdateProducts" ;
+			string methodParameters = string.Empty;
+			var restInfo = this.EbayServiceLowLevel.ToJson();
 			try
 			{
 				var productsCount = products.Count();
@@ -413,6 +416,11 @@ namespace EbayAccess
 				commonCallInfo = String.Format( "Products count {0} : {1}", productsCount, string.Join( "|", productsTemp.Select( x => string.Format( "Sku:{0},Qty{1}", x.Sku, x.Quantity ) ).ToList() ) );
 
 				var reviseInventoriesStatus = this.EbayServiceLowLevel.ReviseInventoriesStatus( products, mark );
+
+				foreach( var inventoryStatusResponse in reviseInventoriesStatus )
+				{
+					this.SkipErrorsAndDo( inventoryStatusResponse, () => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, inventoryStatusResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.LvisBlockedError } );
+				}
 
 				if( reviseInventoriesStatus.Any( x => x.Errors != null && x.Errors.Any() ) )
 				{
@@ -428,7 +436,7 @@ namespace EbayAccess
 			}
 		}
 
-		protected async Task< IEnumerable< ReviseFixedPriceItemResponse > > UpdateFixePriceProductsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
+		internal async Task< IEnumerable< ReviseFixedPriceItemResponse > > UpdateFixePriceProductsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
 		{
 			var methodParameters = products.ToJson();
 			var restInfo = this.EbayServiceLowLevel.ToJson();
@@ -445,7 +453,7 @@ namespace EbayAccess
 				{
 					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, IsItVariationItem ).ConfigureAwait( false );
 
-					SkipErrorsAndDo( res, () => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError } );
+					this.SkipErrorsAndDo( res, () => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.LvisBlockedError } );
 
 					if( res.Errors == null || !res.Errors.Any() )
 						return;
@@ -514,6 +522,11 @@ namespace EbayAccess
 				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
 				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products, mark ).ConfigureAwait( false );
+
+				foreach( var inventoryStatusResponse in reviseInventoriesStatus )
+				{
+					this.SkipErrorsAndDo( inventoryStatusResponse, () => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, inventoryStatusResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.LvisBlockedError } );
+				}
 
 				if( reviseInventoriesStatus.Any( x => x.Errors != null && x.Errors.Any() ) )
 				{
