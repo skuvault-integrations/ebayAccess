@@ -240,7 +240,7 @@ namespace EbayAccessTests
 		}
 
 		[ Test ]
-		public void UpdateFixePriceProductsAsync_EbayServiceReturnsLvsBlockError_ErrorSkipedAndNoExceptionOccurs()
+		public void UpdateFixePriceProductsAsync_UpdateBy0EbayServiceReturnsLvsBlockError_ErrorSkipedAndNoExceptionOccurs()
 		{
 			//A
 			const int itemsQty1 = 0;
@@ -264,6 +264,33 @@ namespace EbayAccessTests
 
 			//A
 			action.ShouldNotThrow< EbayCommonException >();
+		}
+
+		[Test]
+		public void UpdateFixePriceProductsAsync_UpdateByGreaterThan0EbayServiceReturnsLvsBlockError_ErrorSkipedAndNoExceptionOccurs()
+		{
+			//A
+			const int itemsQty1 = 1;
+			const long item1Id = 110136942332;
+			const long item2Id = 110137091582;
+
+			var stubWebRequestService = Substitute.For<IWebRequestServices>();
+			stubWebRequestService.GetResponseStreamAsync(null, null).ReturnsForAnyArgs((x) => Task.FromResult(ReviseFixedPriceItemResponse.ServerResponseContainsLvsBlockError.ToStream()));
+			var ebayService = new EbayService(this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService);
+
+			//A
+			Action action = () =>
+			{
+				var updateInventoryAsync = ebayService.UpdateInventoryAsync(new List<UpdateInventoryRequest>
+				{
+					new UpdateInventoryRequest { ItemId = item1Id, Quantity = itemsQty1, Sku = "123" },
+					new UpdateInventoryRequest { ItemId = item2Id, Quantity = itemsQty1, Sku = "qwe" }
+				});
+				updateInventoryAsync.Wait();
+			};
+
+			//A
+			action.ShouldNotThrow<EbayCommonException>();
 		}
 
 		[ Test ]
