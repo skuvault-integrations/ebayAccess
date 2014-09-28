@@ -31,5 +31,19 @@ namespace EbayAccess.Models
 				};
 			}
 		}
+
+		public static ResponseError UnsupportedListingType
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "21916286",
+					LongMessage = "Valid Listing type for fixedprice apis are FixedPriceItem and StoresFixedPrice.",
+					ShortMessage = "Unsupported ListingType",
+					SeverityCode = "Error"
+				};
+			}
+		}
 	}
 }
