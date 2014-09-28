@@ -9,7 +9,9 @@ using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseFixedPriceItemRequest;
+using EbayAccess.Models.ReviseFixedPriceItemResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccess.Models.ReviseInventoryStatusResponse;
 using Item = EbayAccess.Models.ReviseFixedPriceItemResponse.Item;
 
 namespace EbayAccess.Misc
@@ -130,6 +132,28 @@ namespace EbayAccess.Misc
 				string.IsNullOrWhiteSpace( x.GetOrderId( false ) ) ? PredefinedValues.NotAvailable : x.GetOrderId( false ),
 				string.IsNullOrWhiteSpace( x.GetOrderId() ) ? PredefinedValues.NotAvailable : x.GetOrderId(),
 				x.CreatedTime ) );
+		}
+
+		public static IEnumerable< UpdateInventoryResponse > ToUpdateInventoryResponses( this InventoryStatusResponse source )
+		{
+			return ( source.Items ?? new List< Models.ReviseInventoryStatusResponse.Item >() )
+				.Where( x => x.ItemId.HasValue )
+				.Select( x => new UpdateInventoryResponse() { ItemId = x.ItemId.Value } ).ToList();
+		}
+
+		public static IEnumerable< UpdateInventoryResponse > ToUpdateInventoryResponses( this IEnumerable< InventoryStatusResponse > source )
+		{
+			return source.SelectMany( x => x.ToUpdateInventoryResponses().ToList() );
+		}
+
+		public static UpdateInventoryResponse ToUpdateInventoryResponses( this ReviseFixedPriceItemResponse source )
+		{
+			return new UpdateInventoryResponse() { ItemId = source.Item != null ? source.Item.ItemId : long.MinValue };
+		}
+
+		public static IEnumerable< UpdateInventoryResponse > ToUpdateInventoryResponses( this IEnumerable< ReviseFixedPriceItemResponse > source )
+		{
+			return source.Select( x => x.ToUpdateInventoryResponses() ).Where( x => x.ItemId != long.MinValue );
 		}
 
 		public static string ToJson( this IEnumerable< string > source )

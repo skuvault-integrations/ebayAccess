@@ -406,8 +406,8 @@ namespace EbayAccess
 		{
 			var commonCallInfo = string.Empty;
 			var mark = new Guid().ToString();
-			string currentMenthodName = "UpdateProducts" ;
-			string methodParameters = string.Empty;
+			var currentMenthodName = "UpdateProducts";
+			var methodParameters = string.Empty;
 			var restInfo = this.EbayServiceLowLevel.ToJson();
 			try
 			{
@@ -565,15 +565,34 @@ namespace EbayAccess
 				var inventoryStatusRequests = updateInventoryRequests.Where( x => x.Quantity > 0 ).Select( x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } ).ToList();
 				var reviseFixedPriceItemRequests = updateInventoryRequests.Where( x => x.Quantity == 0 ).Select( x => new ReviseFixedPriceItemRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } ).ToList();
 
-				var updateProductsResponses = await this.UpdateProductsAsync( inventoryStatusRequests ).ConfigureAwait( false );
-				var updateFixedPriceItemResponses = await this.UpdateFixePriceProductsAsync( reviseFixedPriceItemRequests ).ConfigureAwait( false );
+				var exceptions = new List< Exception >();
 
-				var updateProductsResponsesConverted = updateProductsResponses.SelectMany( x => x.Items ?? new List< Models.ReviseInventoryStatusResponse.Item >() ).Select( x => new UpdateInventoryResponse() { ItemId = x.ItemId.Value } ).ToList();
-				var updateFixedPriceItemResponsesConverted = updateFixedPriceItemResponses.Select( x => new UpdateInventoryResponse() { ItemId = x.Item.ItemId } ).ToList();
+				var updateProductsResponses = Enumerable.Empty< InventoryStatusResponse >();
+				try
+				{
+					updateProductsResponses = await this.UpdateProductsAsync( inventoryStatusRequests ).ConfigureAwait( false );
+				}
+				catch( Exception exc )
+				{
+					exceptions.Add( exc );
+				}
+
+				var updateFixedPriceItemResponses = Enumerable.Empty< ReviseFixedPriceItemResponse >();
+				try
+				{
+					updateFixedPriceItemResponses = await this.UpdateFixePriceProductsAsync( reviseFixedPriceItemRequests ).ConfigureAwait( false );
+				}
+				catch( Exception exc )
+				{
+					exceptions.Add( exc );
+				}
+
+				if( exceptions.Count > 0 )
+					throw new AggregateException( exceptions );
 
 				var updateInventoryResponses = new List< UpdateInventoryResponse >();
-				updateInventoryResponses.AddRange( updateProductsResponsesConverted );
-				updateInventoryResponses.AddRange( updateFixedPriceItemResponsesConverted );
+				updateInventoryResponses.AddRange( updateProductsResponses.ToUpdateInventoryResponses().ToList() );
+				updateInventoryResponses.AddRange( updateFixedPriceItemResponses.ToUpdateInventoryResponses().ToList() );
 
 				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, updateInventoryResponses.ToJson() ) );
 
