@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
+using EbayAccess.Models.ReviseFixedPriceItemRequest;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.TestEnvironment;
@@ -266,7 +268,7 @@ namespace EbayAccessTests
 			action.ShouldNotThrow< EbayCommonException >();
 		}
 
-		[Test]
+		[ Test ]
 		public void UpdateFixePriceProductsAsync_UpdateByGreaterThan0EbayServiceReturnsLvsBlockError_ErrorSkipedAndNoExceptionOccurs()
 		{
 			//A
@@ -274,23 +276,23 @@ namespace EbayAccessTests
 			const long item1Id = 110136942332;
 			const long item2Id = 110137091582;
 
-			var stubWebRequestService = Substitute.For<IWebRequestServices>();
-			stubWebRequestService.GetResponseStreamAsync(null, null).ReturnsForAnyArgs((x) => Task.FromResult(ReviseFixedPriceItemResponse.ServerResponseContainsLvsBlockError.ToStream()));
-			var ebayService = new EbayService(this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService);
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsLvsBlockError.ToStream() ) );
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
 			Action action = () =>
 			{
-				var updateInventoryAsync = ebayService.UpdateInventoryAsync(new List<UpdateInventoryRequest>
+				var updateInventoryAsync = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
 				{
 					new UpdateInventoryRequest { ItemId = item1Id, Quantity = itemsQty1, Sku = "123" },
 					new UpdateInventoryRequest { ItemId = item2Id, Quantity = itemsQty1, Sku = "qwe" }
-				});
+				} );
 				updateInventoryAsync.Wait();
 			};
 
 			//A
-			action.ShouldNotThrow<EbayCommonException>();
+			action.ShouldNotThrow< EbayCommonException >();
 		}
 
 		[ Test ]
@@ -303,7 +305,7 @@ namespace EbayAccessTests
 			var getResponseStreamAsyncCallCounter = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.FromResult( this.GetStream( respstring ) ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -320,6 +322,134 @@ namespace EbayAccessTests
 
 			//A
 			getResponseStreamAsyncCallCounter.Should().Be( 1 );
+		}
+
+		[ Test ]
+		public void UpdateInventoryAsync_ExceptionOccuredAlways_ReviseInventoryStatusExceptionsDontBreakReviseFixdPriceProcessAndViseVersa()
+		{
+			//A
+			const int maxThreadsCount = 18;
+
+			var itemsToUpdateToZero = new List< UpdateInventoryRequest >();
+			for( var i = 0; i < maxThreadsCount * 5; i++ )
+			{
+				itemsToUpdateToZero.Add( new UpdateInventoryRequest { ItemId = i, Quantity = 0, Sku = i.ToString( CultureInfo.InvariantCulture ) } );
+			}
+
+			var itemsToUpdateToGreaterZero = new List< UpdateInventoryRequest >();
+			for( var i = maxThreadsCount * 5; i < maxThreadsCount * 10; i++ )
+			{
+				itemsToUpdateToGreaterZero.Add( new UpdateInventoryRequest { ItemId = i, Quantity = 1, Sku = i.ToString( CultureInfo.InvariantCulture ) } );
+			}
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.VirtualNotSkippedError.ToStream() ) );
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			Action action = () =>
+			{
+				var updateInventoryAsync = ebayService.UpdateInventoryAsync( itemsToUpdateToZero.Concat( itemsToUpdateToGreaterZero ).ToList() );
+				updateInventoryAsync.Wait();
+			};
+
+			//A
+			action.ShouldThrow< EbayCommonException >();
+
+			stubWebRequestService.Received().CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), Arg.Any< string >() );
+			stubWebRequestService.Received().CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseInventoryStatus ), Arg.Any< string >() );
+		}
+
+		[ Test ]
+		public void ReviseFixePriceItemsAsync_ExceptionOccured_ExceptionDontBreaksProcessingAndThereWasAttemptsToReviseAllItems()
+		{
+			//A
+			const int maxThreadsCount = 18;
+
+			var reviseFixedPriceItemRequests = new List< ReviseFixedPriceItemRequest >();
+			for( var i = 0; i < maxThreadsCount * 5; i++ )
+			{
+				reviseFixedPriceItemRequests.Add( new ReviseFixedPriceItemRequest { ItemId = i, Quantity = 0, Sku = i.ToString( CultureInfo.InvariantCulture ) } );
+			}
+
+			const int repeatsPerBadRequest = 4;
+			var requiredNumberOfCalls = reviseFixedPriceItemRequests.Count * repeatsPerBadRequest;
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.VirtualNotSkippedError.ToStream() ) );
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			Action action = () =>
+			{
+				var updateInventoryAsync = ebayService.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests );
+				updateInventoryAsync.Wait();
+			};
+
+			//A
+			action.ShouldThrow< Exception >();
+
+			stubWebRequestService.Received( requiredNumberOfCalls ).CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), Arg.Any< string >() );
+		}
+
+		[ Test ]
+		public void ReviseInventoriesStatusAsync_ExceptionOccured_ExceptionDontBreaksProcessingAndThereWasAttemptsToReviseAllItems()
+		{
+			//A
+			const int maxThreadsCount = 18;
+
+			var inventoryStatusRequests = new List< InventoryStatusRequest >();
+			for( var i = 0; i < maxThreadsCount * 5; i++ )
+			{
+				inventoryStatusRequests.Add( new InventoryStatusRequest { ItemId = i, Quantity = 0, Sku = i.ToString( CultureInfo.InvariantCulture ) } );
+			}
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.VirtualNotSkippedError.ToStream() ) );
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			Action action = () =>
+			{
+				var updateInventoryAsync = ebayService.ReviseInventoriesStatusAsync( inventoryStatusRequests );
+				updateInventoryAsync.Wait();
+			};
+
+			//A
+			action.ShouldThrow< Exception >();
+
+			var requiredNumberOfCalls = inventoryStatusRequests.Count / 4 + ( inventoryStatusRequests.Count % 4 > 0 ? 1 : 0 );
+			stubWebRequestService.Received( requiredNumberOfCalls ).CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseInventoryStatus ), Arg.Any< string >() );
+		}
+
+		[ Test ]
+		public void UpdateInventoryAsync_UnsupportedListingTypeErrorOccured_ErrorSkippedAndNoExceptionOccurs()
+		{
+			//A
+			const long item1Id = 110136942332;
+			const long item2Id = 110137091582;
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.UnsupportedListingType.ToStream() ) );
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			Action action = () =>
+			{
+				var updateInventoryAsync = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
+				{
+					new UpdateInventoryRequest { ItemId = item1Id, Quantity = 0, Sku = "123" },
+					new UpdateInventoryRequest { ItemId = item2Id, Quantity = 1, Sku = "qwe" }
+				} );
+				updateInventoryAsync.Wait();
+			};
+
+			//A
+			action.ShouldNotThrow< Exception >();
 		}
 	}
 }
