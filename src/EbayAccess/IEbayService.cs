@@ -17,7 +17,7 @@ namespace EbayAccess
 
 		void UpdateProducts( IEnumerable< InventoryStatusRequest > products );
 
-		Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products );
+		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products );
 
 		Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo );
 

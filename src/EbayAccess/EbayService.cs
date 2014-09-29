@@ -436,11 +436,11 @@ namespace EbayAccess
 			}
 		}
 
-		internal async Task< IEnumerable< ReviseFixedPriceItemResponse > > UpdateFixePriceProductsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
+		internal async Task< IEnumerable< ReviseFixedPriceItemResponse > > ReviseFixePriceItemsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
 		{
 			var methodParameters = products.ToJson();
 			var restInfo = this.EbayServiceLowLevel.ToJson();
-			const string currentMenthodName = "UpdateFixePriceProductsAsync";
+			const string currentMenthodName = "ReviseFixePriceItemsAsync";
 			var mark = Guid.NewGuid().ToString();
 			EbayLogger.LogTraceInnerStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
@@ -510,11 +510,11 @@ namespace EbayAccess
 			return res != null && res.Errors != null && res.Errors.Exists( y => errors.Exists( x => x.ErrorCode == y.ErrorCode ) );
 		}
 
-		public async Task< IEnumerable< InventoryStatusResponse > > UpdateProductsAsync( IEnumerable< InventoryStatusRequest > products )
+		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products )
 		{
 			var methodParameters = products.ToJson();
 			var restInfo = this.EbayServiceLowLevel.ToJson();
-			const string currentMenthodName = "UpdateProductsAsync";
+			const string currentMenthodName = "ReviseInventoriesStatusAsync";
 			var mark = Guid.NewGuid().ToString();
 
 			try
@@ -570,7 +570,7 @@ namespace EbayAccess
 				var updateProductsResponses = Enumerable.Empty< InventoryStatusResponse >();
 				try
 				{
-					updateProductsResponses = await this.UpdateProductsAsync( inventoryStatusRequests ).ConfigureAwait( false );
+					updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests ).ConfigureAwait( false );
 				}
 				catch( Exception exc )
 				{
@@ -580,7 +580,7 @@ namespace EbayAccess
 				var updateFixedPriceItemResponses = Enumerable.Empty< ReviseFixedPriceItemResponse >();
 				try
 				{
-					updateFixedPriceItemResponses = await this.UpdateFixePriceProductsAsync( reviseFixedPriceItemRequests ).ConfigureAwait( false );
+					updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests ).ConfigureAwait( false );
 				}
 				catch( Exception exc )
 				{

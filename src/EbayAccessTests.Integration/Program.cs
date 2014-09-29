@@ -55,14 +55,14 @@ namespace EbayAccessTests.Integration
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
-			var updateProductsAsyncTask1 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			var updateProductsAsyncTask1 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice1WithoutVariations.Quantity + this.QtyUpdateFor },
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice2WithoutVariations.Quantity + this.QtyUpdateFor },
 			} );
 			updateProductsAsyncTask1.Wait();
 
-			var updateProductsAsyncTask2 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			var updateProductsAsyncTask2 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
 				ExistingProducts.FixedPrice1WithoutVariations,
 				ExistingProducts.FixedPrice2WithoutVariations,
@@ -84,14 +84,14 @@ namespace EbayAccessTests.Integration
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
-			var updateProductsAsyncTask1 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			var updateProductsAsyncTask1 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice1WithoutVariations.Quantity + this.QtyUpdateFor },
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice2WithoutVariations.Quantity + this.QtyUpdateFor },
 			} );
 			updateProductsAsyncTask1.Wait();
 
-			var updateProductsAsyncTask2 = ebayService.UpdateProductsAsync( new List< InventoryStatusRequest >
+			var updateProductsAsyncTask2 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
 				ExistingProducts.FixedPrice1WithoutVariations,
 				ExistingProducts.FixedPrice2WithoutVariations,
@@ -214,11 +214,11 @@ namespace EbayAccessTests.Integration
 			activeproductsTask.Wait();
 			var activeProducts = activeproductsTask.Result;
 
-			var updateResultsaTask1 = ebayService.UpdateProductsAsync( activeProducts.Select( x => new InventoryStatusRequest { ItemId = x.ItemId.ToLong(), Quantity = 10050, Sku = x.Sku } ) );
+			var updateResultsaTask1 = ebayService.ReviseInventoriesStatusAsync( activeProducts.Select( x => new InventoryStatusRequest { ItemId = x.ItemId.ToLong(), Quantity = 10050, Sku = x.Sku } ) );
 			updateResultsaTask1.Wait();
 			var updateResultsa1 = updateResultsaTask1.Result;
 
-			var updateResultsaTask2 = ebayService.UpdateProductsAsync( activeProducts.Select( x => new InventoryStatusRequest { ItemId = x.ItemId.ToLong(), Quantity = 100, Sku = x.Sku } ) );
+			var updateResultsaTask2 = ebayService.ReviseInventoriesStatusAsync( activeProducts.Select( x => new InventoryStatusRequest { ItemId = x.ItemId.ToLong(), Quantity = 100, Sku = x.Sku } ) );
 			updateResultsaTask1.Wait();
 			var updateResultsa2 = updateResultsaTask2.Result;
 
