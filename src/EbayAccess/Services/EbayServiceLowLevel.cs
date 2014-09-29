@@ -827,19 +827,8 @@ namespace EbayAccess.Services
 				chunks.Add( new Tuple< InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest >( statusReq, statusReq2, statusReq3, statusReq4 ) );
 			}
 
-			var tasks = new List< Task< InventoryStatusResponse > >();
-
-			await Task.Factory.StartNew( () =>
-			{
-				var reviseInventoryStatusTasks = chunks.Select( x => this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4, mark ) );
-				tasks.AddRange( reviseInventoryStatusTasks );
-			} ).ConfigureAwait( false );
-
-			//tasks = chunks.Select(x => this.ReviseInventoryStatusAsync(x.Item1, x.Item2, x.Item3, x.Item4)).ToList();
-
-			await Task.WhenAll( tasks ).ConfigureAwait( false );
-
-			resultResponses.AddRange( tasks.Select( x => x.Result ).ToList() );
+			var reviseInventoryStatusResponses = await chunks.ProcessInBatchAsync( this.MaxThreadsCount, x => this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4 ) ).ConfigureAwait( false );
+			resultResponses.AddRange( reviseInventoryStatusResponses.ToList() );
 
 			return resultResponses;
 		}
