@@ -132,7 +132,7 @@ namespace EbayAccess
 
 				var salerecordIds = saleRecordsIDs.ToList();
 
-				var getSellingManagerSoldListingsResponses = await salerecordIds.ProcessInBatchAsync( 18, async x => await this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
+				var getSellingManagerSoldListingsResponses = await salerecordIds.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x => await this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
 
 				var responsesWithErrors = getSellingManagerSoldListingsResponses.Where( x => x != null ).ToList().Where( y => y.Errors != null && y.Errors.Any() ).ToList();
 
@@ -402,7 +402,6 @@ namespace EbayAccess
 		#endregion
 
 		#region UpdateProducts
-
 		internal async Task< IEnumerable< ReviseFixedPriceItemResponse > > ReviseFixePriceItemsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
 		{
 			var methodParameters = products.ToJson();
@@ -411,7 +410,7 @@ namespace EbayAccess
 			var mark = Guid.NewGuid().ToString();
 			EbayLogger.LogTraceInnerStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
-			var fixedPriceItemResponses = await products.ProcessInBatchAsync( 18, async x =>
+			var fixedPriceItemResponses = await products.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x =>
 			{
 				ReviseFixedPriceItemResponse res = null;
 				var IsItVariationItem = false;

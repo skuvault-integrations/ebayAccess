@@ -35,6 +35,11 @@ namespace EbayAccess.Services
 		private readonly string _ebaySignInUrl;
 		private readonly string _endPointBulkExhange;
 
+		public int MaxThreadsCount
+		{
+			get { return 18; }
+		}
+
 		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();

@@ -64,5 +64,7 @@ namespace EbayAccess.Services
 		Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber, string mark );
 
 		string ToJson();
+
+		int MaxThreadsCount { get; }
 	}
 }
