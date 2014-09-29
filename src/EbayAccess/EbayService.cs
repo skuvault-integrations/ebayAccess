@@ -402,39 +402,6 @@ namespace EbayAccess
 		#endregion
 
 		#region UpdateProducts
-		public void UpdateProducts( IEnumerable< InventoryStatusRequest > products )
-		{
-			var commonCallInfo = string.Empty;
-			var mark = new Guid().ToString();
-			var currentMenthodName = "UpdateProducts";
-			var methodParameters = string.Empty;
-			var restInfo = this.EbayServiceLowLevel.ToJson();
-			try
-			{
-				var productsCount = products.Count();
-				var productsTemp = products.ToList();
-				commonCallInfo = String.Format( "Products count {0} : {1}", productsCount, string.Join( "|", productsTemp.Select( x => string.Format( "Sku:{0},Qty{1}", x.Sku, x.Quantity ) ).ToList() ) );
-
-				var reviseInventoriesStatus = this.EbayServiceLowLevel.ReviseInventoriesStatus( products, mark );
-
-				foreach( var inventoryStatusResponse in reviseInventoriesStatus )
-				{
-					this.SkipErrorsAndDo( inventoryStatusResponse, () => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, inventoryStatusResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError } );
-				}
-
-				if( reviseInventoriesStatus.Any( x => x.Errors != null && x.Errors.Any() ) )
-				{
-					var responseErrors = reviseInventoriesStatus.Where( x => x.Errors != null ).SelectMany( x => x.Errors ).ToList();
-					throw new Exception( responseErrors.ToJson() );
-				}
-			}
-			catch( Exception exception )
-			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called with({0})", commonCallInfo ), exception );
-				LogTraceException( ebayException.Message, ebayException );
-				throw ebayException;
-			}
-		}
 
 		internal async Task< IEnumerable< ReviseFixedPriceItemResponse > > ReviseFixePriceItemsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
 		{
