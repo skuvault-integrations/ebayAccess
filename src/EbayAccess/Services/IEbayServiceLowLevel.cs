@@ -66,5 +66,7 @@ namespace EbayAccess.Services
 		string ToJson();
 
 		int MaxThreadsCount { get; }
+
+		Func< string > AdditionalLogInfo { get; set; }
 	}
 }

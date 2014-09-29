@@ -571,6 +571,18 @@ namespace EbayAccess
 				throw ebayException;
 			}
 		}
+
+		public Func< string > AdditionalLogInfo
+		{
+			get
+			{
+				return this.EbayServiceLowLevel.AdditionalLogInfo;
+			}
+			set
+			{
+				this.EbayServiceLowLevel.AdditionalLogInfo = value;
+			}
+		}
 		#endregion
 
 		#region Authentication

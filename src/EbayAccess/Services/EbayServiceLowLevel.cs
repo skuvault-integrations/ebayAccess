@@ -40,6 +40,8 @@ namespace EbayAccess.Services
 			get { return 18; }
 		}
 
+		public Func< string > AdditionalLogInfo { get; set; }
+
 		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();
@@ -347,11 +349,13 @@ namespace EbayAccess.Services
 
 		public string ToJson()
 		{
-			return string.Format( "{{AssemblyVer:{3},AccountName:{0},SiteId:{1},Token:{2}}}",
+			var aditionalLogInfo = this.AdditionalLogInfo != null ? this.AdditionalLogInfo() : PredefinedValues.NotAvailable;
+			return string.Format( "{{AssemblyVer:{3},AccountName:{0},SiteId:{1},AdditionalInfo:{4},Token:{2}}}",
 				( this._userCredentials == null || string.IsNullOrWhiteSpace( this._userCredentials.AccountName ) ) ? PredefinedValues.NotAvailable : this._userCredentials.AccountName,
 				this._userCredentials == null ? PredefinedValues.NotAvailable : this._userCredentials.SiteId.ToString(),
 				( this._userCredentials == null || string.IsNullOrWhiteSpace( this._userCredentials.Token ) ) ? PredefinedValues.NotAvailable : this._userCredentials.Token,
-				Assembly.GetExecutingAssembly().FullName
+				Assembly.GetExecutingAssembly().FullName,
+				aditionalLogInfo
 				);
 		}
 		#endregion

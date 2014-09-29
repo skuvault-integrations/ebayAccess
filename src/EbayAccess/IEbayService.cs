@@ -38,5 +38,7 @@ namespace EbayAccess
 		Task< List< string > > GetSaleRecordsNumbersAsync( params string[] saleRecordsIDs );
 
 		Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products );
+
+		Func< string > AdditionalLogInfo { get; set; }
 	}
 }
