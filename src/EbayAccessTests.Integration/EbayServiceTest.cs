@@ -111,8 +111,6 @@ namespace EbayAccessTests.Integration
 			//------------ Assert
 			updateProductsAsyncTask1.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
 			updateProductsAsyncTask2.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
-			//(updateProductsAsyncTask1.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithVariation1.ItemId && x.Items[0].Sku == ExistingProducts.FixedPrice1WithVariation1.Sku).Items[0].Quantity - updateProductsAsyncTask2.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithVariation1.ItemId && x.Items[0].Sku == ExistingProducts.FixedPrice1WithVariation1.Sku).Items[0].Quantity).Should().Be(this.QtyUpdateFor);
-			//(updateProductsAsyncTask1.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithVariation2.ItemId && x.Items[0].Sku == ExistingProducts.FixedPrice1WithVariation2.Sku).Items[0].Quantity - updateProductsAsyncTask2.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithVariation2.ItemId && x.Items[0].Sku == ExistingProducts.FixedPrice1WithVariation2.Sku).Items[0].Quantity).Should().Be(this.QtyUpdateFor);
 		}
 
 		[ Test ]
@@ -186,8 +184,6 @@ namespace EbayAccessTests.Integration
 			//------------ Assert
 			updateProductsAsyncTask1.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
 			updateProductsAsyncTask2.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
-			//(updateProductsAsyncTask1.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithoutVariations.ItemId).Items[0].Quantity - updateProductsAsyncTask2.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice1WithoutVariations.ItemId).Items[0].Quantity).Should().Be(this.QtyUpdateFor);
-			//(updateProductsAsyncTask1.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice2WithoutVariations.ItemId).Items[0].Quantity - updateProductsAsyncTask2.Result.ToList().First(x => x.Items[0].ItemId == ExistingProducts.FixedPrice2WithoutVariations.ItemId).Items[0].Quantity).Should().Be(this.QtyUpdateFor);
 		}
 		#endregion
 

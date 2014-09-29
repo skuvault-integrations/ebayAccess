@@ -204,7 +204,7 @@ namespace EbayAccess
 			}
 		}
 
-		internal class OrderEqualityComparerById : IEqualityComparer< Order >
+		protected class OrderEqualityComparerById : IEqualityComparer< Order >
 		{
 			public bool Equals( Order x, Order y )
 			{
