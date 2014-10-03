@@ -434,7 +434,7 @@ namespace EbayAccessTests
 			const long item2Id = 110137091582;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.UnsupportedListingType.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseInventoryStatusResponse.UnsupportedListingType.ToStream() ) );
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -461,7 +461,7 @@ namespace EbayAccessTests
 			var callsCount = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.UnsupportedListingType.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseInventoryStatusResponse.UnsupportedListingType.ToStream() ) );
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 			ebayService.AdditionalLogInfo = () => ( callsCount++ ).ToString( CultureInfo.InvariantCulture );
 
