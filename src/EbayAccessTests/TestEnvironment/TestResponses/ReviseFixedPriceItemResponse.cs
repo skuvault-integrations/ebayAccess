@@ -86,5 +86,125 @@
 												<Version>885</Version>
 												<Build>E885_UNI_API5_16967625_R1</Build>
 											</ReviseFixedPriceItemResponse>";
+
+		public const string Success = @"<ReviseFixedPriceItemResponse xmlns=""urn:ebay:apis:eBLBaseComponents"">
+										  <Timestamp>2014-08-21T10:03:39.623Z</Timestamp>
+										  <Ack>Success</Ack>
+										  <Version>883</Version>
+										  <Build>E883_UNI_API5_16949904_R1</Build>
+										  <ItemID>110141989389</ItemID>
+										  <StartTime>2014-04-28T16:06:40.000Z</StartTime>
+										  <EndTime>2014-08-26T16:06:40.000Z</EndTime>
+										  <Fees>
+											<Fee>
+											  <Name>AuctionLengthFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>BoldFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>BuyItNowFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>CategoryFeaturedFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>FeaturedFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>GalleryPlusFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>FeaturedGalleryFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>FixedPriceDurationFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>GalleryFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>GiftIconFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>HighLightFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>InsertionFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>InternationalInsertionFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>ListingDesignerFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>ListingFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>PhotoDisplayFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>PhotoFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>ReserveFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>SchedulingFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>SubtitleFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>BorderFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>ProPackBundleFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>BasicUpgradePackBundleFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>ValuePackBundleFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>PrivateListingFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>ProPackPlusBundleFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+											<Fee>
+											  <Name>MotorsGermanySearchFee</Name>
+											  <Fee currencyID=""USD"">0.0</Fee>
+											</Fee>
+										</Fees>
+										</ReviseFixedPriceItemResponse>";
 	}
 }

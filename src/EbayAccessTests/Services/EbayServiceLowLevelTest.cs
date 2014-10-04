@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using EbayAccess.Misc;
+using EbayAccess.Models.ReviseFixedPriceItemRequest;
+using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.TestEnvironment;
+using EbayAccessTests.TestEnvironment.TestResponses;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
@@ -80,6 +85,67 @@ namespace EbayAccessTests.Services
 
 			//A
 			getResponseStreamCallCounter.Should().Be( 1 );
+		}
+
+		[ Test ]
+		public void ReviseFixedPriceItemAsync_ModelContsinsSymbolsThatMustBeReplaced_SybolsReplasedByAliasesInRequest()
+		{
+			//A
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.FromResult( ReviseFixedPriceItemResponse.Success.ToStream() ) );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			Action act = () =>
+			{
+				var reviseFixedPriceItemAsync = ebayServiceLowLevel.ReviseFixedPriceItemAsync( new ReviseFixedPriceItemRequest()
+				{
+					ItemId = 1,
+					Quantity = 1,
+					Sku = "some sku with &"
+				}, "mark", true );
+				reviseFixedPriceItemAsync.Wait();
+			};
+
+			//A
+			act.ShouldNotThrow< Exception >();
+			stubWebRequestService.Received().CreateServicePostRequestAsync(
+				Arg.Any< string >(),
+				Arg.Is< string >( x => new Regex( "&amp;" ).Matches( x ).Count == new Regex( "&" ).Matches( x ).Count && new Regex( "&" ).Matches( x ).Count > 0 ),
+				Arg.Any< Dictionary< string, string > >(),
+				Arg.Any< string >() );
+		}
+
+		[ Test ]
+		public void ReviseInventoriesStatusAsync_ModelContsinsSymbolsThatMustBeReplaced_SybolsReplasedByAliasesInRequest()
+		{
+			//A
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.FromResult( ReviseInventoryStatusResponse.Success.ToStream() ) );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			Action act = () =>
+			{
+				var reviseFixedPriceItemAsync = ebayServiceLowLevel.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
+				{
+					new InventoryStatusRequest()
+					{
+						ItemId = 1,
+						Quantity = 1,
+						Sku = "some sku with &"
+					}
+				}, "mark" );
+				reviseFixedPriceItemAsync.Wait();
+			};
+
+			//A
+			act.ShouldNotThrow< Exception >();
+			stubWebRequestService.Received( 1 ).CreateServicePostRequestAsync(
+				Arg.Any< string >(),
+				Arg.Is< string >( x => new Regex( "&amp;" ).Matches( x ).Count == new Regex( "&" ).Matches( x ).Count && new Regex( "&" ).Matches( x ).Count > 0 ),
+				Arg.Any< Dictionary< string, string > >(),
+				Arg.Any< string >() );
 		}
 	}
 }
