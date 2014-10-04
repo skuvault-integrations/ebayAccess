@@ -571,18 +571,6 @@ namespace EbayAccess
 				throw ebayException;
 			}
 		}
-
-		public Func< string > AdditionalLogInfo
-		{
-			get
-			{
-				return this.EbayServiceLowLevel.AdditionalLogInfo;
-			}
-			set
-			{
-				this.EbayServiceLowLevel.AdditionalLogInfo = value;
-			}
-		}
 		#endregion
 
 		#region Authentication
@@ -652,6 +640,18 @@ namespace EbayAccess
 		}
 		#endregion
 
+		public Func<string> AdditionalLogInfo
+		{
+			get
+			{
+				return this.EbayServiceLowLevel.AdditionalLogInfo;
+			}
+			set
+			{
+				this.EbayServiceLowLevel.AdditionalLogInfo = value;
+			}
+		}
+		
 		private static void LogTraceException( string message, EbayException ebayException )
 		{
 			EbayLogger.Log().Trace( ebayException, message );
