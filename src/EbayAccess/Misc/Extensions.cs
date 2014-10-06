@@ -18,6 +18,7 @@ namespace EbayAccess.Misc
 {
 	public static class Extensions
 	{
+		#region
 		public static Stream ToStream( this string source, Encoding encoding = null )
 		{
 			var ms = new MemoryStream();
@@ -31,11 +32,20 @@ namespace EbayAccess.Misc
 			return ms;
 		}
 
-		public static string ToStringUtcIso8601( this DateTime dateTime )
+		public static bool ToBool( this string srcString, bool throwException = false )
 		{
-			var universalTime = dateTime.ToUniversalTime();
-			var result = XmlConvert.ToString( universalTime, XmlDateTimeSerializationMode.RoundtripKind );
-			return result;
+			var parsedBool = default( bool );
+			try
+			{
+				parsedBool = bool.Parse( srcString );
+			}
+			catch
+			{
+				if( throwException )
+					throw;
+			}
+
+			return parsedBool;
 		}
 
 		public static decimal ToDecimalDotOrComaSeparated( this string srcString, bool throwException = false )
@@ -59,28 +69,6 @@ namespace EbayAccess.Misc
 			}
 
 			return parsedNumber;
-		}
-
-		public static bool ToBool( this string srcString, bool throwException = false )
-		{
-			var parsedBool = default( bool );
-			try
-			{
-				parsedBool = bool.Parse( srcString );
-			}
-			catch
-			{
-				if( throwException )
-					throw;
-			}
-
-			return parsedBool;
-		}
-
-		public static bool IsZero( this decimal src )
-		{
-			const decimal epsolon = 0.000001m;
-			return Math.Abs( src ) - epsolon == 0;
 		}
 
 		public static int ToIntOrDefault( this string srcString, bool throwException = true )
@@ -119,6 +107,20 @@ namespace EbayAccess.Misc
 			}
 
 			return dateTime;
+		}
+		#endregion
+
+		public static string ToStringUtcIso8601( this DateTime dateTime )
+		{
+			var universalTime = dateTime.ToUniversalTime();
+			var result = XmlConvert.ToString( universalTime, XmlDateTimeSerializationMode.RoundtripKind );
+			return result;
+		}
+
+		public static bool IsZero( this decimal src )
+		{
+			const decimal epsolon = 0.000001m;
+			return Math.Abs( src ) - epsolon == 0;
 		}
 
 		public static string ToJson( this ReviseFixedPriceItemRequest source )
