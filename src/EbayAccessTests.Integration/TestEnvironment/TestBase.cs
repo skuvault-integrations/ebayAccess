@@ -29,14 +29,14 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 	internal static class ExistsProductsCreatedInRange
 	{
-		public static readonly DateTime DateFrom = new DateTime( 2014, 2, 14, 15, 0, 0, DateTimeKind.Local );
-		public static readonly DateTime DateTo = new DateTime( 2014, 5, 24, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateFrom = new DateTime( 2014, 6, 14, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateTo = new DateTime( 2014, 9, 24, 15, 0, 0, DateTimeKind.Local );
 	}
 
 	internal static class ExistingOrdersCreatedInRange
 	{
-		public static readonly DateTime DateFrom = new DateTime( 2014, 4, 14, 15, 0, 0, DateTimeKind.Local );
-		public static readonly DateTime DateTo = new DateTime( 2014, 5, 27, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateFrom = new DateTime( 2014, 5, 14, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateTo = new DateTime( 2014, 6, 27, 15, 0, 0, DateTimeKind.Local );
 	}
 
 	internal static class ExistingOrdersIds
@@ -74,8 +74,8 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			//"265"
 
 			"292",
-			"289",
-			"286"
+			"293",
+			"294"
 		};
 	}
 
@@ -90,8 +90,8 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 	internal static class ExistingOrdersModifiedInRange
 	{
-		public static readonly DateTime DateFrom = new DateTime( 2014, 6, 2, 15, 0, 0, DateTimeKind.Local );
-		public static readonly DateTime DateTo = new DateTime( 2014, 6, 4, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateFrom = new DateTime( 2014, 7, 2, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateTo = new DateTime( 2014, 7, 4, 15, 0, 0, DateTimeKind.Local );
 	}
 
 	internal static class NotExistingOrdersInRange
