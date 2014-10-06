@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Security;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Misc;
@@ -707,7 +708,7 @@ namespace EbayAccess.Services
 		{
 			var itemIdElement = itemIdMonad.HasValue ? string.Format( "<ItemID>{0}</ItemID>", itemIdMonad.Value ) : string.Empty;
 			var quantityElement = quantityMonad.HasValue ? string.Format( "<Quantity>{0}</Quantity>", quantityMonad.Value ) : string.Empty;
-			var skuElement = !string.IsNullOrWhiteSpace( sku ) ? string.Format( "<SKU>{0}</SKU>", sku.Replace("&","&amp;") ) : string.Empty;
+			var skuElement = !string.IsNullOrWhiteSpace( sku ) ? string.Format( "<SKU>{0}</SKU>", SecurityElement.Escape( sku ) ) : string.Empty;
 			var inventoryStatus = string.Format( "<InventoryStatus ComplexType=\"InventoryStatusType\">{0}{1}{2}</InventoryStatus>", itemIdElement, quantityElement, skuElement );
 			return inventoryStatus;
 		}
@@ -808,20 +809,21 @@ namespace EbayAccess.Services
 		#region ReviseFixedPriceItem
 		private string CreateReviseFixedPriceItemRequestBody( ReviseFixedPriceItemRequest inventoryStatusReq, bool isVariation )
 		{
+			var sku = string.Format( "<SKU>{0}</SKU>", SecurityElement.Escape( inventoryStatusReq.Sku ) );
 			var body = isVariation ? string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations><Variation><SKU>{2}</SKU><Quantity>{3}</Quantity></Variation></Variations><OutOfStockControl>{4}</OutOfStockControl></Item></ReviseFixedPriceItemRequest>",
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations><Variation>{2}<Quantity>{3}</Quantity></Variation></Variations><OutOfStockControl>{4}</OutOfStockControl></Item></ReviseFixedPriceItemRequest>",
 				this._userCredentials.Token,
 				inventoryStatusReq.ItemId,
-				inventoryStatusReq.Sku.Replace("&", "&amp;"),
+				sku,
 				inventoryStatusReq.Quantity,
 				true
 				) :
 				string.Format(
-					"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Quantity>{2}</Quantity><SKU>{3}</SKU><OutOfStockControl>{4}</OutOfStockControl></Item></ReviseFixedPriceItemRequest>",
+					"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Quantity>{2}</Quantity>{3}<OutOfStockControl>{4}</OutOfStockControl></Item></ReviseFixedPriceItemRequest>",
 					this._userCredentials.Token,
 					inventoryStatusReq.ItemId,
 					inventoryStatusReq.Quantity,
-					inventoryStatusReq.Sku.Replace("&", "&amp;"),
+					sku,
 					true
 					);
 			return body;
