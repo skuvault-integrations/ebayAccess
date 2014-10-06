@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
 using EbayAccess.Misc;
 using EbayAccess.Models.ReviseFixedPriceItemRequest;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
@@ -76,7 +76,7 @@ namespace EbayAccessTests.Services
 			;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns(  respstring.ToStream() ).AndDoes( x => getResponseStreamCallCounter++ );
+			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( respstring.ToStream() ).AndDoes( x => getResponseStreamCallCounter++ );
 
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -102,7 +102,7 @@ namespace EbayAccessTests.Services
 				{
 					ItemId = 1,
 					Quantity = 1,
-					Sku = "some sku with &"
+					Sku = "some sku with &<>'\""
 				}, "mark", true );
 				reviseFixedPriceItemAsync.Wait();
 			};
@@ -111,7 +111,7 @@ namespace EbayAccessTests.Services
 			act.ShouldNotThrow< Exception >();
 			stubWebRequestService.Received().CreateServicePostRequestAsync(
 				Arg.Any< string >(),
-				Arg.Is< string >( x => new Regex( "&amp;" ).Matches( x ).Count == new Regex( "&" ).Matches( x ).Count && new Regex( "&" ).Matches( x ).Count > 0 ),
+				Arg.Is< string >( x => new XmlDocument().TryParse( x ) ),
 				Arg.Any< Dictionary< string, string > >(),
 				Arg.Any< string >() );
 		}
@@ -133,7 +133,7 @@ namespace EbayAccessTests.Services
 					{
 						ItemId = 1,
 						Quantity = 1,
-						Sku = "some sku with &"
+						Sku = "some sku with &<>'\""
 					}
 				}, "mark" );
 				reviseFixedPriceItemAsync.Wait();
@@ -143,7 +143,7 @@ namespace EbayAccessTests.Services
 			act.ShouldNotThrow< Exception >();
 			stubWebRequestService.Received( 1 ).CreateServicePostRequestAsync(
 				Arg.Any< string >(),
-				Arg.Is< string >( x => new Regex( "&amp;" ).Matches( x ).Count == new Regex( "&" ).Matches( x ).Count && new Regex( "&" ).Matches( x ).Count > 0 ),
+				Arg.Is< string >( x => new XmlDocument().TryParse( x ) ),
 				Arg.Any< Dictionary< string, string > >(),
 				Arg.Any< string >() );
 		}

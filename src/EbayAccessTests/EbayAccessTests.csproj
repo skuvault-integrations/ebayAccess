@@ -69,6 +69,7 @@
     <Compile Include="Services\Parsers\EbayGetSellerListResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayPaginationResultResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayReviseInventoryStatusResponseParserTest.cs" />
+    <Compile Include="TestEnvironment\Extensions.cs" />
     <Compile Include="TestEnvironment\TestBase.cs" />
     <Compile Include="TestEnvironment\TestEmptyCredentials.cs" />
     <Compile Include="TestEnvironment\TestResponses\ReviseInventoryStatusResponse.cs" />
