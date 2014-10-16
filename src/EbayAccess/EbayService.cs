@@ -72,6 +72,8 @@ namespace EbayAccess
 
 				var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark );
 
+				getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", getOrdersResponse.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
+
 				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
 					throw new Exception( getOrdersResponse.Errors.ToJson() );
 
@@ -99,6 +101,8 @@ namespace EbayAccess
 				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
 
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark ).ConfigureAwait( false );
+
+				getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", getOrdersResponse.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
 
 				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
 					throw new Exception( getOrdersResponse.Errors.ToJson() );
@@ -259,6 +263,8 @@ namespace EbayAccess
 
 				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
 
+				sellerListsAsync.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", c.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
+
 				if( sellerListsAsync.Any( x => x.Errors != null && x.Errors.Any() ) )
 				{
 					var aggregatedErrors = sellerListsAsync.Where( x => x.Errors != null ).ToList().SelectMany( x => x.Errors ).ToList();
@@ -283,6 +289,7 @@ namespace EbayAccess
 		public async Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo )
 		{
 			var mark = new Guid().ToString();
+			var methodParameters = string.Format( "EndDateFrom:{0},EndDateTo:{1}", endDateFrom, endDateTo );
 			try
 			{
 				var products = new List< Item >();
@@ -292,6 +299,8 @@ namespace EbayAccess
 				var getSellerListAsyncTasks = new List< Task< GetSellerListCustomResponse > >();
 
 				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListCustomAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
+
+				sellerListAsync.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", sellerListAsync.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
 
 				if( sellerListAsync.Errors != null && sellerListAsync.Errors.Any() )
 					throw new Exception( sellerListAsync.Errors.ToJson() );
@@ -320,6 +329,7 @@ namespace EbayAccess
 		public async Task< IEnumerable< Models.GetSellerListResponse.Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
 		{
 			var mark = new Guid().ToString();
+			var methodParameters = string.Format( "CreateTimeFrom:{0},CreateTimeTo:{1}", createTimeFromStart, createTimeFromTo );
 			try
 			{
 				var products = new List< Models.GetSellerListResponse.Item >();
@@ -329,6 +339,8 @@ namespace EbayAccess
 				var getSellerListAsyncTasks = new List< Task< GetSellerListResponse > >();
 
 				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.StartTime, mark ).ConfigureAwait( false );
+
+				sellerListAsync.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", sellerListAsync.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
 
 				if( sellerListAsync.Errors != null && sellerListAsync.Errors.Any() )
 					throw new Exception( sellerListAsync.Errors.ToJson() );
