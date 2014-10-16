@@ -47,35 +47,6 @@ namespace EbayAccess
 		}
 
 		#region GetOrders
-		public IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo )
-		{
-			var methodParameters = string.Format( "{{dateFrom:{0},dateTo:{1}}}", dateFrom, dateTo );
-			var restInfo = this.EbayServiceLowLevel.ToJson();
-			const string currentMenthodName = "GetOrders";
-			var mark = Guid.NewGuid().ToString();
-			try
-			{
-				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
-
-				var getOrdersResponse = this.EbayServiceLowLevel.GetOrders( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark );
-
-				getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", getOrdersResponse.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
-
-				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
-					throw new Exception( getOrdersResponse.Errors.ToJson() );
-
-				var resultOrdersBriefInfo = getOrdersResponse.Orders.ToJson();
-				EbayLogger.LogTraceEnded( string.Format( "MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}", currentMenthodName, restInfo, methodParameters, mark, resultOrdersBriefInfo ) );
-
-				return getOrdersResponse.Orders;
-			}
-			catch( Exception exception )
-			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called with({0},{1})", dateFrom, dateTo ), exception );
-				LogTraceException( ebayException.Message, ebayException );
-				throw ebayException;
-			}
-		}
 
 		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
 		{

@@ -55,20 +55,7 @@ namespace EbayAccessTests.Integration
 			//------------ Assert
 			ordersIdsAsync.Result.Count().Should().Be( 0 );
 		}
-
-		[ Test ]
-		public void GetOrders_ServiceWithExistingOrdersInSpecifiedTimeRange_HookupOrders()
-		{
-			//------------ Arrange
-			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-
-			//------------ Act
-			var orders = service.GetOrders( ExistingOrdersModifiedInRange.DateFrom, ExistingOrdersModifiedInRange.DateTo );
-
-			//------------ Assert
-			orders.Count().Should().BeGreaterThan( 1, "because on site there are orders" );
-		}
-
+		
 		[ Test ]
 		public void GetOrdersAsync_ServiceWithExistingOrdersInSpecifiedTimeRange_HookupOrders()
 		{

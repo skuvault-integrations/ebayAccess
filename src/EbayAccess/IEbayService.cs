@@ -11,8 +11,6 @@ namespace EbayAccess
 {
 	public interface IEbayService
 	{
-		IEnumerable< Order > GetOrders( DateTime dateFrom, DateTime dateTo );
-
 		Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo );
 
 		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products );
