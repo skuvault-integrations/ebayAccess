@@ -31,11 +31,11 @@ namespace EbayAccess.Models.BaseResponse
 			}
 		}
 
-		public void SkipErrorsAndDo( Action action, List< ResponseError > updateInventoryErrorsToSkip )
+		public void SkipErrorsAndDo( Action<EbayBaseResponse> action, List< ResponseError > updateInventoryErrorsToSkip )
 		{
 			if( this.DoesResponseContainErrors( updateInventoryErrorsToSkip.ToArray() ) )
 			{
-				action();
+				action( this );
 				this.RemoveErrorsFromResponse( updateInventoryErrorsToSkip.ToArray() );
 			}
 		}

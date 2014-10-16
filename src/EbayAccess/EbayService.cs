@@ -134,13 +134,11 @@ namespace EbayAccess
 				var salerecordIds = saleRecordsIDs.ToList();
 
 				var getSellingManagerSoldListingsResponses = await salerecordIds.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x => await this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
-				foreach( var getSellingManagerSoldListingsResponse in getSellingManagerSoldListingsResponses )
-				{
-					var json = getSellingManagerSoldListingsResponse.Errors.ToJson();
-					getSellingManagerSoldListingsResponse.SkipErrorsAndDo( () => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", json ) ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
-				}
 
-				var responsesWithErrors = getSellingManagerSoldListingsResponses.Where( x => x != null ).ToList().Where( y => y.Errors != null && y.Errors.Any() ).ToList();
+				var sellingManagerSoldListingsResponses = getSellingManagerSoldListingsResponses as IList< GetSellingManagerSoldListingsResponse > ?? getSellingManagerSoldListingsResponses.ToList();
+				sellingManagerSoldListingsResponses.SkipErrorsAndDo( x => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", x.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
+
+				var responsesWithErrors = sellingManagerSoldListingsResponses.Where( x => x != null ).ToList().Where( y => y.Errors != null && y.Errors.Any() ).ToList();
 
 				if( responsesWithErrors.Any() )
 				{
@@ -148,10 +146,10 @@ namespace EbayAccess
 					throw new Exception( aggregatedErrors.ToJson() );
 				}
 
-				if( !getSellingManagerSoldListingsResponses.Any() )
+				if( !sellingManagerSoldListingsResponses.Any() )
 					return seleRecordsIdsFilteredOnlyExisting;
 
-				var allReceivedOrders = getSellingManagerSoldListingsResponses.SelectMany( x => x.Orders ).ToList();
+				var allReceivedOrders = sellingManagerSoldListingsResponses.SelectMany( x => x.Orders ).ToList();
 
 				var alllReceivedOrdersDistinct = allReceivedOrders.Distinct( new OrderEqualityComparerByRecordId() ).Select( x => x.SaleRecordID ).ToList();
 
@@ -183,7 +181,7 @@ namespace EbayAccess
 
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( mark, sourceOrdersIds ).ConfigureAwait( false );
 
-				getOrdersResponse.SkipErrorsAndDo( () => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", getOrdersResponse.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
+				getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", getOrdersResponse.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
 
 				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
 					throw new Exception( getOrdersResponse.Errors.ToJson() );
@@ -437,7 +435,7 @@ namespace EbayAccess
 				{
 					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, IsItVariationItem ).ConfigureAwait( false );
 
-					res.SkipErrorsAndDo( () => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType } );
+					res.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType } );
 
 					if( res.Errors == null || !res.Errors.Any() )
 						return;
@@ -482,19 +480,16 @@ namespace EbayAccess
 
 				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products, mark ).ConfigureAwait( false );
 
-				foreach( var inventoryStatusResponse in reviseInventoriesStatus )
-				{
-					var json = inventoryStatusResponse.Errors.ToJson();
-					inventoryStatusResponse.SkipErrorsAndDo( () => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, json ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType } );
-				}
+				var inventoryStatusResponses = reviseInventoriesStatus as IList< InventoryStatusResponse > ?? reviseInventoriesStatus.ToList();
+				inventoryStatusResponses.SkipErrorsAndDo( x => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, x.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType } );
 
-				if( reviseInventoriesStatus.Any( x => x.Errors != null && x.Errors.Any() ) )
+				if( inventoryStatusResponses.Any( x => x.Errors != null && x.Errors.Any() ) )
 				{
-					var responseErrors = reviseInventoriesStatus.Where( x => x.Errors != null ).SelectMany( x => x.Errors ).ToList();
+					var responseErrors = inventoryStatusResponses.Where( x => x.Errors != null ).SelectMany( x => x.Errors ).ToList();
 					throw new Exception( responseErrors.ToJson() );
 				}
 
-				var items = reviseInventoriesStatus.Where( y => y.Items != null ).SelectMany( x => x.Items ).ToList();
+				var items = inventoryStatusResponses.Where( y => y.Items != null ).SelectMany( x => x.Items ).ToList();
 				var briefInfo = items.ToJson();
 				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
 

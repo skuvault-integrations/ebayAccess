@@ -12,6 +12,7 @@ using EbayAccess.Models.ReviseFixedPriceItemRequest;
 using EbayAccess.Models.ReviseFixedPriceItemResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
+using Netco.Extensions;
 using Item = EbayAccess.Models.ReviseFixedPriceItemResponse.Item;
 
 namespace EbayAccess.Misc
@@ -109,6 +110,11 @@ namespace EbayAccess.Misc
 			return dateTime;
 		}
 		#endregion
+
+		public static void SkipErrorsAndDo( this IEnumerable< EbayBaseResponse > source, Action< EbayBaseResponse > action, List< ResponseError > updateInventoryErrorsToSkip )
+		{
+			source.ForEach( x => x.SkipErrorsAndDo( action, updateInventoryErrorsToSkip ) );
+		}
 
 		public static string ToStringUtcIso8601( this DateTime dateTime )
 		{
