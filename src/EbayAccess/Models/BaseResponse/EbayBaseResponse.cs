@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Netco.Extensions;
 
 namespace EbayAccess.Models.BaseResponse
 {
@@ -27,6 +29,31 @@ namespace EbayAccess.Models.BaseResponse
 				//var errorsText = this._error.ToJson();
 				//EbayLogger.LogTraceInnerError( errorsText );
 			}
+		}
+
+		public void SkipErrorsAndDo( Action action, List< ResponseError > updateInventoryErrorsToSkip )
+		{
+			if( this.DoesResponseContainErrors( updateInventoryErrorsToSkip.ToArray() ) )
+			{
+				action();
+				this.RemoveErrorsFromResponse( updateInventoryErrorsToSkip.ToArray() );
+			}
+		}
+
+		private IEnumerable< ResponseError > RemoveErrorsFromResponse( params ResponseError[] errors )
+		{
+			if( this.Errors == null )
+				return new List< ResponseError >();
+
+			return this.Errors = this.Errors.Where( y => !errors.Exists( x => x.ErrorCode == y.ErrorCode ) );
+		}
+
+		private bool DoesResponseContainErrors( params ResponseError[] errors )
+		{
+			if( errors == null || errors.Length == 0 )
+				return false;
+
+			return this.Errors != null && this.Errors.Exists( y => errors.Exists( x => x.ErrorCode == y.ErrorCode ) );
 		}
 	}
 }
