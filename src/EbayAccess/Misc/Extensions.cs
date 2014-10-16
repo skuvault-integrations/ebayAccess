@@ -18,7 +18,7 @@ namespace EbayAccess.Misc
 {
 	public static class Extensions
 	{
-		#region
+		#region StringTo
 		public static Stream ToStream( this string source, Encoding encoding = null )
 		{
 			var ms = new MemoryStream();
@@ -32,12 +32,12 @@ namespace EbayAccess.Misc
 			return ms;
 		}
 
-		public static bool ToBool( this string srcString, bool throwException = false )
+		public static bool ToBool( this string source, bool throwException = false )
 		{
 			var parsedBool = default( bool );
 			try
 			{
-				parsedBool = bool.Parse( srcString );
+				parsedBool = bool.Parse( source );
 			}
 			catch
 			{
@@ -48,18 +48,18 @@ namespace EbayAccess.Misc
 			return parsedBool;
 		}
 
-		public static decimal ToDecimalDotOrComaSeparated( this string srcString, bool throwException = false )
+		public static decimal ToDecimalDotOrComaSeparated( this string source, bool throwException = false )
 		{
 			var parsedNumber = default ( decimal );
 			try
 			{
-				parsedNumber = decimal.Parse( srcString, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture );
+				parsedNumber = decimal.Parse( source, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture );
 			}
 			catch
 			{
 				try
 				{
-					parsedNumber = decimal.Parse( srcString, new NumberFormatInfo { NumberDecimalSeparator = "," } );
+					parsedNumber = decimal.Parse( source, new NumberFormatInfo { NumberDecimalSeparator = "," } );
 				}
 				catch
 				{
@@ -71,11 +71,11 @@ namespace EbayAccess.Misc
 			return parsedNumber;
 		}
 
-		public static int ToIntOrDefault( this string srcString, bool throwException = true )
+		public static int ToIntOrDefault( this string source, bool throwException = true )
 		{
 			try
 			{
-				return int.Parse( srcString, CultureInfo.InvariantCulture );
+				return int.Parse( source, CultureInfo.InvariantCulture );
 			}
 			catch( Exception )
 			{
@@ -86,18 +86,18 @@ namespace EbayAccess.Misc
 			return default( int );
 		}
 
-		public static long ToLong( this string srcString )
+		public static long ToLong( this string source )
 		{
-			var parsedNumber = long.Parse( srcString, CultureInfo.InvariantCulture );
+			var parsedNumber = long.Parse( source, CultureInfo.InvariantCulture );
 			return parsedNumber;
 		}
 
-		public static DateTime ToDateTime( this string srcString, bool throwException = false )
+		public static DateTime ToDateTime( this string source, bool throwException = false )
 		{
 			DateTime dateTime;
 			try
 			{
-				dateTime = XmlConvert.ToDateTime( srcString, XmlDateTimeSerializationMode.RoundtripKind | XmlDateTimeSerializationMode.Utc );
+				dateTime = XmlConvert.ToDateTime( source, XmlDateTimeSerializationMode.RoundtripKind | XmlDateTimeSerializationMode.Utc );
 			}
 			catch
 			{
