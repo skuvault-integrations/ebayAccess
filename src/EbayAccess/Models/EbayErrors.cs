@@ -45,5 +45,19 @@ namespace EbayAccess.Models
 				};
 			}
 		}
+
+		public static ResponseError RequestedUserIsSuspended
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "841",
+					LongMessage = "The account for user ID \"replaceable_value\" specified in this request is suspended. Sorry, you can only request information for current users.",
+					ShortMessage = "Requested user is suspended",
+					SeverityCode = "Error"
+				};
+			}
+		}
 	}
 }

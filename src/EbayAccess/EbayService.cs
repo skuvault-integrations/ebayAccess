@@ -181,6 +181,8 @@ namespace EbayAccess
 
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( mark, sourceOrdersIds ).ConfigureAwait( false );
 
+				this.SkipErrorsAndDo(getOrdersResponse, () => EbayLogger.LogTraceInnerError(string.Format("{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, getOrdersResponse.Errors.ToJson())), new List<ResponseError> { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended });
+
 				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
 					throw new Exception( getOrdersResponse.Errors.ToJson() );
 
