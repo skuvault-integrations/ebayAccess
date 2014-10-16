@@ -27,20 +27,7 @@ namespace EbayAccess
 	{
 		private const int Maxtimerange = 119;
 		private readonly DateTime _ebayWorkingStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
-
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
-
-		private void PopulateOrdersItemsDetails( IEnumerable< Order > orders, string mark )
-		{
-			foreach( var order in orders )
-			{
-				foreach( var transaction in order.TransactionArray )
-				{
-					transaction.Item.ItemDetails = this.EbayServiceLowLevel.GetItem( transaction.Item.ItemId, mark );
-					transaction.Item.Sku = transaction.Item.ItemDetails.Sku;
-				}
-			}
-		}
 
 		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
 		{
@@ -207,21 +194,6 @@ namespace EbayAccess
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
-		}
-
-		private string CreateMethodCallInfo( string methodParameters = "", string mark = "", string additionalInfo = "", [ CallerMemberName ] string memberName = "" )
-		{
-			var restInfo = this.EbayServiceLowLevel.ToJson();
-			;
-			var str = string.Format(
-				"{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}{4}}}",
-				memberName,
-				restInfo,
-				methodParameters,
-				mark,
-				string.IsNullOrWhiteSpace( additionalInfo ) ? string.Empty : ", " + additionalInfo
-				);
-			return str;
 		}
 
 		protected class OrderEqualityComparerById : IEqualityComparer< Order >
@@ -640,6 +612,21 @@ namespace EbayAccess
 			}
 		}
 		#endregion
+
+		private string CreateMethodCallInfo( string methodParameters = "", string mark = "", string additionalInfo = "", [ CallerMemberName ] string memberName = "" )
+		{
+			var restInfo = this.EbayServiceLowLevel.ToJson();
+			;
+			var str = string.Format(
+				"{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}{4}}}",
+				memberName,
+				restInfo,
+				methodParameters,
+				mark,
+				string.IsNullOrWhiteSpace( additionalInfo ) ? string.Empty : ", " + additionalInfo
+				);
+			return str;
+		}
 
 		public Func< string > AdditionalLogInfo
 		{
