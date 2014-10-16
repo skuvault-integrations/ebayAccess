@@ -134,6 +134,10 @@ namespace EbayAccess
 				var salerecordIds = saleRecordsIDs.ToList();
 
 				var getSellingManagerSoldListingsResponses = await salerecordIds.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x => await this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
+				foreach( var getSellingManagerSoldListingsResponse in getSellingManagerSoldListingsResponses )
+				{
+					this.SkipErrorsAndDo( getSellingManagerSoldListingsResponse, () => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", getSellingManagerSoldListingsResponse.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
+				}
 
 				var responsesWithErrors = getSellingManagerSoldListingsResponses.Where( x => x != null ).ToList().Where( y => y.Errors != null && y.Errors.Any() ).ToList();
 
