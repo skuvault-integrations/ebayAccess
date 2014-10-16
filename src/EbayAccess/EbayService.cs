@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using EbayAccess.Misc;
 using EbayAccess.Models;
@@ -167,43 +168,53 @@ namespace EbayAccess
 		public async Task< List< string > > GetOrdersIdsAsync( params string[] sourceOrdersIds )
 		{
 			var methodParameters = sourceOrdersIds.ToJson();
-			var restInfo = this.EbayServiceLowLevel.ToJson();
-			const string currentMenthodName = "GetOrdersIdsAsync";
 			var mark = Guid.NewGuid().ToString();
 			try
 			{
-				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
-
-				var existsOrders = new List< string >();
-
+				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
+				
 				if( sourceOrdersIds == null || !sourceOrdersIds.Any() )
-					return existsOrders;
+					return new List<string>();
 
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( mark, sourceOrdersIds ).ConfigureAwait( false );
 
-				this.SkipErrorsAndDo(getOrdersResponse, () => EbayLogger.LogTraceInnerError(string.Format("{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, getOrdersResponse.Errors.ToJson())), new List<ResponseError> { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended });
+				this.SkipErrorsAndDo( getOrdersResponse, () => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Errors:{0}", getOrdersResponse.Errors.ToJson() ) ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
 
 				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
 					throw new Exception( getOrdersResponse.Errors.ToJson() );
 
 				if( getOrdersResponse.Orders == null )
-					return existsOrders;
+					return new List<string>();
 
 				var distinctOrdersIds = getOrdersResponse.Orders.Distinct( new OrderEqualityComparerById() ).Select( x => x.GetOrderId( false ) ).ToList();
 
-				existsOrders = ( from s in sourceOrdersIds join d in distinctOrdersIds on s equals d select s ).ToList();
+				var existsOrders = ( from s in sourceOrdersIds join d in distinctOrdersIds on s equals d select s ).ToList();
 
-				var resultSaleRecordNumbersBriefInfo = existsOrders.ToJson();
-				EbayLogger.LogTraceEnded( string.Format( "MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}", currentMenthodName, restInfo, methodParameters, mark, resultSaleRecordNumbersBriefInfo ) );
+				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, string.Format( "Result:{0}", existsOrders.ToJson() ) ) );
 
 				return existsOrders;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
+		}
+
+		private string CreateMethodCallInfo( string methodParameters = "", string mark = "", string additionalInfo = "", [ CallerMemberName ] string memberName = "" )
+		{
+			var restInfo = this.EbayServiceLowLevel.ToJson();
+			;
+			var str = string.Format(
+				"{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}{4}}}",
+				memberName,
+				restInfo,
+				methodParameters,
+				mark,
+				string.IsNullOrWhiteSpace( additionalInfo ) ? string.Empty : ", " + additionalInfo
+				);
+			return str;
 		}
 
 		protected class OrderEqualityComparerById : IEqualityComparer< Order >
