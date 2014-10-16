@@ -642,18 +642,12 @@ namespace EbayAccess
 		}
 		#endregion
 
-		public Func<string> AdditionalLogInfo
+		public Func< string > AdditionalLogInfo
 		{
-			get
-			{
-				return this.EbayServiceLowLevel.AdditionalLogInfo;
-			}
-			set
-			{
-				this.EbayServiceLowLevel.AdditionalLogInfo = value;
-			}
+			get { return this.EbayServiceLowLevel.AdditionalLogInfo; }
+			set { this.EbayServiceLowLevel.AdditionalLogInfo = value; }
 		}
-		
+
 		private static void LogTraceException( string message, EbayException ebayException )
 		{
 			EbayLogger.Log().Trace( ebayException, message );
