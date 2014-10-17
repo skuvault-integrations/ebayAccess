@@ -63,9 +63,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var dateTime = new DateTime( 2014, 7, 30, 19, 57, 00, DateTimeKind.Local );
-			var dateFrom = new DateTime( 2014, 7, 5, 19, 56, 00, DateTimeKind.Local );
-			var ordersTask = service.GetOrdersAsync( dateFrom, dateTime );
+			var ordersTask = service.GetOrdersAsync(ExistingOrdersModifiedInRange.DateFrom, ExistingOrdersModifiedInRange.DateTo);
 			ordersTask.Wait();
 
 			//------------ Assert

@@ -35,8 +35,8 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 	internal static class ExistingOrdersCreatedInRange
 	{
-		public static readonly DateTime DateFrom = new DateTime( 2014, 5, 14, 15, 0, 0, DateTimeKind.Local );
-		public static readonly DateTime DateTo = new DateTime( 2014, 6, 27, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateFrom = new DateTime( 2014, 7, 14, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateTo = new DateTime( 2014, 8, 27, 15, 0, 0, DateTimeKind.Local );
 	}
 
 	internal static class ExistingOrdersIds
@@ -73,9 +73,9 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			//"262",
 			//"265"
 
-			"292",
-			"293",
-			"294"
+			"299",
+			"300",
+			"301"
 		};
 	}
 
