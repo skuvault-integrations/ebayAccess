@@ -2,6 +2,41 @@
 {
 	public class ReviseInventoryStatusResponse
 	{
+		public const string ReplaceableValueError = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+														<ReviseInventoryStatusResponse xmlns=""urn:ebay:apis:eBLBaseComponents"">
+															<Timestamp>2014-10-17T00:07:36.924Z</Timestamp>
+															<Ack>Failure</Ack>
+															<Errors>
+																<ShortMessage>This listing would cause you to exceed the number of items (25) and amount ($700.00) you can list. </ShortMessage>
+																<LongMessage>This listing would cause you to exceed the number of items and amount you can list. You can list up to 12 more items and $401.00 more in total sales this month. Please consider reducing the quantity and starting price or request to list more: https://scgi.ebay.com/ws/eBayISAPI.dll?UpgradeLimits&amp;appId=0&amp;refId=19 .</LongMessage>
+																<ErrorCode>21919188</ErrorCode>
+																<SeverityCode>Error</SeverityCode>
+																<ErrorParameters ParamID=""0"">
+																	<Value>This listing would cause you to exceed the number of items (25) and amount ($700.00) you can list. </Value>
+																</ErrorParameters>
+																<ErrorParameters ParamID=""1"">
+																	<Value>This listing would cause you to exceed the number of items and amount you can list. You can list up to 12 more items and $401.00 more in total sales this month. Please consider reducing the quantity and starting price or request to list more: https://scgi.ebay.com/ws/eBayISAPI.dll?UpgradeLimits&amp;appId=0&amp;refId=19 .</Value>
+																</ErrorParameters>
+																<ErrorParameters ParamID=""2"">
+																	<Value>161414202734</Value>
+																</ErrorParameters>
+																<ErrorParameters ParamID=""3"">
+																	<Value>xxx-xxx</Value>
+																</ErrorParameters>
+																<ErrorParameters ParamID=""SKU"">
+																	<Value>xxx-xxx</Value>
+																</ErrorParameters>
+																<ErrorClassification>RequestError</ErrorClassification>
+															</Errors>
+															<Version>895</Version>
+															<Build>E895_UNI_API5_17103579_R1</Build>
+															<InventoryStatus>
+																<SKU>xxx</SKU>
+																<ItemID>123</ItemID>
+																<StartPrice>19.98</StartPrice>
+																<Quantity>22</Quantity>
+															</InventoryStatus>
+														</ReviseInventoryStatusResponse>";
 		public const string UnsupportedListingType = @"<ReviseInventoryStatusResponse xmlns=""urn:ebay:apis:eBLBaseComponents"">
 														<Timestamp>2014-09-26T15:08:06.150Z</Timestamp>
 														<Ack>Failure</Ack>

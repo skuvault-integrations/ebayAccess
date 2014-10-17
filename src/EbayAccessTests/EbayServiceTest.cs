@@ -453,6 +453,32 @@ namespace EbayAccessTests
 		}
 
 		[ Test ]
+		public void UpdateInventoryAsync_UpdateItemsProducesReplaceableValueError_NoExceptionOccuredAndResponseContainsOnlyUpdatedItemId()
+		{
+			//A
+			const long item1Id = 110136942332;
+			const long item2Id = 110137091582;
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseInventoryStatusResponse.ReplaceableValueError.ToStream() ) );
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			//A
+			Action action = () =>
+			{
+				var updateInventoryAsync = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
+				{
+					new UpdateInventoryRequest { ItemId = item1Id, Quantity = 0, Sku = "123" },
+					new UpdateInventoryRequest { ItemId = item2Id, Quantity = 1, Sku = "qwe" }
+				} );
+				updateInventoryAsync.Wait();
+			};
+
+			//A
+			action.ShouldNotThrow< Exception >();
+		}
+
+		[ Test ]
 		public void UpdateInventoryAsync_AdditionalLogInfoSetuped_AdditionalLogInfoCalledDuringUpdatingInventory8times()
 		{
 			//A
