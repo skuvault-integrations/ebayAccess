@@ -50,8 +50,6 @@ namespace EbayAccess
 		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
 		{
 			var methodParameters = string.Format( "{{dateFrom:{0},dateTo:{1}}}", dateFrom, dateTo );
-			var restInfo = this.EbayServiceLowLevel.ToJson();
-			const string currentMenthodName = "GetOrdersAsync";
 			var mark = Guid.NewGuid().ToString();
 			try
 			{
@@ -71,7 +69,7 @@ namespace EbayAccess
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
@@ -80,12 +78,10 @@ namespace EbayAccess
 		public async Task< List< string > > GetSaleRecordsNumbersAsync( params string[] saleRecordsIDs )
 		{
 			var methodParameters = saleRecordsIDs.ToJson();
-			var restInfo = this.EbayServiceLowLevel.ToJson();
-			const string currentMenthodName = "GetSaleRecordsNumbersAsync";
 			var mark = Guid.NewGuid().ToString();
 			try
 			{
-				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
 				var seleRecordsIdsFilteredOnlyExisting = new List< string >();
 
@@ -117,13 +113,13 @@ namespace EbayAccess
 				seleRecordsIdsFilteredOnlyExisting = ( from s in saleRecordsIDs join d in alllReceivedOrdersDistinct on s equals d select s ).ToList();
 
 				var resultSaleRecordNumbersBriefInfo = seleRecordsIdsFilteredOnlyExisting.ToJson();
-				EbayLogger.LogTraceEnded( string.Format( "MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}", currentMenthodName, restInfo, methodParameters, mark, resultSaleRecordNumbersBriefInfo ) );
+				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : resultSaleRecordNumbersBriefInfo ) );
 
 				return seleRecordsIdsFilteredOnlyExisting;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
@@ -196,12 +192,10 @@ namespace EbayAccess
 		public async Task< IEnumerable< Item > > GetActiveProductsAsync()
 		{
 			var methodParameters = string.Format( "{{{0}}}", PredefinedValues.NotAvailable );
-			var restInfo = this.EbayServiceLowLevel.ToJson();
-			const string currentMenthodName = "GetActiveProductsAsync";
 			var mark = Guid.NewGuid().ToString();
 			try
 			{
-				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
 				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
 
@@ -216,13 +210,13 @@ namespace EbayAccess
 				var items = sellerListsAsync.SelectMany( x => x.ItemsSplitedByVariations );
 
 				var resultSellerListBriefInfo = items.ToJson();
-				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, resultSellerListBriefInfo ) );
+				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : resultSellerListBriefInfo ) );
 
 				return items;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
@@ -375,10 +369,8 @@ namespace EbayAccess
 		internal async Task< IEnumerable< ReviseFixedPriceItemResponse > > ReviseFixePriceItemsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
 		{
 			var methodParameters = products.ToJson();
-			var restInfo = this.EbayServiceLowLevel.ToJson();
-			const string currentMenthodName = "ReviseFixePriceItemsAsync";
 			var mark = Guid.NewGuid().ToString();
-			EbayLogger.LogTraceInnerStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+			EbayLogger.LogTraceInnerStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
 			var fixedPriceItemResponses = await products.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x =>
 			{
@@ -389,7 +381,7 @@ namespace EbayAccess
 				{
 					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, IsItVariationItem ).ConfigureAwait( false );
 
-					res.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue } );
+					res.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue } );
 
 					if( res.Errors == null || !res.Errors.Any() )
 						return;
@@ -398,7 +390,7 @@ namespace EbayAccess
 						IsItVariationItem = true;
 
 					if( repeatCount++ < 3 )
-						throw new EbayCommonException( string.Format( "Error.{0}", string.Format( "{{MethodName:{0}, RestInfo:{1}, TryingToUpdate:{2}, GettingError:{3}, Mark:{4}}}", currentMenthodName, restInfo, x.ToJson(), res.Errors.ToJson(), mark ) ) );
+						throw new EbayCommonException( string.Format( "Error.{0}", this.CreateMethodCallInfo( x.ToJson(), res.Errors.ToJson(), mark ) ) );
 				} ).ConfigureAwait( false );
 
 				return res;
@@ -416,7 +408,7 @@ namespace EbayAccess
 
 			var briefInfo = items.ToJson();
 
-			EbayLogger.LogTraceInnerEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
+			EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : briefInfo ) );
 
 			return fixedPriceItemResponses;
 		}
@@ -424,18 +416,16 @@ namespace EbayAccess
 		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products )
 		{
 			var methodParameters = products.ToJson();
-			var restInfo = this.EbayServiceLowLevel.ToJson();
-			const string currentMenthodName = "ReviseInventoriesStatusAsync";
 			var mark = Guid.NewGuid().ToString();
 
 			try
 			{
-				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
 				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products, mark ).ConfigureAwait( false );
 
 				var inventoryStatusResponses = reviseInventoriesStatus as IList< InventoryStatusResponse > ?? reviseInventoriesStatus.ToList();
-				inventoryStatusResponses.SkipErrorsAndDo( x => EbayLogger.LogTraceInnerError( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, Errors:{4}}}", currentMenthodName, restInfo, methodParameters, mark, x.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue } );
+				inventoryStatusResponses.SkipErrorsAndDo( x => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, x.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue } );
 
 				if( inventoryStatusResponses.Any( x => x.Errors != null && x.Errors.Any() ) )
 				{
@@ -445,13 +435,13 @@ namespace EbayAccess
 
 				var items = inventoryStatusResponses.Where( y => y.Items != null ).SelectMany( x => x.Items ).ToList();
 				var briefInfo = items.ToJson();
-				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, briefInfo ) );
+				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : briefInfo ) );
 
 				return reviseInventoriesStatus;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error.{0})", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error.{0})", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
@@ -461,13 +451,11 @@ namespace EbayAccess
 		{
 			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
 			var methodParameters = updateInventoryRequests.ToJson();
-			var restInfo = this.EbayServiceLowLevel.ToJson();
-			const string currentMenthodName = "UpdateInventoryAsync";
 			var mark = Guid.NewGuid().ToString();
 
 			try
 			{
-				EbayLogger.LogTraceStarted( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) );
+				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
 				updateInventoryRequests.ForEach( x => x.Quantity = x.Quantity < 0 ? 0 : x.Quantity );
 
@@ -503,13 +491,13 @@ namespace EbayAccess
 				updateInventoryResponses.AddRange( updateProductsResponses.ToUpdateInventoryResponses().ToList() );
 				updateInventoryResponses.AddRange( updateFixedPriceItemResponses.ToUpdateInventoryResponses().ToList() );
 
-				EbayLogger.LogTraceEnded( string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}, MethodResult:{4}}}", currentMenthodName, restInfo, methodParameters, mark, updateInventoryResponses.ToJson() ) );
+				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : updateInventoryResponses.ToJson() ) );
 
 				return updateInventoryResponses;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error.{0})", string.Format( "{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:{3}}}", currentMenthodName, restInfo, methodParameters, mark ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error.{0})", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
