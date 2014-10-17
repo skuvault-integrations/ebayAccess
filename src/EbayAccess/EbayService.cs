@@ -26,6 +26,7 @@ namespace EbayAccess
 	public class EbayService : IEbayService
 	{
 		private const int Maxtimerange = 119;
+		private const int MaximumTimeWindowAllowed = 30;
 		private readonly DateTime _ebayWorkingStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
 
@@ -55,15 +56,27 @@ namespace EbayAccess
 			{
 				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
-				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark ).ConfigureAwait( false );
+				var daysBeforeNow = ( DateTime.UtcNow - dateFrom ).Days;
+				if( daysBeforeNow > MaximumTimeWindowAllowed )
+				{
+					var daysExcess = daysBeforeNow - MaximumTimeWindowAllowed;
+					var amendement = -1 * daysExcess;
+					dateFrom.AddDays( amendement );
+				}
 
-				getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, getOrdersResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
-				getOrdersResponse.ThrowOnError();
+				List< Order > result;
+				if( dateFrom > dateTo )
+					result = new List< Order >();
+				else
+				{
+					var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark ).ConfigureAwait( false );
+					getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, getOrdersResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
+					getOrdersResponse.ThrowOnError();
+					result = getOrdersResponse.Orders;
+				}
 
-				var resultOrdersBriefInfo = getOrdersResponse.Orders.ToJson();
-				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : resultOrdersBriefInfo ) );
-
-				return getOrdersResponse.Orders;
+				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : result.ToJson() ) );
+				return result;
 			}
 			catch( Exception exception )
 			{
