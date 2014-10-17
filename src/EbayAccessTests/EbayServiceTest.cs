@@ -453,7 +453,7 @@ namespace EbayAccessTests
 		}
 
 		[ Test ]
-		public void UpdateInventoryAsync_AdditionalLogInfoSetuped_AdditionalLogInfoCalledDuringUpdatingInventory()
+		public void UpdateInventoryAsync_AdditionalLogInfoSetuped_AdditionalLogInfoCalledDuringUpdatingInventory8times()
 		{
 			//A
 			const long item1Id = 110136942332;
@@ -474,7 +474,7 @@ namespace EbayAccessTests
 			updateInventoryAsync.Wait();
 
 			//A
-			callsCount.Should().Be( 3 );
+			callsCount.Should().Be( 8 );
 		}
 	}
 }
