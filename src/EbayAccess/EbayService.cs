@@ -58,9 +58,7 @@ namespace EbayAccess
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark ).ConfigureAwait( false );
 
 				getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, getOrdersResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
-
-				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
-					throw new Exception( getOrdersResponse.Errors.ToJson() );
+				getOrdersResponse.ThrowOnError();
 
 				var resultOrdersBriefInfo = getOrdersResponse.Orders.ToJson();
 				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : resultOrdersBriefInfo ) );
@@ -94,14 +92,7 @@ namespace EbayAccess
 
 				var sellingManagerSoldListingsResponses = getSellingManagerSoldListingsResponses as IList< GetSellingManagerSoldListingsResponse > ?? getSellingManagerSoldListingsResponses.ToList();
 				sellingManagerSoldListingsResponses.SkipErrorsAndDo( x => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, x.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
-
-				var responsesWithErrors = sellingManagerSoldListingsResponses.Where( x => x != null ).ToList().Where( y => y.Errors != null && y.Errors.Any() ).ToList();
-
-				if( responsesWithErrors.Any() )
-				{
-					var aggregatedErrors = responsesWithErrors.SelectMany( x => x.Errors ).ToList();
-					throw new Exception( aggregatedErrors.ToJson() );
-				}
+				sellingManagerSoldListingsResponses.ThrowOnError();
 
 				if( !sellingManagerSoldListingsResponses.Any() )
 					return seleRecordsIdsFilteredOnlyExisting;
@@ -139,9 +130,7 @@ namespace EbayAccess
 				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( mark, sourceOrdersIds ).ConfigureAwait( false );
 
 				getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, getOrdersResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
-
-				if( getOrdersResponse.Errors != null && getOrdersResponse.Errors.Any() )
-					throw new Exception( getOrdersResponse.Errors.ToJson() );
+				getOrdersResponse.ThrowOnError();
 
 				if( getOrdersResponse.Orders == null )
 					return new List< string >();
@@ -200,12 +189,7 @@ namespace EbayAccess
 				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
 
 				sellerListsAsync.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
-
-				if( sellerListsAsync.Any( x => x.Errors != null && x.Errors.Any() ) )
-				{
-					var aggregatedErrors = sellerListsAsync.Where( x => x.Errors != null ).ToList().SelectMany( x => x.Errors ).ToList();
-					throw new Exception( aggregatedErrors.ToJson() );
-				}
+				sellerListsAsync.ThrowOnError();
 
 				var items = sellerListsAsync.SelectMany( x => x.ItemsSplitedByVariations );
 
@@ -237,9 +221,7 @@ namespace EbayAccess
 				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListCustomAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
 
 				sellerListAsync.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, sellerListAsync.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
-
-				if( sellerListAsync.Errors != null && sellerListAsync.Errors.Any() )
-					throw new Exception( sellerListAsync.Errors.ToJson() );
+				sellerListAsync.ThrowOnError();
 
 				products.AddRange( sellerListAsync.Items );
 
@@ -277,9 +259,7 @@ namespace EbayAccess
 				var sellerListAsync = await this.EbayServiceLowLevel.GetSellerListAsync( quartalsStartList[ 0 ], quartalsStartList[ 1 ].AddSeconds( -1 ), GetSellerListTimeRangeEnum.StartTime, mark ).ConfigureAwait( false );
 
 				sellerListAsync.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, sellerListAsync.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
-
-				if( sellerListAsync.Errors != null && sellerListAsync.Errors.Any() )
-					throw new Exception( sellerListAsync.Errors.ToJson() );
+				sellerListAsync.ThrowOnError();
 
 				products.AddRange( sellerListAsync.Items );
 
@@ -397,12 +377,7 @@ namespace EbayAccess
 			} ).ConfigureAwait( false );
 
 			var reviseFixedPriceItemResponses = fixedPriceItemResponses as IList< ReviseFixedPriceItemResponse > ?? fixedPriceItemResponses.ToList();
-
-			if( reviseFixedPriceItemResponses.Any( x => x.Errors != null && x.Errors.Any() ) )
-			{
-				var responseErrors = reviseFixedPriceItemResponses.Where( x => x.Errors != null ).SelectMany( x => x.Errors ).ToList();
-				throw new Exception( responseErrors.ToJson() );
-			}
+			reviseFixedPriceItemResponses.ThrowOnError();
 
 			var items = reviseFixedPriceItemResponses.Where( y => y.Item != null ).Select( x => x.Item ).ToList();
 
@@ -426,12 +401,7 @@ namespace EbayAccess
 
 				var inventoryStatusResponses = reviseInventoriesStatus as IList< InventoryStatusResponse > ?? reviseInventoriesStatus.ToList();
 				inventoryStatusResponses.SkipErrorsAndDo( x => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, x.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue } );
-
-				if( inventoryStatusResponses.Any( x => x.Errors != null && x.Errors.Any() ) )
-				{
-					var responseErrors = inventoryStatusResponses.Where( x => x.Errors != null ).SelectMany( x => x.Errors ).ToList();
-					throw new Exception( responseErrors.ToJson() );
-				}
+				inventoryStatusResponses.ThrowOnError();
 
 				var items = inventoryStatusResponses.Where( y => y.Items != null ).SelectMany( x => x.Items ).ToList();
 				var briefInfo = items.ToJson();

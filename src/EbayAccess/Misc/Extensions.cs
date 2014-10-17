@@ -116,6 +116,23 @@ namespace EbayAccess.Misc
 			source.ForEach( x => x.SkipErrorsAndDo( action, updateInventoryErrorsToSkip ) );
 		}
 
+		public static void ThrowOnError( this EbayBaseResponse response )
+		{
+			if( response.Errors != null && response.Errors.Any() )
+				throw new Exception( response.Errors.ToJson() );
+		}
+
+		public static void ThrowOnError( this IEnumerable< EbayBaseResponse > responses )
+		{
+			var responsesWithErrors = responses.Where( x => x != null && x.Errors != null && x.Errors.Any() ).ToList();
+
+			if( responsesWithErrors.Any() )
+			{
+				var aggregatedErrors = responsesWithErrors.SelectMany( x => x.Errors ).ToList();
+				throw new Exception( aggregatedErrors.ToJson() );
+			}
+		}
+
 		public static string ToStringUtcIso8601( this DateTime dateTime )
 		{
 			var universalTime = dateTime.ToUniversalTime();
