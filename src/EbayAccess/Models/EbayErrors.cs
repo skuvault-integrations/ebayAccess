@@ -59,5 +59,19 @@ namespace EbayAccess.Models
 				};
 			}
 		}
+
+		public static ResponseError ReplaceableValue
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "21919188",
+					LongMessage = "replaceable_value",
+					ShortMessage = "replaceable_value",
+					SeverityCode = "Error"
+				};
+			}
+		}
 	}
 }
