@@ -124,7 +124,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void UpdateInventoryAsync_Update2itemsOneOfThemDoesNotExist_NoExceptionOccuredAndResponseContainsOnlyUpdatedItemId()
+		public void UpdateInventoryAsync_Update2itemsOneOfThemDoesNotExist_ExceptionOccured()
 		{
 			//------------ Arrange
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
