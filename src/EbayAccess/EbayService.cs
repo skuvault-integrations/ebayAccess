@@ -359,10 +359,9 @@ namespace EbayAccess
 		#endregion
 
 		#region UpdateProducts
-		internal async Task< IEnumerable< ReviseFixedPriceItemResponse > > ReviseFixePriceItemsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
+		internal async Task< IEnumerable< ReviseFixedPriceItemResponse > > ReviseFixePriceItemsAsync( IEnumerable< ReviseFixedPriceItemRequest > products, string mark )
 		{
 			var methodParameters = products.ToJson();
-			var mark = Guid.NewGuid().ToString();
 			EbayLogger.LogTraceInnerStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
 			var fixedPriceItemResponses = await products.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x =>
@@ -401,10 +400,9 @@ namespace EbayAccess
 			return fixedPriceItemResponses;
 		}
 
-		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products )
+		internal async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products, string mark )
 		{
 			var methodParameters = products.ToJson();
-			var mark = Guid.NewGuid().ToString();
 
 			try
 			{
@@ -430,6 +428,16 @@ namespace EbayAccess
 			}
 		}
 
+		public async Task< IEnumerable< ReviseFixedPriceItemResponse > > ReviseFixePriceItemsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
+		{
+			return await this.ReviseFixePriceItemsAsync( products, Guid.NewGuid().ToString() );
+		}
+
+		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products )
+		{
+			return await this.ReviseInventoriesStatusAsync( products, Guid.NewGuid().ToString() ).ConfigureAwait( false );
+		}
+
 		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products )
 		{
 			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
@@ -450,7 +458,7 @@ namespace EbayAccess
 				var updateProductsResponses = Enumerable.Empty< InventoryStatusResponse >();
 				try
 				{
-					updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests ).ConfigureAwait( false );
+					updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests, mark ).ConfigureAwait( false );
 				}
 				catch( Exception exc )
 				{
@@ -460,7 +468,7 @@ namespace EbayAccess
 				var updateFixedPriceItemResponses = Enumerable.Empty< ReviseFixedPriceItemResponse >();
 				try
 				{
-					updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests ).ConfigureAwait( false );
+					updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests, mark ).ConfigureAwait( false );
 				}
 				catch( Exception exc )
 				{
