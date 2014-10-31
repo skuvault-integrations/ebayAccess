@@ -61,7 +61,7 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 		public ItemQuantity GetQuantity()
 		{
 			if( this.IsItemWithVariations() && this.HaveMultiVariations() )
-				throw new Exception( "Can't get Price from multiple variation item" );
+				throw new Exception( "Can't get Quantity from multiple variation item" );
 
 			if( this.IsItemWithVariations() && this.Variations.Count == 1 )
 				return new ItemQuantity( true, this.Variations[ 0 ].Quantity - this.Variations[ 0 ].SellingStatus.QuantitySold );
