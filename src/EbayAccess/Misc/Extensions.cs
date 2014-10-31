@@ -239,7 +239,7 @@ namespace EbayAccess.Misc
 
 		public static string ToJson( this IEnumerable< UpdateInventoryRequest > source )
 		{
-			return ToJson( source, x => string.Format( "{{Id:{0},Sku:{1},Qty{2}}}", x.ItemId, string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku, x.Quantity ) );
+			return ToJson( source, x => string.Format( "{{Id:{0},Sku:{1},Qty:{2}}}", x.ItemId, string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku, x.Quantity ) );
 		}
 
 		public static string ToJson( this IEnumerable< UpdateInventoryResponse > source )
