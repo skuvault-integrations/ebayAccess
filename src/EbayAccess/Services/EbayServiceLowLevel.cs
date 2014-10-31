@@ -799,7 +799,7 @@ namespace EbayAccess.Services
 				chunks.Add( new Tuple< InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest >( statusReq, statusReq2, statusReq3, statusReq4 ) );
 			}
 
-			var reviseInventoryStatusResponses = await chunks.ProcessInBatchAsync( this.MaxThreadsCount, x => this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4 ) ).ConfigureAwait( false );
+			var reviseInventoryStatusResponses = await chunks.ProcessInBatchAsync( this.MaxThreadsCount, x => this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4, mark ) ).ConfigureAwait( false );
 			resultResponses.AddRange( reviseInventoryStatusResponses.ToList() );
 
 			return resultResponses;
