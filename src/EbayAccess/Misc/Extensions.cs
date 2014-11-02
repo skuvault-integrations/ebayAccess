@@ -260,12 +260,9 @@ namespace EbayAccess.Misc
 				x.Quantity ) );
 		}
 
-		public static string ToJson( this IEnumerable< Models.GetSellerListCustomResponse.Item > source )
+		public static string ToJson( this IEnumerable< ISerializableMnual > source )
 		{
-			return ToJson( source, x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
-				string.IsNullOrWhiteSpace( x.ItemId ) ? PredefinedValues.NotAvailable : x.ItemId,
-				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
-				x.Quantity.ToString( CultureInfo.InvariantCulture ) ) );
+			return ToJson( source, x => x.ToJson() );
 		}
 
 		public static string ToJson( this IEnumerable< Models.ReviseInventoryStatusResponse.Item > source )
