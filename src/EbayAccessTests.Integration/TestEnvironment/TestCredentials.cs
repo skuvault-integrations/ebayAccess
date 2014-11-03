@@ -27,7 +27,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 		public EbayConfig GetEbayConfigSandbox()
 		{
-			return new EbayConfigStub( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName, this._ruNameCsvLines.RuName );
+			return new EbayConfigSandBox( this._flatDevCredentialCsvLine.AppName, this._flatDevCredentialCsvLine.DevName, this._flatDevCredentialCsvLine.CertName, this._ruNameCsvLines.RuName );
 		}
 
 		public EbayConfig GetEbayConfigProduction()

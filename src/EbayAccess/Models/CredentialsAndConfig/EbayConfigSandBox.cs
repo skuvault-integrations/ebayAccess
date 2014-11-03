@@ -1,13 +1,13 @@
 ﻿namespace EbayAccess.Models.CredentialsAndConfig
 {
-	public class EbayConfigStub : EbayConfig
+	public class EbayConfigSandBox : EbayConfig
 	{
-		public EbayConfigStub( string appName, string devName, string certName )
+		public EbayConfigSandBox( string appName, string devName, string certName )
 			: base( appName, devName, certName )
 		{
 		}
 
-		public EbayConfigStub( string appName, string devName, string certName, string ruName )
+		public EbayConfigSandBox( string appName, string devName, string certName, string ruName )
 			: base( appName, devName, certName, ruName )
 		{
 		}

@@ -67,7 +67,7 @@
     <Compile Include="Models\BaseResponse\EbayBaseResponse.cs" />
     <Compile Include="Models\BaseResponse\PaginationResult.cs" />
     <Compile Include="Models\BaseResponse\ResponseError.cs" />
-    <Compile Include="Models\CredentialsAndConfig\EbayConfigStub.cs" />
+    <Compile Include="Models\CredentialsAndConfig\EbayConfigSandBox.cs" />
     <Compile Include="Models\EbayErrors.cs" />
     <Compile Include="Models\UpdateInventoryResponse.cs" />
     <Compile Include="Models\UpdateInventoryRequest.cs" />
