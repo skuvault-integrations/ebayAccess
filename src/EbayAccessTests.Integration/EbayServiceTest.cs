@@ -55,7 +55,7 @@ namespace EbayAccessTests.Integration
 			//------------ Assert
 			ordersIdsAsync.Result.Count().Should().Be( 0 );
 		}
-		
+
 		[ Test ]
 		public void GetOrdersAsync_ServiceWithExistingOrdersInSpecifiedTimeRange_HookupOrders()
 		{
@@ -63,7 +63,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersTask = service.GetOrdersAsync(ExistingOrdersModifiedInRange.DateFrom, ExistingOrdersModifiedInRange.DateTo);
+			var ordersTask = service.GetOrdersAsync( ExistingOrdersModifiedInRange.DateFrom, ExistingOrdersModifiedInRange.DateTo );
 			ordersTask.Wait();
 
 			//------------ Assert

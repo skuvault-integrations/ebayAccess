@@ -31,7 +31,7 @@ namespace EbayAccess.Models.BaseResponse
 			}
 		}
 
-		public void SkipErrorsAndDo( Action<EbayBaseResponse> action, List< ResponseError > updateInventoryErrorsToSkip )
+		public void SkipErrorsAndDo( Action< EbayBaseResponse > action, List< ResponseError > updateInventoryErrorsToSkip )
 		{
 			if( this.DoesResponseContainErrors( updateInventoryErrorsToSkip.ToArray() ) )
 			{

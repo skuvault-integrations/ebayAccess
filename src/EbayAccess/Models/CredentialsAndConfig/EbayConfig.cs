@@ -8,7 +8,6 @@ namespace EbayAccess.Models.CredentialsAndConfig
 		public string DevName { get; private set; }
 		public string CertName { get; private set; }
 		public string RuName { get; private set; }
-
 		public virtual string EndPoint { get; private set; }
 		public virtual string SignInUrl { get; private set; }
 		public virtual string EndPointBulkExhange { get; private set; }
