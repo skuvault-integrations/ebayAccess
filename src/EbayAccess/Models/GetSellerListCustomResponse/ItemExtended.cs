@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace EbayAccess.Models.GetSellerListCustomResponse
@@ -10,10 +9,10 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 	{
 		public IEnumerable< Item > SplitByVariations()
 		{
-			foreach( var variation in this.Variations )
+			for( var i = 0; i < this.Variations.Count; i++ )
 			{
 				var devideByVariations = this.DeepClone();
-				devideByVariations.Variations = this.Variations.Where( x => x.Sku == variation.Sku ).ToList();
+				devideByVariations.Variations = new List< Variation > { this.Variations[ i ] };
 
 				yield return devideByVariations;
 			}
