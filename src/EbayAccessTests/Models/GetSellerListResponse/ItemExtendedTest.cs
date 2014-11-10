@@ -112,5 +112,25 @@ namespace EbayAccessTests.Models.GetSellerListResponse
 			//------------ Assert
 			items.Count().Should().Be( item.Variations.Count );
 		}
+
+		[ Test ]
+		public void DevideByVariations_ProductWithMultipleVariationsThatHaveTheSameSku_ItemDevidedToItemsByVariationsCountEachOneHaveOneVariation()
+		{
+			//------------ Arrange
+			var item = new Item
+			{
+				Variations = new List< Variation >
+				{
+					new Variation() { Sku = "" }, new Variation() { Sku = "" },
+					new Variation() { Sku = null }, new Variation() { Sku = null }
+				}
+			};
+
+			//------------ Act
+			var items = item.SplitByVariations();
+
+			//------------ Assert
+			items.Should().HaveCount( item.Variations.Count ).And.OnlyContain( x => x.Variations.Count == 1 );
+		}
 	}
 }
