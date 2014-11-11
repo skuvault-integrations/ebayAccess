@@ -77,6 +77,7 @@ namespace EbayAccess.Services.Parsers
 						res.SellingStatus = new SellingStatus();
 						res.SellingStatus.CurrentPrice = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToDecimalDotOrComaSeparated();
 						res.SellingStatus.CurrentPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "CurrentPrice" );
+						res.SellingStatus.QuantitySold = GetElementValue( x, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault( false );
 					}
 
 					var listingDetails = x.Element( ns + "ListingDetails" );

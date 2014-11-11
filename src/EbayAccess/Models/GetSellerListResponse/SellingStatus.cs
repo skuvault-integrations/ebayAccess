@@ -8,5 +8,7 @@ namespace EbayAccess.Models.GetSellerListResponse
 		public decimal CurrentPrice { get; set; }
 
 		public string CurrentPriceCurrencyId { get; set; }
+
+		public int QuantitySold { get; set; }
 	}
 }

@@ -65,7 +65,7 @@ namespace EbayAccess.Models.GetSellerListResponse
 			if( this.Variations != null && this.Variations.Count > 1 )
 				throw new Exception( "Can't get Price from multiple variation item" );
 
-			return new ItemQuantity( false, this.Quantity );
+			return new ItemQuantity( false, this.Quantity - ( this.SellingStatus != null ? this.SellingStatus.QuantitySold : 0 ) );
 		}
 
 		public ItemCurrency GetCurrency()
