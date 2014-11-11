@@ -75,7 +75,7 @@
     <Compile Include="Models\ReviseFixedPriceItemResponse\InventoryStatusResponse.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\GetSellerListCustomResponse.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\Item.cs" />
-    <Compile Include="Models\GetSellerListCustomResponse\ItemExtended.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\ItemMethods.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\SellingStatus.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\Variation.cs" />
     <Compile Include="Models\CredentialsAndConfig\EbayUserCredentials.cs">
