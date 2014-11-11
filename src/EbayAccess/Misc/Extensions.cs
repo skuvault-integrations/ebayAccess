@@ -7,13 +7,10 @@ using System.Text;
 using System.Xml;
 using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
-using EbayAccess.Models.GetOrdersResponse;
-using EbayAccess.Models.ReviseFixedPriceItemRequest;
 using EbayAccess.Models.ReviseFixedPriceItemResponse;
-using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using Netco.Extensions;
-using Item = EbayAccess.Models.ReviseFixedPriceItemResponse.Item;
+using Item = EbayAccess.Models.ReviseInventoryStatusResponse.Item;
 
 namespace EbayAccess.Misc
 {
@@ -146,22 +143,9 @@ namespace EbayAccess.Misc
 			return Math.Abs( src ) - epsolon == 0;
 		}
 
-		public static string ToJson( this ReviseFixedPriceItemRequest source )
-		{
-			return string.Format( "{{Id:{0},Sku:{1},Qty:{2}}}", source.ItemId, source.Sku, source.Quantity );
-		}
-
-		public static string ToJson( this IEnumerable< Order > source )
-		{
-			return ToJson( source, x => string.Format( "{{id:{0},saleRecNum:{1},createdAt:{2}}}",
-				string.IsNullOrWhiteSpace( x.GetOrderId( false ) ) ? PredefinedValues.NotAvailable : x.GetOrderId( false ),
-				string.IsNullOrWhiteSpace( x.GetOrderId() ) ? PredefinedValues.NotAvailable : x.GetOrderId(),
-				x.CreatedTime ) );
-		}
-
 		public static IEnumerable< UpdateInventoryResponse > ToUpdateInventoryResponses( this InventoryStatusResponse source )
 		{
-			return ( source.Items ?? new List< Models.ReviseInventoryStatusResponse.Item >() )
+			return ( source.Items ?? new List< Item >() )
 				.Where( x => x.ItemId.HasValue )
 				.Select( x => new UpdateInventoryResponse() { ItemId = x.ItemId.Value } ).ToList();
 		}
@@ -221,56 +205,9 @@ namespace EbayAccess.Misc
 			return responseStr;
 		}
 
-		public static string ToJson( this IEnumerable< ResponseError > sourceErrors )
-		{
-			return ToJson( sourceErrors, x => string.Format( "{{ErrorCode:{0},ShortMessage:{1},LongMessage:{2},ErrorClassification:{3},SeverityCode:{4},ErrorParameters:{5}}}",
-				string.IsNullOrWhiteSpace( x.ErrorCode ) ? PredefinedValues.NotAvailable : x.ErrorCode,
-				string.IsNullOrWhiteSpace( x.ShortMessage ) ? PredefinedValues.NotAvailable : x.ShortMessage,
-				string.IsNullOrWhiteSpace( x.LongMessage ) ? PredefinedValues.NotAvailable : x.LongMessage,
-				string.IsNullOrWhiteSpace( x.ErrorClassification ) ? PredefinedValues.NotAvailable : x.ErrorClassification,
-				string.IsNullOrWhiteSpace( x.SeverityCode ) ? PredefinedValues.NotAvailable : x.SeverityCode,
-				string.IsNullOrWhiteSpace( x.ErrorParameters ) ? PredefinedValues.NotAvailable : x.ErrorParameters ) );
-		}
-
-		public static string ToJson( this IEnumerable< Item > source )
-		{
-			return ToJson( source, x => string.Format( "{{Id:{0},EndTime:{1}}}", x.ItemId, x.EndTime.HasValue ? x.EndTime.Value.ToString( CultureInfo.InvariantCulture ) : PredefinedValues.NotAvailable ) );
-		}
-
-		public static string ToJson( this IEnumerable< UpdateInventoryRequest > source )
-		{
-			return ToJson( source, x => string.Format( "{{Id:{0},Sku:{1},Qty:{2}}}", x.ItemId, string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku, x.Quantity ) );
-		}
-
-		public static string ToJson( this IEnumerable< UpdateInventoryResponse > source )
-		{
-			return ToJson( source, x => string.Format( "{{Id:{0}}}", x.ItemId ) );
-		}
-
-		public static string ToJson( this IEnumerable< ReviseFixedPriceItemRequest > source )
-		{
-			return ToJson( source, x => string.Format( "{{Id:{0},Sku:{1},Quantity:{2}}}", x.ItemId, string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku, x.Quantity ) );
-		}
-
-		public static string ToJson( this IEnumerable< InventoryStatusRequest > source )
-		{
-			return ToJson( source, x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
-				x.ItemId,
-				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
-				x.Quantity ) );
-		}
-
 		public static string ToJson( this IEnumerable< ISerializableMnual > source )
 		{
 			return ToJson( source, x => x.ToJson() );
-		}
-
-		public static string ToJson( this IEnumerable< Models.ReviseInventoryStatusResponse.Item > source )
-		{
-			return ToJson( source, x => string.Format( "{{id:{0},sku:{1},qty:{2}}}",
-				x.ItemId.HasValue ? x.ItemId.Value.ToString( CultureInfo.InvariantCulture ) : PredefinedValues.NotAvailable,
-				string.IsNullOrWhiteSpace( x.Sku ) ? PredefinedValues.NotAvailable : x.Sku,
-				x.Quantity.ToString() ) );
 		}
 	}
 }

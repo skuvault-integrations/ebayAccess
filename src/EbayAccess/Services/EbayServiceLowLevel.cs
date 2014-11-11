@@ -351,7 +351,7 @@ namespace EbayAccess.Services
 		public string ToJson()
 		{
 			var aditionalLogInfo = this.AdditionalLogInfo != null ? this.AdditionalLogInfo() : PredefinedValues.NotAvailable;
-			return string.Format( "{{AssemblyVer:{3},AccountName:{0},SiteId:{1},AdditionalInfo:{4},Token:{2}}}",
+			return string.Format( "{{AssemblyVer:{3},AccountName:'{0}',SiteId:{1},AdditionalInfo:{4},Token:'{2}'}}",
 				( this._userCredentials == null || string.IsNullOrWhiteSpace( this._userCredentials.AccountName ) ) ? PredefinedValues.NotAvailable : this._userCredentials.AccountName,
 				this._userCredentials == null ? PredefinedValues.NotAvailable : this._userCredentials.SiteId.ToString(),
 				( this._userCredentials == null || string.IsNullOrWhiteSpace( this._userCredentials.Token ) ) ? PredefinedValues.NotAvailable : this._userCredentials.Token,

@@ -37,7 +37,7 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 			}
 
 			var qty = this.Quantity.ToString( CultureInfo.InvariantCulture );
-			var res = string.Format( "{{id:{0},sku:{1},qty:{2}}}", id, sku, qty );
+			var res = string.Format( "{{id:{0},sku:'{1}',qty:{2}}}", id, sku, qty );
 			return res;
 		}
 	}

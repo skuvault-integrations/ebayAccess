@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using EbayAccess.Misc;
 
 namespace EbayAccess.Models.GetOrdersResponse
 {
-	public sealed partial class Order
+	public sealed partial class Order : ISerializableMnual
 	{
 		public string OrderId { get; set; }
 
@@ -38,6 +39,32 @@ namespace EbayAccess.Models.GetOrdersResponse
 		public ebayCurrency SubtotalCurrencyId { get; set; }
 
 		public ebayCurrency TotalCurrencyId { get; set; }
+
+		public string ToJson()
+		{
+			var orderId = PredefinedValues.NotAvailable;
+			var saleRecNum = PredefinedValues.NotAvailable;
+
+			try
+			{
+				orderId = string.IsNullOrWhiteSpace( this.GetOrderId( false ) ) ? PredefinedValues.NotAvailable : this.GetOrderId( false );
+			}
+			catch
+			{
+				orderId = PredefinedValues.NotAvailable;
+			}
+
+			try
+			{
+				saleRecNum = string.IsNullOrWhiteSpace( this.GetOrderId() ) ? PredefinedValues.NotAvailable : this.GetOrderId();
+			}
+			catch
+			{
+				saleRecNum = PredefinedValues.NotAvailable;
+			}
+
+			return string.Format( "{{id:{0},saleRecNum:{1},createdAt:{2}}}", orderId, saleRecNum, this.CreatedTime );
+		}
 	}
 
 	public enum CancelStatusEnum
