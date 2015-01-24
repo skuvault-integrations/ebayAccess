@@ -103,8 +103,8 @@ task NuGet Package, Version, {
 		<version>$Version</version>
 		<authors>Slav Ivanyuk</authors>
 		<owners>Slav Ivanyuk</owners>
-		<projectUrl>https://github.com/slav/EbayAccess</projectUrl>
-		<licenseUrl>https://raw.github.com/slav/EbayAccess/master/License.txt</licenseUrl>
+		<projectUrl>https://github.com/agileharbor/ebayAccess</projectUrl>
+		<licenseUrl>https://raw.github.com/agileharbor/ebayAccess/master/License.txt</licenseUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<copyright>Copyright (C) Agile Harbor, LLC 2014</copyright>
 		<summary>$text</summary>
