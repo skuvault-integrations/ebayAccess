@@ -21,7 +21,7 @@ namespace EbayAccess
 
 		Task< IEnumerable< Models.GetSellerListResponse.Item > > GetProductsDetailsAsync();
 
-		Task< IEnumerable< Item > > GetActiveProductsAsync( bool getOnlyGtcDuration = true );
+		Task< IEnumerable< Item > > GetActiveProductsAsync( bool getOnlyGtcDuration = false );
 
 		string GetUserToken();
 
