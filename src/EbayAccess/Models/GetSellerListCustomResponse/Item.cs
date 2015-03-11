@@ -23,6 +23,7 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 		public string Sku { get; set; }
 
 		public List< Variation > Variations { get; set; }
+		public string Duration { get; set; }
 
 		public string ToJson()
 		{

@@ -27,6 +27,7 @@ namespace EbayAccess
 	{
 		private const int Maxtimerange = 119;
 		private const int MaximumTimeWindowAllowed = 30;
+		private const string DurationGTC = "GTC";
 		private readonly DateTime _ebayWorkingStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
 
@@ -191,7 +192,7 @@ namespace EbayAccess
 		#endregion
 
 		#region GetProducts
-		public async Task< IEnumerable< Item > > GetActiveProductsAsync()
+		public async Task< IEnumerable< Item > > GetActiveProductsAsync( bool getOnlyGtcDuration = false )
 		{
 			var methodParameters = string.Format( "{{{0}}}", PredefinedValues.NotAvailable );
 			var mark = Guid.NewGuid().ToString();
@@ -203,6 +204,9 @@ namespace EbayAccess
 
 				sellerListsAsync.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
 				sellerListsAsync.ThrowOnError();
+
+				if( getOnlyGtcDuration )
+					sellerListsAsync.ForEach( x => x.Items = x.Items.Where( y => y.Duration.ToUpper().Equals( DurationGTC ) ).ToList() );
 
 				var items = sellerListsAsync.SelectMany( x => x.ItemsSplitedByVariations );
 
