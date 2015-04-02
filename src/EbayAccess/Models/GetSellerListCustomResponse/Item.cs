@@ -31,7 +31,8 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 			var sku = PredefinedValues.NotAvailable;
 			try
 			{
-				sku = string.IsNullOrWhiteSpace( this.GetSku().Sku ) ? PredefinedValues.NotAvailable : this.Sku;
+				var variationSku = this.GetSku().Sku;
+				sku = string.IsNullOrWhiteSpace( variationSku ) ? PredefinedValues.NotAvailable : variationSku;
 			}
 			catch
 			{
