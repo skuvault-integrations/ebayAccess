@@ -415,7 +415,7 @@ namespace EbayAccess
 				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products, mark ).ConfigureAwait( false );
 
 				var inventoryStatusResponses = reviseInventoriesStatus as IList< InventoryStatusResponse > ?? reviseInventoriesStatus.ToList();
-				inventoryStatusResponses.SkipErrorsAndDo( x => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, x.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue } );
+				inventoryStatusResponses.SkipErrorsAndDo( x => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, x.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue, EbayErrors.VariationLevelSKUAndItemIDShouldBeSupplied } );
 				inventoryStatusResponses.ThrowOnError();
 
 				var items = inventoryStatusResponses.Where( y => y.Items != null ).SelectMany( x => x.Items ).ToList();
