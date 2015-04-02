@@ -28,6 +28,7 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 		public string ToJson()
 		{
 			var id = string.IsNullOrWhiteSpace( this.ItemId ) ? PredefinedValues.NotAvailable : this.ItemId;
+
 			var sku = PredefinedValues.NotAvailable;
 			try
 			{

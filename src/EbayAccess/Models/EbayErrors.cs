@@ -73,5 +73,19 @@ namespace EbayAccess.Models
 				};
 			}
 		}
+
+		public static ResponseError VariationLevelSKUAndItemIDShouldBeSupplied
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "21916735",
+					LongMessage = "Variation level SKU or Variation level SKU and ItemID should be supplied to revise a Multi-SKU item.",
+					ShortMessage = "Cannot revise a Multi-SKU item when item level SKU is supplied.",
+					SeverityCode = "Error"
+				};
+			}
+		}
 	}
 }

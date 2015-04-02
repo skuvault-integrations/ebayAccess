@@ -113,6 +113,11 @@ namespace EbayAccess.Misc
 			source.ForEach( x => x.SkipErrorsAndDo( action, updateInventoryErrorsToSkip ) );
 		}
 
+		public static IEnumerable< ResponseError > CollectAllErros( this IEnumerable< EbayBaseResponse > source )
+		{
+			return source.Where( x => x.Errors != null && x.Errors.Any() ).SelectMany( x => x.Errors );
+		}
+
 		public static void ThrowOnError( this EbayBaseResponse response )
 		{
 			if( response.Errors != null && response.Errors.Any() )

@@ -35,7 +35,8 @@ namespace EbayAccess.Models.BaseResponse
 		{
 			if( this.DoesResponseContainErrors( updateInventoryErrorsToSkip.ToArray() ) )
 			{
-				action( this );
+				if( action != null )
+					action( this );
 				this.RemoveErrorsFromResponse( updateInventoryErrorsToSkip.ToArray() );
 			}
 		}
