@@ -564,42 +564,6 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		[Obsolete]
-		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
-		{
-			var recordsPerPage = this._itemsPerPage;
-			const int pageNumber = 1;
-
-			var getSellerListResponse = await this.GetSellerListCustomResponseAsync( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber, mark ).ConfigureAwait( false );
-
-			var tasks = new List< Task< GetSellerListCustomResponse > >();
-
-			var pages = new ConcurrentBag< int >();
-
-			if( getSellerListResponse != null && getSellerListResponse.Errors == null )
-			{
-				if( getSellerListResponse.PaginationResult.TotalNumberOfPages > 1 )
-				{
-					for( var i = 2; i <= getSellerListResponse.PaginationResult.TotalNumberOfPages; i++ )
-					{
-						pages.Add( i );
-					}
-					await Task.Factory.StartNew( () =>
-						tasks.AddRange( pages.Select( x => this.GetSellerListCustomResponseAsync( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, x, mark ) ) ) );
-
-					//await Task.Factory.StartNew( () => Parallel.ForEach( pages, new ParallelOptions { MaxDegreeOfParallelism = 100 }, x => tasks.Add( this.GetSellerListCustomResponseAsync( timeFrom, timeTo, timeRangeEnum, recordsPerPage, x ) ) ) ).ConfigureAwait( false );
-				}
-			}
-
-			await Task.WhenAll( tasks ).ConfigureAwait( false );
-
-			var getSellerListResponses = tasks.Select( task => task.Result ).ToList();
-
-			getSellerListResponses.Add( getSellerListResponse );
-
-			return getSellerListResponses.Where( x => x != null ).ToList();
-		}
-
 		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
 			var recordsPerPage = this._itemsPerPage;

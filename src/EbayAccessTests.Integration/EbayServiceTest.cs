@@ -196,7 +196,7 @@ namespace EbayAccessTests.Integration
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var inventoryStat1Task = ebayService.GetActiveProductsAsync(useEbayThreadsCountRestriction:true);
+			var inventoryStat1Task = ebayService.GetActiveProductsAsync();
 			inventoryStat1Task.Wait();
 			var products = inventoryStat1Task.Result;
 

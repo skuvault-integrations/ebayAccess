@@ -192,7 +192,7 @@ namespace EbayAccess
 		#endregion
 
 		#region GetProducts
-		public async Task< IEnumerable< Item > > GetActiveProductsAsync( bool getOnlyGtcDuration = false, bool useEbayThreadsCountRestriction = false )
+		public async Task< IEnumerable< Item > > GetActiveProductsAsync( bool getOnlyGtcDuration = false )
 		{
 			var methodParameters = string.Format( "{{{0}}}", PredefinedValues.NotAvailable );
 			var mark = Guid.NewGuid().ToString();
@@ -200,9 +200,7 @@ namespace EbayAccess
 			{
 				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
-				var sellerListsAsync = useEbayThreadsCountRestriction
-					? await this.EbayServiceLowLevel.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false )
-					: await this.EbayServiceLowLevel.GetSellerListCustomResponsesAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
+				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
 				
 				sellerListsAsync.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
 				sellerListsAsync.ThrowOnError();
