@@ -57,8 +57,6 @@ namespace EbayAccess.Services
 
 		Task< AbortJobResponse > AbortJobAsync( string jobId, string mark );
 
-		Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark );
-
 		Task< GetOrdersResponse > GetOrdersAsync( string mark = "", params string[] ordersIds );
 
 		Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber, string mark );
@@ -68,5 +66,7 @@ namespace EbayAccess.Services
 		int MaxThreadsCount { get; }
 
 		Func< string > AdditionalLogInfo { get; set; }
+		Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark );
+		Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark );
 	}
 }
