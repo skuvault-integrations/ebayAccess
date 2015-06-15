@@ -27,7 +27,7 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *.ReSharper
 *.docstates
-
+*.csv
 #Ignore common build files
 build
 log
