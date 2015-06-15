@@ -11,13 +11,12 @@ namespace EbayAccess.Services.Parsers
 	{
 		public ReviseFixedPriceItemResponse Parse( Stream stream )
 		{
+			ReviseFixedPriceItemResponse inventoryStatusResponse = null;
 			try
 			{
 				XNamespace ns = "urn:ebay:apis:eBLBaseComponents";
 
 				var root = XElement.Load( stream );
-
-				ReviseFixedPriceItemResponse inventoryStatusResponse = null;
 
 				var error = this.ResponseContainsErrors( root, ns );
 				if( error != null )
@@ -26,6 +25,7 @@ namespace EbayAccess.Services.Parsers
 				inventoryStatusResponse = new ReviseFixedPriceItemResponse();
 
 				inventoryStatusResponse.Item.ItemId = GetElementValue( root, ns, "ItemID" ).ToLong();
+				inventoryStatusResponse.Item.Sku = GetElementValue( root, ns, "SKU" );
 
 				return inventoryStatusResponse;
 			}

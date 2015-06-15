@@ -14,30 +14,44 @@ namespace EbayAccess.Services.Parsers
 	{
 		public static string GetElementValue( XElement x, XNamespace ns, params string[] elementName )
 		{
-			var parsedElement = string.Empty;
+			try
+			{
+				var parsedElement = string.Empty;
 
-			if( elementName.Length <= 0 )
-				return parsedElement;
+				if( elementName.Length <= 0 )
+					return parsedElement;
 
-			var element = x.Element( ns + elementName[ 0 ] );
-			if( element == null )
-				return parsedElement;
+				var element = x.Element( ns + elementName[ 0 ] );
+				if( element == null )
+					return parsedElement;
 
-			return elementName.Length > 1 ? GetElementValue( element, ns, elementName.Skip( 1 ).ToArray() ) : element.Value;
+				return elementName.Length > 1 ? GetElementValue( element, ns, elementName.Skip( 1 ).ToArray() ) : element.Value;
+			}
+			catch( Exception )
+			{
+				return PredefinedValues.CantBeParsed;
+			}
 		}
 
 		protected string GetElementAttribute( string attributeName, XElement xElement, XNamespace ns, params string[] elementName )
 		{
-			var elementAttribute = string.Empty;
+			try
+			{
+				var elementAttribute = string.Empty;
 
-			if( elementName.Length <= 0 )
-				return xElement.Attribute( attributeName ).Value;
+				if( elementName.Length <= 0 )
+					return xElement.Attribute( attributeName ).Value;
 
-			var element = xElement.Element( ns + elementName[ 0 ] );
-			if( element == null )
-				return elementAttribute;
+				var element = xElement.Element( ns + elementName[ 0 ] );
+				if( element == null )
+					return elementAttribute;
 
-			return elementName.Length > 1 ? this.GetElementAttribute( attributeName, element, ns, elementName.Skip( 1 ).ToArray() ) : element.Attribute( attributeName ).Value;
+				return elementName.Length > 1 ? this.GetElementAttribute( attributeName, element, ns, elementName.Skip( 1 ).ToArray() ) : element.Attribute( attributeName ).Value;
+			}
+			catch( Exception )
+			{
+				return PredefinedValues.CantBeParsed;
+			}
 		}
 
 		public TParseResult Parse( WebResponse response )
