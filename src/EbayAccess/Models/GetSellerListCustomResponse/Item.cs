@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using EbayAccess.Misc;
 
 namespace EbayAccess.Models.GetSellerListCustomResponse
 {
 	[ Serializable ]
-	public partial class Item : ISerializableManual
+	public partial class Item //: ISerializableManual
 	{
 		public decimal BuyItNowPrice { get; set; }
 
@@ -24,24 +22,25 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 
 		public List< Variation > Variations { get; set; }
 		public string Duration { get; set; }
+		public int ConditionId { get; set; }
 
-		public string ToJsonManual()
-		{
-			var id = string.IsNullOrWhiteSpace( this.ItemId ) ? PredefinedValues.NotAvailable : this.ItemId;
+		//public string ToJsonManual()
+		//{
+		//	var id = string.IsNullOrWhiteSpace( this.ItemId ) ? PredefinedValues.NotAvailable : this.ItemId;
 
-			var sku = PredefinedValues.NotAvailable;
-			try
-			{
-				var variationSku = this.GetSku().Sku;
-				sku = string.IsNullOrWhiteSpace( variationSku ) ? PredefinedValues.NotAvailable : variationSku;
-			}
-			catch
-			{
-			}
+		//	var sku = PredefinedValues.NotAvailable;
+		//	try
+		//	{
+		//		var variationSku = this.GetSku().Sku;
+		//		sku = string.IsNullOrWhiteSpace( variationSku ) ? PredefinedValues.NotAvailable : variationSku;
+		//	}
+		//	catch
+		//	{
+		//	}
 
-			var qty = this.Quantity.ToString( CultureInfo.InvariantCulture );
-			var res = string.Format( "{{id:{0},sku:'{1}',qty:{2}}}", id, sku, qty );
-			return res;
-		}
+		//	var qty = this.Quantity.ToString( CultureInfo.InvariantCulture );
+		//	var res = string.Format( "{{id:{0},sku:'{1}',qty:{2}}}", id, sku, qty );
+		//	return res;
+		//}
 	}
 }
