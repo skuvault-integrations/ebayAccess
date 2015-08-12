@@ -6,7 +6,7 @@ using EbayAccess.Misc;
 namespace EbayAccess.Models.GetSellerListCustomResponse
 {
 	[ Serializable ]
-	public partial class Item : ISerializableMnual
+	public partial class Item : ISerializableManual
 	{
 		public decimal BuyItNowPrice { get; set; }
 
@@ -25,7 +25,7 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 		public List< Variation > Variations { get; set; }
 		public string Duration { get; set; }
 
-		public string ToJson()
+		public string ToJsonManual()
 		{
 			var id = string.IsNullOrWhiteSpace( this.ItemId ) ? PredefinedValues.NotAvailable : this.ItemId;
 

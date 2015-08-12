@@ -1,7 +1,7 @@
 ﻿namespace EbayAccess
 {
-	public interface ISerializableMnual
+	public interface ISerializableManual
 	{
-		string ToJson();
+		string ToJsonManual();
 	}
 }

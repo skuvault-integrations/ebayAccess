@@ -4,14 +4,14 @@ using EbayAccess.Misc;
 
 namespace EbayAccess.Models.ReviseFixedPriceItemResponse
 {
-	public class Item : ISerializableMnual
+	public class Item : ISerializableManual
 	{
 		public long ItemId { get; set; }
 		public DateTime? StartTime { get; set; }
 		public DateTime? EndTime { get; set; }
 		public string Sku { get; set; }
 
-		public string ToJson()
+		public string ToJsonManual()
 		{
 			return string.Format( "{{\"Id\":\"{0}\", EndTime:\"{1}\", Sku:\"{2}\"}}",
 				this.ItemId,

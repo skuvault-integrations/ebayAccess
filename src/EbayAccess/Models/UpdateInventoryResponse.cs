@@ -1,10 +1,10 @@
 ﻿namespace EbayAccess.Models
 {
-	public class UpdateInventoryResponse : ISerializableMnual
+	public class UpdateInventoryResponse : ISerializableManual
 	{
 		public long ItemId { get; set; }
 
-		public string ToJson()
+		public string ToJsonManual()
 		{
 			return string.Format( "{{Id:{0}}}", this.ItemId );
 		}

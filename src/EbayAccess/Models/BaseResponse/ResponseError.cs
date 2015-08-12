@@ -2,7 +2,7 @@
 
 namespace EbayAccess.Models.BaseResponse
 {
-	public class ResponseError : ISerializableMnual
+	public class ResponseError : ISerializableManual
 	{
 		public string ShortMessage { get; set; }
 		public string LongMessage { get; set; }
@@ -12,7 +12,7 @@ namespace EbayAccess.Models.BaseResponse
 		public string ErrorClassification { get; set; }
 		public string ErrorParameters { get; set; }
 
-		public string ToJson()
+		public string ToJsonManual()
 		{
 			return string.Format( "{{ErrorCode:{0},ShortMessage:'{1}',LongMessage:'{2}',ErrorClassification:'{3}',SeverityCode:{4},ErrorParameters:{5}}}",
 				string.IsNullOrWhiteSpace( this.ErrorCode ) ? PredefinedValues.NotAvailable : this.ErrorCode,

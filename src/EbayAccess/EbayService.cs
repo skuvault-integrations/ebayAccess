@@ -386,7 +386,7 @@ namespace EbayAccess
 						IsItVariationItem = true;
 
 					if( repeatCount++ < 3 )
-						throw new EbayCommonException( string.Format( "Error.{0}", this.CreateMethodCallInfo( x.ToJson(), res.Errors.ToJson(), mark ) ) );
+						throw new EbayCommonException( string.Format( "Error.{0}", this.CreateMethodCallInfo( x.ToJsonManual(), res.Errors.ToJson(), mark ) ) );
 				} ).ConfigureAwait( false );
 
 				return res;

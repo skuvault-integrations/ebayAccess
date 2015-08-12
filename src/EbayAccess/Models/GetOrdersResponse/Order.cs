@@ -4,7 +4,7 @@ using EbayAccess.Misc;
 
 namespace EbayAccess.Models.GetOrdersResponse
 {
-	public sealed partial class Order : ISerializableMnual
+	public sealed partial class Order : ISerializableManual
 	{
 		public string OrderId { get; set; }
 
@@ -40,7 +40,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 
 		public ebayCurrency TotalCurrencyId { get; set; }
 
-		public string ToJson()
+		public string ToJsonManual()
 		{
 			var orderId = PredefinedValues.NotAvailable;
 			var saleRecNum = PredefinedValues.NotAvailable;

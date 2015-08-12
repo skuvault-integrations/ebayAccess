@@ -210,9 +210,10 @@ namespace EbayAccess.Misc
 			return responseStr;
 		}
 
-		public static string ToJson( this IEnumerable< ISerializableMnual > source )
+		public static string ToJson( this IEnumerable< ISerializableManual > source )
 		{
-			return ToJson( source, x => x.ToJson() );
+			return ToJson( source, x => x.ToJsonManual() );
+		}
 		}
 	}
 }
