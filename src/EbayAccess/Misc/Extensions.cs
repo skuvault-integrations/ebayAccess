@@ -10,6 +10,8 @@ using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.ReviseFixedPriceItemResponse;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using Netco.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Item = EbayAccess.Models.ReviseInventoryStatusResponse.Item;
 
 namespace EbayAccess.Misc
@@ -210,10 +212,46 @@ namespace EbayAccess.Misc
 			return responseStr;
 		}
 
-		public static string ToJson( this IEnumerable< ISerializableManual > source )
+
+		public static string ToJson<T>(this IEnumerable<T> source)
 		{
-			return ToJson( source, x => x.ToJsonManual() );
+			try
+			{
+				if (source == null)
+					return PredefinedValues.EmptyJsonObject;
+				var objects = source as IList<T> ?? source.ToList();
+				var items = string.Join(",", objects.Where(x => x != null).Select(x => x.ToJson()));
+				var res = string.Format("{{Count:{0}, Items:[{1}]}}", objects.Count(), items);
+				return res;
+			}
+			catch
+			{
+				return PredefinedValues.EmptyJsonList;
+			}
 		}
+
+		public static string ToJson( this object source )
+		{
+			try
+			{
+				if( source == null )
+					return PredefinedValues.EmptyJsonObject;
+				else
+				{
+					var sourceConverted = source as ISerializableManual;
+					if( sourceConverted != null )
+						return sourceConverted.ToJsonManual();
+					else
+					{
+						var serialized = JsonConvert.SerializeObject( source, new IsoDateTimeConverter() );
+						return serialized;
+					}
+				}
+			}
+			catch( Exception )
+			{
+				return PredefinedValues.EmptyJsonObject;
+			}
 		}
 	}
 }
