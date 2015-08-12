@@ -375,6 +375,9 @@ namespace EbayAccess
 				var repeatCount = 0;
 				await ActionPolicies.GetAsyncShort.Do( async () =>
 				{
+					if( repeatCount == 0 )
+						IsItVariationItem = x.IsVariation;
+
 					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, IsItVariationItem ).ConfigureAwait( false );
 
 					res.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue } );
@@ -383,7 +386,7 @@ namespace EbayAccess
 						return;
 
 					if( res.Errors != null && res.Errors.Exists( y => y.ErrorCode == "21916585" ) )
-						IsItVariationItem = true;
+						IsItVariationItem = !IsItVariationItem;
 
 					if( repeatCount++ < 3 )
 						throw new EbayCommonException( string.Format( "Error.{0}", this.CreateMethodCallInfo( x.ToJson(), res.Errors.ToJson(), mark ) ) );
@@ -460,7 +463,7 @@ namespace EbayAccess
 				updateInventoryRequests.ForEach( x => x.Quantity = x.Quantity < 0 ? 0 : x.Quantity );
 
 				var inventoryStatusRequests = updateInventoryRequests.Where( x => x.Quantity > 0 ).Select( x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } ).ToList();
-				var reviseFixedPriceItemRequests = updateInventoryRequests.Where( x => x.Quantity == 0 ).Select( x => new ReviseFixedPriceItemRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity, ConditionID = x.ConditionID } ).ToList();
+				var reviseFixedPriceItemRequests = updateInventoryRequests.Where( x => x.Quantity == 0 ).Select( x => new ReviseFixedPriceItemRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity, ConditionID = x.ConditionID, IsVariation = x.IsVariation } ).ToList();
 
 				var exceptions = new List< Exception >();
 

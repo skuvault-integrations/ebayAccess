@@ -7,6 +7,7 @@ namespace EbayAccess.Models
 		public long ItemId { get; set; }
 		public long Quantity { get; set; }
 		public string Sku { get; set; }
+		public bool IsVariation { get; set; }
 
 		/// <summary>
 		/// Is Optional

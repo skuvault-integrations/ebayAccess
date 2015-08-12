@@ -7,5 +7,6 @@
 		public string Sku { get; set; }
 		public double? StartPrice { get; set; }
 		public long ConditionID { get; set; }
+		public bool IsVariation { get; set; }
 	}
 }
