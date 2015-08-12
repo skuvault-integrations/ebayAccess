@@ -801,21 +801,24 @@ namespace EbayAccess.Services
 		private string CreateReviseFixedPriceItemRequestBody( ReviseFixedPriceItemRequest inventoryStatusReq, bool isVariation )
 		{
 			var sku = string.Format( "<SKU>{0}</SKU>", SecurityElement.Escape( inventoryStatusReq.Sku ) );
+			var condition = inventoryStatusReq.ConditionID > 0 ? string.Format("<ConditionID>{0}</ConditionID>", inventoryStatusReq.ConditionID) : string.Empty;
 			var body = isVariation ? string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations><Variation>{2}<Quantity>{3}</Quantity></Variation></Variations><OutOfStockControl>{4}</OutOfStockControl></Item></ReviseFixedPriceItemRequest>",
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations><Variation>{2}<Quantity>{3}</Quantity></Variation></Variations><OutOfStockControl>{4}</OutOfStockControl>{5}</Item></ReviseFixedPriceItemRequest>",
 				this._userCredentials.Token,
 				inventoryStatusReq.ItemId,
 				sku,
 				inventoryStatusReq.Quantity,
-				true
+				true,
+				condition
 				) :
 				string.Format(
-					"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Quantity>{2}</Quantity>{3}<OutOfStockControl>{4}</OutOfStockControl></Item></ReviseFixedPriceItemRequest>",
+					"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Quantity>{2}</Quantity>{3}<OutOfStockControl>{4}</OutOfStockControl>{5}</Item></ReviseFixedPriceItemRequest>",
 					this._userCredentials.Token,
 					inventoryStatusReq.ItemId,
 					inventoryStatusReq.Quantity,
 					sku,
-					true
+					true,
+					condition
 					);
 			return body;
 		}
