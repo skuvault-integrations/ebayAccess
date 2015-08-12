@@ -575,7 +575,7 @@ namespace EbayAccess
 		{
 			var restInfo = this.EbayServiceLowLevel.ToJson();
 			var str = string.Format(
-				"{{MethodName:{0}, RestInfo:{1}, MethodParameters:{2}, Mark:'{3}'{4}{5}{6}}}",
+				"{{MethodName:{0}, Mark:'{3}', RestInfo:{1}, MethodParameters:{2}{4}{5}{6}}}",
 				memberName,
 				restInfo,
 				methodParameters,
