@@ -465,24 +465,10 @@ namespace EbayAccess
 				var exceptions = new List< Exception >();
 
 				var updateProductsResponses = Enumerable.Empty< InventoryStatusResponse >();
-				try
-				{
-					updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests, mark ).ConfigureAwait( false );
-				}
-				catch( Exception exc )
-				{
-					exceptions.Add( exc );
-				}
+				Extensions.ExecuteAndCollectExceptions( async () => updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests, mark ).ConfigureAwait( false ), exceptions );
 
 				var updateFixedPriceItemResponses = Enumerable.Empty< ReviseFixedPriceItemResponse >();
-				try
-				{
-					updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests, mark ).ConfigureAwait( false );
-				}
-				catch( Exception exc )
-				{
-					exceptions.Add( exc );
-				}
+				Extensions.ExecuteAndCollectExceptions( async () => updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests, mark ).ConfigureAwait( false ), exceptions );
 
 				if( exceptions.Count > 0 )
 					throw new AggregateException( exceptions );

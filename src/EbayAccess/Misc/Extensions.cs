@@ -110,6 +110,18 @@ namespace EbayAccess.Misc
 		}
 		#endregion
 
+		public static void ExecuteAndCollectExceptions( Action act, IList< Exception > exceptions )
+		{
+			try
+			{
+				act();
+			}
+			catch( Exception exc )
+			{
+			
+				exceptions.Add( exc );
+			}
+		}
 		public static void SkipErrorsAndDo( this IEnumerable< EbayBaseResponse > source, Action< EbayBaseResponse > action, List< ResponseError > updateInventoryErrorsToSkip )
 		{
 			source.ForEach( x => x.SkipErrorsAndDo( action, updateInventoryErrorsToSkip ) );
