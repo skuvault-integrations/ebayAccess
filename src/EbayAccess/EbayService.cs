@@ -194,7 +194,7 @@ namespace EbayAccess
 		#region GetProducts
 		public async Task< IEnumerable< Item > > GetActiveProductsAsync( bool getOnlyGtcDuration = false )
 		{
-			var methodParameters = string.Format( "{{{0}}}", PredefinedValues.NotAvailable );
+			var methodParameters = string.Format( "{{getOnlyGtcDuration: {0}}}", getOnlyGtcDuration );
 			var mark = Guid.NewGuid().ToString();
 			try
 			{
