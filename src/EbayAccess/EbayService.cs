@@ -201,7 +201,7 @@ namespace EbayAccess
 				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
 				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
-				
+
 				sellerListsAsync.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
 				sellerListsAsync.ThrowOnError();
 
@@ -456,67 +456,65 @@ namespace EbayAccess
 			return await this.ReviseInventoriesStatusAsync( products, Guid.NewGuid().ToString() ).ConfigureAwait( false );
 		}
 
-		public async Task<IEnumerable<UpdateInventoryResponse>> UpdateInventoryCallExpensiveAlgorithmAsync(IEnumerable<UpdateInventoryRequest> products)
+		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallExpensiveAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products )
 		{
-			var updateInventoryRequests = products as IList<UpdateInventoryRequest> ?? products.ToList();
+			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
 			var methodParameters = updateInventoryRequests.ToJson();
 			var mark = Guid.NewGuid().ToString();
 
 			try
 			{
-				EbayLogger.LogTraceStarted(this.CreateMethodCallInfo(methodParameters, mark));
+				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
-				updateInventoryRequests.ForEach(x => x.Quantity = x.Quantity < 0 ? 0 : x.Quantity);
+				updateInventoryRequests.ForEach( x => x.Quantity = x.Quantity < 0 ? 0 : x.Quantity );
 
-				var inventoryStatusRequests = updateInventoryRequests.Where(x => x.Quantity > 0).Select(x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity }).ToList();
-				var reviseFixedPriceItemRequests = updateInventoryRequests.Where(x => x.Quantity == 0).Select(x => new ReviseFixedPriceItemRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity, ConditionID = x.ConditionID, IsVariation = x.IsVariation }).ToList();
+				var inventoryStatusRequests = updateInventoryRequests.Where( x => x.Quantity > 0 ).Select( x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } ).ToList();
+				var reviseFixedPriceItemRequests = updateInventoryRequests.Where( x => x.Quantity == 0 ).Select( x => new ReviseFixedPriceItemRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity, ConditionID = x.ConditionID, IsVariation = x.IsVariation } ).ToList();
 
-				var exceptions = new List<Exception>();
+				var exceptions = new List< Exception >();
 
-				var updateProductsResponses = Enumerable.Empty<InventoryStatusResponse>();
+				var updateProductsResponses = Enumerable.Empty< InventoryStatusResponse >();
 				try
 				{
-					updateProductsResponses = await this.ReviseInventoriesStatusAsync(inventoryStatusRequests, mark).ConfigureAwait(false);
+					updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests, mark ).ConfigureAwait( false );
 				}
-				catch (Exception exc)
+				catch( Exception exc )
 				{
-					exceptions.Add(exc);
+					exceptions.Add( exc );
 				}
 
-
-				var updateFixedPriceItemResponses = Enumerable.Empty<ReviseFixedPriceItemResponse>();
+				var updateFixedPriceItemResponses = Enumerable.Empty< ReviseFixedPriceItemResponse >();
 				try
 				{
-					updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync(reviseFixedPriceItemRequests, mark).ConfigureAwait(false);
+					updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests, mark ).ConfigureAwait( false );
 				}
-				catch (Exception exc)
+				catch( Exception exc )
 				{
-					exceptions.Add(exc);
+					exceptions.Add( exc );
 				}
 
+				if( exceptions.Count > 0 )
+					throw new AggregateException( exceptions );
 
-				if (exceptions.Count > 0)
-					throw new AggregateException(exceptions);
+				var updateInventoryResponses = new List< UpdateInventoryResponse >();
+				updateInventoryResponses.AddRange( updateProductsResponses.ToUpdateInventoryResponses().ToList() );
+				updateInventoryResponses.AddRange( updateFixedPriceItemResponses.ToUpdateInventoryResponses().ToList() );
 
-				var updateInventoryResponses = new List<UpdateInventoryResponse>();
-				updateInventoryResponses.AddRange(updateProductsResponses.ToUpdateInventoryResponses().ToList());
-				updateInventoryResponses.AddRange(updateFixedPriceItemResponses.ToUpdateInventoryResponses().ToList());
-
-				EbayLogger.LogTraceEnded(this.CreateMethodCallInfo(methodParameters, mark, methodResult: updateInventoryResponses.ToJson()));
+				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : updateInventoryResponses.ToJson() ) );
 
 				return updateInventoryResponses;
 			}
-			catch (Exception exception)
+			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException(string.Format("Error:{0})", this.CreateMethodCallInfo(methodParameters, mark)), exception);
-				LogTraceException(ebayException.Message, ebayException);
+				var ebayException = new EbayCommonException( string.Format( "Error:{0})", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
+				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
 		}
 
-		public async Task<IEnumerable<UpdateInventoryResponse>> UpdateInventoryCallEconomAlgorithmAsync(IEnumerable<UpdateInventoryRequest> products)
+		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallEconomAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products )
 		{
-			var updateInventoryRequests = products as IList<UpdateInventoryRequest> ?? products.ToList();
+			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
 			var methodParameters = updateInventoryRequests.ToJson();
 			var mark = Guid.NewGuid().ToString();
 
@@ -527,15 +525,15 @@ namespace EbayAccess
 				var exceptions = new List< Exception >();
 
 				#region revise inventory status
-				var reviseInventoryStatusResponses = new List<InventoryStatusResponse>();
+				var reviseInventoryStatusResponses = new List< InventoryStatusResponse >();
 				var reviseInventoryStatusResponsesWithErrors = new List< InventoryStatusResponse >();
 				try
 				{
-					var reviseInventoryStatusRequests = updateInventoryRequests.Select(x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity }).ToList();
+					var reviseInventoryStatusRequests = updateInventoryRequests.Select( x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } ).ToList();
 					var temp = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( reviseInventoryStatusRequests, mark ).ConfigureAwait( false );
 					reviseInventoryStatusResponses = temp.ToList();
 					var reviseInventoryStatusResponsesList = temp.ToList();
-					EbayLogger.LogTrace(this.CreateMethodCallInfo(methodParameters, mark, methodResult: reviseInventoryStatusResponsesList.ToJson(), additionalInfo: "ReviseInventoryStatus responses."));
+					EbayLogger.LogTrace( this.CreateMethodCallInfo( methodParameters, mark, methodResult : reviseInventoryStatusResponsesList.ToJson(), additionalInfo : "ReviseInventoryStatus responses." ) );
 
 					var errorsToSkip = new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue, EbayErrors.VariationLevelSKUAndItemIDShouldBeSupplied };
 					var errorsFromResponsesThatMustBeSkipped = reviseInventoryStatusResponsesList.CollectAllErros().Where( x => errorsToSkip.Any( y => y.ErrorCode == x.ErrorCode ) ).ToList();
@@ -559,78 +557,81 @@ namespace EbayAccess
 				#endregion
 
 				#region revise fixed price item
-				var reviseFixedPriceItemResponses = new List<ReviseFixedPriceItemResponse>();
-				if(reviseInventoryStatusResponsesWithErrors.Any())
-				try
+				var reviseFixedPriceItemResponses = new List< ReviseFixedPriceItemResponse >();
+				if( reviseInventoryStatusResponsesWithErrors.Any() )
 				{
-					var reviseInventoryStatusResponsesWithErrorsItems = reviseInventoryStatusResponsesWithErrors.SelectMany( y => y.Items ).ToList();
-					var productsToReviseFixedPriceItem = updateInventoryRequests.Where( x => reviseInventoryStatusResponsesWithErrorsItems.Any( z => z.ItemId == x.ItemId && z.Sku == x.Sku ) ).ToList();
-					var reviseFixedPriceItemRequests2 = productsToReviseFixedPriceItem.Select( x => new ReviseFixedPriceItemRequest() { ConditionID = x.ConditionID, IsVariation = x.IsVariation, ItemId = x.ItemId, Quantity = x.Quantity, Sku = x.Sku } );
-					EbayLogger.LogTrace(this.CreateMethodCallInfo(reviseFixedPriceItemRequests2.ToJson(), mark, additionalInfo: "Trying to update products with helpof ReviseFixedPriseItem."));
-
-					var reviseFixedPriceItemResponsesEnumerable = await reviseFixedPriceItemRequests2.ProcessInBatchAsync(this.EbayServiceLowLevel.MaxThreadsCount, async x =>
+					try
 					{
-						ReviseFixedPriceItemResponse res = null;
-						var IsItVariationItem = false;
-						var repeatCount = 0;
-						await ActionPolicies.GetAsyncShort.Do( async () =>
+						var reviseInventoryStatusResponsesWithErrorsItems = reviseInventoryStatusResponsesWithErrors.SelectMany( y => y.Items ).ToList();
+						var productsToReviseFixedPriceItem = updateInventoryRequests.Where( x => reviseInventoryStatusResponsesWithErrorsItems.Any( z => z.ItemId == x.ItemId && z.Sku == x.Sku ) ).ToList();
+						var reviseFixedPriceItemRequests2 = productsToReviseFixedPriceItem.Select( x => new ReviseFixedPriceItemRequest() { ConditionID = x.ConditionID, IsVariation = x.IsVariation, ItemId = x.ItemId, Quantity = x.Quantity, Sku = x.Sku } );
+						EbayLogger.LogTrace( this.CreateMethodCallInfo( reviseFixedPriceItemRequests2.ToJson(), mark, additionalInfo : "Trying to update products with helpof ReviseFixedPriseItem." ) );
+
+						var reviseFixedPriceItemResponsesEnumerable = await reviseFixedPriceItemRequests2.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x =>
 						{
-							if( repeatCount == 0 )
-								IsItVariationItem = x.IsVariation;
+							ReviseFixedPriceItemResponse res = null;
+							var IsItVariationItem = false;
+							var repeatCount = 0;
+							await ActionPolicies.GetAsyncShort.Do( async () =>
+							{
+								if( repeatCount == 0 )
+									IsItVariationItem = x.IsVariation;
 
-							res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync(x, mark, IsItVariationItem).ConfigureAwait(false);
+								res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark, IsItVariationItem ).ConfigureAwait( false );
 
-							if (res.Item == null)
-								res.Item = new Models.ReviseFixedPriceItemResponse.Item();
+								if( res.Item == null )
+									res.Item = new Models.ReviseFixedPriceItemResponse.Item();
 
-							res.Item.Sku = x.Sku;
-							res.Item.ItemId = x.ItemId;
+								res.Item.Sku = x.Sku;
+								res.Item.ItemId = x.ItemId;
 
-							res.SkipErrorsAndDo(c => EbayLogger.LogTraceInnerError(this.CreateMethodCallInfo(methodParameters, mark, res.Errors.ToJson())), new List<ResponseError> { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue });
+								res.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue } );
 
-							if (res.Errors == null || !res.Errors.Any())
-								return;
+								if( res.Errors == null || !res.Errors.Any() )
+									return;
 
-							if (res.Errors != null && res.Errors.Exists(y => y.ErrorCode == "21916585"))
-								IsItVariationItem = !IsItVariationItem;
+								if( res.Errors != null && res.Errors.Exists( y => y.ErrorCode == "21916585" ) )
+									IsItVariationItem = !IsItVariationItem;
 
-							if (repeatCount++ < 3)
-								throw new EbayCommonException(string.Format("Error.{0}", this.CreateMethodCallInfo(x.ToJson(), mark, res.Errors.ToJson())));
+								if( repeatCount++ < 3 )
+									throw new EbayCommonException( string.Format( "Error.{0}", this.CreateMethodCallInfo( x.ToJson(), mark, res.Errors.ToJson() ) ) );
+							} ).ConfigureAwait( false );
+
+							return res;
 						} ).ConfigureAwait( false );
 
-						return res;
-					} ).ConfigureAwait( false );
+						reviseFixedPriceItemResponses = reviseFixedPriceItemResponsesEnumerable.ToList();
+						reviseFixedPriceItemResponses.ThrowOnError( x => ( x.Select( y => ( ReviseFixedPriceItemResponse )y ).ToList() ).ToJson() );
 
-					reviseFixedPriceItemResponses = reviseFixedPriceItemResponsesEnumerable.ToList();
-					reviseFixedPriceItemResponses.ThrowOnError( x => ( x.Select( y => ( ReviseFixedPriceItemResponse )y ).ToList() ).ToJson() );
-
-					var items = reviseFixedPriceItemResponses.Where( y => y.Item != null ).Select( x => x.Item ).ToList();
-					EbayLogger.LogTrace( this.CreateMethodCallInfo( methodParameters, mark, methodResult : items.ToJson() ) );
-				}
-				catch( Exception exc )
-				{
-					exceptions.Add( exc );
+						var items = reviseFixedPriceItemResponses.Where( y => y.Item != null ).Select( x => x.Item ).ToList();
+						EbayLogger.LogTrace( this.CreateMethodCallInfo( methodParameters, mark, methodResult : items.ToJson() ) );
+					}
+					catch( Exception exc )
+					{
+						exceptions.Add( exc );
+					}
 				}
 				#endregion
 
-				if (exceptions.Count > 0)
-					throw new AggregateException(exceptions);
+				if( exceptions.Count > 0 )
+					throw new AggregateException( exceptions );
 
-				var updateInventoryResponses = new List<UpdateInventoryResponse>();
-				updateInventoryResponses.AddRange(reviseInventoryStatusResponses.ToUpdateInventoryResponses().ToList());
-				updateInventoryResponses.AddRange(reviseFixedPriceItemResponses.ToUpdateInventoryResponses().ToList());
+				var updateInventoryResponses = new List< UpdateInventoryResponse >();
+				updateInventoryResponses.AddRange( reviseInventoryStatusResponses.ToUpdateInventoryResponses().ToList() );
+				updateInventoryResponses.AddRange( reviseFixedPriceItemResponses.ToUpdateInventoryResponses().ToList() );
 
-				EbayLogger.LogTraceEnded(this.CreateMethodCallInfo(methodParameters, mark, methodResult: updateInventoryResponses.ToJson()));
+				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : updateInventoryResponses.ToJson() ) );
 
 				return updateInventoryResponses;
 			}
-			catch (Exception exception)
+			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException(string.Format("Error:{0})", this.CreateMethodCallInfo(methodParameters, mark)), exception);
-				LogTraceException(ebayException.Message, ebayException);
+				var ebayException = new EbayCommonException( string.Format( "Error:{0})", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
+				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
 		}
+
 		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products )
 		{
 			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
@@ -653,22 +654,20 @@ namespace EbayAccess
 				{
 					updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests, mark ).ConfigureAwait( false );
 				}
-				catch (Exception exc)
+				catch( Exception exc )
 				{
-					exceptions.Add(exc);
+					exceptions.Add( exc );
 				}
-
 
 				var updateFixedPriceItemResponses = Enumerable.Empty< ReviseFixedPriceItemResponse >();
 				try
 				{
 					updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests, mark ).ConfigureAwait( false );
 				}
-				catch (Exception exc)
+				catch( Exception exc )
 				{
-					exceptions.Add(exc);
+					exceptions.Add( exc );
 				}
-
 
 				if( exceptions.Count > 0 )
 					throw new AggregateException( exceptions );
