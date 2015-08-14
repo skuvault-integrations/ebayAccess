@@ -456,7 +456,7 @@ namespace EbayAccess
 			return await this.ReviseInventoriesStatusAsync( products, Guid.NewGuid().ToString() ).ConfigureAwait( false );
 		}
 
-		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallExpensiveAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products )
+		protected async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallExpensiveAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products )
 		{
 			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
 			var methodParameters = updateInventoryRequests.ToJson();
@@ -512,7 +512,7 @@ namespace EbayAccess
 			}
 		}
 
-		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallEconomAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products )
+		protected async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallEconomAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products )
 		{
 			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
 			var methodParameters = updateInventoryRequests.ToJson();
@@ -564,10 +564,10 @@ namespace EbayAccess
 					{
 						var reviseInventoryStatusResponsesWithErrorsItems = reviseInventoryStatusResponsesWithErrors.SelectMany( y => y.Items ).ToList();
 						var productsToReviseFixedPriceItem = updateInventoryRequests.Where( x => reviseInventoryStatusResponsesWithErrorsItems.Any( z => z.ItemId == x.ItemId && z.Sku == x.Sku ) ).ToList();
-						var reviseFixedPriceItemRequests2 = productsToReviseFixedPriceItem.Select( x => new ReviseFixedPriceItemRequest() { ConditionID = x.ConditionID, IsVariation = x.IsVariation, ItemId = x.ItemId, Quantity = x.Quantity, Sku = x.Sku } );
-						EbayLogger.LogTrace( this.CreateMethodCallInfo( reviseFixedPriceItemRequests2.ToJson(), mark, additionalInfo : "Trying to update products with helpof ReviseFixedPriseItem." ) );
+						var reviseFixedPriceItemRequests = productsToReviseFixedPriceItem.Select( x => new ReviseFixedPriceItemRequest() { ConditionID = x.ConditionID, IsVariation = x.IsVariation, ItemId = x.ItemId, Quantity = x.Quantity, Sku = x.Sku } );
+						EbayLogger.LogTrace( this.CreateMethodCallInfo( reviseFixedPriceItemRequests.ToJson(), mark, additionalInfo : "Trying to update products with helpof ReviseFixedPriseItem." ) );
 
-						var reviseFixedPriceItemResponsesEnumerable = await reviseFixedPriceItemRequests2.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x =>
+						var reviseFixedPriceItemResponsesEnumerable = await reviseFixedPriceItemRequests.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x =>
 						{
 							ReviseFixedPriceItemResponse res = null;
 							var IsItVariationItem = false;
@@ -632,60 +632,22 @@ namespace EbayAccess
 			}
 		}
 
-		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products )
+		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, UpdateInventoryAlgorithm usealgorithm = UpdateInventoryAlgorithm.Old )
 		{
-			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
-			var methodParameters = updateInventoryRequests.ToJson();
-			var mark = Guid.NewGuid().ToString();
-
-			try
+			Task< IEnumerable< UpdateInventoryResponse > > res;
+			switch( usealgorithm )
 			{
-				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
-
-				updateInventoryRequests.ForEach( x => x.Quantity = x.Quantity < 0 ? 0 : x.Quantity );
-
-				var inventoryStatusRequests = updateInventoryRequests.Where( x => x.Quantity > 0 ).Select( x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } ).ToList();
-				var reviseFixedPriceItemRequests = updateInventoryRequests.Where( x => x.Quantity == 0 ).Select( x => new ReviseFixedPriceItemRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity, ConditionID = x.ConditionID, IsVariation = x.IsVariation } ).ToList();
-
-				var exceptions = new List< Exception >();
-
-				var updateProductsResponses = Enumerable.Empty< InventoryStatusResponse >();
-				try
-				{
-					updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests, mark ).ConfigureAwait( false );
-				}
-				catch( Exception exc )
-				{
-					exceptions.Add( exc );
-				}
-
-				var updateFixedPriceItemResponses = Enumerable.Empty< ReviseFixedPriceItemResponse >();
-				try
-				{
-					updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests, mark ).ConfigureAwait( false );
-				}
-				catch( Exception exc )
-				{
-					exceptions.Add( exc );
-				}
-
-				if( exceptions.Count > 0 )
-					throw new AggregateException( exceptions );
-
-				var updateInventoryResponses = new List< UpdateInventoryResponse >();
-				updateInventoryResponses.AddRange( updateProductsResponses.ToUpdateInventoryResponses().ToList() );
-				updateInventoryResponses.AddRange( updateFixedPriceItemResponses.ToUpdateInventoryResponses().ToList() );
-
-				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : updateInventoryResponses.ToJson() ) );
-
-				return updateInventoryResponses;
+				case UpdateInventoryAlgorithm.Old:
+					res = UpdateInventoryCallExpensiveAlgorithmAsync( products );
+					break;
+				case UpdateInventoryAlgorithm.Econom:
+					res = UpdateInventoryCallEconomAlgorithmAsync( products );
+					break;
+				default:
+					res = UpdateInventoryCallExpensiveAlgorithmAsync( products );
+					break;
 			}
-			catch( Exception exception )
-			{
-				var ebayException = new EbayCommonException( string.Format( "Error:{0})", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
-				LogTraceException( ebayException.Message, ebayException );
-				throw ebayException;
-			}
+			return await res.ConfigureAwait( false );
 		}
 		#endregion
 
@@ -782,5 +744,12 @@ namespace EbayAccess
 		{
 			EbayLogger.Log().Trace( ebayException, message );
 		}
+	}
+
+	public enum UpdateInventoryAlgorithm
+	{
+		Undefined = 0,
+		Old = 1,
+		Econom = 2
 	}
 }
