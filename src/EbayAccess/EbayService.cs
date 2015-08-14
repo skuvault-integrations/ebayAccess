@@ -383,8 +383,8 @@ namespace EbayAccess
 					if( res.Item == null )
 						res.Item = new Models.ReviseFixedPriceItemResponse.Item();
 
-					res.Item.Sku == x.Sku;
-					res.Item.ItemId == x.ItemId;
+					res.Item.Sku = x.Sku;
+					res.Item.ItemId = x.ItemId;
 
 					res.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue } );
 
@@ -395,14 +395,14 @@ namespace EbayAccess
 						IsItVariationItem = !IsItVariationItem;
 
 					if( repeatCount++ < 3 )
-						throw new EbayCommonException( string.Format( "Error.{0}", this.CreateMethodCallInfo( x.ToJson(), res.Errors.ToJson(), mark ) ) );
+						throw new EbayCommonException( string.Format( "Error.{0}", this.CreateMethodCallInfo( x.ToJson(), mark, res.Errors.ToJson() ) ) );
 				} ).ConfigureAwait( false );
 
 				return res;
 			} ).ConfigureAwait( false );
 
 			var reviseFixedPriceItemResponses = fixedPriceItemResponses as IList< ReviseFixedPriceItemResponse > ?? fixedPriceItemResponses.ToList();
-			reviseFixedPriceItemResponses.ThrowOnError(todo get here item ID and SKu);
+			reviseFixedPriceItemResponses.ThrowOnError( x => ( x.Select( y => ( ReviseFixedPriceItemResponse )y ).ToList() ).ToJson() );
 
 			var items = reviseFixedPriceItemResponses.Where( y => y.Item != null ).Select( x => x.Item ).ToList();
 
@@ -430,7 +430,7 @@ namespace EbayAccess
 				EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, errorsThatMustBeSkipped.ToJson() ) );
 
 				inventoryStatusResponses.SkipErrorsAndDo( null, errorsThatMustBeSkipped );
-				inventoryStatusResponses.ThrowOnError();
+				inventoryStatusResponses.ThrowOnError( x => ( x.Select( y => ( InventoryStatusResponse )y ).ToList() ).ToJson() );
 
 				var items = inventoryStatusResponses.Where( y => y.Items != null ).SelectMany( x => x.Items ).ToList();
 				var briefInfo = items.ToJson();
@@ -474,10 +474,26 @@ namespace EbayAccess
 				var exceptions = new List< Exception >();
 
 				var updateProductsResponses = Enumerable.Empty< InventoryStatusResponse >();
-				Extensions.ExecuteAndCollectExceptions( async () => updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests, mark ).ConfigureAwait( false ), exceptions );
+				try
+				{
+					updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests, mark ).ConfigureAwait( false );
+				}
+				catch (Exception exc)
+				{
+					exceptions.Add(exc);
+				}
+
 
 				var updateFixedPriceItemResponses = Enumerable.Empty< ReviseFixedPriceItemResponse >();
-				Extensions.ExecuteAndCollectExceptions( async () => updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests, mark ).ConfigureAwait( false ), exceptions );
+				try
+				{
+					updateFixedPriceItemResponses = await this.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests, mark ).ConfigureAwait( false );
+				}
+				catch (Exception exc)
+				{
+					exceptions.Add(exc);
+				}
+
 
 				if( exceptions.Count > 0 )
 					throw new AggregateException( exceptions );
@@ -492,7 +508,7 @@ namespace EbayAccess
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error.{0})", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error:{0})", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}

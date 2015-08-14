@@ -29,7 +29,7 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 			}
 		}
 
-		public ItemSku GetSku()
+		public ItemSku GetSku( bool throwException = true )
 		{
 			if( this.IsItemWithVariations() && this.Variations.Count == 1 && !string.IsNullOrWhiteSpace( this.Variations[ 0 ].Sku ) )
 				return new ItemSku( true, this.Variations[ 0 ].Sku );
@@ -38,9 +38,17 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 				return new ItemSku( false, this.Sku );
 
 			if( this.IsItemWithVariations() && this.HaveMultiVariations() )
-				throw new Exception( "Can't get Sku from multiple variation item" );
+			{
+				if( throwException )
+					throw new Exception( "Can't get Sku from multiple variation item" );
+				else
+					return null;
+			}
 
-			throw new Exception( "Can't get Sku" );
+			if( throwException )
+				throw new Exception( "Can't get Sku" );
+			else
+				return null;
 		}
 
 		public ItemPrice GetStartOrCurrentOrBuyItNowPrice()

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
@@ -110,18 +111,6 @@ namespace EbayAccess.Misc
 		}
 		#endregion
 
-		public static void ExecuteAndCollectExceptions( Action act, IList< Exception > exceptions )
-		{
-			try
-			{
-				act();
-			}
-			catch( Exception exc )
-			{
-			
-				exceptions.Add( exc );
-			}
-		}
 		public static void SkipErrorsAndDo( this IEnumerable< EbayBaseResponse > source, Action< EbayBaseResponse > action, List< ResponseError > updateInventoryErrorsToSkip )
 		{
 			source.ForEach( x => x.SkipErrorsAndDo( action, updateInventoryErrorsToSkip ) );
@@ -138,14 +127,16 @@ namespace EbayAccess.Misc
 				throw new Exception( response.Errors.ToJson() );
 		}
 
-		public static void ThrowOnError( this IEnumerable< EbayBaseResponse > responses )
+		public static void ThrowOnError( this IEnumerable< EbayBaseResponse > responses, Func< IEnumerable< EbayBaseResponse >, string > exceptionMessage = null )
 		{
-			var responsesWithErrors = responses.Where( x => x != null && x.Errors != null && x.Errors.Any() ).ToList();
+			var ebayBaseResponses = responses as IList< EbayBaseResponse > ?? responses.ToList();
+			var responsesWithErrors = ebayBaseResponses.Where( x => x != null && x.Errors != null && x.Errors.Any() ).ToList();
 
 			if( responsesWithErrors.Any() )
 			{
 				var aggregatedErrors = responsesWithErrors.SelectMany( x => x.Errors ).ToList();
-				throw new Exception( aggregatedErrors.ToJson() );
+				var message = exceptionMessage == null ? aggregatedErrors.ToJson() : exceptionMessage( ebayBaseResponses );
+				throw new Exception( message );
 			}
 		}
 

@@ -55,7 +55,9 @@ namespace EbayAccess.Services.Parsers
 
 					res.Sku = GetElementValue( x, ns, "SKU" );
 
-					res.ConditionId = GetElementValue( x, ns, "ConditionID" ).ToIntOrDefault( false );
+					var conditionElementValue = GetElementValue( x, ns, "ConditionID" );
+					if( !string.IsNullOrWhiteSpace( conditionElementValue ) )
+						res.ConditionId = conditionElementValue.ToIntOrDefault( false );
 
 					res.Duration = GetElementValue( x, ns, "ListingDuration" );
 

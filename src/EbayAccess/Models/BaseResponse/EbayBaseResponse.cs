@@ -17,19 +17,7 @@ namespace EbayAccess.Models.BaseResponse
 
 		public PaginationResult PaginationResult { get; set; }
 
-		public IEnumerable< ResponseError > _errors;
-
-		public IEnumerable< ResponseError > Errors
-		{
-			get { return this._errors; }
-
-			set
-			{
-				this._errors = value;
-				//var errorsText = this._error.ToJson();
-				//EbayLogger.LogTraceInnerError( errorsText );
-			}
-		}
+		public IEnumerable< ResponseError > Errors { get; set; }
 
 		public void SkipErrorsAndDo( Action< EbayBaseResponse > action, List< ResponseError > updateInventoryErrorsToSkip )
 		{
