@@ -527,11 +527,11 @@ namespace EbayAccess
 				var exceptions = new List< Exception >();
 
 				#region revise inventory status
-				var reviseInventoryStatusRequests = updateInventoryRequests.Select( x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } ).ToList();
 				var reviseInventoryStatusResponses = new List<InventoryStatusResponse>();
 				var reviseInventoryStatusResponsesWithErrors = new List< InventoryStatusResponse >();
 				try
 				{
+					var reviseInventoryStatusRequests = updateInventoryRequests.Select(x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity }).ToList();
 					var temp = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( reviseInventoryStatusRequests, mark ).ConfigureAwait( false );
 					reviseInventoryStatusResponses = temp.ToList();
 					var reviseInventoryStatusResponsesList = temp.ToList();
@@ -559,7 +559,8 @@ namespace EbayAccess
 				#endregion
 
 				#region revise fixed price item
-				var reviseFixedPriceItemResponsesList = new List<ReviseFixedPriceItemResponse>();
+				var reviseFixedPriceItemResponses = new List<ReviseFixedPriceItemResponse>();
+				if(reviseInventoryStatusResponsesWithErrors.Any())
 				try
 				{
 					var reviseInventoryStatusResponsesWithErrorsItems = reviseInventoryStatusResponsesWithErrors.SelectMany( y => y.Items ).ToList();
@@ -600,10 +601,10 @@ namespace EbayAccess
 						return res;
 					} ).ConfigureAwait( false );
 
-					reviseFixedPriceItemResponsesList = reviseFixedPriceItemResponsesEnumerable.ToList();
-					reviseFixedPriceItemResponsesList.ThrowOnError( x => ( x.Select( y => ( ReviseFixedPriceItemResponse )y ).ToList() ).ToJson() );
+					reviseFixedPriceItemResponses = reviseFixedPriceItemResponsesEnumerable.ToList();
+					reviseFixedPriceItemResponses.ThrowOnError( x => ( x.Select( y => ( ReviseFixedPriceItemResponse )y ).ToList() ).ToJson() );
 
-					var items = reviseFixedPriceItemResponsesList.Where( y => y.Item != null ).Select( x => x.Item ).ToList();
+					var items = reviseFixedPriceItemResponses.Where( y => y.Item != null ).Select( x => x.Item ).ToList();
 					EbayLogger.LogTrace( this.CreateMethodCallInfo( methodParameters, mark, methodResult : items.ToJson() ) );
 				}
 				catch( Exception exc )
@@ -617,7 +618,7 @@ namespace EbayAccess
 
 				var updateInventoryResponses = new List<UpdateInventoryResponse>();
 				updateInventoryResponses.AddRange(reviseInventoryStatusResponses.ToUpdateInventoryResponses().ToList());
-				updateInventoryResponses.AddRange(reviseFixedPriceItemResponsesList.ToUpdateInventoryResponses().ToList());
+				updateInventoryResponses.AddRange(reviseFixedPriceItemResponses.ToUpdateInventoryResponses().ToList());
 
 				EbayLogger.LogTraceEnded(this.CreateMethodCallInfo(methodParameters, mark, methodResult: updateInventoryResponses.ToJson()));
 
