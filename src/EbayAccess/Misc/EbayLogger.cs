@@ -18,6 +18,10 @@ namespace EbayAccess.Misc
 		{
 			Log().Trace( "[ebay] End call:{0}.", info );
 		}
+		public static void LogTrace(string info)
+		{
+			Log().Trace("[ebay] Trace call:{0}.", info);
+		}
 
 		public static void LogTraceInnerStarted( string info )
 		{
@@ -32,6 +36,11 @@ namespace EbayAccess.Misc
 		public static void LogTraceInnerError( string info )
 		{
 			Log().Trace( "[ebay] Internal error:{0}.", info );
+		}
+
+		public static void LogTraceInnerErrorSkipped(string info)
+		{
+			Log().Trace("[ebay] Internal error (skipped):{0}.", info);
 		}
 	}
 }
