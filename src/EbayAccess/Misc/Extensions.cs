@@ -87,6 +87,21 @@ namespace EbayAccess.Misc
 			return default( int );
 		}
 
+		public static long ToLongOrDefault( this string source, bool throwException = true )
+		{
+			try
+			{
+				return long.Parse( source, CultureInfo.InvariantCulture );
+			}
+			catch( Exception )
+			{
+				if( throwException )
+					throw;
+			}
+
+			return default( long );
+		}
+
 		public static long ToLong( this string source )
 		{
 			var parsedNumber = long.Parse( source, CultureInfo.InvariantCulture );

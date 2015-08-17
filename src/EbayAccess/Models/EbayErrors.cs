@@ -18,6 +18,34 @@ namespace EbayAccess.Models
 			}
 		}
 
+		public static ResponseError ItemConditionRequired
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "21916884",
+					LongMessage = "Condition is required for this category.",
+					ShortMessage = "Item condition required",
+					SeverityCode = "Error"
+				};
+			}
+		}
+
+		public static ResponseError DuplicateCustomVariationLabel
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "21916585",
+					LongMessage = "Duplicate custom variation label",
+					ShortMessage = "Duplicate custom variation label",
+					SeverityCode = "Error"
+				};
+			}
+		}
+
 		public static ResponseError LvisBlockedError
 		{
 			get

@@ -41,13 +41,13 @@ namespace EbayAccess.Services.Parsers
 				{
 					var res = new Item();
 
+					res.ItemId = GetElementValue(x, ns, "ItemID");
+
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "BuyItNowPrice" ) ) )
 					{
 						res.BuyItNowPrice = temp.ToDecimalDotOrComaSeparated();
 						res.BuyItNowPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "BuyItNowPrice" );
 					}
-
-					res.ItemId = GetElementValue( x, ns, "ItemID" );
 
 					res.Quantity = GetElementValue( x, ns, "Quantity" ).ToIntOrDefault( false );
 

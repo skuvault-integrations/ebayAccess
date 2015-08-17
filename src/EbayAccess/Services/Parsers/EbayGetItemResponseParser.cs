@@ -30,6 +30,8 @@ namespace EbayAccess.Services.Parsers
 				string temp;
 				var res = new Item();
 
+				res.ItemId = GetElementValue(x, ns, "ItemID");
+
 				res.AutoPay = GetElementValue( x, ns, "AutoPay" ).ToBool();
 
 				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "BuyItNowPrice" ) ) )
@@ -43,8 +45,6 @@ namespace EbayAccess.Services.Parsers
 				res.Currency = GetElementValue( x, ns, "Currency" );
 
 				res.HideFromSearch = GetElementValue( x, ns, "HideFromSearch" ).ToBool();
-
-				res.ItemId = GetElementValue( x, ns, "ItemID" );
 
 				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingType" ) ) )
 					res.ListingType = ( ListingType )Enum.Parse( typeof( ListingType ), temp );

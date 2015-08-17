@@ -386,13 +386,17 @@ namespace EbayAccess
 					res.Item.Sku = x.Sku;
 					res.Item.ItemId = x.ItemId;
 
-					res.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue } );
+					var unimportantErrors = new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue };
+					res.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, res.Errors.ToJson() ) ), unimportantErrors );
 
 					if( res.Errors == null || !res.Errors.Any() )
 						return;
 
-					if( res.Errors != null && res.Errors.Exists( y => y.ErrorCode == "21916585" ) )
-						IsItVariationItem = !IsItVariationItem;
+					res.SkipErrorsAndDo( c => x.ConditionID = 1000, new List< ResponseError >() { EbayErrors.ItemConditionRequired } );
+					res.SkipErrorsAndDo( c => IsItVariationItem = !IsItVariationItem, new List< ResponseError >() { EbayErrors.DuplicateCustomVariationLabel } );
+
+					//if( res.Errors != null && res.Errors.Exists( y => y.ErrorCode == "21916585" ) )
+					//	IsItVariationItem = !IsItVariationItem;
 
 					if( repeatCount++ < 3 )
 						throw new EbayCommonException( string.Format( "Error.{0}", this.CreateMethodCallInfo( x.ToJson(), mark, res.Errors.ToJson() ) ) );
