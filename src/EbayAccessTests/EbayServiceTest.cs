@@ -26,7 +26,7 @@ namespace EbayAccessTests
 	public class EbayServiceTest : TestBase
 	{
 		[ Test ]
-		public void GetSellerList_EbayServiceExistingItemsDevidedIntoMultiplePages_HookUpItemsFromAllPages()
+		public void GetSellerListAsync_EbayServiceExistingItemsDevidedIntoMultiplePages_HookUpItemsFromAllPages()
 		{
 			//A
 			var stubCallCounter = 0;
@@ -38,20 +38,21 @@ namespace EbayAccessTests
 			};
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStream( It.IsAny< WebRequest >(), It.IsAny< string >() ) ).Returns( () =>
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >(), CancellationToken.None ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
 				var buf = new UTF8Encoding().GetBytes( serverResponsePages[ stubCallCounter ] );
 				ms.Write( buf, 0, buf.Length );
 				ms.Position = 0;
-				return ms;
+				return Task.FromResult< Stream >( ms );
 			} ).Callback( () => stubCallCounter++ );
 
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
-			var orders = ebayService.GetSellerList( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), GetSellerListTimeRangeEnum.StartTime, new Guid().ToString() );
-
+			var ordersTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), GetSellerListTimeRangeEnum.StartTime, new Guid().ToString() );
+			ordersTask.Wait();
+			var orders = ordersTask.Result;
 			//A
 			orders.Items.Count().Should().Be( 3, "because stub gives 3 pages, 1 item per page" );
 		}
