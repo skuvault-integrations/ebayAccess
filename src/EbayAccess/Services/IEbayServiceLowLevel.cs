@@ -18,8 +18,6 @@ namespace EbayAccess.Services
 {
 	internal interface IEbayServiceLowLevel
 	{
-		GetOrdersResponse GetOrders( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, string mark );
-
 		Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, string mark = "" );
 
 		InventoryStatusResponse ReviseInventoryStatus( InventoryStatusRequest inventoryStatusResponse, string mark );

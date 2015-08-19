@@ -161,54 +161,6 @@ namespace EbayAccess.Services
 			};
 		}
 
-		public GetOrdersResponse GetOrders( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, string mark )
-		{
-			var orders = new GetOrdersResponse();
-
-			var totalRecords = 0;
-			var recordsPerPage = this._itemsPerPage;
-			var pageNumber = 1;
-			var hasMoreOrders = false;
-
-			do
-			{
-				var headers = CreateEbayGetOrdersRequestHeadersWithApiCallName();
-
-				var body = this.CreateGetOrdersRequestBody( createTimeFrom, createTimeTo, recordsPerPage, pageNumber, getOrdersTimeRangeEnum );
-
-				ActionPolicies.Get.Do( () =>
-				{
-					var webRequest = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body, mark );
-
-					using( var memStream = this._webRequestServices.GetResponseStream( webRequest, mark ) )
-					{
-						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
-						if( pagination != null )
-							totalRecords = pagination.TotalNumberOfEntries;
-
-						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
-
-						if( getOrdersResponseParsed != null )
-						{
-							if( getOrdersResponseParsed.Errors != null )
-							{
-								orders.Errors = getOrdersResponseParsed.Errors;
-								return;
-							}
-
-							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
-							if( getOrdersResponseParsed.Orders != null )
-								orders.Orders.AddRange( getOrdersResponseParsed.Orders );
-						}
-					}
-				} );
-
-				pageNumber++;
-			} while( hasMoreOrders );
-
-			return orders;
-		}
-
 		public async Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, string mark = "" )
 		{
 			var orders = new GetOrdersResponse();
