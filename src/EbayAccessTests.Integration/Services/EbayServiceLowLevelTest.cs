@@ -167,19 +167,6 @@ namespace EbayAccessTests.Integration.Services
 		}
 
 		[ Test ]
-		public void GetOrders_EbayServiceWithExistingOrders_HookupOrders()
-		{
-			//A
-			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-
-			//A
-			var orders = ebayServiceLowLevel.GetOrders( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
-
-			//A
-			orders.Orders.Count().Should().BeGreaterThan( 0 );
-		}
-
-		[ Test ]
 		public void GetOrdersAsync_EbayServiceWithNotExistingOrders_EmptyOrdersCollection()
 		{
 			//A
@@ -191,19 +178,6 @@ namespace EbayAccessTests.Integration.Services
 
 			//A
 			ordersTask.Result.Orders.Count().Should().Be( 0 );
-		}
-
-		[ Test ]
-		public void GetOrders_EbayServiceWithNotExistingOrders_EmptyOrdersCollection()
-		{
-			//A
-			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-
-			//A
-			var orders = ebayServiceLowLevel.GetOrders( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
-
-			//A
-			orders.Orders.Count().Should().Be( 0, "because on site there is no orders in specified time" );
 		}
 		#endregion
 

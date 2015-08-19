@@ -67,28 +67,6 @@ namespace EbayAccessTests.Services
 		}
 
 		[ Test ]
-		public void GetOrders_EbayServiceRespondContainsTotalNumberOfEntitiesZeroAndHasMoreOrdersFalse_Only1WebRequestServiceCallMaked()
-		{
-			//A
-			string respstring;
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTotalNumberOfEntities0AndHasMoreOrdersFalse.xml", FileMode.Open, FileAccess.Read ) )
-				respstring = new StreamReader( fs ).ReadToEnd();
-			var getResponseStreamCallCounter = 0;
-			;
-
-			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( respstring.ToStream() ).AndDoes( x => getResponseStreamCallCounter++ );
-
-			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
-
-			//A
-			var orders = ebayServiceLowLevel.GetOrders( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
-
-			//A
-			getResponseStreamCallCounter.Should().Be( 1 );
-		}
-
-		[ Test ]
 		public void ReviseFixedPriceItemAsync_ModelContsinsSymbolsThatMustBeReplaced_SybolsReplasedByAliasesInRequest()
 		{
 			//A
