@@ -91,7 +91,7 @@ namespace EbayAccessTests
 		{
 			//A
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( x => Task.FromResult( GetSellingManagerSoldListingsResponse.ResponseWithInternalError.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), CancellationToken.None ).Returns( x => Task.FromResult( GetSellingManagerSoldListingsResponse.ResponseWithInternalError.ToStream() ) );
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -99,7 +99,7 @@ namespace EbayAccessTests
 			sellngManagerOrderByRecordNumberAsync.Wait();
 
 			//A
-			stubWebRequestService.ReceivedWithAnyArgs( 4 ).GetResponseStreamAsync( null, new Guid().ToString() );
+			stubWebRequestService.ReceivedWithAnyArgs( 4 ).GetResponseStreamAsync( null, new Guid().ToString(), CancellationToken.None );
 			sellngManagerOrderByRecordNumberAsync.Result.Errors.Count().Should().Be( 1 );
 			sellngManagerOrderByRecordNumberAsync.Result.Errors.Count( x => x.ErrorCode == "10007" ).Should().Be( 1 );
 		}
@@ -110,7 +110,7 @@ namespace EbayAccessTests
 			//A
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 			var callCounter = 0;
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( x => Task.FromResult( callCounter++ == 0 ? GetSellingManagerSoldListingsResponse.ResponseWithInternalError.ToStream() : GetSellingManagerSoldListingsResponse.ResponseWithSoldRecord.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), CancellationToken.None ).Returns( x => Task.FromResult( callCounter++ == 0 ? GetSellingManagerSoldListingsResponse.ResponseWithInternalError.ToStream() : GetSellingManagerSoldListingsResponse.ResponseWithSoldRecord.ToStream() ) );
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -118,7 +118,7 @@ namespace EbayAccessTests
 			sellngManagerOrderByRecordNumberAsync.Wait();
 
 			//A
-			stubWebRequestService.ReceivedWithAnyArgs( 2 ).GetResponseStreamAsync( null, new Guid().ToString() );
+			stubWebRequestService.ReceivedWithAnyArgs( 2 ).GetResponseStreamAsync( null, new Guid().ToString(), CancellationToken.None );
 			sellngManagerOrderByRecordNumberAsync.Result.Errors.Should().BeNull();
 		}
 
@@ -195,7 +195,7 @@ namespace EbayAccessTests
 			const string serverResponse = "<ReviseInventoryStatusResponse xmlns=\"urn:ebay:apis:eBLBaseComponents\"><Timestamp>2014-02-17T18:49:00.346Z</Timestamp><Ack>Failure</Ack><Errors><ShortMessage>FixedPrice item ended.</ShortMessage><LongMessage>You are not allowed to revise an ended item \"110136942332\".</LongMessage><ErrorCode>21916750</ErrorCode><SeverityCode>Error</SeverityCode><ErrorParameters ParamID=\"0\"><Value>110136942332</Value></ErrorParameters><ErrorClassification>RequestError</ErrorClassification></Errors><Version>859</Version><Build>E859_UNI_API5_16675060_R1</Build></ReviseInventoryStatusResponse>";
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >() ) ).Returns(
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >(), CancellationToken.None ) ).Returns(
 				() =>
 				{
 					var ms = new MemoryStream();
@@ -227,7 +227,7 @@ namespace EbayAccessTests
 			const long item2Id = 110137091582;
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >() ) ).Returns( () => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsPictureError.ToStream() ) );
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >(), CancellationToken.None ) ).Returns( () => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsPictureError.ToStream() ) );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
@@ -251,7 +251,7 @@ namespace EbayAccessTests
 			const long item2Id = 110137091582;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsLvsBlockError.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( null, null, CancellationToken.None ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsLvsBlockError.ToStream() ) );
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -278,7 +278,7 @@ namespace EbayAccessTests
 			const long item2Id = 110137091582;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsLvsBlockError.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( null, null, CancellationToken.None ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsLvsBlockError.ToStream() ) );
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -306,7 +306,7 @@ namespace EbayAccessTests
 			var getResponseStreamAsyncCallCounter = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), CancellationToken.None ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -344,7 +344,7 @@ namespace EbayAccessTests
 			}
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.VirtualNotSkippedError.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( null, null, CancellationToken.None ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.VirtualNotSkippedError.ToStream() ) );
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -358,9 +358,9 @@ namespace EbayAccessTests
 			action.ShouldThrow< EbayCommonException >();
 
 			stubWebRequestService.Received().CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
-				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), Arg.Any< string >(), CancellationToken.None );
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), CancellationToken.None, Arg.Any< string >() );
 			stubWebRequestService.Received().CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
-				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseInventoryStatus ), Arg.Any< string >(), CancellationToken.None );
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseInventoryStatus ), CancellationToken.None, Arg.Any< string >() );
 		}
 
 		[ Test ]
@@ -379,7 +379,7 @@ namespace EbayAccessTests
 			var requiredNumberOfCalls = reviseFixedPriceItemRequests.Count * repeatsPerBadRequest;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.VirtualNotSkippedError.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( null, null, CancellationToken.None ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.VirtualNotSkippedError.ToStream() ) );
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -393,7 +393,7 @@ namespace EbayAccessTests
 			action.ShouldThrow< Exception >();
 
 			stubWebRequestService.Received( requiredNumberOfCalls ).CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
-				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), Arg.Any< string >(), CancellationToken.None );
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), CancellationToken.None, Arg.Any< string >() );
 		}
 
 		[ Test ]
@@ -409,7 +409,7 @@ namespace EbayAccessTests
 			}
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.VirtualNotSkippedError.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( null, null, CancellationToken.None ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.VirtualNotSkippedError.ToStream() ) );
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -424,7 +424,7 @@ namespace EbayAccessTests
 
 			var requiredNumberOfCalls = inventoryStatusRequests.Count / 4 + ( inventoryStatusRequests.Count % 4 > 0 ? 1 : 0 );
 			stubWebRequestService.Received( requiredNumberOfCalls ).CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
-				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseInventoryStatus ), Arg.Any< string >(), CancellationToken.None );
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseInventoryStatus ), CancellationToken.None, Arg.Any< string >() );
 		}
 
 		[ Test ]
@@ -435,7 +435,7 @@ namespace EbayAccessTests
 			const long item2Id = 110137091582;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseInventoryStatusResponse.UnsupportedListingType.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( null, null, CancellationToken.None ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseInventoryStatusResponse.UnsupportedListingType.ToStream() ) );
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -461,7 +461,7 @@ namespace EbayAccessTests
 			const long item2Id = 110137091582;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseInventoryStatusResponse.ReplaceableValueError.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( null, null, CancellationToken.None ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseInventoryStatusResponse.ReplaceableValueError.ToStream() ) );
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -488,7 +488,7 @@ namespace EbayAccessTests
 			var callsCount = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( null, null ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseInventoryStatusResponse.UnsupportedListingType.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( null, null, CancellationToken.None ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseInventoryStatusResponse.UnsupportedListingType.ToStream() ) );
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 			ebayService.AdditionalLogInfo = () => ( callsCount++ ).ToString( CultureInfo.InvariantCulture );
 

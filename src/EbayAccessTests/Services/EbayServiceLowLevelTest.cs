@@ -29,7 +29,7 @@ namespace EbayAccessTests.Services
 			{
 				var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-				stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.Factory.StartNew< Stream >( () => fs ) );
+				stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), CancellationToken.None ).Returns( Task.Factory.StartNew< Stream >( () => fs ) );
 
 				var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -53,7 +53,7 @@ namespace EbayAccessTests.Services
 			var getResponseStreamAsyncCallCounter = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), CancellationToken.None ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -93,7 +93,7 @@ namespace EbayAccessTests.Services
 		{
 			//A
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.FromResult( ReviseFixedPriceItemResponse.Success.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), CancellationToken.None ).Returns( Task.FromResult( ReviseFixedPriceItemResponse.Success.ToStream() ) );
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -113,8 +113,7 @@ namespace EbayAccessTests.Services
 			stubWebRequestService.Received().CreateServicePostRequestAsync(
 				Arg.Any< string >(),
 				Arg.Is< string >( x => new XmlDocument().TryParse( x ) ),
-				Arg.Any< Dictionary< string, string > >(),
-				Arg.Any< string >(), CancellationToken.None );
+				Arg.Any< Dictionary< string, string > >(), CancellationToken.None, Arg.Any< string >() );
 		}
 
 		[ Test ]
@@ -122,7 +121,7 @@ namespace EbayAccessTests.Services
 		{
 			//A
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( Task.FromResult( ReviseInventoryStatusResponse.Success.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), CancellationToken.None ).Returns( Task.FromResult( ReviseInventoryStatusResponse.Success.ToStream() ) );
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
@@ -145,8 +144,7 @@ namespace EbayAccessTests.Services
 			stubWebRequestService.Received( 1 ).CreateServicePostRequestAsync(
 				Arg.Any< string >(),
 				Arg.Is< string >( x => new XmlDocument().TryParse( x ) ),
-				Arg.Any< Dictionary< string, string > >(),
-				Arg.Any< string >(), CancellationToken.None );
+				Arg.Any< Dictionary< string, string > >(), CancellationToken.None, Arg.Any< string >() );
 		}
 	}
 }

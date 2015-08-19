@@ -10,10 +10,10 @@ namespace EbayAccess.Services
 	{
 		Stream GetResponseStream( WebRequest webRequest, string mark );
 
-		Task< Stream > GetResponseStreamAsync( WebRequest webRequest, string mark );
+		Task< Stream > GetResponseStreamAsync( WebRequest webRequest, string mark, CancellationToken cts );
 
 		WebRequest CreateServiceGetRequest( string serviceUrl, IDictionary< string, string > rawUrlParameters );
 
-		Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders, string mark = "", CancellationToken cts );
+		Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders, CancellationToken cts, string mark = "" );
 	}
 }

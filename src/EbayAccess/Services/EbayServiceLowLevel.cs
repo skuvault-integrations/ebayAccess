@@ -82,7 +82,7 @@ namespace EbayAccess.Services
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiSiteid ) )
 				headers.Add( EbayHeaders.XEbayApiSiteid, this._userCredentials.SiteId.ToString() );
 
-			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, mark, cts ).ConfigureAwait( false );
+			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, cts, mark ).ConfigureAwait( false );
 		}
 
 		public WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body, string mark )
@@ -102,7 +102,7 @@ namespace EbayAccess.Services
 
 		public async Task< WebRequest > CreateEbayStandartPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body, string mark = "" )
 		{
-			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, mark, CancellationToken.None ).ConfigureAwait( false );
+			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, CancellationToken.None, mark ).ConfigureAwait( false );
 		}
 
 		public WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body, string mark )
@@ -228,7 +228,7 @@ namespace EbayAccess.Services
 				{
 					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 					{
 						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
@@ -274,7 +274,7 @@ namespace EbayAccess.Services
 				{
 					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 					{
 						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
 						if( pagination != null )
@@ -317,7 +317,7 @@ namespace EbayAccess.Services
 			{
 				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, cts ).ConfigureAwait(false);
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, cts ).ConfigureAwait( false ) )
 				{
 					var getOrdersResponseParsed = new EbayGetSellingManagerSoldListingsResponseParser().Parse( memStream );
 					if( getOrdersResponseParsed != null )
@@ -460,7 +460,7 @@ namespace EbayAccess.Services
 				{
 					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 					{
 						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
 						if( getSellerListResponse != null )
@@ -545,7 +545,7 @@ namespace EbayAccess.Services
 				{
 					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 					{
 						var getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
 						if( getSellerListResponse != null )
@@ -606,7 +606,7 @@ namespace EbayAccess.Services
 			{
 				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 					getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
 			} ).ConfigureAwait( false );
 
@@ -666,7 +666,7 @@ namespace EbayAccess.Services
 			{
 				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 				{
 					var tempOrders = new EbayGetItemResponseParser().Parse( memStream );
 					if( tempOrders != null )
@@ -750,7 +750,7 @@ namespace EbayAccess.Services
 
 			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request, mark ).ConfigureAwait( false ) )
+			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request, mark, CancellationToken.None ).ConfigureAwait( false ) )
 			{
 				var inventoryStatusResponse =
 					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
@@ -843,7 +843,7 @@ namespace EbayAccess.Services
 
 			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
 
-			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request, mark ).ConfigureAwait( false ) )
+			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request, mark, CancellationToken.None ).ConfigureAwait( false ) )
 			{
 				var inventoryStatusResponse =
 					new EbayReviseFixedPriceItemResponseParser().Parse( memStream );
@@ -950,7 +950,7 @@ namespace EbayAccess.Services
 			{
 				var webRequest = await this.CreateEbayStandartPostRequestToBulkExchangeServerAsync( this._endPointBulkExhange, headers, body ).ConfigureAwait( false );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 				{
 					var createJobResponseParsed = new EbayBulkCreateJobParser().Parse( memStream );
 					if( createJobResponseParsed != null )
@@ -981,7 +981,7 @@ namespace EbayAccess.Services
 			{
 				var webRequest = await this.CreateEbayStandartPostRequestToBulkExchangeServerAsync( this._endPointBulkExhange, headers, body ).ConfigureAwait( false );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 				{
 					var abortJobResponse = new EbayBulkAbortJobParser().Parse( memStream );
 					if( abortJobResponse != null )
