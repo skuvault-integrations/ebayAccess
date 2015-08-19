@@ -5,10 +5,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security;
+using System.Threading;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Misc;
+using EbayAccess.Models;
+using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
@@ -64,7 +68,7 @@ namespace EbayAccess.Services
 		}
 
 		#region EbayStandartRequest
-		private async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body, string mark )
+		private async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body, string mark, CancellationToken cts )
 		{
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCompatibilityLevel ) )
 				headers.Add( EbayHeaders.XEbayApiCompatibilityLevel, EbayHeadersValues.XEbayApiCompatibilityLevel );
@@ -78,7 +82,7 @@ namespace EbayAccess.Services
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiSiteid ) )
 				headers.Add( EbayHeaders.XEbayApiSiteid, this._userCredentials.SiteId.ToString() );
 
-			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, mark ).ConfigureAwait( false );
+			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, mark, cts ).ConfigureAwait( false );
 		}
 
 		public WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body, string mark )
@@ -88,17 +92,17 @@ namespace EbayAccess.Services
 			return resultTask.Result;
 		}
 
-		public async Task< WebRequest > CreateEbayStandartPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body, string mark )
+		public async Task<WebRequest> CreateEbayStandartPostRequestWithCertAsync(string url, Dictionary<string, string> headers, string body, string mark, CancellationToken cts)
 		{
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCertName ) )
 				headers.Add( EbayHeaders.XEbayApiCertName, this._ebayConfig.CertName );
 
-			return await this.CreateEbayStandartPostRequestAsync( url, headers, body, mark ).ConfigureAwait( false );
+			return await this.CreateEbayStandartPostRequestAsync( url, headers, body, mark, cts ).ConfigureAwait( false );
 		}
 
 		public async Task< WebRequest > CreateEbayStandartPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body, string mark = "" )
 		{
-			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, mark ).ConfigureAwait( false );
+			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, mark, CancellationToken.None ).ConfigureAwait( false );
 		}
 
 		public WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body, string mark )
@@ -297,7 +301,7 @@ namespace EbayAccess.Services
 			return orders;
 		}
 
-		public async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber, string mark )
+		public async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber, string mark, CancellationToken cts )
 		{
 			var orders = new GetSellingManagerSoldListingsResponse();
 
@@ -311,7 +315,7 @@ namespace EbayAccess.Services
 
 			await ActionPolicies.GetAsyncShort.Do( async () =>
 			{
-				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
+				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, cts ).ConfigureAwait(false);
 
 				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark ).ConfigureAwait( false ) )
 				{

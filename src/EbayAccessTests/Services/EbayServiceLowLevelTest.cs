@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using EbayAccess.Misc;
@@ -113,7 +114,7 @@ namespace EbayAccessTests.Services
 				Arg.Any< string >(),
 				Arg.Is< string >( x => new XmlDocument().TryParse( x ) ),
 				Arg.Any< Dictionary< string, string > >(),
-				Arg.Any< string >() );
+				Arg.Any< string >(), CancellationToken.None );
 		}
 
 		[ Test ]
@@ -145,7 +146,7 @@ namespace EbayAccessTests.Services
 				Arg.Any< string >(),
 				Arg.Is< string >( x => new XmlDocument().TryParse( x ) ),
 				Arg.Any< Dictionary< string, string > >(),
-				Arg.Any< string >() );
+				Arg.Any< string >(), CancellationToken.None );
 		}
 	}
 }

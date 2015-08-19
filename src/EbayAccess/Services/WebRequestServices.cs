@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using EbayAccess.Misc;
 
@@ -27,7 +28,7 @@ namespace EbayAccess.Services
 			return serviceRequest;
 		}
 
-		public async Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders, string mark = "" )
+		public async Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders, string mark = "", CancellationToken cts )
 		{
 			const string currentMenthodName = "CreateServicePostRequestAsync";
 			var methodParameters = string.Format( "{{Url:{0},Body:{1},Headers:{2}}}", serviceUrl, body, rawHeaders.ToJson() );
