@@ -493,29 +493,6 @@ namespace EbayAccess.Services
 				id );
 		}
 
-		public Item GetItem( string id, string mark )
-		{
-			var order = new Item();
-
-			var body = this.CreateGetItemByIdRequestBody( id );
-
-			var headers = CreateGetItemRequestHeadersWithApiCallName();
-
-			ActionPolicies.Get.Do( () =>
-			{
-				var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body, mark );
-
-				using( var memStream = this._webRequestServices.GetResponseStream( webRequest, mark ) )
-				{
-					var tempOrders = new EbayGetItemResponseParser().Parse( memStream );
-					if( tempOrders != null )
-						order = tempOrders.Item;
-				}
-			} );
-
-			return order;
-		}
-
 		public async Task< Item > GetItemAsync( string id, string mark )
 		{
 			var order = new Item();

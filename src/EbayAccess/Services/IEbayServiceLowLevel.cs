@@ -26,8 +26,6 @@ namespace EbayAccess.Services
 
 		Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark );
 
-		Item GetItem( string id, string mark );
-
 		Task< Item > GetItemAsync( string id, string mark );
 
 		IEnumerable< InventoryStatusResponse > ReviseInventoriesStatus( IEnumerable< InventoryStatusRequest > inventoryStatuses, string mark );

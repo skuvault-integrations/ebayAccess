@@ -113,26 +113,29 @@ namespace EbayAccessTests.Integration.Services
 
 		#region GetItems
 		[ Test ]
-		public void GetItem_EbayServiceWithExistingFixedPriceVariationProduct_HookupItemId()
+		public void GetItemAsync_EbayServiceWithExistingFixedPriceVariationProduct_HookupItemId()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var inventoryStat1 = ebayService.GetItem( ExistingProducts.FixedPrice1WithVariation1.ItemId.ToString(), new Guid().ToString() );
-
+			var inventoryStat1Task = ebayService.GetItemAsync( ExistingProducts.FixedPrice1WithVariation1.ItemId.ToString(), new Guid().ToString() );
+			inventoryStat1Task.Wait();
+			var inventoryStat1 = inventoryStat1Task.Result;
 			//A
 			inventoryStat1.ItemId.Should().Be( ExistingProducts.FixedPrice1WithVariation1.ItemId.ToString() );
 		}
 
 		[ Test ]
-		public void GetItem_EbayServiceWithExistingFixedPriceVariationProduct_HookupItemVariationsSku()
+		public void GetItemAsync_EbayServiceWithExistingFixedPriceVariationProduct_HookupItemVariationsSku()
 		{
 			//A
 			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var inventoryStat1 = ebayService.GetItem( ExistingProducts.FixedPrice1WithVariation1.ItemId.ToString(), new Guid().ToString() );
+			var inventoryStat1Task = ebayService.GetItemAsync( ExistingProducts.FixedPrice1WithVariation1.ItemId.ToString(), new Guid().ToString() );
+			inventoryStat1Task.Wait();
+			var inventoryStat1 = inventoryStat1Task.Result;
 
 			//A
 			inventoryStat1.Variations.TrueForAll( x => !string.IsNullOrWhiteSpace( x.Sku ) ).Should().BeTrue();
