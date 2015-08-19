@@ -435,51 +435,6 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public GetSellerListCustomResponse GetSellerListCustom( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
-		{
-			var items = new GetSellerListCustomResponse();
-
-			var totalRecords = 0;
-			var recordsPerPage = this._itemsPerPage;
-			var pageNumber = 1;
-			var hasMoreItems = false;
-			do
-			{
-				var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
-
-				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
-
-				ActionPolicies.Get.Do( () =>
-				{
-					var webRequest = this.CreateEbayStandartPostRequest( this._endPoint, headers, body, mark );
-
-					using( var memStream = this._webRequestServices.GetResponseStream( webRequest, mark ) )
-					{
-						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
-						if( pagination != null )
-							totalRecords = pagination.TotalNumberOfEntries;
-
-						var getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
-
-						if( getSellerListResponse != null )
-						{
-							if( getSellerListResponse.Errors != null )
-							{
-								items.Errors = getSellerListResponse.Errors;
-								return;
-							}
-							hasMoreItems = getSellerListResponse.HasMoreItems;
-							if( getSellerListResponse.Items != null )
-								items.Items.AddRange( getSellerListResponse.Items );
-						}
-					}
-				} );
-				pageNumber++;
-			} while( hasMoreItems );
-
-			return items;
-		}
-
 		public async Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
 			var items = new GetSellerListCustomResponse();
