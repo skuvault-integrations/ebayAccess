@@ -64,14 +64,14 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( x =>
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), CancellationToken.None ).Returns( x =>
 			{
 				var ms = new MemoryStream();
 				var utf8Encoding = new UTF8Encoding();
 				var buf = utf8Encoding.GetBytes( serverResponsePages );
 				ms.Write( buf, 0, buf.Length );
 				ms.Position = 0;
-				return ms;
+				return Task.FromResult< Stream >( ms );
 			} );
 
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
@@ -132,14 +132,14 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-			stubWebRequestService.GetResponseStream( Arg.Any< WebRequest >(), Arg.Any< string >() ).Returns( x =>
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), CancellationToken.None ).Returns( x =>
 			{
 				var ms = new MemoryStream();
 				var utf8Encoding = new UTF8Encoding();
 				var buf = utf8Encoding.GetBytes( serverResponsePages );
 				ms.Write( buf, 0, buf.Length );
 				ms.Position = 0;
-				return ms;
+				return Task.FromResult< Stream >( ms );
 			} );
 
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
@@ -168,14 +168,14 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
 
-			stubWebRequestService.Setup( x => x.GetResponseStream( It.IsAny< WebRequest >(), It.IsAny< string >() ) ).Returns( () =>
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >(), CancellationToken.None ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
 				var encoding = new UTF8Encoding();
 				var buf = encoding.GetBytes( serverResponsePages[ stubCallCounter ] );
 				ms.Write( buf, 0, buf.Length );
 				ms.Position = 0;
-				return ms;
+				return Task.FromResult< Stream >( ms );
 			} ).Callback( () => stubCallCounter++ );
 
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
