@@ -87,7 +87,7 @@ namespace EbayAccess.Services
 
 		public WebRequest CreateEbayStandartPostRequest( string url, Dictionary< string, string > headers, string body, string mark )
 		{
-			var resultTask = this.CreateEbayStandartPostRequestAsync( url, headers, body, mark );
+			var resultTask = this.CreateEbayStandartPostRequestAsync( url, headers, body, mark, CancellationToken.None );
 			resultTask.Wait();
 			return resultTask.Result;
 		}
@@ -107,7 +107,7 @@ namespace EbayAccess.Services
 
 		public WebRequest CreateEbayStandartPostRequestWithCert( string url, Dictionary< string, string > headers, string body, string mark )
 		{
-			var requestTask = this.CreateEbayStandartPostRequestWithCertAsync( url, headers, body, mark );
+			var requestTask = this.CreateEbayStandartPostRequestWithCertAsync( url, headers, body, mark, CancellationToken.None );
 			requestTask.Wait();
 			return requestTask.Result;
 		}
@@ -226,7 +226,7 @@ namespace EbayAccess.Services
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
+					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 					{
@@ -272,7 +272,7 @@ namespace EbayAccess.Services
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
+					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 					{
@@ -316,7 +316,7 @@ namespace EbayAccess.Services
 			await ActionPolicies.GetAsyncShort.Do( async () =>
 			{
 				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, cts ).ConfigureAwait(false);
-
+				
 				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, cts ).ConfigureAwait( false ) )
 				{
 					var getOrdersResponseParsed = new EbayGetSellingManagerSoldListingsResponseParser().Parse( memStream );
@@ -458,7 +458,7 @@ namespace EbayAccess.Services
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
+					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 					{
@@ -543,7 +543,7 @@ namespace EbayAccess.Services
 
 				await ActionPolicies.GetAsync.Do( async () =>
 				{
-					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
+					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
 
 					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 					{
@@ -604,7 +604,7 @@ namespace EbayAccess.Services
 
 			await ActionPolicies.SubmitAsync.Do( async () =>
 			{
-				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
+				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
 
 				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 					getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
@@ -664,7 +664,7 @@ namespace EbayAccess.Services
 
 			await ActionPolicies.GetAsync.Do( async () =>
 			{
-				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
+				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
 
 				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
 				{
@@ -748,7 +748,7 @@ namespace EbayAccess.Services
 
 			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq, inventoryStatusReq2, inventoryStatusReq3, inventoryStatusReq4 );
 
-			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
+			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
 
 			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request, mark, CancellationToken.None ).ConfigureAwait( false ) )
 			{
@@ -841,7 +841,7 @@ namespace EbayAccess.Services
 
 			var body = this.CreateReviseFixedPriceItemRequestBody( fixedPriceItem, isVariation );
 
-			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark ).ConfigureAwait( false );
+			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
 
 			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request, mark, CancellationToken.None ).ConfigureAwait( false ) )
 			{

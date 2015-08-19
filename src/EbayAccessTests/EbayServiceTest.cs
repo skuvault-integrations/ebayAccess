@@ -95,7 +95,7 @@ namespace EbayAccessTests
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var sellngManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( "123", new Guid().ToString() );
+			var sellngManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( "123", new Guid().ToString(), CancellationToken.None );
 			sellngManagerOrderByRecordNumberAsync.Wait();
 
 			//A
@@ -114,7 +114,7 @@ namespace EbayAccessTests
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var sellngManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( "123", new Guid().ToString() );
+			var sellngManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( "123", new Guid().ToString(), CancellationToken.None );
 			sellngManagerOrderByRecordNumberAsync.Wait();
 
 			//A
