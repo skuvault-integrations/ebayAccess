@@ -526,18 +526,6 @@ namespace EbayAccess.Services
 			};
 		}
 
-		private string CreateReviseInventoryStatusRequestBody( long? itemIdMonad, long? quantityMonad, string sku )
-		{
-			var inventoryStatus = CreateInventoryStatusTag( itemIdMonad, quantityMonad, sku );
-
-			var body = string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseInventoryStatusRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials>{1}</ReviseInventoryStatusRequest>",
-				this._userCredentials.Token,
-				inventoryStatus
-				);
-			return body;
-		}
-
 		private static string CreateInventoryStatusTag( long? itemIdMonad, long? quantityMonad, string sku )
 		{
 			var itemIdElement = itemIdMonad.HasValue ? string.Format( "<ItemID>{0}</ItemID>", itemIdMonad.Value ) : string.Empty;
@@ -565,22 +553,6 @@ namespace EbayAccess.Services
 			return body;
 		}
 
-		public InventoryStatusResponse ReviseInventoryStatus( InventoryStatusRequest inventoryStatusReq, string mark )
-		{
-			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
-
-			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq.ItemId, inventoryStatusReq.Quantity, inventoryStatusReq.Sku );
-
-			var request = this.CreateEbayStandartPostRequestWithCert( this._endPoint, headers, body, mark );
-
-			using( var memStream = this._webRequestServices.GetResponseStream( request, mark ) )
-			{
-				var inventoryStatusResponse =
-					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
-				return inventoryStatusResponse;
-			}
-		}
-
 		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null, string mark = "" )
 		{
 			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
@@ -595,15 +567,6 @@ namespace EbayAccess.Services
 					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
 				return inventoryStatusResponse;
 			}
-		}
-
-		public IEnumerable< InventoryStatusResponse > ReviseInventoriesStatus( IEnumerable< InventoryStatusRequest > inventoryStatuses, string mark )
-		{
-			return
-				inventoryStatuses.Select(
-					productToUpdate => ActionPolicies.Submit.Get( () => this.ReviseInventoryStatus( productToUpdate, mark ) ) )
-					.Where( productUpdated => productUpdated != null )
-					.ToList();
 		}
 
 		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses, string mark )
