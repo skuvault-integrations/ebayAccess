@@ -30,6 +30,14 @@ namespace EbayAccess
 		private const int MaximumTimeWindowAllowed = 30;
 		private const string DurationGTC = "GTC";
 		private readonly DateTime _ebayWorkingStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
+		protected int _millisecondsDelay = 30000;
+
+		public int MaxDelayForRequest
+		{
+			get { return _millisecondsDelay; }
+			set { _millisecondsDelay = value; }
+		}
+
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
 
 		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
@@ -103,7 +111,7 @@ namespace EbayAccess
 
 				var salerecordIds = saleRecordsIDs.ToList();
 
-				var cts = new CancellationTokenSource( 600000 );
+				var cts = new CancellationTokenSource( _millisecondsDelay );
 				var getSellingManagerSoldListingsResponses = await salerecordIds.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x => await this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x, mark, cts.Token ).ConfigureAwait( false ) ).ConfigureAwait( false );
 
 				var sellingManagerSoldListingsResponses = getSellingManagerSoldListingsResponses as IList< GetSellingManagerSoldListingsResponse > ?? getSellingManagerSoldListingsResponses.ToList();

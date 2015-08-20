@@ -13,7 +13,17 @@ namespace EbayAccess.Services
 {
 	public class WebRequestServices : IWebRequestServices
 	{
-		private const int DEFAULTTIMEOUT = 300000;
+		protected readonly Func< string, WebRequest > _webRequestFactory;
+
+		public WebRequestServices()
+			: this( x => WebRequest.Create( x ) )
+		{
+		}
+
+		public WebRequestServices( Func< string, WebRequest > webRequestFactory )
+		{
+			_webRequestFactory = webRequestFactory;
+		}
 
 		#region BaseRequests
 		public WebRequest CreateServiceGetRequest( string serviceUrl, IDictionary< string, string > rawUrlParameters )
@@ -40,23 +50,28 @@ namespace EbayAccess.Services
 				var encoding = new UTF8Encoding();
 				var encodedBody = encoding.GetBytes( body );
 
-				var serviceRequest = ( HttpWebRequest )WebRequest.Create( serviceUrl );
+				var serviceRequest = _webRequestFactory( serviceUrl );
 				serviceRequest.Method = WebRequestMethods.Http.Post;
 				serviceRequest.ContentType = "text/xml";
 				serviceRequest.ContentLength = encodedBody.Length;
-				serviceRequest.KeepAlive = true;
+				var httpWebRequest = serviceRequest as HttpWebRequest;
+				if( httpWebRequest != null )
+					httpWebRequest.KeepAlive = true;
 
-				foreach( var rawHeadersKey in rawHeaders.Keys )
+				if( rawHeaders != null )
 				{
-					serviceRequest.Headers.Add( rawHeadersKey, rawHeaders[ rawHeadersKey ] );
+					foreach( var rawHeadersKey in rawHeaders.Keys )
+					{
+						serviceRequest.Headers.Add( rawHeadersKey, rawHeaders[ rawHeadersKey ] );
+					}
 				}
 
-				var abortingTask = AbortingTask( cts, () => serviceRequest.Abort() );
-
-				var requestStreamAsync = serviceRequest.GetRequestStreamAsync();
-				using( var newStream = await requestStreamAsync.ConfigureAwait( false ) )
-					newStream.Write( encodedBody, 0, encodedBody.Length );
-
+				using( cts.Register( () => serviceRequest.Abort() ) )
+				{
+					var requestStreamAsync = serviceRequest.GetRequestStreamAsync();
+					using( var newStream = await requestStreamAsync.ConfigureAwait( false ) )
+						newStream.Write( encodedBody, 0, encodedBody.Length );
+				}
 				return serviceRequest;
 			}
 			catch( Exception )
@@ -128,8 +143,7 @@ namespace EbayAccess.Services
 			{
 				EbayLogger.LogTraceInnerStarted( this.CreateMethodCallInfo( webRequest.RequestUri.ToString(), mark ) );
 
-				webRequest.Timeout = DEFAULTTIMEOUT;
-
+				using( cts.Register( () => webRequest.Abort() ) )
 				using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync().ConfigureAwait( false ) )
 				using( var dataStream = response.GetResponseStream() )
 				{

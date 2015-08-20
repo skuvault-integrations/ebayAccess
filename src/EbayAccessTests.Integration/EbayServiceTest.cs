@@ -28,6 +28,27 @@ namespace EbayAccessTests.Integration
 
 			//------------ Assert
 			ordersIdsAsync.Result.Should().BeEquivalentTo( ExistingOrdersIds.SaleNumers.ToArray() );
+
+		[ Test ]
+		public void GetSaleRecordsNumbers_ResponseTooksTooLongTime_Exception2()
+		{
+			//------------ Arrange
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() )
+			{ MaxDelayForRequest = 2500 };
+
+			var ordersIds = new List< string >();
+			//------------ Act
+			Action act = () =>
+			{
+				var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( ExistingOrdersIds.SaleNumers.ToArray() );
+				ordersIdsAsync.Wait();
+				ordersIds = ordersIdsAsync.Result;
+			};
+
+			//------------ Assert
+			act.ShouldThrow< Exception >();
+		}
+
 		}
 
 		[ Test ]
