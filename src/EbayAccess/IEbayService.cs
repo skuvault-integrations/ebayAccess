@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using EbayAccess.Models;
 using EbayAccess.Models.GetOrdersResponse;
@@ -38,5 +39,6 @@ namespace EbayAccess
 		Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, UpdateInventoryAlgorithm usealgorithm = UpdateInventoryAlgorithm.Old );
 
 		Func< string > AdditionalLogInfo { get; set; }
+		Dictionary< string, int > DelayForMethod { get; }
 	}
 }

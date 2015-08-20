@@ -255,6 +255,9 @@ namespace EbayAccess.Services
 
 		public async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber, string mark, CancellationToken cts )
 		{
+			if( cts.IsCancellationRequested )
+				throw new WebException( "Task was canceled" );
+
 			var orders = new GetSellingManagerSoldListingsResponse();
 
 			orders.Orders = new List< Order >();

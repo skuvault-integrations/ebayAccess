@@ -4,7 +4,6 @@ using System.Linq;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
-using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
@@ -28,27 +27,31 @@ namespace EbayAccessTests.Integration
 
 			//------------ Assert
 			ordersIdsAsync.Result.Should().BeEquivalentTo( ExistingOrdersIds.SaleNumers.ToArray() );
+		}
 
 		[ Test ]
-		public void GetSaleRecordsNumbers_ResponseTooksTooLongTime_Exception2()
+		public void GetSaleRecordsNumbers_ResponseTooksTooLongTime_Exception()
 		{
 			//------------ Arrange
-			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() )
-			{ MaxDelayForRequest = 2500 };
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			service.DelayForMethod[ "GetSaleRecordsNumbersAsync" ] = 25500;
 
-			var ordersIds = new List< string >();
+			var saleNumbers = new List< string >();
+			var existingSaleNumbersArray = ExistingOrdersIds.SaleNumers.ToArray();
+			for( var i = 0; i < 1000; i++ )
+			{
+				saleNumbers.Add( existingSaleNumbersArray[ i % existingSaleNumbersArray.Length ] );
+			}
+
 			//------------ Act
 			Action act = () =>
 			{
-				var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( ExistingOrdersIds.SaleNumers.ToArray() );
+				var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( saleNumbers.ToArray() );
 				ordersIdsAsync.Wait();
-				ordersIds = ordersIdsAsync.Result;
 			};
 
 			//------------ Assert
 			act.ShouldThrow< Exception >();
-		}
-
 		}
 
 		[ Test ]

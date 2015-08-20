@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,19 +31,16 @@ namespace EbayAccess
 		private const int MaximumTimeWindowAllowed = 30;
 		private const string DurationGTC = "GTC";
 		private readonly DateTime _ebayWorkingStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
-		protected int _millisecondsDelay = 30000;
-
-		public int MaxDelayForRequest
-		{
-			get { return _millisecondsDelay; }
-			set { _millisecondsDelay = value; }
-		}
+		protected int DEFAULT_DELAY_MILLISECONDS = 1800000;
+		public Dictionary< string, int > DelayForMethod { get; private set; }
 
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
 
 		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
 		{
 			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayConfig, webRequestServices );
+
+			DelayForMethod = new Dictionary<string, int>();
 		}
 
 		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig ) : this( credentials, ebayConfig, new WebRequestServices() )
@@ -111,7 +109,10 @@ namespace EbayAccess
 
 				var salerecordIds = saleRecordsIDs.ToList();
 
-				var cts = new CancellationTokenSource( _millisecondsDelay );
+				var currentMethod = GetCallerMethodName();
+				var millisecondsDelay = DelayForMethod.ContainsKey( currentMethod ) ? DelayForMethod[ currentMethod ] : DEFAULT_DELAY_MILLISECONDS;
+
+				var cts = new CancellationTokenSource( millisecondsDelay );
 				var getSellingManagerSoldListingsResponses = await salerecordIds.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x => await this.EbayServiceLowLevel.GetSellngManagerOrderByRecordNumberAsync( x, mark, cts.Token ).ConfigureAwait( false ) ).ConfigureAwait( false );
 
 				var sellingManagerSoldListingsResponses = getSellingManagerSoldListingsResponses as IList< GetSellingManagerSoldListingsResponse > ?? getSellingManagerSoldListingsResponses.ToList();
@@ -757,6 +758,11 @@ namespace EbayAccess
 		private static void LogTraceException( string message, EbayException ebayException )
 		{
 			EbayLogger.Log().Trace( ebayException, message );
+		}
+
+		protected string GetCallerMethodName([CallerMemberName] string memberName = "")
+		{
+			return memberName;
 		}
 	}
 
