@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
-using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
@@ -23,14 +22,13 @@ namespace EbayAccessTests.Integration.Services
 			//A
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
-			var ebayService = new EbayService(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox());
-
-			var temp1 = ebayService.GetActiveProductsAsync(true);
+			var temp1 = ebayService.GetActiveProductsAsync( true );
 			temp1.Wait();
-			var activeProducts = temp1.Result.Where(x => !x.IsItemWithVariations()).ToList();
-			var activeProductWithoutVariations1 = activeProducts.Skip(0).First();
-			var activeProductWithoutVariations2 = activeProducts.Skip(1).First();
+			var activeProducts = temp1.Result.Where( x => !x.IsItemWithVariations() ).ToList();
+			var activeProductWithoutVariations1 = activeProducts.Skip( 0 ).First();
+			var activeProductWithoutVariations2 = activeProducts.Skip( 1 ).First();
 
 			//A
 			var updateProductsAsyncTask1 = ebayServiceLowLevel.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
@@ -42,8 +40,8 @@ namespace EbayAccessTests.Integration.Services
 
 			var updateProductsAsyncTask2 = ebayServiceLowLevel.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
-				new InventoryStatusRequest { ItemId = activeProductWithoutVariations1.ItemId.ToLongOrDefault(), Quantity = activeProductWithoutVariations1.Quantity  },
-				new InventoryStatusRequest { ItemId = activeProductWithoutVariations2.ItemId.ToLongOrDefault(), Quantity = activeProductWithoutVariations2.Quantity  },
+				new InventoryStatusRequest { ItemId = activeProductWithoutVariations1.ItemId.ToLongOrDefault(), Quantity = activeProductWithoutVariations1.Quantity },
+				new InventoryStatusRequest { ItemId = activeProductWithoutVariations2.ItemId.ToLongOrDefault(), Quantity = activeProductWithoutVariations2.Quantity },
 			}, new Guid().ToString() );
 			updateProductsAsyncTask2.Wait();
 
@@ -59,7 +57,6 @@ namespace EbayAccessTests.Integration.Services
 			( item1Update1.Quantity - item1Update2.Quantity ).Should().Be( this.QtyUpdateFor );
 			( item2Update1.Quantity - item2Update2.Quantity ).Should().Be( this.QtyUpdateFor );
 		}
-
 
 		[ Test ]
 		public void ReviseInventoriesStatusAsync_EbayServiceWithVariationFixedPriceItems_QuantityUpdatedForAll()
