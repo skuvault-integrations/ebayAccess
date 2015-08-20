@@ -87,6 +87,19 @@ namespace EbayAccess.Models
 				};
 			}
 		}
+		public static ResponseError InternalErrorToTheApplication
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "10007",
+					LongMessage = "Internal error to the application",
+					ShortMessage = "Internal error to the application",
+					SeverityCode = "Error"
+				};
+			}
+		}
 
 		public static ResponseError ReplaceableValue
 		{
