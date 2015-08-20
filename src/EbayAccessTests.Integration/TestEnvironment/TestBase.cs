@@ -73,9 +73,9 @@ namespace EbayAccessTests.Integration.TestEnvironment
 			//"262",
 			//"265"
 
-			"299",
-			"300",
-			"301",
+			//"299",
+			//"300",
+			//"301",
 			"324",
 			"323"
 		};

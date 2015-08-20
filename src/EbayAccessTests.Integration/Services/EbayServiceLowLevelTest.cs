@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EbayAccess;
+using EbayAccess.Misc;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
@@ -18,25 +21,43 @@ namespace EbayAccessTests.Integration.Services
 		public void ReviseInventoriesStatusAsync_EbayServiceWithNonVariationFixedPriceItems_QuantityUpdatedForAll()
 		{
 			//A
-			var ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+
+			var ebayService = new EbayService(this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox());
+
+			var temp1 = ebayService.GetActiveProductsAsync(true);
+			temp1.Wait();
+			var activeProducts = temp1.Result.Where(x => !x.IsItemWithVariations()).ToList();
+			var activeProductWithoutVariations1 = activeProducts.Skip(0).First();
+			var activeProductWithoutVariations2 = activeProducts.Skip(1).First();
 
 			//A
-			var updateProductsAsyncTask1 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
+			var updateProductsAsyncTask1 = ebayServiceLowLevel.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
-				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice1WithoutVariations.Quantity + this.QtyUpdateFor },
-				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice2WithoutVariations.Quantity + this.QtyUpdateFor },
+				new InventoryStatusRequest { ItemId = activeProductWithoutVariations1.ItemId.ToLongOrDefault(), Quantity = activeProductWithoutVariations1.Quantity + this.QtyUpdateFor },
+				new InventoryStatusRequest { ItemId = activeProductWithoutVariations2.ItemId.ToLongOrDefault(), Quantity = activeProductWithoutVariations2.Quantity + this.QtyUpdateFor },
 			}, new Guid().ToString() );
-			var updateProductsAsyncTask2 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
+			updateProductsAsyncTask1.Wait();
+
+			var updateProductsAsyncTask2 = ebayServiceLowLevel.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
-				ExistingProducts.FixedPrice1WithoutVariations,
-				ExistingProducts.FixedPrice2WithoutVariations,
+				new InventoryStatusRequest { ItemId = activeProductWithoutVariations1.ItemId.ToLongOrDefault(), Quantity = activeProductWithoutVariations1.Quantity  },
+				new InventoryStatusRequest { ItemId = activeProductWithoutVariations2.ItemId.ToLongOrDefault(), Quantity = activeProductWithoutVariations2.Quantity  },
 			}, new Guid().ToString() );
+			updateProductsAsyncTask2.Wait();
 
 			//A
-			updateProductsAsyncTask1.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
-			updateProductsAsyncTask2.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
-			( updateProductsAsyncTask1.Result.ToList().First( x => x.Items[ 0 ].ItemId == ExistingProducts.FixedPrice1WithoutVariations.ItemId ).Items[ 0 ].Quantity - updateProductsAsyncTask2.Result.ToList().First( x => x.Items[ 0 ].ItemId == ExistingProducts.FixedPrice1WithoutVariations.ItemId ).Items[ 0 ].Quantity ).Should().Be( this.QtyUpdateFor );
-			( updateProductsAsyncTask1.Result.ToList().First( x => x.Items[ 0 ].ItemId == ExistingProducts.FixedPrice2WithoutVariations.ItemId ).Items[ 0 ].Quantity - updateProductsAsyncTask2.Result.ToList().First( x => x.Items[ 0 ].ItemId == ExistingProducts.FixedPrice2WithoutVariations.ItemId ).Items[ 0 ].Quantity ).Should().Be( this.QtyUpdateFor );
+			updateProductsAsyncTask1.Result.ToList().TrueForAll( x => x.Items.Count == 2 ).Should().Be( true );
+			updateProductsAsyncTask2.Result.ToList().TrueForAll( x => x.Items.Count == 2 ).Should().Be( true );
+
+			var item1Update1 = updateProductsAsyncTask1.Result.ToList().First().Items.Where( x => x.ItemId == activeProductWithoutVariations1.ItemId.ToLongOrDefault( false ) ).First();
+			var item1Update2 = updateProductsAsyncTask2.Result.ToList().First().Items.Where( x => x.ItemId == activeProductWithoutVariations1.ItemId.ToLongOrDefault( false ) ).First();
+			var item2Update1 = updateProductsAsyncTask1.Result.ToList().First().Items.Where( x => x.ItemId == activeProductWithoutVariations2.ItemId.ToLongOrDefault( false ) ).First();
+			var item2Update2 = updateProductsAsyncTask2.Result.ToList().First().Items.Where( x => x.ItemId == activeProductWithoutVariations2.ItemId.ToLongOrDefault( false ) ).First();
+
+			( item1Update1.Quantity - item1Update2.Quantity ).Should().Be( this.QtyUpdateFor );
+			( item2Update1.Quantity - item2Update2.Quantity ).Should().Be( this.QtyUpdateFor );
 		}
 
 
