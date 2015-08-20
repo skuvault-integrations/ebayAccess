@@ -123,60 +123,7 @@ namespace EbayAccessTests.Integration
 			updateProductsAsyncTask1.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
 			updateProductsAsyncTask2.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
 		}
-
-		[ Test ]
-		public void UpdateInventoryAsyncOld_UpdateFixedPriceItemWithVariationsAndNonvariation_NoExceptionOccuredAndResponseNotEmpty()
-		{
-			//------------ Arrange
-			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-
-			var temp1 = ebayService.GetActiveProductsAsync( true );
-			temp1.Wait();
-			var activeProducts = temp1.Result.ToList();
-
-			var activeProductWithVariations1 = activeProducts.First( x => x.IsItemWithVariations() );
-			var activeProductWithoutVariations1 = activeProducts.First( x => !x.IsItemWithVariations() );
-
-			//------------ Act
-			//1
-			var updayeInventoryTask1 = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
-			{
-				new UpdateInventoryRequest { ItemId = activeProductWithVariations1.ItemId.ToLongOrDefault( false ), Sku = activeProductWithVariations1.GetSku().Sku, Quantity = 100500, ConditionID = activeProductWithVariations1.ConditionId, IsVariation = activeProductWithVariations1.IsItemWithVariations() },
-				new UpdateInventoryRequest { ItemId = activeProductWithoutVariations1.ItemId.ToLongOrDefault( false ), Sku = activeProductWithoutVariations1.GetSku().Sku, Quantity = 100500, ConditionID = activeProductWithoutVariations1.ConditionId, IsVariation = activeProductWithoutVariations1.IsItemWithVariations() },
-			} );
-			updayeInventoryTask1.Wait();
-			var updateInventoryResponse1 = updayeInventoryTask1.Result.ToList();
-
-			//2
-			var temp2 = ebayService.GetActiveProductsAsync( true );
-			temp2.Wait();
-			activeProducts = temp2.Result.ToList();
-			var activeProductWithVariations2 = activeProducts.First( x => x.ItemId == activeProductWithVariations1.ItemId && x.Sku == activeProductWithVariations1.Sku );
-			var activeProductWithoutVariations2 = activeProducts.First( x => x.ItemId == activeProductWithoutVariations1.ItemId && x.Sku == activeProductWithoutVariations1.Sku );
-
-			var updateInventoryTask2 = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
-			{
-				new UpdateInventoryRequest { ItemId = activeProductWithVariations2.ItemId.ToLongOrDefault( false ), Sku = activeProductWithVariations2.Sku, Quantity = 0, ConditionID = activeProductWithVariations2.ConditionId, IsVariation = activeProductWithVariations2.IsItemWithVariations() },
-				new UpdateInventoryRequest { ItemId = activeProductWithoutVariations2.ItemId.ToLongOrDefault( false ), Sku = activeProductWithoutVariations2.Sku, Quantity = 0, ConditionID = activeProductWithoutVariations2.ConditionId, IsVariation = activeProductWithoutVariations2.IsItemWithVariations() },
-			} );
-			updateInventoryTask2.Wait();
-			var updateInventoryResponse2 = updateInventoryTask2.Result.ToList();
-
-			//3
-			var temp3 = ebayService.GetActiveProductsAsync( true );
-			temp3.Wait();
-			activeProducts = temp3.Result.ToList();
-			var activeProductWithVariations3 = activeProducts.First( x => x.ItemId == activeProductWithVariations1.ItemId && x.Sku == activeProductWithVariations1.Sku );
-			var activeProductWithoutVariations3 = activeProducts.First( x => x.ItemId == activeProductWithoutVariations1.ItemId && x.Sku == activeProductWithoutVariations1.Sku );
-
-			//------------ Assert
-			activeProductWithVariations3.Quantity.Should().Be( 0 );
-			activeProductWithoutVariations3.Quantity.Should().Be( 0 );
-
-			activeProductWithVariations2.Quantity.Should().Be( 100500 );
-			activeProductWithoutVariations2.Quantity.Should().Be( 100500 );
-		}
-
+		
 		[ Test ]
 		[ TestCase( UpdateInventoryAlgorithm.Econom ) ]
 		[ TestCase( UpdateInventoryAlgorithm.Old ) ]
