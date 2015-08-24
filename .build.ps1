@@ -114,7 +114,7 @@ task NuGet Package, Version, {
 			<group targetFramework="net45">
 				<dependency id="Netco" version="1.3.1" />
 				<dependency id="CuttingEdge.Conditions" version="1.2.0.0" />
-				<dependency id="Newtonsoft.Json" version="7.0.1" />
+				<dependency id="Newtonsoft.Json" version="6.0.8" />
 			</group>
 		</dependencies>
 	</metadata>
