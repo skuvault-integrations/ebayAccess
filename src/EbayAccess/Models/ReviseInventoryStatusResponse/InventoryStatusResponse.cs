@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using EbayAccess.Misc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using EbayAccess.Models.BaseResponse;
 
 namespace EbayAccess.Models.ReviseInventoryStatusResponse
@@ -8,22 +8,15 @@ namespace EbayAccess.Models.ReviseInventoryStatusResponse
 	public partial class InventoryStatusResponse : EbayBaseResponse
 	{
 		public List< Item > Items { get; set; }
+		public List< Item > RequestedItems { get; set; }
 	}
 
-	public class Item : ISerializableManual
+	public class Item
 	{
 		public long? ItemId { get; set; }
 		public long? Quantity { get; set; }
 		public string Sku { get; set; }
 		public double? StartPrice { get; set; }
-
-		public string ToJsonManual()
-		{
-			return string.Format( "{{id:{0},sku:'{1}',qty:{2}}}",
-				this.ItemId.HasValue ? this.ItemId.Value.ToString( CultureInfo.InvariantCulture ) : PredefinedValues.NotAvailable,
-				string.IsNullOrWhiteSpace( this.Sku ) ? PredefinedValues.NotAvailable : this.Sku,
-				this.Quantity.ToString() );
-		}
 	}
 
 	public partial class InventoryStatusResponse
@@ -32,7 +25,10 @@ namespace EbayAccess.Models.ReviseInventoryStatusResponse
 		{
 			foreach( var item in this.Items )
 			{
-				yield return new InventoryStatusResponse { Items = new List< Item > { item } };
+				Item requestedItem = null;
+				if( RequestedItems != null )
+					requestedItem = this.RequestedItems.FirstOrDefault( x => x.ItemId == item.ItemId && string.Equals( x.Sku, item.Sku, StringComparison.InvariantCultureIgnoreCase ) );
+				yield return new InventoryStatusResponse { Items = new List< Item > { item }, RequestedItems = new List< Item >() { requestedItem } };
 			}
 		}
 	}

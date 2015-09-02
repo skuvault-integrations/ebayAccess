@@ -240,8 +240,15 @@ namespace EbayAccess.Misc
 			return responseStr;
 		}
 
+		public static IEnumerable< T2 > ConvertTo< T1, T2 >( this IEnumerable< T1 > source ) where T1 : IConvertableInsideEbayAccess< T2 >
+		{
+			if( source == null )
+				return null;
 
-		public static string ToJson<T>(this IEnumerable<T> source)
+			return source.Select( x => x.ConvertTo() );
+		}
+
+		public static string ToJson< T >( this IEnumerable< T > source )
 		{
 			try
 			{

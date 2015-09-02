@@ -568,6 +568,7 @@ namespace EbayAccess.Services
 			{
 				var inventoryStatusResponse =
 					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
+				inventoryStatusResponse.RequestedItems = new List< InventoryStatusRequest >() { inventoryStatusReq, inventoryStatusReq2, inventoryStatusReq3, inventoryStatusReq4 }.Where( x => x != null ).ConvertTo< InventoryStatusRequest, Models.ReviseInventoryStatusResponse.Item >().ToList();
 				return inventoryStatusResponse;
 			}
 		}
