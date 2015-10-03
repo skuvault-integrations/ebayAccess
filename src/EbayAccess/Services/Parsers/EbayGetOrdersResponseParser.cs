@@ -81,12 +81,16 @@ namespace EbayAccess.Services.Parsers
 					{
 						var shipToAddress = x.Element( ns + "ShippingAddress" );
 						var address = new ShippingAddress();
+						address.Name = GetElementValue(shipToAddress, ns, "Name");
 						address.Country = GetElementValue( shipToAddress, ns, "Country" );
+						address.CountryName = GetElementValue( shipToAddress, ns, "CountryName" );
+						address.Phone = GetElementValue( shipToAddress, ns, "Phone" );
 						address.City = GetElementValue( shipToAddress, ns, "CityName" );
 						address.PostalCode = GetElementValue( shipToAddress, ns, "PostalCode" );
 						address.State = GetElementValue( shipToAddress, ns, "StateOrProvince" );
 						address.Street1 = GetElementValue( shipToAddress, ns, "Street1" );
 						address.Street2 = GetElementValue( shipToAddress, ns, "Street2" );
+						resultOrder.ShippingAddress = address;
 					}
 					#endregion
 

@@ -8,5 +8,8 @@
 		public string State { get; set; }
 		public string Street1 { get; set; }
 		public string Street2 { get; set; }
+		public string CountryName { get; set; }
+		public string Phone { get; set; }
+		public string Name { get; set; }
 	}
 }
