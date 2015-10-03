@@ -27,8 +27,7 @@
 			<ShippingDetails>
 				<SalesTax>
 					<SalesTaxPercent>0.0</SalesTaxPercent>
-					<SalesTaxState>
-					</SalesTaxState>
+					<SalesTaxState>x123x</SalesTaxState>
 					<ShippingIncludedInTax>false</ShippingIncludedInTax>
 					<SalesTaxAmount currencyID="USD">0.0</SalesTaxAmount>
 				</SalesTax>

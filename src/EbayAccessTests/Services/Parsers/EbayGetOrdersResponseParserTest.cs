@@ -53,6 +53,21 @@ namespace EbayAccessTests.Services.Parsers
 				orders.Orders.First().ShippingAddress.State.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
 				orders.Orders.First().ShippingAddress.Street1.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
 				orders.Orders.First().ShippingAddress.Street2.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+
+				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ShippingService.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ShippingServiceCost.Should().HaveValue( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ShippingServicePriority.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ExpeditedService.Should().HaveValue( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ShippingTimeMin.Should().HaveValue( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ShippingTimeMax.Should().HaveValue( "because in source file there is shipping info" );
+
+				orders.Orders.First().ShippingDetails.SalesTax.SalesTaxPercent.Should().HaveValue( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingDetails.SalesTax.SalesTaxState.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingDetails.SalesTax.ShippingIncludedInTax.Should().HaveValue( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingDetails.SalesTax.SalesTaxAmount.Should().HaveValue( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingDetails.SalesTax.SalesTaxAmountCurrencyId.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+
+				orders.Orders.First().ShippingDetails.GetItFast.Should().HaveValue( "because in source file there is shipping info" );
 			}
 		}
 
