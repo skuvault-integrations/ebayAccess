@@ -34,13 +34,25 @@ namespace EbayAccessTests.Services.Parsers
 		}
 
 		[ Test ]
-		public void Parse_GetOrdersResponseWithSku_HookupSku()
+		public void Parse_GetOrdersResponse_HookupOrdewrDetails()
 		{
-			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read ) )
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read ) )
 			{
+				//A
 				var parser = new EbayGetOrdersResponseParser();
+				//A
 				var orders = parser.Parse( fs );
+				//A
 				orders.Orders.First().TransactionArray.First().Item.Sku.Should().NotBeNullOrWhiteSpace( "because in source file there is order with SKU" );
+				orders.Orders.First().ShippingAddress.Name.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingAddress.Country.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingAddress.CountryName.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingAddress.Phone.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingAddress.City.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingAddress.PostalCode.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingAddress.State.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingAddress.Street1.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
+				orders.Orders.First().ShippingAddress.Street2.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
 			}
 		}
 
