@@ -81,7 +81,7 @@ namespace EbayAccess.Services.Parsers
 					{
 						var shipToAddress = x.Element( ns + "ShippingAddress" );
 						var address = new ShippingAddress();
-						address.Name = GetElementValue(shipToAddress, ns, "Name");
+						address.Name = GetElementValue( shipToAddress, ns, "Name" );
 						address.Country = GetElementValue( shipToAddress, ns, "Country" );
 						address.CountryName = GetElementValue( shipToAddress, ns, "CountryName" );
 						address.Phone = GetElementValue( shipToAddress, ns, "Phone" );
@@ -141,22 +141,64 @@ namespace EbayAccess.Services.Parsers
 					#endregion
 
 					#region Delivery
-					if( x.Element( ns + "ShippingDetails" ) != null )
+					var shippingDetails = x.Element( ns + "ShippingDetails" );
+					if( shippingDetails != null )
 					{
 						resultOrder.ShippingDetails = new ShippingDetails();
 
 						resultOrder.ShippingDetails.SellingManagerSalesRecordNumber = GetElementValue( x, ns, "ShippingDetails", "SellingManagerSalesRecordNumber" ).ToIntOrDefault();
+						resultOrder.ShippingDetails.GetItFast = GetElementValue( x, ns, "ShippingDetails", "GetItFast" ).ToBoolNullable();
 
-						if( x.Element( ns + "ShippingServiceOptions" ) != null )
+						var salesTaxEl = shippingDetails.Element( ns + "SalesTax" );
+						if( salesTaxEl != null )
 						{
-							resultOrder.ShippingDetails.ShippingServiceOptions = new ShippingServiceOptions();
+							var salesTax = new SalesTax();
+							var salesTaxPercent = GetElementValue( salesTaxEl, ns, "SalesTaxPercent" ).ToDecimalDotOrComaSeparatedNullable();
+							var salesTaxState = GetElementValue( salesTaxEl, ns, "SalesTaxState" );
+							var shippingIncludedInTax = GetElementValue( salesTaxEl, ns, "ShippingIncludedInTax" ).ToBoolNullable();
+							var salesTaxAmount = GetElementValue( salesTaxEl, ns, "SalesTaxAmount" ).ToDecimalDotOrComaSeparatedNullable();
+							var salesTaxAmountCurrency = GetElementAttribute( "currencyID", salesTaxEl, ns, "SalesTaxAmount" );
+
+							salesTax.SalesTaxPercent = salesTaxPercent;
+							salesTax.SalesTaxState = salesTaxState;
+							salesTax.ShippingIncludedInTax = shippingIncludedInTax;
+							salesTax.SalesTaxAmount = salesTaxAmount;
+							salesTax.SalesTaxAmountCurrencyId = salesTaxAmountCurrency;
+
+							resultOrder.ShippingDetails.SalesTax = salesTax;
+						}
+
+						var shippingService = shippingDetails.Element( ns + "ShippingServiceOptions" );
+						if( shippingService != null )
+						{
+							var shippingServiceOptions = new ShippingServiceOptions();
+
+							var ShippingService = GetElementValue( shippingService, ns, "ShippingService" );
+							var ShippingServiceCost = GetElementValue( shippingService, ns, "ShippingServiceCost" ).ToDecimalDotOrComaSeparatedNullable();
+							var ShippingServiceCostCurrency = GetElementAttribute( "currencyID", shippingService, ns, "ShippingServiceCost" );
+							var ShippingServicePriority = GetElementValue( shippingService, ns, "ShippingServicePriority" );
+							var ExpeditedService = GetElementValue( shippingService, ns, "ExpeditedService" ).ToBoolNullable();
+							var ShippingTimeMin = GetElementValue( shippingService, ns, "ShippingTimeMin" ).ToLongOrNull();
+							var ShippingTimeMax = GetElementValue( shippingService, ns, "ShippingTimeMax" ).ToLongOrNull();
+
+							shippingServiceOptions.ShippingService = ShippingService;
+							shippingServiceOptions.ShippingServiceCost = ShippingServiceCost;
+							shippingServiceOptions.ShippingServiceCostCurrency = ShippingServiceCostCurrency;
+							shippingServiceOptions.ShippingServicePriority = ShippingServicePriority;
+							shippingServiceOptions.ExpeditedService = ExpeditedService;
+							shippingServiceOptions.ShippingTimeMin = ShippingTimeMin;
+							shippingServiceOptions.ShippingTimeMax = ShippingTimeMax;
+
+							resultOrder.ShippingDetails.ShippingServiceOptions = shippingServiceOptions;
 							if( x.Element( ns + "ShippingPackageInfo" ) != null )
 							{
-								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo = new ShippingPackageInfo();
-								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ActualDeliveryTime = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ActualDeliveryTime" ).ToDateTime();
-								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMax = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMax" ).ToDateTime();
-								resultOrder.ShippingDetails.ShippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMin = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMin" ).ToDateTime();
+								shippingServiceOptions.ShippingPackageInfo = new ShippingPackageInfo();
+								shippingServiceOptions.ShippingPackageInfo.ActualDeliveryTime = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ActualDeliveryTime" ).ToDateTime();
+								shippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMax = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMax" ).ToDateTime();
+								shippingServiceOptions.ShippingPackageInfo.ScheduledDeliveryTimeMin = GetElementValue( x, ns, "ShippingDetails", "ShippingServiceOptions", "ShippingPackageInfo", "ScheduledDeliveryTimeMin" ).ToDateTime();
 							}
+
+							resultOrder.ShippingDetails.ShippingServiceOptions = shippingServiceOptions;
 						}
 					}
 					#endregion

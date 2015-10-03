@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
@@ -49,9 +48,48 @@ namespace EbayAccess.Misc
 			return parsedBool;
 		}
 
+		public static bool? ToBoolNullable( this string source, bool throwException = false )
+		{
+			bool? parsedBool = null;
+			try
+			{
+				parsedBool = bool.Parse( source );
+			}
+			catch
+			{
+				if( throwException )
+					throw;
+			}
+
+			return parsedBool;
+		}
+
 		public static decimal ToDecimalDotOrComaSeparated( this string source, bool throwException = false )
 		{
 			var parsedNumber = default ( decimal );
+			try
+			{
+				parsedNumber = decimal.Parse( source, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture );
+			}
+			catch
+			{
+				try
+				{
+					parsedNumber = decimal.Parse( source, new NumberFormatInfo { NumberDecimalSeparator = "," } );
+				}
+				catch
+				{
+					if( throwException )
+						throw;
+				}
+			}
+
+			return parsedNumber;
+		}
+
+		public static decimal? ToDecimalDotOrComaSeparatedNullable( this string source, bool throwException = false )
+		{
+			decimal? parsedNumber = null;
 			try
 			{
 				parsedNumber = decimal.Parse( source, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture );
@@ -100,6 +138,21 @@ namespace EbayAccess.Misc
 			}
 
 			return default( long );
+		}
+
+		public static long? ToLongOrNull( this string source, bool throwException = false )
+		{
+			try
+			{
+				return long.Parse( source, CultureInfo.InvariantCulture );
+			}
+			catch( Exception )
+			{
+				if( throwException )
+					throw;
+			}
+
+			return ( long? )null;
 		}
 
 		public static long ToLong( this string source )
@@ -252,11 +305,11 @@ namespace EbayAccess.Misc
 		{
 			try
 			{
-				if (source == null)
+				if( source == null )
 					return PredefinedValues.EmptyJsonObject;
-				var objects = source as IList<T> ?? source.ToList();
-				var items = string.Join(",", objects.Where(x => x != null).Select(x => x.ToJson()));
-				var res = string.Format("{{Count:{0}, Items:[{1}]}}", objects.Count(), items);
+				var objects = source as IList< T > ?? source.ToList();
+				var items = string.Join( ",", objects.Where( x => x != null ).Select( x => x.ToJson() ) );
+				var res = string.Format( "{{Count:{0}, Items:[{1}]}}", objects.Count(), items );
 				return res;
 			}
 			catch
