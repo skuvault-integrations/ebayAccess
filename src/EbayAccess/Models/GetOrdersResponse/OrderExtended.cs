@@ -40,6 +40,12 @@ namespace EbayAccess.Models.GetOrdersResponse
 		{
 			try
 			{
+				switch( sourceOrder.Status )
+				{
+					case EbayOrderStatusEnum.Cancelled:
+						return OrderCommonStatusEnum.Canceled;
+				}
+
 				switch( sourceOrder.CancelStatus )
 				{
 					case CancelStatusEnum.CancelComplete:
