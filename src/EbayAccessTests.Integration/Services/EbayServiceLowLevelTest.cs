@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
@@ -24,7 +25,7 @@ namespace EbayAccessTests.Integration.Services
 
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
-			var temp1 = ebayService.GetActiveProductsAsync( true );
+			var temp1 = ebayService.GetActiveProductsAsync( CancellationToken.None, true );
 			temp1.Wait();
 			var activeProducts = temp1.Result.Where( x => !x.IsItemWithVariations() ).ToList();
 			var activeProductWithoutVariations1 = activeProducts.Skip( 0 ).First();

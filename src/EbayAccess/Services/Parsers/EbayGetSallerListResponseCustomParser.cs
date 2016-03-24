@@ -15,6 +15,9 @@ namespace EbayAccess.Services.Parsers
 		{
 			try
 			{
+				if( stream == null )
+					return null;
+
 				string temp;
 
 				var getSellerListResponse = new GetSellerListCustomResponse();

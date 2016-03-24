@@ -45,6 +45,9 @@ namespace EbayAccess.Services
 		{
 			try
 			{
+				if( cts.IsCancellationRequested )
+					return null;
+
 				EbayLogger.LogTraceInnerStarted( CreateMethodCallInfo( ( new { ServiceUrl = serviceUrl, Body = body, Headers = rawHeaders.ToJson() } ).ToJson(), mark ) );
 
 				var encoding = new UTF8Encoding();
@@ -141,6 +144,9 @@ namespace EbayAccess.Services
 		{
 			try
 			{
+				if( cts.IsCancellationRequested )
+					return null;
+
 				EbayLogger.LogTraceInnerStarted( this.CreateMethodCallInfo( webRequest.RequestUri.ToString(), mark ) );
 
 				using( cts.Register( () => webRequest.Abort() ) )

@@ -203,23 +203,29 @@ namespace EbayAccess
 		#endregion
 
 		#region GetProducts
-		public async Task< IEnumerable< Item > > GetActiveProductsAsync( bool getOnlyGtcDuration = false )
+		public async Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false )
 		{
+
 			var methodParameters = string.Format( "{{getOnlyGtcDuration: {0}}}", getOnlyGtcDuration );
 			var mark = Guid.NewGuid().ToString();
 			try
 			{
+				if (ct.IsCancellationRequested)
+					return null;
+
 				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
-				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false );
+				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( ct, DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false ) 
+					?? new List<GetSellerListCustomResponse>();
 
-				sellerListsAsync.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
-				sellerListsAsync.ThrowOnError();
+				var getSellerListCustomResponses = sellerListsAsync as IList< GetSellerListCustomResponse > ?? sellerListsAsync.ToList();
+				getSellerListCustomResponses.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
+				getSellerListCustomResponses.ThrowOnError();
 
 				if( getOnlyGtcDuration )
-					sellerListsAsync.ForEach( x => x.Items = x.Items.Where( y => y.Duration.ToUpper().Equals( DurationGTC ) ).ToList() );
+					getSellerListCustomResponses.ForEach( x => x.Items = x.Items.Where( y => y.Duration.ToUpper().Equals( DurationGTC ) ).ToList() );
 
-				var items = sellerListsAsync.SelectMany( x => x.ItemsSplitedByVariations );
+				var items = getSellerListCustomResponses.SelectMany( x => x.ItemsSplitedByVariations );
 
 				var resultSellerListBriefInfo = items.ToJson();
 				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : resultSellerListBriefInfo ) );

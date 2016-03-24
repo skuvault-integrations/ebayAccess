@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
@@ -132,7 +134,7 @@ namespace EbayAccessTests.Integration
 			//------------ Arrange
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
-			var temp1 = ebayService.GetActiveProductsAsync( true );
+			var temp1 = ebayService.GetActiveProductsAsync( CancellationToken.None, true );
 			temp1.Wait();
 			var activeProducts = temp1.Result.ToList();
 
@@ -150,7 +152,7 @@ namespace EbayAccessTests.Integration
 			var updateInventoryResponse1 = updayeInventoryTask1.Result.ToList();
 
 			//2
-			var temp2 = ebayService.GetActiveProductsAsync( true );
+			var temp2 = ebayService.GetActiveProductsAsync( CancellationToken.None, true );
 			temp2.Wait();
 			activeProducts = temp2.Result.ToList();
 			var activeProductWithVariations2 = activeProducts.First( x => x.ItemId == activeProductWithVariations1.ItemId && x.GetSku().Sku == activeProductWithVariations1.GetSku().Sku );
@@ -165,7 +167,7 @@ namespace EbayAccessTests.Integration
 			var updateInventoryResponse2 = updateInventoryTask2.Result.ToList();
 
 			//3
-			var temp3 = ebayService.GetActiveProductsAsync( true );
+			var temp3 = ebayService.GetActiveProductsAsync( CancellationToken.None, true );
 			temp3.Wait();
 			activeProducts = temp3.Result.ToList();
 			var activeProductWithVariations3 = activeProducts.First( x => x.ItemId == activeProductWithVariations1.ItemId && x.GetSku().Sku == activeProductWithVariations1.GetSku().Sku );
@@ -255,7 +257,29 @@ namespace EbayAccessTests.Integration
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var inventoryStat1Task = ebayService.GetActiveProductsAsync();
+			var inventoryStat1Task = ebayService.GetActiveProductsAsync( CancellationToken.None );
+			inventoryStat1Task.Wait();
+			var products = inventoryStat1Task.Result;
+
+			//------------ Assert
+			products.Count().Should().BeGreaterThan( 0, "because on site there are items" );
+		}
+
+		[ Test ]
+		public void GetActiveProductsAsync_ServiceWithExistingProductsCancellationTokenCancelled_ReturnPartOfProductsOrEmptyCollectionImmidiatelly()
+		{
+			//------------ Arrange
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			var cts = new CancellationTokenSource();
+			var ct = cts.Token;
+			var cancelTask = Task.Factory.StartNew( () =>
+			{
+				Task.Delay( 10000 );
+				cts.Cancel();
+			} );
+
+			//------------ Act
+			var inventoryStat1Task = ebayService.GetActiveProductsAsync( ct );
 			inventoryStat1Task.Wait();
 			var products = inventoryStat1Task.Result;
 

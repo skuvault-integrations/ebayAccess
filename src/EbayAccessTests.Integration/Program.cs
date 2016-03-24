@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
@@ -211,7 +212,7 @@ namespace EbayAccessTests.Integration
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
-			var activeproductsTask = ebayService.GetActiveProductsAsync( true );
+			var activeproductsTask = ebayService.GetActiveProductsAsync( CancellationToken.None, true );
 			activeproductsTask.Wait();
 			var activeProducts = activeproductsTask.Result;
 

@@ -70,6 +70,9 @@ namespace EbayAccess.Services
 		#region EbayStandartRequest
 		private async Task< WebRequest > CreateEbayStandartPostRequestAsync( string url, Dictionary< string, string > headers, string body, string mark, CancellationToken cts )
 		{
+			if( cts.IsCancellationRequested )
+				return null;
+
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCompatibilityLevel ) )
 				headers.Add( EbayHeaders.XEbayApiCompatibilityLevel, EbayHeadersValues.XEbayApiCompatibilityLevel );
 
@@ -433,12 +436,15 @@ namespace EbayAccess.Services
 			return items;
 		}
 
-		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
+		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
+			if( ct.IsCancellationRequested )
+				return null;
+
 			var recordsPerPage = this._itemsPerPage;
 			const int pageNumber = 1;
 
-			var getSellerListResponse = await this.GetSellerListCustomResponseAsync( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber, mark ).ConfigureAwait( false );
+			var getSellerListResponse = await this.GetSellerListCustomResponseAsync( ct, timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber, mark ).ConfigureAwait( false );
 
 			var pages = new List< int >();
 
@@ -451,7 +457,7 @@ namespace EbayAccess.Services
 					{
 						pages.Add( i );
 					}
-					var getSellerListCustomResponsesTemp = await pages.ProcessInBatchAsync( MaxThreadsCount, async x => await this.GetSellerListCustomResponseAsync( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
+					var getSellerListCustomResponsesTemp = await pages.ProcessInBatchAsync( this.MaxThreadsCount, async x => await this.GetSellerListCustomResponseAsync( ct, timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
 					getSellerListCustomResponses.AddRange( getSellerListCustomResponsesTemp );
 				}
 			}
@@ -459,8 +465,11 @@ namespace EbayAccess.Services
 			return getSellerListCustomResponses.Where( x => x != null ).ToList();
 		}
 
-		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, string mark )
+		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, string mark )
 		{
+			if( ct.IsCancellationRequested )
+				return null;
+
 			var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
 
 			var headers = CreateGetSellerListRequestHeadersWithApiCallName();
@@ -469,9 +478,9 @@ namespace EbayAccess.Services
 
 			await ActionPolicies.SubmitAsync.Do( async () =>
 			{
-				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
+				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, ct ).ConfigureAwait( false );
 
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, ct ).ConfigureAwait( false ) )
 					getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
 			} ).ConfigureAwait( false );
 
