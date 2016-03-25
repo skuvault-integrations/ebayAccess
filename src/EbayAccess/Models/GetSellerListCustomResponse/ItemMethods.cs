@@ -109,8 +109,8 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 			this.Sku = sku;
 		}
 
-		public bool IsVariationSku { get; set; }
-		public string Sku { get; set; }
+		public bool IsVariationSku{ get; set; }
+		public string Sku{ get; set; }
 	}
 
 	public class ItemPrice
@@ -121,8 +121,8 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 			this.Price = price;
 		}
 
-		public bool IsVariationPrice { get; set; }
-		public decimal Price { get; set; }
+		public bool IsVariationPrice{ get; set; }
+		public decimal Price{ get; set; }
 	}
 
 	public class ItemQuantity
@@ -133,8 +133,8 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 			this.Quantity = quantity;
 		}
 
-		public bool IsVariationQuantity { get; set; }
-		public decimal Quantity { get; set; }
+		public bool IsVariationQuantity{ get; set; }
+		public decimal Quantity{ get; set; }
 	}
 
 	public class ItemCurrency
@@ -145,7 +145,7 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 			this.Currency = currency;
 		}
 
-		public bool IsVariationQuantity { get; set; }
-		public string Currency { get; set; }
+		public bool IsVariationQuantity{ get; set; }
+		public string Currency{ get; set; }
 	}
 }

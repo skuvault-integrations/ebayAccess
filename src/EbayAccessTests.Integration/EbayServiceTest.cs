@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
+using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
@@ -14,7 +15,7 @@ using NUnit.Framework;
 namespace EbayAccessTests.Integration
 {
 	[ TestFixture ]
-	public class EbayServiceTest : TestBase
+	public class EbayServiceTest: TestBase
 	{
 		#region GetOrders
 		[ Test ]
@@ -91,7 +92,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersTask = service.GetOrdersAsync( DateTime.Now.AddMonths(0).AddDays(-29), DateTime.Now.AddMonths(0) );
+			var ordersTask = service.GetOrdersAsync( DateTime.Now.AddMonths( 0 ).AddDays( -29 ), DateTime.Now.AddMonths( 0 ) );
 			ordersTask.Wait();
 
 			//------------ Assert
@@ -125,7 +126,7 @@ namespace EbayAccessTests.Integration
 			updateProductsAsyncTask1.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
 			updateProductsAsyncTask2.Result.ToList().TrueForAll( x => x.Items.Count == 2 );
 		}
-		
+
 		[ Test ]
 		[ TestCase( UpdateInventoryAlgorithm.Econom ) ]
 		[ TestCase( UpdateInventoryAlgorithm.Old ) ]
@@ -180,7 +181,6 @@ namespace EbayAccessTests.Integration
 			activeProductWithVariations2.GetQuantity().Quantity.Should().Be( 100500 );
 			activeProductWithoutVariations2.GetQuantity().Quantity.Should().Be( 100500 );
 		}
-
 
 		[ Test ]
 		[ TestCase( UpdateInventoryAlgorithm.Econom ) ]
@@ -269,22 +269,32 @@ namespace EbayAccessTests.Integration
 		public void GetActiveProductsAsync_ServiceWithExistingProductsCancellationTokenCancelled_ReturnPartOfProductsOrEmptyCollectionImmidiatelly()
 		{
 			//------------ Arrange
-			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			var cts = new CancellationTokenSource();
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigProduction() );
+
+			var sw1 = Stopwatch.StartNew();
+			var inventoryStatTask1 = ebayService.GetActiveProductsAsync( CancellationToken.None );
+			inventoryStatTask1.Wait();
+			var products1 = inventoryStatTask1.Result;
+			sw1.Stop();
+
+			var cts = new CancellationTokenSource( ( int )( sw1.ElapsedMilliseconds * 0.5 ) );
 			var ct = cts.Token;
-			var cancelTask = Task.Factory.StartNew( () =>
-			{
-				Task.Delay( 10000 );
-				cts.Cancel();
-			} );
 
 			//------------ Act
+			var sw2 = Stopwatch.StartNew();
 			var inventoryStat1Task = ebayService.GetActiveProductsAsync( ct );
 			inventoryStat1Task.Wait();
-			var products = inventoryStat1Task.Result;
+			var products2 = inventoryStat1Task.Result;
+			sw2.Stop();
 
 			//------------ Assert
-			products.Count().Should().BeGreaterThan( 0, "because on site there are items" );
+			var products2List = products2 as IList< Item > ?? products2.ToList();
+			var products1List = products1 as IList< Item > ?? products1.ToList();
+			products2List.Count().Should().BeLessThan( products1List.Count(), "because on site there are items" );
+			products2List.Count().Should().BeGreaterThan( 0, "because on site there are items" );
+			sw2.ElapsedMilliseconds.Should().BeLessThan( sw1.ElapsedMilliseconds, "because on site there are items" );
+			Debug.WriteLine( "products1 {0}, t:{1}", products1List.Count(), sw1.Elapsed.ToString() );
+			Debug.WriteLine( "products2 {0}, t:{1}", products2List.Count(), sw2.Elapsed.ToString() );
 		}
 		#endregion
 	}

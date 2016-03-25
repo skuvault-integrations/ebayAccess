@@ -53,7 +53,7 @@ namespace EbayAccess.Services
 				var encoding = new UTF8Encoding();
 				var encodedBody = encoding.GetBytes( body );
 
-				var serviceRequest = _webRequestFactory( serviceUrl );
+				var serviceRequest = this._webRequestFactory( serviceUrl );
 				serviceRequest.Method = WebRequestMethods.Http.Post;
 				serviceRequest.ContentType = "text/xml";
 				serviceRequest.ContentLength = encodedBody.Length;
