@@ -205,21 +205,20 @@ namespace EbayAccess
 		#region GetProducts
 		public async Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false )
 		{
-
-			var methodParameters = string.Format( "{{getOnlyGtcDuration: {0}}}", getOnlyGtcDuration );
+			var methodParameters = new Func< string >( ()=> string.Format( "{{getOnlyGtcDuration: {0}, cancellationTokenIsCancelled:{1}}}", getOnlyGtcDuration, ct.IsCancellationRequested) );
 			var mark = Guid.NewGuid().ToString();
 			try
 			{
 				if (ct.IsCancellationRequested)
 					return null;
 
-				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
+				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters(), mark ) );
 
 				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( ct, DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false ) 
 					?? new List<GetSellerListCustomResponse>();
 
 				var getSellerListCustomResponses = sellerListsAsync as IList< GetSellerListCustomResponse > ?? sellerListsAsync.ToList();
-				getSellerListCustomResponses.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
+				getSellerListCustomResponses.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters(), mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
 				getSellerListCustomResponses.ThrowOnError();
 
 				if( getOnlyGtcDuration )
@@ -228,13 +227,13 @@ namespace EbayAccess
 				var items = getSellerListCustomResponses.SelectMany( x => x.ItemsSplitedByVariations );
 
 				var resultSellerListBriefInfo = items.ToJson();
-				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters, mark, methodResult : resultSellerListBriefInfo ) );
+				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters(), mark, methodResult : resultSellerListBriefInfo ) );
 
 				return items;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", this.CreateMethodCallInfo( methodParameters, mark ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", this.CreateMethodCallInfo( methodParameters(), mark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
