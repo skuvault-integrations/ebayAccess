@@ -37,7 +37,7 @@ namespace EbayAccess
 
 		Task< List< string > > GetSaleRecordsNumbersAsync( params string[] saleRecordsIDs );
 
-		Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, UpdateInventoryAlgorithm usealgorithm = UpdateInventoryAlgorithm.Old );
+		Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, UpdateInventoryAlgorithm usealgorithm = UpdateInventoryAlgorithm.Old, string mark = null );
 
 		Func< string > AdditionalLogInfo { get; set; }
 		Dictionary< string, int > DelayForMethod { get; }

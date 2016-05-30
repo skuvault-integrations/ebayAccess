@@ -476,11 +476,11 @@ namespace EbayAccess
 			return await this.ReviseInventoriesStatusAsync( products, Guid.NewGuid().ToString() ).ConfigureAwait( false );
 		}
 
-		protected async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallExpensiveAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products )
+		protected async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallExpensiveAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products, string mark = null )
 		{
 			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
 			var methodParameters = updateInventoryRequests.ToJson();
-			var mark = Guid.NewGuid().ToString();
+			mark = mark ?? Guid.NewGuid().ToString();
 
 			try
 			{
@@ -532,11 +532,11 @@ namespace EbayAccess
 			}
 		}
 
-		protected async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallEconomAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products )
+		protected async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallEconomAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products, string mark = null )
 		{
 			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
 			var methodParameters = updateInventoryRequests.ToJson();
-			var mark = Guid.NewGuid().ToString();
+			mark = mark ?? Guid.NewGuid().ToString();
 
 			try
 			{
@@ -652,19 +652,19 @@ namespace EbayAccess
 			}
 		}
 
-		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, UpdateInventoryAlgorithm usealgorithm = UpdateInventoryAlgorithm.Old )
+		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, UpdateInventoryAlgorithm usealgorithm = UpdateInventoryAlgorithm.Old, string mark = null )
 		{
 			Task< IEnumerable< UpdateInventoryResponse > > res;
 			switch( usealgorithm )
 			{
 				case UpdateInventoryAlgorithm.Old:
-					res = UpdateInventoryCallExpensiveAlgorithmAsync( products );
+					res = this.UpdateInventoryCallExpensiveAlgorithmAsync( products, mark );
 					break;
 				case UpdateInventoryAlgorithm.Econom:
-					res = UpdateInventoryCallEconomAlgorithmAsync( products );
+					res = this.UpdateInventoryCallEconomAlgorithmAsync( products, mark );
 					break;
 				default:
-					res = UpdateInventoryCallExpensiveAlgorithmAsync( products );
+					res = this.UpdateInventoryCallExpensiveAlgorithmAsync( products, mark );
 					break;
 			}
 			return await res.ConfigureAwait( false );
