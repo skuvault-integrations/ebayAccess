@@ -203,10 +203,10 @@ namespace EbayAccess
 		#endregion
 
 		#region GetProducts
-		public async Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false )
+		public async Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, string mark = null )
 		{
-			var methodParameters = new Func< string >( ()=> string.Format( "{{getOnlyGtcDuration: {0}, cancellationTokenIsCancelled:{1}}}", getOnlyGtcDuration, ct.IsCancellationRequested) );
-			var mark = Guid.NewGuid().ToString();
+			var methodParameters = new Func< string >( () => string.Format( "{{getOnlyGtcDuration: {0}, cancellationTokenIsCancelled:{1}}}", getOnlyGtcDuration, ct.IsCancellationRequested ) );
+			mark = mark ?? Guid.NewGuid().ToString();
 			try
 			{
 				if (ct.IsCancellationRequested)
