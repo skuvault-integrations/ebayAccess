@@ -269,12 +269,12 @@ namespace EbayAccessTests.Integration
 		public void GetActiveProductsAsync_ServiceWithExistingProductsCancellationTokenCancelled_ReturnPartOfProductsOrEmptyCollectionImmidiatelly()
 		{
 			//------------ Arrange
-			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigProduction() );
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			var sw1 = Stopwatch.StartNew();
-			var inventoryStatTask1 = ebayService.GetActiveProductsAsync( CancellationToken.None );
-			inventoryStatTask1.Wait();
-			var products1 = inventoryStatTask1.Result;
+			var activeProductsTask1 = ebayService.GetActiveProductsAsync( CancellationToken.None );
+			activeProductsTask1.Wait();
+			var products1 = activeProductsTask1.Result;
 			sw1.Stop();
 
 			var cts = new CancellationTokenSource( ( int )( sw1.ElapsedMilliseconds * 0.5 ) );
@@ -282,9 +282,9 @@ namespace EbayAccessTests.Integration
 
 			//------------ Act
 			var sw2 = Stopwatch.StartNew();
-			var inventoryStat1Task = ebayService.GetActiveProductsAsync( ct );
-			inventoryStat1Task.Wait();
-			var products2 = inventoryStat1Task.Result;
+			var activeProductsTask2 = ebayService.GetActiveProductsAsync( ct );
+			activeProductsTask2.Wait();
+			var products2 = activeProductsTask2.Result;
 			sw2.Stop();
 
 			//------------ Assert
