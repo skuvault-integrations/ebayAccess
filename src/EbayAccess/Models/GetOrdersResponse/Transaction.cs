@@ -1,4 +1,6 @@
-﻿namespace EbayAccess.Models.GetOrdersResponse
+﻿using System.Web;
+
+namespace EbayAccess.Models.GetOrdersResponse
 {
 	public partial class Transaction
 	{
@@ -24,12 +26,20 @@
 		public static EbaySku GetSku( this Transaction transaction )
 		{
 			if( transaction.Variation != null && !string.IsNullOrWhiteSpace( transaction.Variation.Sku ) )
-				return new EbaySku( transaction.Variation.Sku, true );
+				return new EbaySku( Decode( transaction.Variation.Sku ), true );
 
 			if( transaction.Item != null && !string.IsNullOrWhiteSpace( transaction.Item.Sku ) )
-				return new EbaySku( transaction.Item.Sku, false );
+				return new EbaySku( Decode( transaction.Item.Sku ), false );
 
 			return new EbaySku( string.Empty, false );
+		}
+
+		private static string Decode( string sku )
+		{
+			if( string.IsNullOrEmpty( sku ) )
+				return sku;
+
+			return HttpUtility.HtmlDecode( sku );
 		}
 	}
 
