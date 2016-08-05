@@ -28,7 +28,7 @@ namespace EbayAccess
 	public class EbayService : IEbayService
 	{
 		private const int Maxtimerange = 119;
-		private const int MaximumTimeWindowAllowed = 30;
+		private const int MaximumTimeWindowAllowed = 29;
 		private const string DurationGTC = "GTC";
 		private readonly DateTime _ebayWorkingStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
 		protected int DEFAULT_DELAY_MILLISECONDS = 1800000;
@@ -58,19 +58,46 @@ namespace EbayAccess
 		#region GetOrders
 		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
 		{
+			var totalDays = ( dateTo - dateFrom ).TotalDays;
+			var intervals = new List< Tuple< DateTime, DateTime > >();
+			if( totalDays > MaximumTimeWindowAllowed )
+			{
+				var currentdateFrom = dateFrom;
+				var currentdateTo = dateFrom.AddDays( MaximumTimeWindowAllowed );
+				while( currentdateTo < dateTo )
+				{
+					intervals.Add( Tuple.Create( currentdateFrom, currentdateTo ) );
+
+					currentdateFrom = currentdateFrom.AddDays( MaximumTimeWindowAllowed );
+					currentdateTo = currentdateTo.AddDays( MaximumTimeWindowAllowed );
+				}
+
+				if( currentdateTo != dateTo )
+					intervals.Add( Tuple.Create( currentdateFrom, dateTo ) );
+			}
+
+			var orders = await intervals.ProcessInBatchAsync( 3, async x => await this.GetOrdersInIntervalAsync( x.Item1, x.Item2 ).ConfigureAwait( false ) ).ConfigureAwait( false );
+
+			var ordersFlatten = orders.SelectMany( x => x as IList< Order > ?? x.ToList() );
+
+			return ordersFlatten;
+		}
+
+		private async Task< IEnumerable< Order > > GetOrdersInIntervalAsync( DateTime dateFrom, DateTime dateTo )
+		{
 			var methodParameters = string.Format( "{{dateFrom:{0},dateTo:{1}}}", dateFrom, dateTo );
 			var mark = Guid.NewGuid().ToString();
 			try
 			{
 				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
 
-				var daysBeforeNow = ( DateTime.UtcNow - dateFrom ).Days;
-				if( daysBeforeNow > MaximumTimeWindowAllowed )
-				{
-					var daysExcess = daysBeforeNow - MaximumTimeWindowAllowed;
-					var amendement = -1 * daysExcess;
-					dateFrom.AddDays( amendement );
-				}
+				//var daysBeforeNow = ( DateTime.UtcNow - dateFrom ).Days;
+				//if( daysBeforeNow > MaximumTimeWindowAllowed )
+				//{
+				//	var daysExcess = daysBeforeNow - MaximumTimeWindowAllowed;
+				//	var amendement = -1 * daysExcess;
+				//	dateFrom.AddDays( amendement );
+				//}
 
 				List< Order > result;
 				if( dateFrom > dateTo )
