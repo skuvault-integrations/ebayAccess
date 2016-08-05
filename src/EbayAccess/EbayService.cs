@@ -58,6 +58,17 @@ namespace EbayAccess
 		#region GetOrders
 		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo )
 		{
+			var intervals = GetTimeIntervals( dateFrom, dateTo );
+
+			var orders = await intervals.ProcessInBatchAsync( 3, async x => await this.GetOrdersInIntervalAsync( x.Item1, x.Item2 ).ConfigureAwait( false ) ).ConfigureAwait( false );
+
+			var ordersFlatten = orders.SelectMany( x => x as IList< Order > ?? x.ToList() );
+
+			return ordersFlatten;
+		}
+
+		private static List< Tuple< DateTime, DateTime > > GetTimeIntervals( DateTime dateFrom, DateTime dateTo )
+		{
 			var totalDays = ( dateTo - dateFrom ).TotalDays;
 			var intervals = new List< Tuple< DateTime, DateTime > >();
 			if( totalDays > MaximumTimeWindowAllowed )
@@ -75,12 +86,7 @@ namespace EbayAccess
 				if( currentdateTo != dateTo )
 					intervals.Add( Tuple.Create( currentdateFrom, dateTo ) );
 			}
-
-			var orders = await intervals.ProcessInBatchAsync( 3, async x => await this.GetOrdersInIntervalAsync( x.Item1, x.Item2 ).ConfigureAwait( false ) ).ConfigureAwait( false );
-
-			var ordersFlatten = orders.SelectMany( x => x as IList< Order > ?? x.ToList() );
-
-			return ordersFlatten;
+			return intervals;
 		}
 
 		private async Task< IEnumerable< Order > > GetOrdersInIntervalAsync( DateTime dateFrom, DateTime dateTo )
@@ -90,14 +96,6 @@ namespace EbayAccess
 			try
 			{
 				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters, mark ) );
-
-				//var daysBeforeNow = ( DateTime.UtcNow - dateFrom ).Days;
-				//if( daysBeforeNow > MaximumTimeWindowAllowed )
-				//{
-				//	var daysExcess = daysBeforeNow - MaximumTimeWindowAllowed;
-				//	var amendement = -1 * daysExcess;
-				//	dateFrom.AddDays( amendement );
-				//}
 
 				List< Order > result;
 				if( dateFrom > dateTo )
