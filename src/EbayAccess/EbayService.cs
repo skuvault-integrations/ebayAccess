@@ -86,6 +86,8 @@ namespace EbayAccess
 				if( currentdateTo != dateTo )
 					intervals.Add( Tuple.Create( currentdateFrom, dateTo ) );
 			}
+			else
+				intervals.Add( Tuple.Create( dateFrom, dateTo ) );
 			return intervals;
 		}
 
