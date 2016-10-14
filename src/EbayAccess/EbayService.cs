@@ -230,7 +230,7 @@ namespace EbayAccess
 		#endregion
 
 		#region GetProducts
-		public async Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, string mark = null )
+		public async Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, string mark = null )
 		{
 			var methodParameters = new Func< string >( () => string.Format( "{{getOnlyGtcDuration: {0}, cancellationTokenIsCancelled:{1}}}", getOnlyGtcDuration, ct.IsCancellationRequested ) );
 			mark = mark ?? Guid.NewGuid().ToString();
@@ -246,7 +246,9 @@ namespace EbayAccess
 
 				var getSellerListCustomResponses = sellerListsAsync as IList< GetSellerListCustomResponse > ?? sellerListsAsync.ToList();
 				getSellerListCustomResponses.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters(), mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
-				getSellerListCustomResponses.ThrowOnError();
+
+				if ( throwExceptionOnErrors )
+					getSellerListCustomResponses.ThrowOnError();
 
 				if( getOnlyGtcDuration )
 					getSellerListCustomResponses.ForEach( x => x.Items = x.Items.Where( y => y.Duration.ToUpper().Equals( DurationGTC ) ).ToList() );

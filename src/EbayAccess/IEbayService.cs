@@ -23,7 +23,7 @@ namespace EbayAccess
 
 		Task< IEnumerable< Models.GetSellerListResponse.Item > > GetProductsDetailsAsync();
 
-		Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, string mark = null );
+		Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, string mark = null );
 
 		string GetUserToken();
 

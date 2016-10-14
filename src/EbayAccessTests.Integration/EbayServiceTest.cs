@@ -135,7 +135,7 @@ namespace EbayAccessTests.Integration
 			//------------ Arrange
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
-			var temp1 = ebayService.GetActiveProductsAsync( CancellationToken.None, true );
+			var temp1 = ebayService.GetActiveProductsAsync( CancellationToken.None, true, true );
 			temp1.Wait();
 			var activeProducts = temp1.Result.ToList();
 
@@ -153,7 +153,7 @@ namespace EbayAccessTests.Integration
 			var updateInventoryResponse1 = updayeInventoryTask1.Result.ToList();
 
 			//2
-			var temp2 = ebayService.GetActiveProductsAsync( CancellationToken.None, true );
+			var temp2 = ebayService.GetActiveProductsAsync( CancellationToken.None, true, true );
 			temp2.Wait();
 			activeProducts = temp2.Result.ToList();
 			var activeProductWithVariations2 = activeProducts.First( x => x.ItemId == activeProductWithVariations1.ItemId && x.GetSku().Sku == activeProductWithVariations1.GetSku().Sku );
@@ -168,7 +168,7 @@ namespace EbayAccessTests.Integration
 			var updateInventoryResponse2 = updateInventoryTask2.Result.ToList();
 
 			//3
-			var temp3 = ebayService.GetActiveProductsAsync( CancellationToken.None, true );
+			var temp3 = ebayService.GetActiveProductsAsync( CancellationToken.None, true, true );
 			temp3.Wait();
 			activeProducts = temp3.Result.ToList();
 			var activeProductWithVariations3 = activeProducts.First( x => x.ItemId == activeProductWithVariations1.ItemId && x.GetSku().Sku == activeProductWithVariations1.GetSku().Sku );
@@ -272,7 +272,7 @@ namespace EbayAccessTests.Integration
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			var sw1 = Stopwatch.StartNew();
-			var activeProductsTask1 = ebayService.GetActiveProductsAsync( CancellationToken.None );
+			var activeProductsTask1 = ebayService.GetActiveProductsAsync( CancellationToken.None, true, false, "" );
 			activeProductsTask1.Wait();
 			var products1 = activeProductsTask1.Result;
 			sw1.Stop();
