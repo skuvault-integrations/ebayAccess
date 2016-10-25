@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,7 +41,7 @@ namespace EbayAccess
 		{
 			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayConfig, webRequestServices );
 
-			DelayForMethod = new Dictionary<string, int>();
+			DelayForMethod = new Dictionary< string, int >();
 		}
 
 		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig ) : this( credentials, ebayConfig, new WebRequestServices() )
@@ -194,7 +193,7 @@ namespace EbayAccess
 				var cts = new CancellationTokenSource( millisecondsDelay );
 
 				DateTime? timeFrom = null;
-				var timeTo = DateTime.UtcNow.AddSeconds(-1 * MaximumServerTimeVariationSeconds );
+				var timeTo = DateTime.UtcNow.AddSeconds( -1 * MaximumServerTimeVariationSeconds );
 
 				#region Find CreationTime for first sale
 				foreach( var salerecordId in salerecordIds )
@@ -351,18 +350,18 @@ namespace EbayAccess
 			mark = mark ?? Guid.NewGuid().ToString();
 			try
 			{
-				if (ct.IsCancellationRequested)
+				if( ct.IsCancellationRequested )
 					return null;
 
 				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters(), mark ) );
 
-				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( ct, DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false ) 
-					?? new List<GetSellerListCustomResponse>();
+				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( ct, DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false )
+				                       ?? new List< GetSellerListCustomResponse >();
 
 				var getSellerListCustomResponses = sellerListsAsync as IList< GetSellerListCustomResponse > ?? sellerListsAsync.ToList();
 				getSellerListCustomResponses.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters(), mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
 
-				if ( throwExceptionOnErrors )
+				if( throwExceptionOnErrors )
 					getSellerListCustomResponses.ThrowOnError();
 
 				if( getOnlyGtcDuration )
@@ -909,7 +908,7 @@ namespace EbayAccess
 			EbayLogger.Log().Trace( ebayException, message );
 		}
 
-		protected string GetCallerMethodName([CallerMemberName] string memberName = "")
+		protected string GetCallerMethodName( [ CallerMemberName ] string memberName = "" )
 		{
 			return memberName;
 		}

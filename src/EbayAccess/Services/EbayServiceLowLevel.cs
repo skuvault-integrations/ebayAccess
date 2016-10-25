@@ -284,8 +284,8 @@ namespace EbayAccess.Services
 
 			await ActionPolicies.GetAsyncShort.Do( async () =>
 			{
-				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, cts ).ConfigureAwait(false);
-				
+				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, cts ).ConfigureAwait( false );
+
 				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, cts ).ConfigureAwait( false ) )
 				{
 					var getOrdersResponseParsed = new EbayGetSellingManagerSoldListingsResponseParser().Parse( memStream );
