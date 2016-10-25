@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using EbayAccess.Misc;
 using EbayAccess.Models.GetSellingManagerSoldListingsResponse;
 
 namespace EbayAccess.Services.Parsers
@@ -35,6 +36,7 @@ namespace EbayAccess.Services.Parsers
 					var resultOrder = new Order();
 
 					resultOrder.SaleRecordID = GetElementValue( x, ns, "SaleRecordID" );
+					resultOrder.CreationTime = GetElementValue( x, ns, "CreationTime" ).ToDateTime();
 
 					if( keepStremPosition )
 						stream.Position = streamStartPos;

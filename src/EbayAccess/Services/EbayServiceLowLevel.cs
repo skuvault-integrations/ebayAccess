@@ -148,6 +148,17 @@ namespace EbayAccess.Services
 				orderSellingManagerRecordNumber );
 		}
 
+		private string CreateGetSellingManagerSoldListingsRequestBody( DateTime timeRangeFrom, DateTime timeRangeTo, int recordsPerPage, int pageNumber )
+		{
+			return string.Format(
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellingManagerSoldListingsRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Pagination><EntriesPerPage>{1}</EntriesPerPage><PageNumber>{2}</PageNumber></Pagination><SaleDateRange><TimeFrom>{3}</TimeFrom><TimeTo>{4}</TimeTo></SaleDateRange></GetSellingManagerSoldListingsRequest>​",
+				this._userCredentials.Token,
+				recordsPerPage,
+				pageNumber,
+				timeRangeFrom.ToStringUtcIso8601(),
+				timeRangeTo.ToStringUtcIso8601() );
+		}
+
 		private static Dictionary< string, string > CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName()
 		{
 			return new Dictionary< string, string >
@@ -309,6 +320,65 @@ namespace EbayAccess.Services
 
 			return orders;
 		}
+
+		public async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, int pageLimit = 0, string mark = "" )
+		{
+			var orders = new GetSellingManagerSoldListingsResponse() { Orders = new List< Order >(), IsLimitedResponse = false };
+
+			var totalPages = 0;
+			var recordsPerPage = this._itemsPerPage;
+			var pageNumber = 1;
+			var hasMoreOrders = false;
+
+			do
+			{
+				var headers = CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName();
+
+				var body = this.CreateGetSellingManagerSoldListingsRequestBody( timeFrom, timeTo, recordsPerPage, pageNumber );
+
+				var localPageNumber = pageNumber;
+				await ActionPolicies.GetAsync.Do( async () =>
+				{
+					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
+
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
+					{
+						if( localPageNumber == 1 )
+						{
+							var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
+							if( pagination != null )
+								totalPages = pagination.TotalNumberOfPages;
+						}
+
+						var getOrdersResponseParsed = new EbayGetSellingManagerSoldListingsResponseParser().Parse( memStream );
+						if( getOrdersResponseParsed != null )
+						{
+							if( getOrdersResponseParsed.Errors != null )
+							{
+								orders.Errors = getOrdersResponseParsed.Errors;
+								return;
+							}
+
+							hasMoreOrders = ( localPageNumber < totalPages );
+
+							if( getOrdersResponseParsed.Orders != null )
+								orders.Orders.AddRange( getOrdersResponseParsed.Orders );
+
+							if( ( pageLimit > 0 ) && ( totalPages > pageLimit ) )
+							{
+								getOrdersResponseParsed.IsLimitedResponse = true;
+								return;
+							}
+						}
+					}
+				} ).ConfigureAwait( false );
+
+				pageNumber++;
+			} while( hasMoreOrders );
+
+			return orders;
+		}
+
 
 		public string ToJson()
 		{

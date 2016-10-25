@@ -35,7 +35,7 @@ namespace EbayAccess
 
 		Task< List< string > > GetOrdersIdsAsync( params string[] sourceOrdersIds );
 
-		Task< List< string > > GetSaleRecordsNumbersAsync( params string[] saleRecordsIDs );
+		Task< List< string > > GetSaleRecordsNumbersAsync( IEnumerable< string > saleRecordsIDs, GetSaleRecordsNumbersAlgorithm usealgorithm );
 
 		Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, UpdateInventoryAlgorithm usealgorithm = UpdateInventoryAlgorithm.Old, string mark = null );
 
