@@ -69,6 +69,7 @@
     <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\EbayLogger.cs" />
     <Compile Include="Misc\IConvertableInsideEbayAccess.cs" />
+    <Compile Include="Misc\IgnoreExceptionType.cs" />
     <Compile Include="Misc\PredefinedValues.cs" />
     <Compile Include="Models\BaseResponse\EbayBaseResponse.cs" />
     <Compile Include="Models\BaseResponse\PaginationResult.cs" />

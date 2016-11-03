@@ -218,6 +218,27 @@ namespace EbayAccess.Misc
 			}
 		}
 
+		public static bool HasIgnoreError( this IEnumerable< EbayBaseResponse > responses, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow )
+		{
+			if( exceptionsForIgnoreAndThrow == null )
+				return false;
+
+			var ebayBaseResponses = responses as IList< EbayBaseResponse > ?? responses.ToList();
+			var responsesWithErrors = ebayBaseResponses.Where( x => x != null && x.Errors != null && x.Errors.Any() ).ToList();
+
+			if( responsesWithErrors.Any() )
+			{
+				var aggregatedErrors = responsesWithErrors.SelectMany( x => x.Errors ).ToList();
+				var message = aggregatedErrors.ToJson();
+				if( exceptionsForIgnoreAndThrow.Contains( IgnoreExceptionType.ResetToken ) && message.Contains( "Your security token has expired" ) )
+					return true;
+				if( exceptionsForIgnoreAndThrow.Contains( IgnoreExceptionType.TokenDoesNotExist ) && message.Contains( "Token does not exist" ) )
+					return true;
+			}
+
+			return false;
+		}
+
 		public static string ToStringUtcIso8601( this DateTime dateTime )
 		{
 			var universalTime = dateTime.ToUniversalTime();

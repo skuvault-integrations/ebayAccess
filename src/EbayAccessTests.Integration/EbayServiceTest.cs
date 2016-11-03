@@ -272,7 +272,7 @@ namespace EbayAccessTests.Integration
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			var sw1 = Stopwatch.StartNew();
-			var activeProductsTask1 = ebayService.GetActiveProductsAsync( CancellationToken.None, true, false, "" );
+			var activeProductsTask1 = ebayService.GetActiveProductsAsync( CancellationToken.None, true, false, null, "" );
 			activeProductsTask1.Wait();
 			var products1 = activeProductsTask1.Result;
 			sw1.Stop();

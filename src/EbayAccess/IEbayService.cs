@@ -7,6 +7,7 @@ using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using Item = EbayAccess.Models.GetSellerListCustomResponse.Item;
+using EbayAccess.Misc;
 
 namespace EbayAccess
 {
@@ -22,7 +23,7 @@ namespace EbayAccess
 
 		Task< IEnumerable< Models.GetSellerListResponse.Item > > GetProductsDetailsAsync();
 
-		Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, string mark = null );
+		Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow = null, string mark = null );
 
 		string GetUserToken();
 
