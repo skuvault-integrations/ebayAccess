@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using CuttingEdge.Conditions;
 using EbayAccess.Misc;
-using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
@@ -32,6 +30,7 @@ namespace EbayAccess.Services
 {
 	internal sealed class EbayServiceLowLevel : IEbayServiceLowLevel
 	{
+		private const int MaxRetryCountOnEbayInternalError = 3;
 		private readonly EbayUserCredentials _userCredentials;
 		private readonly EbayConfig _ebayConfig;
 		private readonly string _endPoint;
@@ -40,10 +39,7 @@ namespace EbayAccess.Services
 		private readonly string _ebaySignInUrl;
 		private readonly string _endPointBulkExhange;
 
-		public int MaxThreadsCount
-		{
-			get { return 18; }
-		}
+		public int MaxThreadsCount => 18;
 
 		public Func< string > AdditionalLogInfo { get; set; }
 
@@ -95,7 +91,7 @@ namespace EbayAccess.Services
 			return resultTask.Result;
 		}
 
-		public async Task<WebRequest> CreateEbayStandartPostRequestWithCertAsync(string url, Dictionary<string, string> headers, string body, string mark, CancellationToken cts)
+		public async Task< WebRequest > CreateEbayStandartPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body, string mark, CancellationToken cts )
 		{
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCertName ) )
 				headers.Add( EbayHeaders.XEbayApiCertName, this._ebayConfig.CertName );
@@ -177,148 +173,36 @@ namespace EbayAccess.Services
 
 		public async Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, string mark = "" )
 		{
-			var orders = new GetOrdersResponse();
-
-			var totalRecords = 0;
-			var recordsPerPage = this._itemsPerPage;
-			var pageNumber = 1;
-			var hasMoreOrders = false;
-
-			do
-			{
-				var headers = CreateEbayGetOrdersRequestHeadersWithApiCallName();
-
-				var body = this.CreateGetOrdersRequestBody( createTimeFrom, createTimeTo, recordsPerPage, pageNumber, getOrdersTimeRangeEnum );
-
-				await ActionPolicies.GetAsync.Do( async () =>
-				{
-					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
-
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
-					{
-						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
-						if( pagination != null )
-							totalRecords = pagination.TotalNumberOfEntries;
-
-						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
-						if( getOrdersResponseParsed != null )
-						{
-							if( getOrdersResponseParsed.Errors != null )
-							{
-								orders.Errors = getOrdersResponseParsed.Errors;
-								return;
-							}
-							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
-							if( getOrdersResponseParsed.Orders != null )
-								orders.Orders.AddRange( getOrdersResponseParsed.Orders );
-						}
-					}
-				} ).ConfigureAwait( false );
-
-				pageNumber++;
-			} while( hasMoreOrders );
-
-			return orders;
+			return await this.GetOrdersTemplateAsync( page => this.CreateGetOrdersRequestBody( createTimeFrom, createTimeTo, this._itemsPerPage, page, getOrdersTimeRangeEnum ), mark ).ConfigureAwait( false );
 		}
 
 		public async Task< GetOrdersResponse > GetOrdersAsync( string mark = "", params string[] ordersIds )
 		{
-			var orders = new GetOrdersResponse();
+			return await this.GetOrdersTemplateAsync( page => this.CreateGetOrdersRequestBody( this._itemsPerPage, page, ordersIds ), mark ).ConfigureAwait( false );
+		}
 
-			var totalRecords = 0;
-			var recordsPerPage = this._itemsPerPage;
-			var pageNumber = 1;
-			var hasMoreOrders = false;
-
-			do
-			{
-				var headers = CreateEbayGetOrdersRequestHeadersWithApiCallName();
-
-				var body = this.CreateGetOrdersRequestBody( recordsPerPage, pageNumber, ordersIds );
-
-				await ActionPolicies.GetAsync.Do( async () =>
-				{
-					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
-
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
-					{
-						var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
-						if( pagination != null )
-							totalRecords = pagination.TotalNumberOfEntries;
-
-						var getOrdersResponseParsed = new EbayGetOrdersResponseParser().Parse( memStream );
-						if( getOrdersResponseParsed != null )
-						{
-							if( getOrdersResponseParsed.Errors != null )
-							{
-								orders.Errors = getOrdersResponseParsed.Errors;
-								return;
-							}
-							hasMoreOrders = getOrdersResponseParsed.HasMoreOrders;
-							if( getOrdersResponseParsed.Orders != null )
-								orders.Orders.AddRange( getOrdersResponseParsed.Orders );
-						}
-					}
-				} ).ConfigureAwait( false );
-
-				pageNumber++;
-			} while( hasMoreOrders );
-
-			return orders;
+		private async Task< GetOrdersResponse > GetOrdersTemplateAsync( Func< int, string > getRequestBody, string mark = "" )
+		{
+			return await this.GetEbayMultiPageRequestAsync(
+				headers : CreateEbayGetOrdersRequestHeadersWithApiCallName(),
+				getRequestBodyByPageNumber : getRequestBody,
+				responseParser : x => new EbayGetOrdersResponseParser().Parse( x ),
+				cts : CancellationToken.None,
+				mark : mark,
+				useCert: true
+			).ConfigureAwait( false );
 		}
 
 		public async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber, string mark, CancellationToken cts )
 		{
-			if( cts.IsCancellationRequested )
-				throw new WebException( "Task was canceled" );
-
-			var orders = new GetSellingManagerSoldListingsResponse();
-
-			orders.Orders = new List< Order >();
-
-			var headers = CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName();
-
-			var body = this.CreateGetSellingManagerSoldListingsRequestBody( salerecordNumber );
-
-			var repeatsByTheReasonOfInternalError = 0;
-
-			await ActionPolicies.GetAsyncShort.Do( async () =>
-			{
-				var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, cts ).ConfigureAwait( false );
-
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, cts ).ConfigureAwait( false ) )
-				{
-					var getOrdersResponseParsed = new EbayGetSellingManagerSoldListingsResponseParser().Parse( memStream );
-					if( getOrdersResponseParsed != null )
-					{
-						if( getOrdersResponseParsed.Errors != null )
-						{
-							var internalErrors = getOrdersResponseParsed.Errors.Where( x => x.SeverityCode == "Error" && x.ErrorCode == "10007" ).ToList();
-							var otherErrors = getOrdersResponseParsed.Errors.Where( x => x.SeverityCode == "Error" && x.ErrorCode != "10007" ).ToList();
-
-							var containsOnlyInternalErrors = internalErrors.Count > 0 && otherErrors.Count == 0;
-
-							if( repeatsByTheReasonOfInternalError++ < 3 && containsOnlyInternalErrors )
-								throw new EbayCommonException( string.Format( "Occudred when getting:{0};Mark:{1};Errors:{2}", salerecordNumber, mark, internalErrors.ToJson() ) );
-
-							var message = string.Format( "Occudred when getting:{0};Mark:{1}", salerecordNumber, mark );
-							getOrdersResponseParsed.Errors.ForEach( x =>
-							{
-								x.UserDisplayHint = string.IsNullOrWhiteSpace( x.UserDisplayHint ) ? message : x.UserDisplayHint + ";" + message;
-							} );
-
-							orders.Errors = getOrdersResponseParsed.Errors;
-
-							return;
-						}
-
-						if( getOrdersResponseParsed.Orders != null )
-							orders.Orders.AddRange( getOrdersResponseParsed.Orders );
-					}
-				}
-			} ).ConfigureAwait( false );
-
-			return orders;
+			return await this.GetEbaySingleRequestAsync(
+				headers : CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName(),
+				body : this.CreateGetSellingManagerSoldListingsRequestBody( salerecordNumber ),
+				responseParser : x => new EbayGetSellingManagerSoldListingsResponseParser().Parse( x ),
+				cts : cts,
+				mark : mark,
+				useCert: true
+			).ConfigureAwait( false );
 		}
 
 		public async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, int pageLimit = 0, string mark = "" )
@@ -337,7 +221,8 @@ namespace EbayAccess.Services
 				var body = this.CreateGetSellingManagerSoldListingsRequestBody( timeFrom, timeTo, recordsPerPage, pageNumber );
 
 				var localPageNumber = pageNumber;
-				await ActionPolicies.GetAsync.Do( async () =>
+				var repeatCount = 0;
+				await ActionPolicies.GetAsyncShort.Do( async () =>
 				{
 					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
 
@@ -353,13 +238,19 @@ namespace EbayAccess.Services
 						var getOrdersResponseParsed = new EbayGetSellingManagerSoldListingsResponseParser().Parse( memStream );
 						if( getOrdersResponseParsed != null )
 						{
+							getOrdersResponseParsed.IfThereAreEbayInternalErrorsDo( x =>
+							{
+								if( repeatCount++ < MaxRetryCountOnEbayInternalError )
+									throw new EbayCommonException( $"eBay internal error occurred {repeatCount} times;Mark:{mark};Errors:{x.Errors.ToJson()};Headers:{headers.ToJson()};Body:{body}" );
+							} );
+
+							hasMoreOrders = ( localPageNumber < totalPages );
+
 							if( getOrdersResponseParsed.Errors != null )
 							{
 								orders.Errors = getOrdersResponseParsed.Errors;
 								return;
 							}
-
-							hasMoreOrders = ( localPageNumber < totalPages );
 
 							if( getOrdersResponseParsed.Orders != null )
 								orders.Orders.AddRange( getOrdersResponseParsed.Orders );
@@ -367,6 +258,7 @@ namespace EbayAccess.Services
 							if( ( pageLimit > 0 ) && ( totalPages > pageLimit ) )
 							{
 								getOrdersResponseParsed.IsLimitedResponse = true;
+								hasMoreOrders = false;
 								return;
 							}
 						}
@@ -428,82 +320,24 @@ namespace EbayAccess.Services
 
 		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
-			var items = new GetSellerListResponse();
-
-			var recordsPerPage = this._itemsPerPage;
-			var pageNumber = 1;
-			var hasMoreItems = false;
-			do
-			{
-				var body = this.CreateGetSellerListRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
-
-				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
-
-				await ActionPolicies.GetAsync.Do( async () =>
-				{
-					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
-
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
-					{
-						var getSellerListResponse = new EbayGetSallerListResponseParser().Parse( memStream );
-						if( getSellerListResponse != null )
-						{
-							if( getSellerListResponse.Errors != null )
-							{
-								items.Errors = getSellerListResponse.Errors;
-								return;
-							}
-							hasMoreItems = getSellerListResponse.HasMoreItems;
-							if( getSellerListResponse.Items != null )
-								items.Items.AddRange( getSellerListResponse.Items );
-						}
-					}
-				} ).ConfigureAwait( false );
-
-				pageNumber++;
-			} while( hasMoreItems );
-
-			return items;
+			return await this.GetEbayMultiPageRequestAsync(
+				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
+				getRequestBodyByPageNumber : page => this.CreateGetSellerListRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, this._itemsPerPage, page ),
+				responseParser : x => new EbayGetSallerListResponseParser().Parse( x ),
+				cts : CancellationToken.None,
+				mark : mark
+			).ConfigureAwait( false );
 		}
 
 		public async Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
-			var items = new GetSellerListCustomResponse();
-
-			var recordsPerPage = this._itemsPerPage;
-			var pageNumber = 1;
-			var hasMoreItems = false;
-			do
-			{
-				var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
-
-				var headers = CreateGetSellerListRequestHeadersWithApiCallName();
-
-				await ActionPolicies.GetAsync.Do( async () =>
-				{
-					var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
-
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
-					{
-						var getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
-						if( getSellerListResponse != null )
-						{
-							if( getSellerListResponse.Errors != null )
-							{
-								items.Errors = getSellerListResponse.Errors;
-								return;
-							}
-							hasMoreItems = getSellerListResponse.HasMoreItems;
-							if( getSellerListResponse.Items != null )
-								items.Items.AddRange( getSellerListResponse.Items );
-						}
-					}
-				} ).ConfigureAwait( false );
-
-				pageNumber++;
-			} while( hasMoreItems );
-
-			return items;
+			return await this.GetEbayMultiPageRequestAsync(
+				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
+				getRequestBodyByPageNumber : page => this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, this._itemsPerPage, page ),
+				responseParser : x => new EbayGetSallerListCustomResponseParser().Parse( x ),
+				cts : CancellationToken.None,
+				mark : mark
+			).ConfigureAwait( false );
 		}
 
 		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
@@ -537,24 +371,13 @@ namespace EbayAccess.Services
 
 		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, string mark )
 		{
-			if( ct.IsCancellationRequested )
-				return null;
-
-			var body = this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber );
-
-			var headers = CreateGetSellerListRequestHeadersWithApiCallName();
-
-			GetSellerListCustomResponse getSellerListResponse = null;
-
-			await ActionPolicies.SubmitAsync.Do( async () =>
-			{
-				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, ct ).ConfigureAwait( false );
-
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, ct ).ConfigureAwait( false ) )
-					getSellerListResponse = new EbayGetSallerListCustomResponseParser().Parse( memStream );
-			} ).ConfigureAwait( false );
-
-			return getSellerListResponse;
+			return await this.GetEbaySingleRequestAsync(
+				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
+				body : this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber ),
+				responseParser : x => new EbayGetSallerListCustomResponseParser().Parse( x ),
+				cts : ct,
+				mark : mark
+			).ConfigureAwait( false );
 		}
 		#endregion
 
@@ -577,25 +400,15 @@ namespace EbayAccess.Services
 
 		public async Task< Item > GetItemAsync( string id, string mark )
 		{
-			var order = new Item();
+			var response = await this.GetEbaySingleRequestAsync< Models.GetItemResponse.GetItemResponse >(
+				headers : CreateGetItemRequestHeadersWithApiCallName(),
+				body : this.CreateGetItemByIdRequestBody( id ),
+				responseParser : x => new EbayGetItemResponseParser().Parse( x ),
+				cts : CancellationToken.None,
+				mark : mark
+			).ConfigureAwait( false );
 
-			var body = this.CreateGetItemByIdRequestBody( id );
-
-			var headers = CreateGetItemRequestHeadersWithApiCallName();
-
-			await ActionPolicies.GetAsync.Do( async () =>
-			{
-				var webRequest = await this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
-
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
-				{
-					var tempOrders = new EbayGetItemResponseParser().Parse( memStream );
-					if( tempOrders != null )
-						order = tempOrders.Item;
-				}
-			} );
-
-			return order;
+			return response != null ? response.Item : new Item();
 		}
 		#endregion
 
@@ -637,19 +450,17 @@ namespace EbayAccess.Services
 
 		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null, string mark = "" )
 		{
-			var headers = CreateReviseInventoryStatusHeadersWithApiCallName();
+			var response = await this.GetEbaySingleRequestAsync(
+				headers : CreateReviseInventoryStatusHeadersWithApiCallName(),
+				body : this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq, inventoryStatusReq2, inventoryStatusReq3, inventoryStatusReq4 ),
+				responseParser : x => new EbayReviseInventoryStatusResponseParser().Parse( x ),
+				cts : CancellationToken.None,
+				mark : mark,
+				useCert: true
+			).ConfigureAwait( false );
 
-			var body = this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq, inventoryStatusReq2, inventoryStatusReq3, inventoryStatusReq4 );
-
-			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
-
-			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request, mark, CancellationToken.None ).ConfigureAwait( false ) )
-			{
-				var inventoryStatusResponse =
-					new EbayReviseInventoryStatusResponseParser().Parse( memStream );
-				inventoryStatusResponse.RequestedItems = new List< InventoryStatusRequest >() { inventoryStatusReq, inventoryStatusReq2, inventoryStatusReq3, inventoryStatusReq4 }.Where( x => x != null ).ConvertTo< InventoryStatusRequest, Models.ReviseInventoryStatusResponse.Item >().ToList();
-				return inventoryStatusResponse;
-			}
+			response.RequestedItems = new List< InventoryStatusRequest >() { inventoryStatusReq, inventoryStatusReq2, inventoryStatusReq3, inventoryStatusReq4 }.Where( x => x != null ).ConvertTo< InventoryStatusRequest, Models.ReviseInventoryStatusResponse.Item >().ToList();
+			return response;
 		}
 
 		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses, string mark )
@@ -722,18 +533,14 @@ namespace EbayAccess.Services
 
 		public async Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, string mark, bool isVariation )
 		{
-			var headers = CreateReviseFixedPriceItemHeadersWithApiCallName();
-
-			var body = this.CreateReviseFixedPriceItemRequestBody( fixedPriceItem, isVariation );
-
-			var request = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
-
-			using( var memStream = await this._webRequestServices.GetResponseStreamAsync( request, mark, CancellationToken.None ).ConfigureAwait( false ) )
-			{
-				var inventoryStatusResponse =
-					new EbayReviseFixedPriceItemResponseParser().Parse( memStream );
-				return inventoryStatusResponse;
-			}
+			return await this.GetEbaySingleRequestAsync(
+				headers : CreateReviseFixedPriceItemHeadersWithApiCallName(),
+				body : this.CreateReviseFixedPriceItemRequestBody( fixedPriceItem, isVariation ),
+				responseParser : x => new EbayReviseFixedPriceItemResponseParser().Parse( x ),
+				cts : CancellationToken.None,
+				mark : mark,
+				useCert: true
+			).ConfigureAwait( false );
 		}
 		#endregion
 
@@ -885,7 +692,7 @@ namespace EbayAccess.Services
 			return new Dictionary< string, string >
 			{
 				{ "X-EBAY-SOA-OPERATION-NAME", "abortJob" },
-				{ "X-EBAY-SOA-SECURITY-TOKEN", "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R" },
+				{ "X-EBAY-SOA-SECURITY-TOKEN", "TOKEN" },
 			};
 		}
 
@@ -902,7 +709,7 @@ namespace EbayAccess.Services
 			return new Dictionary< string, string >
 			{
 				{ "X-EBAY-SOA-OPERATION-NAME", "createUploadJob" },
-				{ "X-EBAY-SOA-SECURITY-TOKEN", "AgAAAA**AQAAAA**aAAAAA**Z6PZUg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4GhC5eEpg2dj6x9nY+seQ**OX8CAA**AAMAAA**SEIoL5SqnyD4fbOhrRTCxShlrCVPyQEp4R++AkBuR3abexAYvgHkUOJvJ6EIBNvqCyDj9MTbIuft2lY/EJyWeze0NG/zVa1E3wRagdAOZXYGnSYaEJBkcynOEfQ7J8vEbG4dd1NoKixUBARbVH9jBoMHTuDy8Bj36NNvr5/iQbaMm+VnGgezBeerdl5S8M/5EzLpbYk1l6cRWJRmVN41fY/ERwj6dfNdD1JqKnDmuGXjVN4KF4k44UKkAv9Zigx+QWJgXOTFCvbwL8iXni079cZNwL35YA6NC2O8IDm7TKooJwsUhbWjNWO2Rxb5MowYS8ls1X/SRZ4VcRDYnnaeCzhLsUTOGCoUvsKumXn3WkGJhLD7CH671suim3vrl9XB+oyCev22goM3P7wr5uhMknN4mxE178Pyd0F/X2+DbfxgpJyVs/gBV7Ym11bGC6wmPHZO2zSSqVIKdkmLf0Uw8q/aqUEiHDVl8IwuvVXsW7hCbZeBkdRzr5JEkuI0FYZ8e3WS5BcGrvcEJaC0ZjMxAW/LkFktQooy9UckjWp/6l+rVKgeJYsCik/OrPWJKVmekBSUeKYEmm/Mo5QeU6Hqlrz+S3m+WR2NOyc8F0Wqk2zDTNpLlAh/RbhmUoHtmLtdgu9ESwBWz0L9B11ME3rB7udeuaEf9Rd48H77pZ1UKoK9C7mrJMHFNSvLG1Gq6SCWe2KxDij7DvKe5vYmy2rS1sdJDCfBq0GFnUBZOmh+N64KqxkIUY26nPeqm/KoqQ7R" },
+				{ "X-EBAY-SOA-SECURITY-TOKEN", "TOKEN" },
 			};
 		}
 
@@ -913,6 +720,91 @@ namespace EbayAccess.Services
 				uploadJobType.ToString(),
 				guid.ToString()
 				);
+		}
+		#endregion
+
+		#region Generic requests
+		public async Task< TResponse > GetEbaySingleRequestAsync< TResponse >( Dictionary< string, string > headers, string body, Func< Stream, TResponse > responseParser, CancellationToken cts, string mark = "", bool useCert = false ) where TResponse : EbayBaseResponse, new()
+		{
+			if( cts.IsCancellationRequested )
+				throw new WebException( "Task was canceled" );
+
+			var response = new TResponse();
+
+			var repeatsByTheReasonOfInternalError = 0;
+
+			await ActionPolicies.GetAsyncShort.Do( async () =>
+			{
+				var webRequest = await ( useCert ? this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, cts ) : this.CreateEbayStandartPostRequestAsync( this._endPoint, headers, body, mark, cts ) ).ConfigureAwait( false );
+
+				TResponse parsedResponse;
+				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, cts ).ConfigureAwait( false ) )
+				{
+					parsedResponse = responseParser( memStream );
+				}
+
+				if( parsedResponse != null )
+				{
+					if( parsedResponse.Errors != null )
+					{
+						parsedResponse.IfThereAreEbayInternalErrorsDo( x =>
+						{
+							if( repeatsByTheReasonOfInternalError++ < MaxRetryCountOnEbayInternalError )
+								throw new EbayCommonException( $"eBay internal error occurred {repeatsByTheReasonOfInternalError} times;Mark:{mark};Errors:{x.Errors.ToJson()};Headers:{headers.ToJson()};Body:{body}" );
+						} );
+
+						var message = $"Error occurred;Mark:{mark};Headers:{headers.ToJson()};Body:{body}";
+						parsedResponse.Errors.ForEach( x =>
+						{
+							x.UserDisplayHint = string.IsNullOrWhiteSpace( x.UserDisplayHint ) ? message : x.UserDisplayHint + ";" + message;
+						} );
+					}
+
+					response = parsedResponse;
+				}
+			} ).ConfigureAwait( false );
+
+			return response;
+		}
+
+		private async Task< TResponse > GetEbayMultiPageRequestAsync< TResponse >( Dictionary< string, string > headers, Func< int, string > getRequestBodyByPageNumber, Func< Stream, TResponse > responseParser, CancellationToken cts, string mark = "", bool useCert = false ) where TResponse : EbayBaseResponse, IPaginationResponse< TResponse >, new()
+		{
+			var response = new TResponse();
+			var errorList = new List< ResponseError >();
+
+			var pageNumber = 1;
+			var hasMorePages = false;
+
+			do
+			{
+				var page = await this.GetEbaySingleRequestAsync(
+					headers : headers,
+					body : getRequestBodyByPageNumber( pageNumber ),
+					responseParser : responseParser,
+					cts : cts,
+					mark : mark,
+					useCert : useCert
+				).ConfigureAwait( false );
+
+				if( page.Errors != null )
+				{
+					errorList.AddRange( page.Errors );
+				}
+				else
+				{
+					hasMorePages = page.HasMorePages;
+					response.AddObjectsFromPage( page );
+				}
+
+				pageNumber++;
+			} while( hasMorePages );
+
+			if( errorList.Count > 0 )
+			{
+				response.Errors = errorList;
+			}
+
+			return response;
 		}
 		#endregion
 	}

@@ -4,7 +4,7 @@ using EbayAccess.Models.BaseResponse;
 
 namespace EbayAccess.Models.GetSellerListCustomResponse
 {
-	public class GetSellerListCustomResponse : EbayBaseResponse
+	public class GetSellerListCustomResponse : EbayBaseResponse, IPaginationResponse< GetSellerListCustomResponse >
 	{
 		public GetSellerListCustomResponse()
 		{
@@ -13,6 +13,21 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 
 		public List< Item > Items { get; set; }
 		public bool HasMoreItems { get; set; }
+
+		public bool HasMorePages => this.HasMoreItems;
+
+		public void AddObjectsFromPage( GetSellerListCustomResponse source )
+		{
+			if( this.Items == null )
+			{
+				this.Items = new List< Item >();
+			}
+
+			if( source?.Items != null )
+			{
+				this.Items.AddRange( source.Items );
+			}
+		}
 
 		public List< Item > ItemsSplitedByVariations
 		{

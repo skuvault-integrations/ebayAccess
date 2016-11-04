@@ -5,8 +5,12 @@ namespace EbayAccess.Models.GetSellingManagerSoldListingsResponse
 {
 	public class GetSellingManagerSoldListingsResponse : EbayBaseResponse
 	{
-		public List< Order > Orders { get; set; }
+		public GetSellingManagerSoldListingsResponse()
+		{
+			this.Orders = new List<Order>();
+		}
 
+		public List< Order > Orders { get; set; }
 		public bool IsLimitedResponse { get; set; }
 	}
 }

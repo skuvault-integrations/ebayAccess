@@ -7,6 +7,8 @@ namespace EbayAccess.Models.BaseResponse
 {
 	public class EbayBaseResponse
 	{
+		private static readonly List< ResponseError > _internalErrors = new List< ResponseError > { new ResponseError { ErrorCode = "10007" }, new ResponseError { ErrorCode = "16100" } };
+
 		public DateTime Timestamp { get; set; }
 
 		public string Ack { get; set; }
@@ -38,6 +40,16 @@ namespace EbayAccess.Models.BaseResponse
 			}
 		}
 
+		public void SkipEbayInternalErrorsAndDo( Action< EbayBaseResponse > action )
+		{
+			this.SkipErrorsAndDo( action, _internalErrors );
+		}
+
+		public void IfThereAreEbayInternalErrorsDo( Action< EbayBaseResponse > action )
+		{
+			this.IfThereAreErrorsDo( action, _internalErrors );
+		}
+
 		private IEnumerable< ResponseError > RemoveErrorsFromResponse( params ResponseError[] errors )
 		{
 			if( this.Errors == null )
@@ -53,5 +65,11 @@ namespace EbayAccess.Models.BaseResponse
 
 			return this.Errors != null && this.Errors.Exists( y => errors.Exists( x => x.ErrorCode == y.ErrorCode ) );
 		}
+	}
+
+	internal interface IPaginationResponse< in T >
+	{
+		bool HasMorePages { get; }
+		void AddObjectsFromPage ( T source );
 	}
 }
