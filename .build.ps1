@@ -47,10 +47,11 @@ $src_dir = "$BuildRoot\src"
 $solution_file = "$src_dir\EbayAccess.sln"
 	
 # Use MSBuild.
-use Framework\v4.0.30319 MSBuild
+#use Framework\v4.0.30319 MSBuild
+Set-Alias MSBuild14 (Join-Path -Path (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0").MSBuildToolsPath -ChildPath "MSBuild.exe")
 
 task Clean { 
-	exec { MSBuild "$solution_file" /t:Clean /p:Configuration=$configuration /v:quiet } 
+	exec { MSBuild14 "$solution_file" /t:Clean /p:Configuration=Release /p:VisualStudioVersion="14.0" /v:quiet } 
 	Remove-Item -force -recurse $build_dir -ErrorAction SilentlyContinue | Out-Null
 }
 
@@ -61,17 +62,17 @@ task Init Clean, {
 }
 
 task Build {
-	exec { MSBuild "$solution_file" /t:Build /p:Configuration=$configuration /v:minimal /p:OutDir="$build_artifacts_dir\" }
+	exec { MSBuild14 "$solution_file" /t:Build /p:Configuration=Release /p:VisualStudioVersion="14.0" /v:minimal /p:OutDir="$build_artifacts_dir\" }
 }
 
 task Package  {
-	New-Item $build_output_dir\EbayAccess\lib\net45 -itemType directory -force | Out-Null
-	Copy-Item $build_artifacts_dir\EbayAccess.??? $build_output_dir\EbayAccess\lib\net45 -PassThru |% { Write-Host "Copied " $_.FullName }
+	New-Item $build_output_dir\$project_name\lib\net45 -itemType directory -force | Out-Null
+	Copy-Item $build_artifacts_dir\$project_name.??? $build_output_dir\$project_name\lib\net45 -PassThru |% { Write-Host "Copied " $_.FullName }
 }
 
 # Set $script:Version = assembly version
 task Version {
-	assert (( Get-Item $build_artifacts_dir\EbayAccess.dll ).VersionInfo.FileVersion -match '^(\d+\.\d+\.\d+)')
+	assert (( Get-Item $build_artifacts_dir\$project_name.dll ).VersionInfo.FileVersion -match '^(\d+\.\d+\.\d+)')
 	$script:Version = $matches[1]
 }
 
@@ -92,14 +93,14 @@ task Zip Version, {
 
 task NuGet Package, Version, {
 
-	Write-Host ================= Preparing EbayAccess Nuget package =================
+	Write-Host ================= Preparing $project_name Nuget package =================
 	$text = "$project_short_name webservices API wrapper."
 	# nuspec
-	Set-Content $build_output_dir\EbayAccess\EbayAccess.nuspec @"
+	Set-Content $build_output_dir\$project_name\$project_name.nuspec @"
 <?xml version="1.0"?>
 <package>
 	<metadata>
-		<id>EbayAccess</id>
+		<id>$project_name</id>
 		<version>$Version</version>
 		<authors>Slav Ivanyuk</authors>
 		<owners>Slav Ivanyuk</owners>
