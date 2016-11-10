@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace EbayAccess
 		private const int Maxtimerange = 119;
 		private const int MaximumTimeWindowAllowed = 29;
 		private const int MaximumServerTimeVariationSeconds = 60;
-		private const int MinimumCountToUseEconomAlgorithmInGetSaleRecordsNumberMethod = 5;
+		private const int MinimumCountToUseEconomAlgorithmInGetSaleRecordsNumberMethod = 15;
 		private const string DurationGTC = "GTC";
 		private readonly DateTime _ebayWorkingStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
 		protected int DEFAULT_DELAY_MILLISECONDS = 1800000;
@@ -219,12 +220,15 @@ namespace EbayAccess
 				}
 
 				#region Get all sales since first sale to current time
-				var getSellngManagerSoldListingsResponse = await this.EbayServiceLowLevel.GetSellngManagerSoldListingsByPeriodAsync( ( DateTime )timeFrom, timeTo, 0, mark ).ConfigureAwait( false );
+				var getSellngManagerSoldListingsResponse = await this.EbayServiceLowLevel.GetSellingManagerSoldListingsByPeriodAsync( ( DateTime )timeFrom, timeTo, cts.Token, 0, mark ).ConfigureAwait( false );
 				getSellngManagerSoldListingsResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, getSellngManagerSoldListingsResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
 				getSellngManagerSoldListingsResponse.ThrowOnError();
 				var saleRecordInPeriodIds = getSellngManagerSoldListingsResponse.Orders.Select( o => o.SaleRecordID );
 				saleRecordsIdsFilteredOnlyExisting.AddRange( saleRecordInPeriodIds.Where( id => salerecordIds.Contains( id ) && ( !saleRecordsIdsFilteredOnlyExisting.Contains( id ) ) ) );
 				#endregion
+
+				if( cts.IsCancellationRequested )
+					throw new WebException( "Task was canceled" );
 
 				if( getSellngManagerSoldListingsResponse.IsLimitedResponse )
 				{

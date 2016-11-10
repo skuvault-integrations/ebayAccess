@@ -205,72 +205,70 @@ namespace EbayAccess.Services
 			).ConfigureAwait( false );
 		}
 
-		public async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, int pageLimit = 0, string mark = "" )
+		public async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, CancellationToken ct, int pageLimit = 0, string mark = "" )
 		{
-			var orders = new GetSellingManagerSoldListingsResponse() { Orders = new List< Order >(), IsLimitedResponse = false };
+			if( ct.IsCancellationRequested )
+				throw new WebException( "Task was canceled" );
 
-			var totalPages = 0;
 			var recordsPerPage = this._itemsPerPage;
-			var pageNumber = 1;
-			var hasMoreOrders = false;
+			const int pageNumber = 1;
 
-			do
+			var sellingManagerSoldListings = await this.GetSellngManagerSoldListingsByPeriodSinglePageAsync( ct, timeFrom, timeTo, recordsPerPage, pageNumber, mark ).ConfigureAwait( false );
+
+			if( sellingManagerSoldListings == null || sellingManagerSoldListings.Errors != null )
+				return sellingManagerSoldListings;
+
+			var totalPages = sellingManagerSoldListings.PaginationResult?.TotalNumberOfPages ?? 0;
+
+			if( ( pageLimit > 0 ) && ( totalPages > pageLimit ) )
 			{
-				var headers = CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName();
+				sellingManagerSoldListings.IsLimitedResponse = true;
+				return sellingManagerSoldListings;
+			}
 
-				var body = this.CreateGetSellingManagerSoldListingsRequestBody( timeFrom, timeTo, recordsPerPage, pageNumber );
+			if( totalPages <= 1 )
+				return sellingManagerSoldListings;
 
-				var localPageNumber = pageNumber;
-				var repeatCount = 0;
-				await ActionPolicies.GetAsyncShort.Do( async () =>
+			if( ct.IsCancellationRequested )
+				throw new WebException( "Task was canceled" );
+
+			var errorList = new List< ResponseError >();
+			var pages = new List< int >();
+			for( var i = 2; i <= sellingManagerSoldListings.PaginationResult?.TotalNumberOfPages; i++ )
+			{
+				pages.Add( i );
+			}
+
+			var sellingManagerSoldListingsTempList = await pages.ProcessInBatchAsync( this.MaxThreadsCount, async x => await this.GetSellngManagerSoldListingsByPeriodSinglePageAsync( ct, timeFrom, timeTo, recordsPerPage, x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
+
+			sellingManagerSoldListingsTempList.ForEach( x =>
+			{
+				if( x.Errors != null )
 				{
-					var webRequest = await this.CreateEbayStandartPostRequestWithCertAsync( this._endPoint, headers, body, mark, CancellationToken.None ).ConfigureAwait( false );
+					errorList.AddRange( x.Errors );
+				}
+				else
+				{
+					sellingManagerSoldListings.Orders.AddRange( x.Orders );
+				}
+			} );
 
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, CancellationToken.None ).ConfigureAwait( false ) )
-					{
-						if( localPageNumber == 1 )
-						{
-							var pagination = new EbayPaginationResultResponseParser().Parse( memStream );
-							if( pagination != null )
-								totalPages = pagination.TotalNumberOfPages;
-						}
+			sellingManagerSoldListings.Errors = errorList;
 
-						var getOrdersResponseParsed = new EbayGetSellingManagerSoldListingsResponseParser().Parse( memStream );
-						if( getOrdersResponseParsed != null )
-						{
-							getOrdersResponseParsed.IfThereAreEbayInternalErrorsDo( x =>
-							{
-								if( repeatCount++ < MaxRetryCountOnEbayInternalError )
-									throw new EbayCommonException( $"eBay internal error occurred {repeatCount} times;Mark:{mark};Errors:{x.Errors.ToJson()};Headers:{headers.ToJson()};Body:{body}" );
-							} );
-
-							hasMoreOrders = ( localPageNumber < totalPages );
-
-							if( getOrdersResponseParsed.Errors != null )
-							{
-								orders.Errors = getOrdersResponseParsed.Errors;
-								return;
-							}
-
-							if( getOrdersResponseParsed.Orders != null )
-								orders.Orders.AddRange( getOrdersResponseParsed.Orders );
-
-							if( ( pageLimit > 0 ) && ( totalPages > pageLimit ) )
-							{
-								getOrdersResponseParsed.IsLimitedResponse = true;
-								hasMoreOrders = false;
-								return;
-							}
-						}
-					}
-				} ).ConfigureAwait( false );
-
-				pageNumber++;
-			} while( hasMoreOrders );
-
-			return orders;
+			return sellingManagerSoldListings;
 		}
 
+		private async Task< GetSellingManagerSoldListingsResponse > GetSellngManagerSoldListingsByPeriodSinglePageAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, int recordsPerPage, int pageNumber, string mark = "" )
+		{
+			return await this.GetEbaySingleRequestAsync(
+				headers : CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName(),
+				body : this.CreateGetSellingManagerSoldListingsRequestBody( timeFrom, timeTo, recordsPerPage, pageNumber ),
+				responseParser : x => new EbayGetSellingManagerSoldListingsResponseParser().Parse( x ),
+				cts : ct,
+				mark : mark,
+				useCert : true
+			).ConfigureAwait( false );
+		}
 
 		public string ToJson()
 		{

@@ -7,7 +7,7 @@ namespace EbayAccess.Models.GetSellingManagerSoldListingsResponse
 	{
 		public GetSellingManagerSoldListingsResponse()
 		{
-			this.Orders = new List<Order>();
+			this.Orders = new List< Order >();
 		}
 
 		public List< Order > Orders { get; set; }

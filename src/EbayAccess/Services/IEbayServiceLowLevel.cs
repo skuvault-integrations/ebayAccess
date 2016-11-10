@@ -50,7 +50,7 @@ namespace EbayAccess.Services
 
 		Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber, string mark, CancellationToken cts );
 
-		Task< GetSellingManagerSoldListingsResponse > GetSellngManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, int pageLimit, string mark );
+		Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, CancellationToken ct, int pageLimit, string mark );
 
 		string ToJson();
 

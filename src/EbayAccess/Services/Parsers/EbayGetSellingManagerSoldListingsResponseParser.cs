@@ -31,6 +31,10 @@ namespace EbayAccess.Services.Parsers
 					return getOrdersResponse;
 				}
 
+				var pagination = this.GetPagination( root, ns );
+				if( pagination != null )
+					getOrdersResponse.PaginationResult = pagination;
+
 				var orders = xmlOrders.Select( x =>
 				{
 					var resultOrder = new Order();
