@@ -8,6 +8,7 @@ namespace EbayAccess.Models.BaseResponse
 	public class EbayBaseResponse
 	{
 		private static readonly List< ResponseError > _internalErrors = new List< ResponseError > { new ResponseError { ErrorCode = "10007" }, new ResponseError { ErrorCode = "16100" } };
+		private static readonly List< ResponseError > _invalidTokenErrors = new List< ResponseError > { new ResponseError { ErrorCode = "931" }, new ResponseError { ErrorCode = "932" } };
 
 		public DateTime Timestamp { get; set; }
 
@@ -48,6 +49,11 @@ namespace EbayAccess.Models.BaseResponse
 		public void IfThereAreEbayInternalErrorsDo( Action< EbayBaseResponse > action )
 		{
 			this.IfThereAreErrorsDo( action, _internalErrors );
+		}
+
+		public void IfThereAreEbayInvalidTokenErrorsDo( Action< EbayBaseResponse > action )
+		{
+			this.IfThereAreErrorsDo( action, _invalidTokenErrors );
 		}
 
 		private IEnumerable< ResponseError > RemoveErrorsFromResponse( params ResponseError[] errors )

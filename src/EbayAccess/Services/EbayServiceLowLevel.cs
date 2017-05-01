@@ -743,6 +743,11 @@ namespace EbayAccess.Services
 
 				if( parsedResponse != null )
 				{
+					parsedResponse.IfThereAreEbayInvalidTokenErrorsDo( x =>
+					{
+						throw new EbayCommonException( $"eBay invalid token error occurred {repeatsByTheReasonOfInternalError} times;Mark:{mark};Errors:{x.Errors.ToJson()};Headers:{headers.ToJson()};Body:{body}" );
+					} );
+
 					if( parsedResponse.Errors != null )
 					{
 						parsedResponse.IfThereAreEbayInternalErrorsDo( x =>
