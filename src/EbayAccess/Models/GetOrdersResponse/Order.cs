@@ -72,7 +72,16 @@ namespace EbayAccess.Models.GetOrdersResponse
 		Undefined,
 		CancelComplete,
 		CancelFailed,
-		CancelPending
+		CancelPending,
+		CancelClosedForCommitment,
+		CancelClosedNoRefund,
+		CancelClosedUnknownRefund,
+		CancelClosedWithRefund,
+		CancelRejected,
+		CancelRequested,
+		CustomCode,
+		Invalid,
+		NotApplicable
 	}
 
 	public enum EbayOrderStatusEnum

@@ -72,7 +72,7 @@
 		static EbayHeadersValues()
 		{
 			XEbayApiSiteid = ( ( int )ebaySites.US ).ToString();
-			XEbayApiCompatibilityLevel = "853";
+			XEbayApiCompatibilityLevel = "879";
 		}
 
 		public static string XEbayApiSiteid { get; private set; }
