@@ -30,5 +30,10 @@ namespace EbayAccess.Models.GetSellerListResponse
 		public bool HasPublicMessages { get; set; }
 
 		public string ViewItemUrlForNaturalSearch { get; set; }
+
+		internal ListingDetails Clone()
+		{
+			return ( ListingDetails )this.MemberwiseClone();
+		}
 	}
 }

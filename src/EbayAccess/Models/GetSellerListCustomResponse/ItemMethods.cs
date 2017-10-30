@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Linq;
 
 namespace EbayAccess.Models.GetSellerListCustomResponse
 {
@@ -11,22 +10,36 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 		{
 			for( var i = 0; i < this.Variations.Count; i++ )
 			{
-				var devideByVariations = this.DeepClone();
-				devideByVariations.Variations = new List< Variation > { this.Variations[ i ] };
+				var divideByVariations = this.DeepCloneWithoutVariations();
+				divideByVariations.Variations = new List< Variation > { this.Variations[ i ] };
 
-				yield return devideByVariations;
+				yield return divideByVariations;
 			}
 		}
 
-		private Item DeepClone()
+		private Item DeepCloneWithoutVariations()
 		{
-			using( var ms = new MemoryStream() )
+			var clonedItem = new Item
 			{
-				var formstter = new BinaryFormatter();
-				formstter.Serialize( ms, this );
-				ms.Position = 0;
-				return ( Item )formstter.Deserialize( ms );
-			}
+				BuyItNowPrice = this.BuyItNowPrice,
+				BuyItNowPriceCurrencyId = this.BuyItNowPriceCurrencyId,
+				ItemId = this.ItemId,
+				Quantity = this.Quantity,
+				Title = this.Title,
+				Sku = this.Sku,
+				Duration = this.Duration,
+				ConditionId = this.ConditionId
+			};
+
+			if( this.SellingStatus != null )
+				clonedItem.SellingStatus = new SellingStatus
+				{
+					CurrentPrice = this.SellingStatus.CurrentPrice,
+					CurrentPriceCurrencyId = this.SellingStatus.CurrentPriceCurrencyId,
+					QuantitySold = this.SellingStatus.QuantitySold
+				};
+
+			return clonedItem;
 		}
 
 		public ItemSku GetSku( bool throwException = true )
