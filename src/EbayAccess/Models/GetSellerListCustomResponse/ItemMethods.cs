@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace EbayAccess.Models.GetSellerListCustomResponse
 {
@@ -40,6 +42,17 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 				};
 
 			return clonedItem;
+		}
+
+		private Item DeepClone()
+		{
+			using( var ms = new MemoryStream() )
+			{
+				var formstter = new BinaryFormatter();
+				formstter.Serialize( ms, this );
+				ms.Position = 0;
+				return ( Item )formstter.Deserialize( ms );
+			}
 		}
 
 		public ItemSku GetSku( bool throwException = true )
