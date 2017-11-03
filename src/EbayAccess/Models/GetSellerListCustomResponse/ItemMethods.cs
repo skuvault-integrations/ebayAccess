@@ -48,7 +48,7 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 		{
 			using( var ms = new MemoryStream() )
 			{
-				var formstter = new BinaryFormatter();
+				var formstter = new BinaryFormatter(); // don't use BinaryFormatter due to performance
 				formstter.Serialize( ms, this );
 				ms.Position = 0;
 				return ( Item )formstter.Deserialize( ms );

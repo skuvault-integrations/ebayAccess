@@ -128,5 +128,19 @@ namespace EbayAccess.Models
 				};
 			}
 		}
+
+		public static ResponseError MpnHasAnInvalidValue
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "21919302",
+					LongMessage = "MPN has an invalid value of \"replaceable_value\". Enter a valid value and try again.",
+					ShortMessage = "MPN has an invalid value of \"replaceable_value\".",
+					SeverityCode = "Error"
+				};
+			}
+		}
 	}
 }
