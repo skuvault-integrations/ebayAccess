@@ -58,7 +58,7 @@ namespace EbayAccessTests.Services
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var ordersTask = ebayService.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime );
+			var ordersTask = ebayService.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 21, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None );
 			ordersTask.Wait();
 			var orders = ordersTask.Result;
 

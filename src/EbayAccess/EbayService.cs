@@ -106,7 +106,11 @@ namespace EbayAccess
 					result = new List< Order >();
 				else
 				{
-					var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, mark ).ConfigureAwait( false );
+					var currentMethod = this.GetCallerMethodName();
+					var millisecondsDelay = this.DelayForMethod.ContainsKey( currentMethod ) ? this.DelayForMethod[ currentMethod ] : this.DEFAULT_DELAY_MILLISECONDS;
+					var cts = new CancellationTokenSource( millisecondsDelay );
+
+					var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( dateFrom, dateTo, GetOrdersTimeRangeEnum.ModTime, cts.Token, mark ).ConfigureAwait( false );
 					getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, getOrdersResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
 					getOrdersResponse.ThrowOnError();
 					result = getOrdersResponse.Orders;
@@ -297,7 +301,11 @@ namespace EbayAccess
 				if( sourceOrdersIds == null || !sourceOrdersIds.Any() )
 					return new List< string >();
 
-				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( mark, sourceOrdersIds ).ConfigureAwait( false );
+				var currentMethod = this.GetCallerMethodName();
+				var millisecondsDelay = this.DelayForMethod.ContainsKey( currentMethod ) ? this.DelayForMethod[ currentMethod ] : this.DEFAULT_DELAY_MILLISECONDS;
+				var cts = new CancellationTokenSource( millisecondsDelay );
+
+				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( cts.Token, mark, sourceOrdersIds ).ConfigureAwait( false );
 
 				getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, getOrdersResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
 				getOrdersResponse.ThrowOnError();

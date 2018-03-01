@@ -18,7 +18,7 @@ namespace EbayAccess.Services
 {
 	internal interface IEbayServiceLowLevel
 	{
-		Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, string mark = "" );
+		Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, CancellationToken cts, string mark = "" );
 
 		Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null, string mark = "" );
 
@@ -46,7 +46,7 @@ namespace EbayAccess.Services
 
 		Task< AbortJobResponse > AbortJobAsync( string jobId, string mark );
 
-		Task< GetOrdersResponse > GetOrdersAsync( string mark = "", params string[] ordersIds );
+		Task< GetOrdersResponse > GetOrdersAsync( CancellationToken cts, string mark = "", params string[] ordersIds );
 
 		Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber, string mark, CancellationToken cts );
 

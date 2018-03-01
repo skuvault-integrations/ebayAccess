@@ -171,23 +171,23 @@ namespace EbayAccess.Services
 			};
 		}
 
-		public async Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, string mark = "" )
+		public async Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, CancellationToken cts, string mark = "" )
 		{
-			return await this.GetOrdersTemplateAsync( page => this.CreateGetOrdersRequestBody( createTimeFrom, createTimeTo, this._itemsPerPage, page, getOrdersTimeRangeEnum ), mark ).ConfigureAwait( false );
+			return await this.GetOrdersTemplateAsync( page => this.CreateGetOrdersRequestBody( createTimeFrom, createTimeTo, this._itemsPerPage, page, getOrdersTimeRangeEnum ), cts, mark ).ConfigureAwait( false );
 		}
 
-		public async Task< GetOrdersResponse > GetOrdersAsync( string mark = "", params string[] ordersIds )
+		public async Task< GetOrdersResponse > GetOrdersAsync( CancellationToken cts, string mark = "", params string[] ordersIds )
 		{
-			return await this.GetOrdersTemplateAsync( page => this.CreateGetOrdersRequestBody( this._itemsPerPage, page, ordersIds ), mark ).ConfigureAwait( false );
+			return await this.GetOrdersTemplateAsync( page => this.CreateGetOrdersRequestBody( this._itemsPerPage, page, ordersIds ), cts, mark ).ConfigureAwait( false );
 		}
 
-		private async Task< GetOrdersResponse > GetOrdersTemplateAsync( Func< int, string > getRequestBody, string mark = "" )
+		private async Task< GetOrdersResponse > GetOrdersTemplateAsync( Func< int, string > getRequestBody, CancellationToken cts, string mark = "" )
 		{
 			return await this.GetEbayMultiPageRequestAsync(
 				headers : CreateEbayGetOrdersRequestHeadersWithApiCallName(),
 				getRequestBodyByPageNumber : getRequestBody,
 				responseParser : x => new EbayGetOrdersResponseParser().Parse( x ),
-				cts : CancellationToken.None,
+				cts : cts,
 				mark : mark,
 				useCert: true
 			).ConfigureAwait( false );

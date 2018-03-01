@@ -124,7 +124,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( "", ExistingOrdersIds.OrdersIds.ToArray() );
+			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( CancellationToken.None, "", ExistingOrdersIds.OrdersIds.ToArray() );
 			ordersTask.Wait();
 			//A
 			ordersTask.Result.Orders.Count().Should().BeGreaterThan( 0 );
@@ -137,7 +137,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime );
+			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( ExistingOrdersCreatedInRange.DateFrom, ExistingOrdersCreatedInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None );
 			ordersTask.Wait();
 			//A
 			ordersTask.Result.Orders.Count().Should().BeGreaterThan( 0 );
@@ -150,7 +150,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime );
+			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( NotExistingOrdersInRange.DateFrom, NotExistingOrdersInRange.DateTo, GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None );
 			ordersTask.Wait();
 
 			//A

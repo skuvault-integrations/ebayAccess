@@ -79,7 +79,7 @@ namespace EbayAccessTests
 
 			//A
 			var getOrdersResponseTask = ebayServiceLowLevel.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None, new Guid().ToString() );
 			getOrdersResponseTask.Wait();
 			var getOrdersResponse = getOrdersResponseTask.Result;
 
@@ -147,7 +147,7 @@ namespace EbayAccessTests
 
 			//A
 			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None, new Guid().ToString() );
 			ordersTask.Wait();
 			var orders = ordersTask.Result;
 			//A
@@ -183,7 +183,7 @@ namespace EbayAccessTests
 
 			//A
 			var getOrdersResponseTask = ebayServiceLowLevel.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, new Guid().ToString() );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None, new Guid().ToString() );
 			getOrdersResponseTask.Wait();
 			var getOrdersResponse = getOrdersResponseTask.Result;
 
