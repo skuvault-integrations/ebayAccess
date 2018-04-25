@@ -34,7 +34,7 @@ namespace EbayAccessTests.Services.Parsers
 		}
 
 		[ Test ]
-		public void Parse_GetOrdersResponse_HookupOrdewrDetails()
+		public void Parse_GetOrdersResponse_HookupOrderDetails()
 		{
 			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read ) )
 			{
@@ -71,6 +71,22 @@ namespace EbayAccessTests.Services.Parsers
 			}
 		}
 
+		[ Test ]
+		public void Parse_GetOrders_ReponseWithUserFirstandLastName_Check_That_UserFirst_UserLastName_Parses_Right()
+		{
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithUserFirstandLastName.xml", FileMode.Open, FileAccess.Read ) )
+			{
+				//A
+				var parser = new EbayGetOrdersResponseParser();
+				//A
+				var orders = parser.Parse( fs );
+				//A
+				orders.Orders.First().TransactionArray.First().Buyer.UserFirstName.Should().NotBeNullOrEmpty();
+				orders.Orders.First().TransactionArray.First().Buyer.UserFirstName.Should().Be( "Han" );
+				orders.Orders.First().TransactionArray.First().Buyer.UserLastName.Should().NotBeNullOrEmpty();
+				orders.Orders.First().TransactionArray.First().Buyer.UserLastName.Should().Be( "Solo" );
+			}
+		}
 		[ Test ]
 		public void Parse_GetOrdersResponseWithItemVariationSku_HookupVariationSku()
 		{
