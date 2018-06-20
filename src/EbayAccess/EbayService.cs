@@ -760,8 +760,19 @@ namespace EbayAccess
 								res.Item.Sku = x.Sku;
 								res.Item.ItemId = x.ItemId;
 
-								res.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, res.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue, EbayErrors.MpnHasAnInvalidValue } );
+								var skippedErrors = res.SkipErrorsAndDo( 
+									c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters, mark, res.Errors.ToJson() ) ),
+									new List< ResponseError >
+									{
+										EbayErrors.EbayPixelSizeError,
+										EbayErrors.LvisBlockedError,
+										EbayErrors.UnsupportedListingType,
+										EbayErrors.ReplaceableValue,
+										EbayErrors.MpnHasAnInvalidValue,
+										EbayErrors.DuplicateListingPolicy
+									} );
 
+								res.SkippedErrors = skippedErrors;
 								if( res.Errors == null || !res.Errors.Any() )
 									return;
 
