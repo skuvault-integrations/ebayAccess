@@ -22,14 +22,15 @@ namespace EbayAccess.Models.BaseResponse
 
 		public IEnumerable< ResponseError > Errors { get; set; }
 
-		public void SkipErrorsAndDo( Action< EbayBaseResponse > action, List< ResponseError > updateInventoryErrorsToSkip )
+		public IEnumerable< ResponseError > SkipErrorsAndDo( Action< EbayBaseResponse > action, List< ResponseError > updateInventoryErrorsToSkip )
 		{
 			if( this.DoesResponseContainErrors( updateInventoryErrorsToSkip.ToArray() ) )
 			{
 				if( action != null )
 					action( this );
-				this.RemoveErrorsFromResponse( updateInventoryErrorsToSkip.ToArray() );
+				return this.RemoveErrorsFromResponse( updateInventoryErrorsToSkip.ToArray() );
 			}
+			return new List< ResponseError >();
 		}
 
 		public void IfThereAreErrorsDo( Action< EbayBaseResponse > action, List< ResponseError > updateInventoryErrorsToSkip )
@@ -61,7 +62,9 @@ namespace EbayAccess.Models.BaseResponse
 			if( this.Errors == null )
 				return new List< ResponseError >();
 
-			return this.Errors = this.Errors.Where( y => !errors.Exists( x => x.ErrorCode == y.ErrorCode ) );
+			var removedErrors = this.Errors = this.Errors.Where( y => errors.Exists( x => x.ErrorCode == y.ErrorCode ) ).ToArray();
+			this.Errors = this.Errors.Where( y => !errors.Exists( x => x.ErrorCode == y.ErrorCode ) );
+			return removedErrors;
 		}
 
 		private bool DoesResponseContainErrors( params ResponseError[] errors )

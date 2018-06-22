@@ -1,4 +1,5 @@
-﻿using EbayAccess.Models.BaseResponse;
+﻿using System.Collections.Generic;
+using EbayAccess.Models.BaseResponse;
 
 namespace EbayAccess.Models.ReviseFixedPriceItemResponse
 {
@@ -6,9 +7,12 @@ namespace EbayAccess.Models.ReviseFixedPriceItemResponse
 	{
 		public Item Item { get; set; }
 
+		public IEnumerable< ResponseError > SkippedErrors;
+
 		public ReviseFixedPriceItemResponse()
 		{
 			this.Item = new Item();
+			this.SkippedErrors = new List< ResponseError >();
 		}
 	}
 }

@@ -266,7 +266,7 @@ namespace EbayAccess.Misc
 
 		public static UpdateInventoryResponse ToUpdateInventoryResponses( this ReviseFixedPriceItemResponse source )
 		{
-			return new UpdateInventoryResponse() { ItemId = source.Item != null ? source.Item.ItemId : long.MinValue };
+			return new UpdateInventoryResponse() { ItemId = source.Item != null ? source.Item.ItemId : long.MinValue, SkippedErrors = source.SkippedErrors };
 		}
 
 		public static IEnumerable< UpdateInventoryResponse > ToUpdateInventoryResponses( this IEnumerable< ReviseFixedPriceItemResponse > source )

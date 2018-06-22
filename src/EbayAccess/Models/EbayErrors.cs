@@ -142,5 +142,19 @@ namespace EbayAccess.Models
 				};
 			}
 		}
+
+		public static ResponseError DuplicateListingPolicy
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "21919067",
+					LongMessage = "It looks like this listing is for an item you already have on eBay: \"replaceable_value\",  (\"replaceable_value\"). We don't allow listings for identical items from the same seller to appear on eBay at the same time. If you'd like to list more than one of the same item, create a multi-quantity fixed price listing.",
+					ShortMessage = "Listing violates the Duplicate Listing policy.",
+					SeverityCode = "Error"
+				};
+			}
+		}
 	}
 }
