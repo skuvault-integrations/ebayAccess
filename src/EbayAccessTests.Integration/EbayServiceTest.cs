@@ -7,6 +7,7 @@ using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
 using EbayAccess.Models.GetSellerListCustomResponse;
+using EbayAccess.Models.ReviseFixedPriceItemRequest;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
@@ -183,6 +184,32 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
+		public void UpdateInventoryAsync_UpdateFixedPriceItemWithVariationsThroughReviseFixedPriceItemCall()
+		{
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			int quantity = new Random().Next( 1, 100 );
+			var request = new List< ReviseFixedPriceItemRequest >() { 
+				new ReviseFixedPriceItemRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation1.Quantity + quantity },
+				new ReviseFixedPriceItemRequest { ItemId = ExistingProducts.FixedPrice1WithVariation2.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation2.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation2.Quantity + quantity },
+				new ReviseFixedPriceItemRequest { ItemId = ExistingProducts.FixedPrice1WithVariation3.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation3.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation3.Quantity + quantity },
+			};
+
+			var reviseInventoryTask = ebayService.ReviseFixePriceItemsAsync( request );
+			reviseInventoryTask.Wait();
+
+			var products = ebayService.GetActiveProductsAsync( CancellationToken.None, true, true ).Result;
+			
+			var productWithVariation1 = products.FirstOrDefault( pr => pr.GetSku().Sku == ExistingProducts.FixedPrice1WithVariation1.Sku );
+			productWithVariation1.GetQuantity().Quantity.Should().Be( request[0].Quantity );
+
+			var productWithVariation2 = products.FirstOrDefault( pr => pr.GetSku().Sku == ExistingProducts.FixedPrice1WithVariation2.Sku );
+			productWithVariation2.GetQuantity().Quantity.Should().Be( request[1].Quantity );
+
+			var productWithVariation3 = products.FirstOrDefault( pr => pr.GetSku().Sku == ExistingProducts.FixedPrice1WithVariation3.Sku );
+			productWithVariation3.GetQuantity().Quantity.Should().Be( request[2].Quantity );
+		}
+
+		[ Test ]
 		[ TestCase( UpdateInventoryAlgorithm.Econom ) ]
 		[ TestCase( UpdateInventoryAlgorithm.Old ) ]
 		public void UpdateInventoryAsync_Update2itemsOneOfThemDoesNotExist_ExceptionOccured( UpdateInventoryAlgorithm updateInventoryAlgorithm )
@@ -290,7 +317,7 @@ namespace EbayAccessTests.Integration
 			//------------ Assert
 			var products2List = products2 as IList< Item > ?? products2.ToList();
 			var products1List = products1 as IList< Item > ?? products1.ToList();
-			products2List.Count().Should().BeLessThan( products1List.Count(), "because on site there are items" );
+			products2List.Count().Should().BeLessOrEqualTo( products1List.Count(), "because on site there are items" );
 			products2List.Count().Should().BeGreaterThan( 0, "because on site there are items" );
 			sw2.ElapsedMilliseconds.Should().BeLessThan( sw1.ElapsedMilliseconds, "because on site there are items" );
 			Debug.WriteLine( "products1 {0}, t:{1}", products1List.Count(), sw1.Elapsed.ToString() );

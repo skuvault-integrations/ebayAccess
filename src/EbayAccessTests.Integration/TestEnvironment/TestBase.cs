@@ -29,8 +29,8 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 	internal static class ExistsProductsCreatedInRange
 	{
-		public static readonly DateTime DateFrom = new DateTime( 2014, 6, 14, 15, 0, 0, DateTimeKind.Local );
-		public static readonly DateTime DateTo = new DateTime( 2014, 9, 24, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateFrom = new DateTime( 2019, 10, 1, 15, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateTo = new DateTime( 2020, 9, 10, 1, 0, 0, DateTimeKind.Local );
 	}
 
 	internal static class ExistingOrdersCreatedInRange
@@ -104,11 +104,14 @@ namespace EbayAccessTests.Integration.TestEnvironment
 
 	internal static class ExistingProducts
 	{
-		public static readonly InventoryStatusRequest FixedPrice1WithVariation1 = new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_W", Quantity = 30 };
-		public static readonly InventoryStatusRequest FixedPrice1WithVariation2 = new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_B", Quantity = 30 };
-		public static readonly InventoryStatusRequest FixedPrice1WithVariation3 = new InventoryStatusRequest { ItemId = 110142400319, Sku = "testSku501_Y", Quantity = 30 };
-		public static readonly InventoryStatusRequest FixedPrice1WithoutVariations = new InventoryStatusRequest { ItemId = 110141553531, Sku = "testSku11014", Quantity = 50 };
-		public static readonly InventoryStatusRequest FixedPrice2WithoutVariations = new InventoryStatusRequest { ItemId = 110141989389, Sku = "testSku110141989389", Quantity = 80 };
+		public static readonly InventoryStatusRequest FixedPrice1WithVariation1 = new InventoryStatusRequest { ItemId = 110449844104, Sku = "RLauren_Wom_TShirt_Pnk_S", Quantity = 6 };
+		public static readonly InventoryStatusRequest FixedPrice1WithVariation2 = new InventoryStatusRequest { ItemId = 110449844104, Sku = "RLauren_Wom_TShirt_Pnk_M", Quantity = 7 };
+		public static readonly InventoryStatusRequest FixedPrice1WithVariation3 = new InventoryStatusRequest { ItemId = 110449844104, Sku = "RLauren_Wom_TShirt_Blk_S", Quantity = 8 };
+		public static readonly InventoryStatusRequest FixedPrice1WithVariation4 = new InventoryStatusRequest { ItemId = 110449844104, Sku = "RLauren_Wom_TShirt_Blk_M", Quantity = 9 };
+		public static readonly InventoryStatusRequest FixedPrice1WithVariation5 = new InventoryStatusRequest { ItemId = 110449844104, Sku = "RLauren_Wom_TShirt_Blu_S", Quantity = 10 };
+		public static readonly InventoryStatusRequest FixedPrice1WithVariation6 = new InventoryStatusRequest { ItemId = 110449844104, Sku = "RLauren_Wom_TShirt_Blu_M", Quantity = 11 };
+		public static readonly InventoryStatusRequest FixedPrice1WithoutVariations = new InventoryStatusRequest { ItemId = 110449813053, Sku = "testsku1", Quantity = 5 };
+		public static readonly InventoryStatusRequest FixedPrice2WithoutVariations = new InventoryStatusRequest { ItemId = 110449844035, Sku = "testsku3", Quantity = 10 };
 	}
 
 	public static class TestItemsDescriptions

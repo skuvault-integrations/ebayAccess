@@ -497,22 +497,32 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region ReviseFixedPriceItem
-		private string CreateReviseFixedPriceItemRequestBody( ReviseFixedPriceItemRequest inventoryStatusReq, bool isVariation )
+		private string CreateReviseFixedPriceItemRequestBody( ReviseFixedPriceItemRequest inventoryStatusReq )
 		{
-			var sku = string.Format( "<SKU>{0}</SKU>", SecurityElement.Escape( inventoryStatusReq.Sku ) );
+			var header = string.Format( "<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials>", this._userCredentials.Token );
+			var sku = SecurityElement.Escape( inventoryStatusReq.Sku );
 			var condition = inventoryStatusReq.ConditionID > 0 ? string.Format("<ConditionID>{0}</ConditionID>", inventoryStatusReq.ConditionID) : string.Empty;
-			var body = isVariation ? string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations><Variation>{2}<Quantity>{3}</Quantity></Variation></Variations><OutOfStockControl>{4}</OutOfStockControl>{5}</Item></ReviseFixedPriceItemRequest>",
-				this._userCredentials.Token,
+			var variationsBody = string.Empty;
+
+			if ( inventoryStatusReq.HasVariations )
+			{
+				foreach( var variation in inventoryStatusReq.Variations )
+				{
+					variationsBody += string.Format( "<Variation><SKU>{0}</SKU><Quantity>{1}</Quantity></Variation>", SecurityElement.Escape( variation.Sku ), variation.Quantity );
+				}
+			}
+
+			var body = inventoryStatusReq.HasVariations ? string.Format(
+				"{0}<Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations>{2}</Variations><OutOfStockControl>{3}</OutOfStockControl>{4}</Item></ReviseFixedPriceItemRequest>",
+				header,
 				inventoryStatusReq.ItemId,
-				sku,
-				inventoryStatusReq.Quantity,
+				variationsBody,
 				true,
 				condition
 				) :
 				string.Format(
-					"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Quantity>{2}</Quantity>{3}<OutOfStockControl>{4}</OutOfStockControl>{5}</Item></ReviseFixedPriceItemRequest>",
-					this._userCredentials.Token,
+					"{0}<Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Quantity>{2}</Quantity><SKU>{3}</SKU><OutOfStockControl>{4}</OutOfStockControl>{5}</Item></ReviseFixedPriceItemRequest>",
+					header,
 					inventoryStatusReq.ItemId,
 					inventoryStatusReq.Quantity,
 					sku,
@@ -530,11 +540,11 @@ namespace EbayAccess.Services
 			};
 		}
 
-		public async Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, string mark, bool isVariation )
+		public async Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, string mark )
 		{
 			return await this.GetEbaySingleRequestAsync(
 				headers : CreateReviseFixedPriceItemHeadersWithApiCallName(),
-				body : this.CreateReviseFixedPriceItemRequestBody( fixedPriceItem, isVariation ),
+				body : this.CreateReviseFixedPriceItemRequestBody( fixedPriceItem ),
 				responseParser : x => new EbayReviseFixedPriceItemResponseParser().Parse( x ),
 				cts : CancellationToken.None,
 				mark : mark,
