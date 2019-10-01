@@ -30,7 +30,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 	internal static class ExistsProductsCreatedInRange
 	{
 		public static readonly DateTime DateFrom = new DateTime( 2019, 10, 1, 15, 0, 0, DateTimeKind.Local );
-		public static readonly DateTime DateTo = new DateTime( 2020, 9, 10, 1, 0, 0, DateTimeKind.Local );
+		public static readonly DateTime DateTo = new DateTime( 2019, 12, 1, 15, 0, 0, DateTimeKind.Local );
 	}
 
 	internal static class ExistingOrdersCreatedInRange
