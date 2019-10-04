@@ -76,6 +76,10 @@
     <Compile Include="Models\BaseResponse\ResponseError.cs" />
     <Compile Include="Models\CredentialsAndConfig\EbayConfigSandBox.cs" />
     <Compile Include="Models\EbayErrors.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\GetSellerListCustomProductResponse.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\Product.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\ProductBase.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\ProductVariation.cs" />
     <Compile Include="Models\UpdateInventoryResponse.cs" />
     <Compile Include="Models\UpdateInventoryRequest.cs" />
     <Compile Include="Models\ReviseFixedPriceItemRequest\ReviseFixedPriceItemRequest.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="Services\EbayServiceLowLevel.cs" />
     <Compile Include="Services\IEbayServiceLowLevel.cs" />
     <Compile Include="Services\IWebRequestServices.cs" />
+    <Compile Include="Services\Parsers\EbayGetSellerListCustomProductResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayReviseFixedPriceItemResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetSellingManagerSoldListingsResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayBulkAbortJobParser.cs" />

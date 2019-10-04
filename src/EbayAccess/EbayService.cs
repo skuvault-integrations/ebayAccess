@@ -394,6 +394,44 @@ namespace EbayAccess
 			}
 		}
 
+		public async Task< IEnumerable< Product > > GetActiveProductPullItemsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow = null, string mark = null )
+		{
+			var methodParameters = new Func< string >( () => string.Format( "{{getOnlyGtcDuration: {0}, cancellationTokenIsCancelled:{1}}}", getOnlyGtcDuration, ct.IsCancellationRequested ) );
+			mark = mark ?? Guid.NewGuid().ToString();
+			try
+			{
+				if( ct.IsCancellationRequested )
+					return null;
+
+				EbayLogger.LogTraceStarted( this.CreateMethodCallInfo( methodParameters(), mark ) );
+
+				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomProductResponsesWithMaxThreadsRestrictionAsync( ct, DateTime.UtcNow, DateTime.UtcNow.AddDays( Maxtimerange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false )
+				                       ?? new List< GetSellerListCustomProductResponse >();
+
+				var getSellerListCustomResponses = sellerListsAsync as IList< GetSellerListCustomProductResponse > ?? sellerListsAsync.ToList();
+				getSellerListCustomResponses.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( methodParameters(), mark, c.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
+
+				if( throwExceptionOnErrors || getSellerListCustomResponses.HasIgnoreError( exceptionsForIgnoreAndThrow ) )
+					getSellerListCustomResponses.ThrowOnError();
+
+				if( getOnlyGtcDuration )
+					getSellerListCustomResponses.ForEach( x => x.Items = x.Items.Where( y => y.Duration.ToUpper().Equals( DurationGTC ) ).ToList() );
+
+				var items = getSellerListCustomResponses.SelectMany( x => x.Items ).ToList();
+
+				var resultSellerListBriefInfo = items.ToJson();
+				EbayLogger.LogTraceEnded( this.CreateMethodCallInfo( methodParameters(), mark, methodResult : resultSellerListBriefInfo ) );
+
+				return items;
+			}
+			catch( Exception exception )
+			{
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", this.CreateMethodCallInfo( methodParameters(), mark ) ), exception );
+				LogTraceException( ebayException.Message, ebayException );
+				throw ebayException;
+			}
+		}
+
 		public async Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo )
 		{
 			var mark = new Guid().ToString();

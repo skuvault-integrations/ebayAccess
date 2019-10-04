@@ -317,6 +317,13 @@ namespace EbayAccess.Services
 				getSellerListTimeRangeEnum );
 		}
 
+		private string CreateGetSellerListCustomProductRequestBody( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber )
+		{
+			return "<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials>" +
+				$"<eBayAuthToken>{this._userCredentials.Token}</eBayAuthToken></RequesterCredentials><{getSellerListTimeRangeEnum}From>{timeFrom.ToStringUtcIso8601()}</{getSellerListTimeRangeEnum}From><{getSellerListTimeRangeEnum}To>{timeTo.ToStringUtcIso8601()}</{getSellerListTimeRangeEnum}To><IncludeVariations>true</IncludeVariations><Pagination ComplexType=\"PaginationType\"><EntriesPerPage>{recordsPerPage}</EntriesPerPage><PageNumber>{pageNumber}</PageNumber></Pagination>  " +
+				"<DetailLevel>ItemReturnDescription</DetailLevel><OutputSelector>ItemArray.Item.ItemID,ItemArray.Item.SKU,ItemArray.Item.Title,ItemArray.Item.PrimaryCategory.CategoryName,ItemArray.Item.PictureDetails.PictureURL,ItemArray.Item.Description,ItemArray.Item.ShippingPackageDetails.WeightMajor,ItemArray.Item.ShippingPackageDetails.WeightMinor,ItemArray.Item.BuyItNowPrice,ItemArray.Item.Variations,PaginationResult,HasMoreItems,ItemArray.Item.ListingDuration</OutputSelector> </GetSellerListRequest>​​​";
+		}
+
 		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
 			return await this.GetEbayMultiPageRequestAsync(
@@ -368,12 +375,52 @@ namespace EbayAccess.Services
 			return getSellerListCustomResponses.Where( x => x != null ).ToList();
 		}
 
+		public async Task< IEnumerable< GetSellerListCustomProductResponse > > GetSellerListCustomProductResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
+		{
+			if( ct.IsCancellationRequested )
+				return null;
+
+			var recordsPerPage = this._itemsPerPage;
+			const int pageNumber = 1;
+
+			var getSellerListResponse = await this.GetSellerListCustomProductResponseAsync( ct, timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber, mark ).ConfigureAwait( false );
+
+			var pages = new List< int >();
+
+			var getSellerListCustomResponses = new List< GetSellerListCustomProductResponse > { getSellerListResponse };
+			if( getSellerListResponse != null && getSellerListResponse.Errors == null )
+			{
+				if( getSellerListResponse.PaginationResult.TotalNumberOfPages > 1 )
+				{
+					for( var i = 2; i <= getSellerListResponse.PaginationResult.TotalNumberOfPages; i++ )
+					{
+						pages.Add( i );
+					}
+					var getSellerListCustomResponsesTemp = await pages.ProcessInBatchAsync( this.MaxThreadsCount, async x => await this.GetSellerListCustomProductResponseAsync( ct, timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
+					getSellerListCustomResponses.AddRange( getSellerListCustomResponsesTemp );
+				}
+			}
+
+			return getSellerListCustomResponses.Where( x => x != null ).ToList();
+		}
+
 		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, string mark )
 		{
-			return await this.GetEbaySingleRequestAsync(
+			return await this.GetEbaySingleRequestAsync< GetSellerListCustomResponse >(
 				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
 				body : this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber ),
 				responseParser : x => new EbayGetSallerListCustomResponseParser().Parse( x ),
+				cts : ct,
+				mark : mark
+			).ConfigureAwait( false );
+		}
+
+		private async Task< GetSellerListCustomProductResponse > GetSellerListCustomProductResponseAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, string mark )
+		{
+			return await this.GetEbaySingleRequestAsync< GetSellerListCustomProductResponse >(
+				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
+				body : this.CreateGetSellerListCustomProductRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber ),
+				responseParser : x => new EbayGetSellerListCustomProductResponseParser().Parse( x ),
 				cts : ct,
 				mark : mark
 			).ConfigureAwait( false );
