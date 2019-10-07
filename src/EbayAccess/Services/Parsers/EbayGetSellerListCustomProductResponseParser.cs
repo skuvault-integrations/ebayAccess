@@ -57,8 +57,6 @@ namespace EbayAccess.Services.Parsers
 		{
 			var product = new Product();
 
-			//res.ItemId = GetElementValue( element, ns, "ItemID" );
-
 			string buyItNowPrice;
 			if( !string.IsNullOrWhiteSpace( buyItNowPrice = GetElementValue( element, ns, "BuyItNowPrice" ) ) )
 			{
