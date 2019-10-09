@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<GetSellerListResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+	<Timestamp>2014-05-08T09:26:45.824Z</Timestamp>
+	<Ack>Success</Ack>
+	<Version>869</Version>
+	<Build>E869_CORE_API_16786567_R1</Build>
+	<PaginationResult>
+		<TotalNumberOfPages>1</TotalNumberOfPages>
+		<TotalNumberOfEntries>5</TotalNumberOfEntries>
+	</PaginationResult>
+	<HasMoreItems>false</HasMoreItems>
+	<ItemArray>
+		<Item>
+			<BuyItNowPrice currencyID="USD">2.4</BuyItNowPrice>
+			<Description>&lt;font rwr='1' size='4' style='font-family:Arial'&gt;&lt;font rwr="1" size="4" style="font-family:Arial"&gt;Shirt&lt;/font&gt;&lt;/font&gt;</Description>
+			<ItemID>110449844104</ItemID>
+			<ListingDuration>GTC</ListingDuration>
+			<PrimaryCategory>
+				<CategoryName>Everything Else:Test Category For Internal Use Only Parent Level 2:Test Category For Internal Use Only Parent Level 3:Attributes7</CategoryName>
+			</PrimaryCategory>
+			<Title>New Ralph Lauren Polo shirt Pink Black Blue Yellow</Title>
+			<SKU>testsku2</SKU>
+			<PictureDetails>
+				<PictureURL>https://i12.ebayimg.com/03/i/04/8a/5f/a1_1_sbl.JPG</PictureURL>
+				<PictureURL>https://i22.ebayimg.com/01/i/04/8e/53/69_1_sbl.JPG</PictureURL>
+				<PictureURL>https://i4.ebayimg.ebay.com/01/i/000/77/3c/d88f_1_sbl.JPG</PictureURL>
+			</PictureDetails>
+			<Variations>
+				<Variation>
+					<SKU>RLauren_Wom_TShirt_Pnk_S</SKU>
+					<StartPrice currencyID="USD">17.99</StartPrice>
+					<Quantity>100</Quantity>
+					<VariationSpecifics>
+						<NameValueList>
+							<Name>Color</Name>
+							<Value>Pink</Value>
+						</NameValueList>
+						<NameValueList>
+							<Name>Size</Name>
+							<Value>S</Value>
+						</NameValueList>
+					</VariationSpecifics>
+					<SellingStatus>
+						<QuantitySold>0</QuantitySold>
+					</SellingStatus>
+				</Variation>
+				<Variation>
+					<SKU>RLauren_Wom_TShirt_Pnk_M</SKU>
+					<StartPrice currencyID="USD">17.99</StartPrice>
+					<Quantity>100</Quantity>
+					<VariationSpecifics>
+						<NameValueList>
+							<Name>Color</Name>
+							<Value>Pink</Value>
+						</NameValueList>
+						<NameValueList>
+							<Name>Size</Name>
+							<Value>M</Value>
+						</NameValueList>
+					</VariationSpecifics>
+					<SellingStatus>
+						<QuantitySold>0</QuantitySold>
+					</SellingStatus>
+				</Variation>
+				<Variation>
+					<SKU>RLauren_Wom_TShirt_Blk_S</SKU>
+					<StartPrice currencyID="USD">20.0</StartPrice>
+					<Quantity>100</Quantity>
+					<VariationSpecifics>
+						<NameValueList>
+							<Name>Color</Name>
+							<Value>Black</Value>
+						</NameValueList>
+						<NameValueList>
+							<Name>Size</Name>
+							<Value>S</Value>
+						</NameValueList>
+					</VariationSpecifics>
+					<SellingStatus>
+						<QuantitySold>0</QuantitySold>
+					</SellingStatus>
+				</Variation>
+				<Variation>
+					<SKU>RLauren_Wom_TShirt_Blk_M</SKU>
+					<StartPrice currencyID="USD">20.0</StartPrice>
+					<Quantity>100</Quantity>
+					<VariationSpecifics>
+						<NameValueList>
+							<Name>Color</Name>
+							<Value>Black</Value>
+						</NameValueList>
+						<NameValueList>
+							<Name>Size</Name>
+							<Value>M</Value>
+						</NameValueList>
+					</VariationSpecifics>
+					<SellingStatus>
+						<QuantitySold>0</QuantitySold>
+					</SellingStatus>
+				</Variation>
+				<Variation>
+					<SKU>RLauren_Wom_TShirt_Blu_S</SKU>
+					<StartPrice currencyID="USD">20.0</StartPrice>
+					<Quantity>100</Quantity>
+					<VariationSpecifics>
+						<NameValueList>
+							<Name>Color</Name>
+							<Value>Blue</Value>
+						</NameValueList>
+						<NameValueList>
+							<Name>Size</Name>
+							<Value>S</Value>
+						</NameValueList>
+					</VariationSpecifics>
+					<SellingStatus>
+						<QuantitySold>0</QuantitySold>
+					</SellingStatus>
+				</Variation>
+				<Variation>
+					<SKU>RLauren_Wom_TShirt_Blu_M</SKU>
+					<StartPrice currencyID="USD">20.0</StartPrice>
+					<Quantity>100</Quantity>
+					<VariationSpecifics>
+						<NameValueList>
+							<Name>Color</Name>
+							<Value>Blue</Value>
+						</NameValueList>
+						<NameValueList>
+							<Name>Size</Name>
+							<Value>M</Value>
+						</NameValueList>
+					</VariationSpecifics>
+					<SellingStatus>
+						<QuantitySold>0</QuantitySold>
+					</SellingStatus>
+				</Variation>
+			</Variations>
+			<ShippingPackageDetails>
+				<WeightMajor measurementSystem="English" unit="lbs">2</WeightMajor>
+				<WeightMinor measurementSystem="English" unit="oz">8</WeightMinor>
+			</ShippingPackageDetails>
+		</Item>
+	</ItemArray>
+	<ItemsPerPage>50</ItemsPerPage>
+	<PageNumber>1</PageNumber>
+	<ReturnedItemCountActual>5</ReturnedItemCountActual>	
+</GetSellerListResponse>

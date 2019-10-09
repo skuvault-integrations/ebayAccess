@@ -61,6 +61,7 @@
     <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Models\CredentialsAndConfig\EbayConfigTest.cs" />
     <Compile Include="Models\GetSellerListResponse\ItemExtendedTest.cs" />
+    <Compile Include="Models\GetSellerListResponse\ProductTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EbayServiceLowLevelTest.cs" />
     <Compile Include="Services\Parsers\EbayXmlParserTest.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Services\Parsers\EbayGetSellerListResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayPaginationResultResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayReviseInventoryStatusResponseParserTest.cs" />
+    <Compile Include="Services\Parsers\EbayGetSellerListCustomProductResponse.cs" />
     <Compile Include="TestEnvironment\Extensions.cs" />
     <Compile Include="TestEnvironment\TestBase.cs" />
     <Compile Include="TestEnvironment\TestEmptyCredentials.cs" />
@@ -113,6 +115,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\GetSellerListCustomProductResponse\EbayServiceGetSellerListCustomProductResponse.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith5ItemsWithSku_DetailLevelAll.xml">

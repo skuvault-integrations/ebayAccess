@@ -266,6 +266,21 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
+		public void GetActiveProductPullItemsAsync_ServiceWithExistingProducts_HookupProducts()
+		{
+			//------------ Arrange
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+
+			//------------ Act
+			var task = ebayService.GetActiveProductPullItemsAsync( CancellationToken.None );
+			task.Wait();
+			var products = task.Result;
+
+			//------------ Assert
+			products.Count().Should().BeGreaterThan( 0, "because on site there are items" );
+		}
+
+		[ Test ]
 		public void GetActiveProductsAsync_ServiceWithExistingProductsCancellationTokenCancelled_ReturnPartOfProductsOrEmptyCollectionImmidiatelly()
 		{
 			//------------ Arrange

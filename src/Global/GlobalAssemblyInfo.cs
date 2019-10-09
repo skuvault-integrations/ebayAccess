@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 
 [ assembly : ComVisible( false ) ]
 [ assembly : AssemblyProduct( "EbayAccess" ) ]
-[ assembly : AssemblyCompany( "Agile Harbor, LLC" ) ]
-[ assembly : AssemblyCopyright( "Copyright (C) 2014 Agile Harbor, LLC" ) ]
+[ assembly : AssemblyCompany( "SkuVault" ) ]
+[ assembly : AssemblyCopyright( "Copyright (C) 2019 SkuVault Inc." ) ]
 [ assembly : AssemblyDescription( "Ebay webservices API wrapper." ) ]
 [ assembly : AssemblyTrademark( "" ) ]
 [ assembly : AssemblyCulture( "" ) ]
@@ -24,4 +24,4 @@ using System.Runtime.InteropServices;
 
 // Keep in track with CA API version
 
-[ assembly : AssemblyVersion( "1.1.39.0" ) ]
+[ assembly : AssemblyVersion( "1.1.41.0" ) ]
