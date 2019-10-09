@@ -82,7 +82,7 @@ namespace EbayAccessTests.Services
 					ItemId = 1,
 					Quantity = 1,
 					Sku = "some sku with &<>'\""
-				}, "mark", true );
+				}, "mark" );
 				reviseFixedPriceItemAsync.Wait();
 			};
 
