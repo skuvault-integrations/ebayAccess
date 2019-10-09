@@ -208,5 +208,17 @@ namespace EbayAccessTests.Integration.Services
 			sessionId.Should().NotBeNullOrWhiteSpace();
 			userToken.Should().NotBeNullOrWhiteSpace();
 		}
+
+		#region GetSellerListCustomProduct
+		[ Test ]
+		public async Task GetSellerListCustomProductResponsesWithMaxThreadsRestrictionAsync()
+		{
+			const int maxTimeRange = 119;
+
+			var products = await this._ebayService.GetSellerListCustomProductResponsesWithMaxThreadsRestrictionAsync( CancellationToken.None, DateTime.UtcNow, DateTime.UtcNow.AddDays( maxTimeRange ), GetSellerListTimeRangeEnum.EndTime, "" ).ConfigureAwait( false );
+
+			products.SelectMany( p => p.Items ).Should().NotBeEmpty();
+		}
+		#endregion
 	}
 }

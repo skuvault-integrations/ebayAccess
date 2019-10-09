@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccess.Services;
 using Netco.Logging;
 using Netco.Logging.NLogIntegration;
 using NUnit.Framework;
@@ -11,6 +12,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 	public abstract class TestBase
 	{
 		protected TestCredentials _credentials;
+		internal IEbayServiceLowLevel _ebayService;
 
 		protected string FilesEbayTestCredentialsCsv = @"..\..\Files\ebay_test_credentials.csv";
 		protected string FilesEbayTestDevcredentialsCsv = @"..\..\Files\ebay_test_devcredentials.csv";
@@ -24,6 +26,7 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		{
 			this._credentials = new TestCredentials( this.FilesEbayTestCredentialsCsv, this.FilesEbayTestDevcredentialsCsv, this.FilesEbayTestSaleitemsidsCsv, this.FilesEbayTestRunameCsv );
 			NetcoLogger.LoggerFactory = ( ILoggerFactory )new NLogLoggerFactory();
+			this._ebayService = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 		}
 	}
 
