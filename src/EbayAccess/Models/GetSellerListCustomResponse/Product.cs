@@ -14,8 +14,6 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 
 		public Weight Weight { get; set; }
 
-		public SalePrice SalePrice { get; set; }
-
 		public List< ProductVariation > Variations { get; set; }
 
 		public string Duration { get; set; }

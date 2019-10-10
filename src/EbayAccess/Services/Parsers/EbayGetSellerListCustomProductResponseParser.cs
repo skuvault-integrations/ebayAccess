@@ -57,16 +57,6 @@ namespace EbayAccess.Services.Parsers
 		{
 			var product = new Product();
 
-			string buyItNowPrice;
-			if( !string.IsNullOrWhiteSpace( buyItNowPrice = GetElementValue( element, ns, "BuyItNowPrice" ) ) )
-			{
-				product.SalePrice = new SalePrice 
-				{
-					Price = buyItNowPrice.ToDecimalDotOrComaSeparated(),
-					CurrencyId = this.GetElementAttribute( "currencyID", element, ns, "BuyItNowPrice" )
-				};
-			}
-
 			product.Title = GetElementValue( element, ns, "Title" );
 			product.Sku = GetElementValue( element, ns, "SKU" );
 			product.ClassificationName = GetElementValue( element, ns, "PrimaryCategory" );
