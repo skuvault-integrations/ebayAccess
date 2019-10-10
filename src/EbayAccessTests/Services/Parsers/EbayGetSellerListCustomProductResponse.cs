@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
@@ -20,8 +19,6 @@ namespace EbayAccessTests.Services.Parsers
 
 				var product = products.First();
 				products.Should().HaveCount( 1, "because in source file there is {0} items", 1 );
-				product.SalePrice.Price.Should().Be( 2.4m );
-				product.SalePrice.CurrencyId.Should().Be( "USD" );
 				product.Title.Should().Be( "New Ralph Lauren Polo shirt Pink Black Blue Yellow" );
 				product.Sku.Should().Be( "testsku2" );
 				product.ClassificationName.Should().Be( "Everything Else:Test Category For Internal Use Only Parent Level 2:Test Category For Internal Use Only Parent Level 3:Attributes7" );
