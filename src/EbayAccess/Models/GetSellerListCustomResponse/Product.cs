@@ -70,11 +70,4 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 			this.Units = units;
 		}
 	}
-
-	public struct SalePrice
-	{
-		public decimal? Price { get; set; }
-
-		public string CurrencyId { get; set; }
-	}
 }
