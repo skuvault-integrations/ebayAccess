@@ -317,6 +317,13 @@ namespace EbayAccess.Services
 				getSellerListTimeRangeEnum );
 		}
 
+		private string CreateGetSellerListCustomProductRequestBody( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber )
+		{
+			return "<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials>" +
+				$"<eBayAuthToken>{this._userCredentials.Token}</eBayAuthToken></RequesterCredentials><{getSellerListTimeRangeEnum}From>{timeFrom.ToStringUtcIso8601()}</{getSellerListTimeRangeEnum}From><{getSellerListTimeRangeEnum}To>{timeTo.ToStringUtcIso8601()}</{getSellerListTimeRangeEnum}To><IncludeVariations>true</IncludeVariations><Pagination ComplexType=\"PaginationType\"><EntriesPerPage>{recordsPerPage}</EntriesPerPage><PageNumber>{pageNumber}</PageNumber></Pagination>  " +
+				"<DetailLevel>ItemReturnDescription</DetailLevel><OutputSelector>ItemArray.Item.ItemID,ItemArray.Item.SKU,ItemArray.Item.Title,ItemArray.Item.PrimaryCategory.CategoryName,ItemArray.Item.PictureDetails.PictureURL,ItemArray.Item.Description,ItemArray.Item.ShippingPackageDetails.WeightMajor,ItemArray.Item.ShippingPackageDetails.WeightMinor,ItemArray.Item.Variations,PaginationResult,HasMoreItems,ItemArray.Item.ListingDuration</OutputSelector> </GetSellerListRequest>​​​";
+		}
+
 		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
 		{
 			return await this.GetEbayMultiPageRequestAsync(
@@ -368,12 +375,52 @@ namespace EbayAccess.Services
 			return getSellerListCustomResponses.Where( x => x != null ).ToList();
 		}
 
+		public async Task< IEnumerable< GetSellerListCustomProductResponse > > GetSellerListCustomProductResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
+		{
+			if( ct.IsCancellationRequested )
+				return null;
+
+			var recordsPerPage = this._itemsPerPage;
+			const int pageNumber = 1;
+
+			var getSellerListResponse = await this.GetSellerListCustomProductResponseAsync( ct, timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber, mark ).ConfigureAwait( false );
+
+			var pages = new List< int >();
+
+			var getSellerListCustomResponses = new List< GetSellerListCustomProductResponse > { getSellerListResponse };
+			if( getSellerListResponse != null && getSellerListResponse.Errors == null )
+			{
+				if( getSellerListResponse.PaginationResult.TotalNumberOfPages > 1 )
+				{
+					for( var i = 2; i <= getSellerListResponse.PaginationResult.TotalNumberOfPages; i++ )
+					{
+						pages.Add( i );
+					}
+					var getSellerListCustomResponsesTemp = await pages.ProcessInBatchAsync( this.MaxThreadsCount, async x => await this.GetSellerListCustomProductResponseAsync( ct, timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
+					getSellerListCustomResponses.AddRange( getSellerListCustomResponsesTemp );
+				}
+			}
+
+			return getSellerListCustomResponses.Where( x => x != null ).ToList();
+		}
+
 		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, string mark )
 		{
-			return await this.GetEbaySingleRequestAsync(
+			return await this.GetEbaySingleRequestAsync< GetSellerListCustomResponse >(
 				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
 				body : this.CreateGetSellerListCustomRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber ),
 				responseParser : x => new EbayGetSallerListCustomResponseParser().Parse( x ),
+				cts : ct,
+				mark : mark
+			).ConfigureAwait( false );
+		}
+
+		private async Task< GetSellerListCustomProductResponse > GetSellerListCustomProductResponseAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, string mark )
+		{
+			return await this.GetEbaySingleRequestAsync< GetSellerListCustomProductResponse >(
+				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
+				body : this.CreateGetSellerListCustomProductRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, recordsPerPage, pageNumber ),
+				responseParser : x => new EbayGetSellerListCustomProductResponseParser().Parse( x ),
 				cts : ct,
 				mark : mark
 			).ConfigureAwait( false );
@@ -497,22 +544,32 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region ReviseFixedPriceItem
-		private string CreateReviseFixedPriceItemRequestBody( ReviseFixedPriceItemRequest inventoryStatusReq, bool isVariation )
+		private string CreateReviseFixedPriceItemRequestBody( ReviseFixedPriceItemRequest inventoryStatusReq )
 		{
-			var sku = string.Format( "<SKU>{0}</SKU>", SecurityElement.Escape( inventoryStatusReq.Sku ) );
+			var header = string.Format( "<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials>", this._userCredentials.Token );
+			var sku = SecurityElement.Escape( inventoryStatusReq.Sku );
 			var condition = inventoryStatusReq.ConditionID > 0 ? string.Format("<ConditionID>{0}</ConditionID>", inventoryStatusReq.ConditionID) : string.Empty;
-			var body = isVariation ? string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations><Variation>{2}<Quantity>{3}</Quantity></Variation></Variations><OutOfStockControl>{4}</OutOfStockControl>{5}</Item></ReviseFixedPriceItemRequest>",
-				this._userCredentials.Token,
+			var variationsBody = string.Empty;
+
+			if ( inventoryStatusReq.HasVariations )
+			{
+				foreach( var variation in inventoryStatusReq.Variations )
+				{
+					variationsBody += string.Format( "<Variation><SKU>{0}</SKU><Quantity>{1}</Quantity></Variation>", SecurityElement.Escape( variation.Sku ), variation.Quantity );
+				}
+			}
+
+			var body = inventoryStatusReq.HasVariations ? string.Format(
+				"{0}<Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Variations>{2}</Variations><OutOfStockControl>{3}</OutOfStockControl>{4}</Item></ReviseFixedPriceItemRequest>",
+				header,
 				inventoryStatusReq.ItemId,
-				sku,
-				inventoryStatusReq.Quantity,
+				variationsBody,
 				true,
 				condition
 				) :
 				string.Format(
-					"<?xml version=\"1.0\" encoding=\"utf-8\"?><ReviseFixedPriceItemRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Quantity>{2}</Quantity>{3}<OutOfStockControl>{4}</OutOfStockControl>{5}</Item></ReviseFixedPriceItemRequest>",
-					this._userCredentials.Token,
+					"{0}<Item ComplexType=\"ItemType\"><ItemID>{1}</ItemID><Quantity>{2}</Quantity><SKU>{3}</SKU><OutOfStockControl>{4}</OutOfStockControl>{5}</Item></ReviseFixedPriceItemRequest>",
+					header,
 					inventoryStatusReq.ItemId,
 					inventoryStatusReq.Quantity,
 					sku,
@@ -530,11 +587,11 @@ namespace EbayAccess.Services
 			};
 		}
 
-		public async Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, string mark, bool isVariation )
+		public async Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, string mark )
 		{
 			return await this.GetEbaySingleRequestAsync(
 				headers : CreateReviseFixedPriceItemHeadersWithApiCallName(),
-				body : this.CreateReviseFixedPriceItemRequestBody( fixedPriceItem, isVariation ),
+				body : this.CreateReviseFixedPriceItemRequestBody( fixedPriceItem ),
 				responseParser : x => new EbayReviseFixedPriceItemResponseParser().Parse( x ),
 				cts : CancellationToken.None,
 				mark : mark,
