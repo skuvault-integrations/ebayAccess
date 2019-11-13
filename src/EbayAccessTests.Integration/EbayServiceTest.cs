@@ -129,6 +129,32 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
+		public void UpdateInventoryAsyncEconom_UpdateMoreThanFourItemsWithoutVariationsAndNotAndRandomOrder()
+		{
+			//------------ Arrange
+			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
+			var rand = new Random();
+
+			//------------ Act
+			var requests = new List< UpdateInventoryRequest >
+			{
+				new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = rand.Next( 1, 100), IsVariation = false },
+				new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation2.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation2.Sku, Quantity = rand.Next( 1, 100), IsVariation = false },
+				new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation3.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation3.Sku, Quantity = rand.Next( 1, 100), IsVariation = false },
+				new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Sku = ExistingProducts.FixedPrice1WithoutVariations.Sku, Quantity = rand.Next( 1, 100), IsVariation = false },
+				new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation4.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation4.Sku, Quantity = rand.Next( 1, 100), IsVariation = false },
+				new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithVariation5.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation5.Sku, Quantity = rand.Next( 1, 100), IsVariation = false },
+				new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Sku = ExistingProducts.FixedPrice2WithoutVariations.Sku, Quantity = rand.Next( 1, 100), IsVariation = false },
+			};
+
+			var updateProductsAsyncTask1 = ebayService.UpdateInventoryAsync( requests, UpdateInventoryAlgorithm.Econom );
+			updateProductsAsyncTask1.Wait();
+
+			//------------ Assert
+			updateProductsAsyncTask1.Result.Count().Should().Be( 3 );
+		}
+
+		[ Test ]
 		[ TestCase( UpdateInventoryAlgorithm.Econom ) ]
 		[ TestCase( UpdateInventoryAlgorithm.Old ) ]
 		public void UpdateInventoryAsync_UpdateFixedPriceItemWithVariationsAndNonvariation_NoExceptionOccuredAndResponseNotEmpty( UpdateInventoryAlgorithm algorithm )
