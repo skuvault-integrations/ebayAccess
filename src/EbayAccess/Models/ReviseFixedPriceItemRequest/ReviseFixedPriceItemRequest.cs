@@ -51,6 +51,25 @@ namespace EbayAccess.Models.ReviseFixedPriceItemRequest
 				result.Quantity = source.First().Quantity;
 				result.StartPrice = source.First().StartPrice;
 				result.ConditionID = source.First().ConditionID;
+				result.Variations.AddRange( source.First().Variations );
+			}
+
+			return result;
+		}
+
+		public static ReviseFixedPriceItemRequest ToReviseFixedPriceItemRequestWithVariations( this IGrouping< long, UpdateInventoryRequest > source )
+		{
+			var result = new ReviseFixedPriceItemRequest() { ItemId = source.Key };
+
+			if ( source.Count() > 1 )
+			{
+				result.Variations.AddRange( source.Select( i => new ReviseFixedPriceItemVariationRequest() { Quantity = i.Quantity, Sku = i.Sku } ) );
+			}
+			else
+			{
+				result.Sku = source.First().Sku;
+				result.Quantity = source.First().Quantity;
+				result.ConditionID = source.First().ConditionID;
 			}
 
 			return result;
