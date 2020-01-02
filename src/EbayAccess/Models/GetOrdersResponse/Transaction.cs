@@ -19,6 +19,8 @@ namespace EbayAccess.Models.GetOrdersResponse
 		public string OrderLineItemId { get; set; }
 
 		public Variation Variation { get; set; }
+		public decimal TotalTaxAmount { get; set; }
+		public ebayCurrency TotalTaxAmountCurrencyId { get; set; }
 	}
 
 	public static class TransactionExtensions

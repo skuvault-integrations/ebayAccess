@@ -248,6 +248,14 @@ namespace EbayAccess.Services.Parsers
 							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( transaction, ns, "QuantityPurchased" ) ) )
 								resTransaction.QuantityPurchased = int.Parse( temp );
 
+							var eleBayCollectAndRemitTaxes = transaction.Element( ns + "eBayCollectAndRemitTaxes" );
+							if( eleBayCollectAndRemitTaxes != null )
+							{
+								ebayCurrency taxCurrency;
+								resTransaction.TotalTaxAmount = GetElementValue( eleBayCollectAndRemitTaxes, ns, "TotalTaxAmount" ).ToDecimalDotOrComaSeparated();
+								resTransaction.TotalTaxAmountCurrencyId = Enum.TryParse( this.GetElementAttribute( "currencyID", eleBayCollectAndRemitTaxes, ns, "TotalTaxAmount" ), out taxCurrency ) ? taxCurrency : default( ebayCurrency );
+							}
+
 							return resTransaction;
 						} ).ToList();
 					}
