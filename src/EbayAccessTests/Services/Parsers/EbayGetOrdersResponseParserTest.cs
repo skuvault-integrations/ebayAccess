@@ -97,5 +97,23 @@ namespace EbayAccessTests.Services.Parsers
 				orders.Orders.First().TransactionArray.First().Variation.Sku.Should().NotBeNullOrWhiteSpace( "because in source file there is item with variation sku" );
 			}
 		}
+
+		[ Test ]
+		public void Parse_GetOrdersResponseWithTaxes_HookupTaxes()
+		{
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTaxes.xml", FileMode.Open, FileAccess.Read ) )
+			{
+				var parser = new EbayGetOrdersResponseParser();
+				var orders = parser.Parse( fs );
+
+				var order = orders.Orders.First();
+				var shippingDetailsSalesTax = order.ShippingDetails.SalesTax;
+				shippingDetailsSalesTax.SalesTaxAmount.Should().Be( 1.23m );
+				shippingDetailsSalesTax.SalesTaxAmountCurrencyId.Should().Be( "USD" );
+				var transaction = order.TransactionArray.First();
+				transaction.TotalTaxAmount.Should().Be( 2.34m );
+				transaction.TotalTaxAmountCurrencyId.ToString().Should().Be( "AUD" );
+			}
+		}
 	}
 }
