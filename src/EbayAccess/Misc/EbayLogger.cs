@@ -5,7 +5,7 @@ namespace EbayAccess.Misc
 	public static class EbayLogger
 	{
 		private const string EbayIntegrationMarker = "ebay";
-		public static int MaxLogLineSize = 0xA00000; //10mb
+		public static int MaxLogLineSize = 100000;
 
 		public static ILogger Log()
 		{
