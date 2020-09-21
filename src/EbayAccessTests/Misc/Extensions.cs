@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using EbayAccess.Misc;
 using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
@@ -299,6 +300,25 @@ namespace EbayAccessTests.Misc
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
+		}
+
+		[ Test ]
+		public void GivenNullStr_WhenLimitStringSizeCalled_ThenSameStrIsReturned()
+		{
+			string testStr = null;
+			var limitedStr = testStr.LimitStringSize();
+			limitedStr.Should().BeNull();
+		}
+
+		[ Test ]
+		public void GivenStrWithSizeHigherThanLimit_WhenLimitStringSizeCalled_ThenLimitedStrIsReturned()
+		{
+			var testStr = "SkuVault";
+			EbayAccess.Misc.Extensions.MaxStringSize = 2;
+
+			var limitedStr = testStr.LimitStringSize();
+
+			limitedStr.Length.Should().Be( EbayAccess.Misc.Extensions.MaxStringSize );
 		}
 	}
 }

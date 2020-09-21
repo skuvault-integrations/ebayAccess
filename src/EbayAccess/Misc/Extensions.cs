@@ -18,6 +18,8 @@ namespace EbayAccess.Misc
 {
 	public static class Extensions
 	{
+		public static int MaxStringSize = 95000;
+
 		#region StringTo
 		public static Stream ToStream( this string source, Encoding encoding = null )
 		{
@@ -361,6 +363,17 @@ namespace EbayAccess.Misc
 			{
 				return PredefinedValues.EmptyJsonObject;
 			}
+		}
+
+		public static string LimitStringSize( this string source )
+		{
+			if ( string.IsNullOrWhiteSpace( source ) )
+				return source;
+
+			if ( source.Length > MaxStringSize )
+				source = source.Substring( 0, MaxStringSize );
+
+			return source;
 		}
 	}
 }
