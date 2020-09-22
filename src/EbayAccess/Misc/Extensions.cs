@@ -18,7 +18,8 @@ namespace EbayAccess.Misc
 {
 	public static class Extensions
 	{
-		public static int MaxStringSize = 95000;
+		public static int MaxResponseLogSize = 95000;
+		public static int MaxBodyLogSize = 95000;
 
 		#region StringTo
 		public static Stream ToStream( this string source, Encoding encoding = null )
@@ -365,15 +366,25 @@ namespace EbayAccess.Misc
 			}
 		}
 
-		public static string LimitStringSize( this string source )
+		public static string LimitResponseLogSize( this string source )
 		{
-			if ( string.IsNullOrWhiteSpace( source ) )
-				return source;
+			return LimitLogSize( source, MaxResponseLogSize );
+		}
 
-			if ( source.Length > MaxStringSize )
-				source = source.Substring( 0, MaxStringSize );
+		public static string LimitBodyLogSize( this string source )
+		{
+			return LimitLogSize( source, MaxBodyLogSize );
+		}
 
-			return source;
+		private static string LimitLogSize( string logLine, int limit )
+		{
+			if ( string.IsNullOrWhiteSpace( logLine ) )
+				return logLine;
+
+			if ( logLine.Length > limit )
+				logLine = logLine.Substring( 0, limit );
+
+			return logLine;
 		}
 	}
 }

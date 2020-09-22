@@ -303,22 +303,33 @@ namespace EbayAccessTests.Misc
 		}
 
 		[ Test ]
-		public void GivenNullStr_WhenLimitStringSizeCalled_ThenSameStrIsReturned()
+		public void GivenNullResponse_WhenLimitResponseLogSizeCalled_ThenSameResponseIsReturned()
 		{
-			string testStr = null;
-			var limitedStr = testStr.LimitStringSize();
-			limitedStr.Should().BeNull();
+			string response = null;
+			var truncatedResponse = response.LimitResponseLogSize();
+			truncatedResponse.Should().BeNull();
 		}
 
 		[ Test ]
-		public void GivenStrWithSizeHigherThanLimit_WhenLimitStringSizeCalled_ThenLimitedStrIsReturned()
+		public void GivenResponseWithSizeHigherThanMaxLogSize_WhenLimitResponseLogSizeCalled_ThenTruncatedResponseLogIsReturned()
 		{
-			var testStr = "SkuVault";
-			EbayAccess.Misc.Extensions.MaxStringSize = 2;
+			var response = "SkuVault";
+			EbayAccess.Misc.Extensions.MaxResponseLogSize = 2;
 
-			var limitedStr = testStr.LimitStringSize();
+			var truncatedResponse = response.LimitResponseLogSize();
 
-			limitedStr.Length.Should().Be( EbayAccess.Misc.Extensions.MaxStringSize );
+			truncatedResponse.Length.Should().Be( EbayAccess.Misc.Extensions.MaxResponseLogSize );
+		}
+
+		[ Test ]
+		public void GivenBodyWithSizeHigherThanMaxLogSize_WhenLimitBodyLogSizeCalled_ThenTruncatedBodyLogIsReturned()
+		{
+			var body = "Some huge payload from SkuVault here!";
+			EbayAccess.Misc.Extensions.MaxBodyLogSize = 2;
+
+			var truncatedBody = body.LimitBodyLogSize();
+
+			truncatedBody.Length.Should().Be( EbayAccess.Misc.Extensions.MaxBodyLogSize );
 		}
 	}
 }
