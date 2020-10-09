@@ -157,7 +157,7 @@ namespace EbayAccess.Services
 					await dataStream.CopyToAsync( memoryStream, 0x100, cts ).ConfigureAwait( false );
 					memoryStream.Position = 0;
 
-					EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( webRequest.RequestUri.ToString(), mark, memoryStream.ToStringSafe() ) );
+					EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( webRequest.RequestUri.ToString(), mark, methodResult: memoryStream.ToStringSafe() ) );
 
 					return memoryStream;
 				}
@@ -175,10 +175,10 @@ namespace EbayAccess.Services
 			var str = string.Format(
 				"{{MethodName:{0}, Mark:'{2}', MethodParameters:{1}{3}{4}{5}}}",
 				memberName,
-				methodParameters,
+				methodParameters.LimitBodyLogSize(),
 				mark,
-				string.IsNullOrWhiteSpace( errors ) ? string.Empty : ", Errors:" + errors,
-				string.IsNullOrWhiteSpace( methodResult ) ? string.Empty : ", Result:" + methodResult,
+				string.IsNullOrWhiteSpace( errors ) ? string.Empty : ", Errors:" + errors.LimitResponseLogSize(),
+				string.IsNullOrWhiteSpace( methodResult ) ? string.Empty : ", Result:" + methodResult.LimitResponseLogSize(),
 				string.IsNullOrWhiteSpace( additionalInfo ) ? string.Empty : ", " + additionalInfo
 				);
 			return str;

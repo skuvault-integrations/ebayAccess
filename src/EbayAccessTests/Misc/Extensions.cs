@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using EbayAccess.Misc;
 using EbayAccess.Models;
 using EbayAccess.Models.BaseResponse;
@@ -299,6 +300,36 @@ namespace EbayAccessTests.Misc
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
+		}
+
+		[ Test ]
+		public void GivenNullResponse_WhenLimitResponseLogSizeCalled_ThenSameResponseIsReturned()
+		{
+			string response = null;
+			var truncatedResponse = response.LimitResponseLogSize();
+			truncatedResponse.Should().BeNull();
+		}
+
+		[ Test ]
+		public void GivenResponseWithSizeHigherThanMaxLogSize_WhenLimitResponseLogSizeCalled_ThenTruncatedResponseLogIsReturned()
+		{
+			var response = "SkuVault";
+			EbayAccess.Misc.Extensions.MaxResponseLogSize = 2;
+
+			var truncatedResponse = response.LimitResponseLogSize();
+
+			truncatedResponse.Length.Should().Be( EbayAccess.Misc.Extensions.MaxResponseLogSize );
+		}
+
+		[ Test ]
+		public void GivenBodyWithSizeHigherThanMaxLogSize_WhenLimitBodyLogSizeCalled_ThenTruncatedBodyLogIsReturned()
+		{
+			var body = "Some huge payload from SkuVault here!";
+			EbayAccess.Misc.Extensions.MaxBodyLogSize = 2;
+
+			var truncatedBody = body.LimitBodyLogSize();
+
+			truncatedBody.Length.Should().Be( EbayAccess.Misc.Extensions.MaxBodyLogSize );
 		}
 	}
 }

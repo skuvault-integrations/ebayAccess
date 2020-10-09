@@ -33,11 +33,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CuttingEdge.Conditions, Version=1.2.0.11174, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\CuttingEdge.Conditions.1.2.0.0\lib\NET35\CuttingEdge.Conditions.dll</HintPath>
+    </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\packages\FluentAssertions.2.2.0.0\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Netco, Version=1.4.3.0, Culture=neutral, PublicKeyToken=9d732c15ac2ec2c9, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netco.1.4.3\lib\net45\Netco.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute">
       <HintPath>..\packages\NSubstitute.1.7.2.0\lib\NET45\NSubstitute.dll</HintPath>
@@ -59,6 +65,7 @@
     </Compile>
     <Compile Include="EbayServiceTest.cs" />
     <Compile Include="Misc\Extensions.cs" />
+    <Compile Include="Misc\LoggerTests.cs" />
     <Compile Include="Models\CredentialsAndConfig\EbayConfigTest.cs" />
     <Compile Include="Models\GetSellerListResponse\ItemExtendedTest.cs" />
     <Compile Include="Models\GetSellerListResponse\ProductTests.cs" />

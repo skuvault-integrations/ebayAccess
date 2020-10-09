@@ -4,6 +4,9 @@ namespace EbayAccess.Misc
 {
 	public static class EbayLogger
 	{
+		private const string EbayIntegrationMarker = "ebay";
+		public static int MaxLogLineSize = 100000;
+
 		public static ILogger Log()
 		{
 			return NetcoLogger.GetLogger( "EbayLogger" );
@@ -11,36 +14,47 @@ namespace EbayAccess.Misc
 
 		public static void LogTraceStarted( string info )
 		{
-			Log().Trace( "[ebay] Start call:{0}.", info );
+			TraceLog( "Start call", info );
 		}
 
 		public static void LogTraceEnded( string info )
 		{
-			Log().Trace( "[ebay] End call:{0}.", info );
+			TraceLog( "End call", info );
 		}
-		public static void LogTrace(string info)
+		public static void LogTrace( string info )
 		{
-			Log().Trace("[ebay] Trace call:{0}.", info);
+			TraceLog( "Trace call", info );
 		}
 
 		public static void LogTraceInnerStarted( string info )
 		{
-			Log().Trace( "[ebay] Internal Start call:{0}.", info );
+			TraceLog( "Internal Start call", info );
 		}
 
 		public static void LogTraceInnerEnded( string info )
 		{
-			Log().Trace( "[ebay] Internal End call:{0}.", info );
+			TraceLog( "Internal End call", info );
 		}
 
 		public static void LogTraceInnerError( string info )
 		{
-			Log().Trace( "[ebay] Internal error:{0}.", info );
+			TraceLog( "Internal error", info );
 		}
 
-		public static void LogTraceInnerErrorSkipped(string info)
+		public static void LogTraceInnerErrorSkipped( string info )
 		{
-			Log().Trace("[ebay] Internal error (skipped):{0}.", info);
+			TraceLog( "Internal error (skipped)", info );
+		}
+
+		private static void TraceLog( string type, string info )
+		{
+			if ( info != null 
+				&& info.Length > MaxLogLineSize )
+			{
+				info = info.Substring( 0, MaxLogLineSize );
+			}
+
+			Log().Trace( "[{channel}] {type}:{info}", EbayIntegrationMarker, type, info );
 		}
 	}
 }
