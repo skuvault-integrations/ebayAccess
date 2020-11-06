@@ -39,7 +39,7 @@ namespace EbayAccess.Services
 		private readonly string _ebaySignInUrl;
 		private readonly string _endPointBulkExhange;
 
-		public int MaxThreadsCount => 18;
+		public int MaxThreadsCount => 5;
 
 		public Func< string > AdditionalLogInfo { get; set; }
 

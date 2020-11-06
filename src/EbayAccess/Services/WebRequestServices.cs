@@ -109,11 +109,11 @@ namespace EbayAccess.Services
 		#region ResponseHanding
 		public Stream GetResponseStream( WebRequest webRequest, string mark )
 		{
-			const string currentMenthodName = "GetResponseStream";
+			const string currentMethodName = "GetResponseStream";
 
 			try
 			{
-				EbayLogger.LogTraceInnerStarted( string.Format( "MethodName:{0},From:{2},MethodParameters:{1}", currentMenthodName, webRequest.RequestUri, mark ?? PredefinedValues.NotAvailable ) );
+				EbayLogger.LogTraceInnerStarted( string.Format( "MethodName:{0},From:{2},MethodParameters:{1}", currentMethodName, webRequest.RequestUri, mark ?? PredefinedValues.NotAvailable ) );
 
 				using( var response = ( HttpWebResponse )webRequest.GetResponse() )
 				using( var dataStream = response.GetResponseStream() )
@@ -125,7 +125,7 @@ namespace EbayAccess.Services
 
 					EbayLogger.LogTraceInnerEnded( string.Format(
 						"MethodName:{0},From:{2},MethodParameters:{1},Result:{3}",
-						currentMenthodName,
+						currentMethodName,
 						webRequest.RequestUri,
 						mark ?? PredefinedValues.NotAvailable,
 						memoryStream.ToStringSafe() ) );
@@ -135,7 +135,7 @@ namespace EbayAccess.Services
 			}
 			catch
 			{
-				EbayLogger.LogTraceInnerError( string.Format( "MethodName:{0},From:{2},MethodParameters:{1}", currentMenthodName, webRequest.RequestUri, mark ?? PredefinedValues.NotAvailable ) );
+				EbayLogger.LogTraceInnerError( string.Format( "MethodName:{0},Mark:{2},MethodParameters:{1}", currentMethodName, webRequest.RequestUri, mark ?? PredefinedValues.NotAvailable ) );
 				throw;
 			}
 		}
