@@ -40,7 +40,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetOrdersIdsAsync( token: CancellationToken.None, ExistingOrdersIds.OrdersIds.ToArray() );
+			var ordersIdsAsync = service.GetOrdersIdsAsync( CancellationToken.None, ExistingOrdersIds.OrdersIds.ToArray() );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
@@ -54,7 +54,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetOrdersIdsAsync( token:CancellationToken.None, NotExistingBecauseOfCombinedOrdersIds.OrdersIds.ToArray() );
+			var ordersIdsAsync = service.GetOrdersIdsAsync( CancellationToken.None, NotExistingBecauseOfCombinedOrdersIds.OrdersIds.ToArray() );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
