@@ -10,7 +10,7 @@ namespace EbayAccess.Services.Parsers
 {
 	public class EbayGetSallerListResponseParser : EbayXmlParser< GetSellerListResponse >
 	{
-		public override GetSellerListResponse Parse( Stream stream, bool keepStremPosition = true )
+		public override GetSellerListResponse Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			try
 			{
@@ -125,7 +125,7 @@ namespace EbayAccess.Services.Parsers
 						res.PrimaryCategory.CategoryName = GetElementValue( x, ns, "PrimaryCategory", "CategoryName" );
 					}
 
-					if( keepStremPosition )
+					if( keepStreamPosition )
 						stream.Position = streamStartPos;
 
 					return res;

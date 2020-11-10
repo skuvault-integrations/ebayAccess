@@ -10,7 +10,7 @@ namespace EbayAccess.Services.Parsers
 {
 	public class EbayGetOrdersResponseParser : EbayXmlParser< GetOrdersResponse >
 	{
-		public override GetOrdersResponse Parse( Stream stream, bool keepStremPosition = true )
+		public override GetOrdersResponse Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			try
 			{
@@ -261,7 +261,7 @@ namespace EbayAccess.Services.Parsers
 					}
 					#endregion
 
-					if( keepStremPosition )
+					if( keepStreamPosition )
 						stream.Position = streamStartPos;
 
 					return resultOrder;
@@ -272,6 +272,8 @@ namespace EbayAccess.Services.Parsers
 			}
 			catch( Exception ex )
 			{
+				if( stream == null ) 
+					throw new EbayCommonException( "Returned stream is null", ex );
 				var buffer = new byte[ stream.Length ];
 				stream.Read( buffer, 0, ( int )stream.Length );
 				var utf8Encoding = new UTF8Encoding();

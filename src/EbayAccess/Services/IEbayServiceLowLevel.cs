@@ -40,7 +40,7 @@ namespace EbayAccess.Services
 
 		Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark );
 
-		Task< WebRequest > CreateEbayStandartPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body, string mark );
+		Task< WebRequest > CreateEbayStandardPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body, string mark );
 
 		Task< CreateJobResponse > CreateUploadJobAsync( Guid guid, string mark );
 
@@ -48,7 +48,7 @@ namespace EbayAccess.Services
 
 		Task< GetOrdersResponse > GetOrdersAsync( CancellationToken cts, string mark = "", params string[] ordersIds );
 
-		Task< GetSellingManagerSoldListingsResponse > GetSellngManagerOrderByRecordNumberAsync( string salerecordNumber, string mark, CancellationToken cts );
+		Task< GetSellingManagerSoldListingsResponse > GetSellingManagerOrderByRecordNumberAsync( string saleRecordNumber, string mark, CancellationToken cts );
 
 		Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, CancellationToken ct, int pageLimit, string mark );
 

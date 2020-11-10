@@ -10,7 +10,7 @@ namespace EbayAccess.Services.Parsers
 {
 	public class EbayBulkCreateJobParser : EbayXmlParser< CreateJobResponse >
 	{
-		public override CreateJobResponse Parse( Stream stream, bool keepStremPosition = true )
+		public override CreateJobResponse Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			try
 			{
@@ -27,7 +27,7 @@ namespace EbayAccess.Services.Parsers
 
 				var res = new CreateJobResponse { JobId = GetElementValue( root, ns, "jobId" ) };
 
-				if( keepStremPosition )
+				if( keepStreamPosition )
 					stream.Position = streamStartPos;
 
 				return res;

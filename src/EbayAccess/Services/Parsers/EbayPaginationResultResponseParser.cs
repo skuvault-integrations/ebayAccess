@@ -8,7 +8,7 @@ namespace EbayAccess.Services.Parsers
 {
 	public class EbayPaginationResultResponseParser : EbayXmlParser< PaginationResult >
 	{
-		public override PaginationResult Parse( Stream stream, bool keepStremPosition = true )
+		public override PaginationResult Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			try
 			{
@@ -31,7 +31,7 @@ namespace EbayAccess.Services.Parsers
 						res.TotalNumberOfEntries = int.Parse( temp );
 				}
 
-				if( keepStremPosition )
+				if( keepStreamPosition )
 					stream.Position = 0;
 
 				return res;

@@ -10,7 +10,7 @@ namespace EbayAccess.Services.Parsers
 {
 	public class EbayGetSellingManagerSoldListingsResponseParser : EbayXmlParser< GetSellingManagerSoldListingsResponse >
 	{
-		public override GetSellingManagerSoldListingsResponse Parse( Stream stream, bool keepStremPosition = true )
+		public override GetSellingManagerSoldListingsResponse Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			try
 			{
@@ -42,7 +42,7 @@ namespace EbayAccess.Services.Parsers
 					resultOrder.SaleRecordID = GetElementValue( x, ns, "SaleRecordID" );
 					resultOrder.CreationTime = GetElementValue( x, ns, "CreationTime" ).ToDateTime();
 
-					if( keepStremPosition )
+					if( keepStreamPosition )
 						stream.Position = streamStartPos;
 
 					return resultOrder;

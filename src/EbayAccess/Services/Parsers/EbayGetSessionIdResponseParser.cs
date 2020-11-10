@@ -8,7 +8,7 @@ namespace EbayAccess.Services.Parsers
 {
 	public class EbayGetSessionIdResponseParser : EbayXmlParser< GetSessionIdResponse >
 	{
-		public override GetSessionIdResponse Parse( Stream stream, bool keepStremPosition = true )
+		public override GetSessionIdResponse Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			try
 			{
@@ -24,7 +24,7 @@ namespace EbayAccess.Services.Parsers
 
 				var res = new GetSessionIdResponse { SessionId = GetElementValue( root, ns, "SessionID" ), Build = GetElementValue( root, ns, "Build" ) };
 
-				if( keepStremPosition )
+				if( keepStreamPosition )
 					stream.Position = streamStartPos;
 
 				return res;

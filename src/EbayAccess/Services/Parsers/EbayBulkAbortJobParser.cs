@@ -10,7 +10,7 @@ namespace EbayAccess.Services.Parsers
 {
 	public class EbayBulkAbortJobParser : EbayXmlParser< AbortJobResponse >
 	{
-		public override AbortJobResponse Parse( Stream stream, bool keepStremPosition = true )
+		public override AbortJobResponse Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			try
 			{
@@ -26,7 +26,7 @@ namespace EbayAccess.Services.Parsers
 
 				var res = new AbortJobResponse();
 
-				if( keepStremPosition )
+				if( keepStreamPosition )
 					stream.Position = streamStartPos;
 
 				return res;

@@ -9,9 +9,9 @@ using EbayAccess.Models.GetSellerListCustomResponse;
 
 namespace EbayAccess.Services.Parsers
 {
-	public class EbayGetSallerListCustomResponseParser : EbayXmlParser< GetSellerListCustomResponse >
+	public class EbayGetSellerListCustomResponseParser : EbayXmlParser< GetSellerListCustomResponse >
 	{
-		public override GetSellerListCustomResponse Parse( Stream stream, bool keepStremPosition = true )
+		public override GetSellerListCustomResponse Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			try
 			{
@@ -96,7 +96,7 @@ namespace EbayAccess.Services.Parsers
 						res.Variations.AddRange( variationsObj );
 					}
 
-					if( keepStremPosition )
+					if( keepStreamPosition )
 						stream.Position = streamStartPos;
 
 					return res;

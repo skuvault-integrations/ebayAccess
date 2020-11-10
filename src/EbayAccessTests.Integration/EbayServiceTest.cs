@@ -26,36 +26,11 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( ExistingOrdersIds.SaleNumers.ToArray() );
+			var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( ExistingOrdersIds.SaleNumers.ToArray(), CancellationToken.None );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
 			ordersIdsAsync.Result.Should().BeEquivalentTo( ExistingOrdersIds.SaleNumers.ToArray() );
-		}
-
-		[ Test ]
-		public void GetSaleRecordsNumbers_ResponseTooksTooLongTime_Exception()
-		{
-			//------------ Arrange
-			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			service.DelayForMethod[ "GetSaleRecordsNumbersAsync" ] = 25500;
-
-			var saleNumbers = new List< string >();
-			var existingSaleNumbersArray = ExistingOrdersIds.SaleNumers.ToArray();
-			for( var i = 0; i < 1000; i++ )
-			{
-				saleNumbers.Add( existingSaleNumbersArray[ i % existingSaleNumbersArray.Length ] );
-			}
-
-			//------------ Act
-			Action act = () =>
-			{
-				var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( saleNumbers.ToArray() );
-				ordersIdsAsync.Wait();
-			};
-
-			//------------ Assert
-			act.ShouldThrow< Exception >();
 		}
 
 		[ Test ]
@@ -65,7 +40,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetOrdersIdsAsync( ExistingOrdersIds.OrdersIds.ToArray() );
+			var ordersIdsAsync = service.GetOrdersIdsAsync( token: CancellationToken.None, ExistingOrdersIds.OrdersIds.ToArray() );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
@@ -79,7 +54,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetOrdersIdsAsync( NotExistingBecauseOfCombinedOrdersIds.OrdersIds.ToArray() );
+			var ordersIdsAsync = service.GetOrdersIdsAsync( token:CancellationToken.None, NotExistingBecauseOfCombinedOrdersIds.OrdersIds.ToArray() );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
@@ -93,7 +68,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersTask = service.GetOrdersAsync( DateTime.Now.AddMonths( 0 ).AddDays( -29 ), DateTime.Now.AddMonths( 0 ) );
+			var ordersTask = service.GetOrdersAsync( DateTime.Now.AddMonths( 0 ).AddDays( -29 ), DateTime.Now.AddMonths( 0 ), CancellationToken.None );
 			ordersTask.Wait();
 
 			//------------ Assert

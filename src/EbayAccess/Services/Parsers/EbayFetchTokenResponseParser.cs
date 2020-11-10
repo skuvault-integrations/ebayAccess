@@ -9,7 +9,7 @@ namespace EbayAccess.Services.Parsers
 {
 	public class EbayFetchTokenResponseParser : EbayXmlParser< FetchTokenResponse >
 	{
-		public override FetchTokenResponse Parse( Stream stream, bool keepStremPosition = true )
+		public override FetchTokenResponse Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			try
 			{
@@ -25,7 +25,7 @@ namespace EbayAccess.Services.Parsers
 
 				var res = new FetchTokenResponse { EbayAuthToken = GetElementValue( root, ns, "eBayAuthToken" ), HardExpirationTime = GetElementValue( root, ns, "HardExpirationTime" ).ToDateTime() };
 
-				if( keepStremPosition )
+				if( keepStreamPosition )
 					stream.Position = streamStartPos;
 
 				return res;

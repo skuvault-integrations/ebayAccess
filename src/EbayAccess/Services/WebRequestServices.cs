@@ -46,7 +46,7 @@ namespace EbayAccess.Services
 			try
 			{
 				if( cts.IsCancellationRequested )
-					return null;
+					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
 
 				EbayLogger.LogTraceInnerStarted( CreateMethodCallInfo( ( new { ServiceUrl = serviceUrl, Body = body, Headers = rawHeaders.ToJson() } ).ToJson(), mark ) );
 
@@ -140,21 +140,21 @@ namespace EbayAccess.Services
 			}
 		}
 
-		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest, string mark, CancellationToken cts )
+		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest, string mark, CancellationToken token )
 		{
 			try
 			{
-				if( cts.IsCancellationRequested )
-					return null;
+				if( token.IsCancellationRequested )
+					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
 
 				EbayLogger.LogTraceInnerStarted( this.CreateMethodCallInfo( webRequest.RequestUri.ToString(), mark ) );
 
-				using( cts.Register( () => webRequest.Abort() ) )
+				using( token.Register( () => webRequest.Abort() ) )
 				using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync().ConfigureAwait( false ) )
 				using( var dataStream = response.GetResponseStream() )
 				{
 					var memoryStream = new MemoryStream();
-					await dataStream.CopyToAsync( memoryStream, 0x100, cts ).ConfigureAwait( false );
+					await dataStream.CopyToAsync( memoryStream, 0x100, token ).ConfigureAwait( false );
 					memoryStream.Position = 0;
 
 					EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( webRequest.RequestUri.ToString(), mark, methodResult: memoryStream.ToStringSafe() ) );

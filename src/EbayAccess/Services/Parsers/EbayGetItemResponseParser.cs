@@ -12,7 +12,7 @@ namespace EbayAccess.Services.Parsers
 {
 	public class EbayGetItemResponseParser : EbayXmlParser< GetItemResponse >
 	{
-		public override GetItemResponse Parse( Stream stream, bool keepStremPosition = true )
+		public override GetItemResponse Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			try
 			{
@@ -136,7 +136,7 @@ namespace EbayAccess.Services.Parsers
 					res.Variations.AddRange( variationsObj );
 				}
 
-				if( keepStremPosition )
+				if( keepStreamPosition )
 					stream.Position = streamStartPos;
 
 				return new GetItemResponse { Item = res };

@@ -14,7 +14,7 @@ namespace EbayAccess
 {
 	public interface IEbayService
 	{
-		Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo );
+		Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo, CancellationToken token );
 
 		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products );
 
@@ -36,13 +36,12 @@ namespace EbayAccess
 
 		string FetchUserToken( string sessionId );
 
-		Task< List< string > > GetOrdersIdsAsync( params string[] sourceOrdersIds );
+		Task< List< string > > GetOrdersIdsAsync( CancellationToken token, params string[] sourceOrdersIds );
 
-		Task< List< string > > GetSaleRecordsNumbersAsync( IEnumerable< string > saleRecordsIDs, GetSaleRecordsNumbersAlgorithm usealgorithm );
+		Task< List< string > > GetSaleRecordsNumbersAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token, GetSaleRecordsNumbersAlgorithm usealgorithm );
 
 		Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, UpdateInventoryAlgorithm usealgorithm = UpdateInventoryAlgorithm.Old, string mark = null );
 
 		Func< string > AdditionalLogInfo { get; set; }
-		Dictionary< string, int > DelayForMethod { get; }
 	}
 }
