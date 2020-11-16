@@ -212,7 +212,7 @@ namespace EbayAccess.Services
 		public async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, CancellationToken ct, int pageLimit = 0, string mark = "" )
 		{
 			if( ct.IsCancellationRequested )
-				throw new WebException( "Task was canceled" );
+				throw new TaskCanceledException( "Task was canceled" );
 
 			var recordsPerPage = this._itemsPerPage;
 			const int pageNumber = 1;
@@ -234,7 +234,7 @@ namespace EbayAccess.Services
 				return sellingManagerSoldListings;
 
 			if( ct.IsCancellationRequested )
-				throw new WebException( "Task was canceled" );
+				throw new TaskCanceledException( "Task was canceled" );
 
 			var errorList = new List< ResponseError >();
 			var pages = new List< int >();
@@ -786,7 +786,7 @@ namespace EbayAccess.Services
 		public async Task< TResponse > GetEbaySingleRequestAsync< TResponse >( Dictionary< string, string > headers, string body, Func< Stream, TResponse > responseParser, CancellationToken token, string mark = "", bool useCert = false, int pageNumber = -1 ) where TResponse : EbayBaseResponse, new()
 		{
 			if( token.IsCancellationRequested )
-				throw new WebException( "Task was canceled" );
+				throw new TaskCanceledException( "Task was canceled" );
 
 			var response = new TResponse();
 
@@ -842,9 +842,11 @@ namespace EbayAccess.Services
 
 		private static CancellationToken CreateTimeoutLinkedToken( CancellationToken token, int timeoutMs = MaxRequestTimeoutMs )
 		{
-			var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource( token );
-			linkedTokenSource.CancelAfter( timeoutMs );
-			return linkedTokenSource.Token;
+			using( var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource( token ) )
+			{
+				linkedTokenSource.CancelAfter( timeoutMs );
+				return linkedTokenSource.Token;
+			}
 		}
 
 		private async Task< TResponse > GetEbayMultiPageRequestAsync< TResponse >( Dictionary< string, string > headers, Func< int, string > getRequestBodyByPageNumber, Func< Stream, TResponse > responseParser, CancellationToken cts, string mark = "", bool useCert = false ) where TResponse : EbayBaseResponse, IPaginationResponse< TResponse >, new()
