@@ -39,7 +39,7 @@ namespace EbayAccess.Services
 		private readonly string _endPointBulkExhange;
 
 		public int MaxThreadsCount => 5;
-		private const int MaxRequestTimeoutMs = 30 * 60 * 1000;
+		public const int MaxRequestTimeoutMs = 30 * 60 * 1000;
 		private int RequestTimeoutMs;
 
 		public Func< string > AdditionalLogInfo { get; set; }
@@ -98,8 +98,8 @@ namespace EbayAccess.Services
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCertName ) )
 				headers.Add( EbayHeaders.XEbayApiCertName, this._ebayConfig.CertName );
 
-	var ebayStandartPostRequestAsync = await this.CreateEbayStandardPostRequestAsync( url, headers, body, mark, cts ).ConfigureAwait( false );
-			return ebayStandartPostRequestAsync;
+			var ebayStandardPostRequestAsync = await this.CreateEbayStandardPostRequestAsync( url, headers, body, mark, cts ).ConfigureAwait( false );
+			return ebayStandardPostRequestAsync;
 		}
 
 		public async Task< WebRequest > CreateEbayStandardPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body, string mark = "" )
@@ -797,18 +797,21 @@ namespace EbayAccess.Services
 				var webRequest = await ( useCert ? this.CreateEbayStandardPostRequestWithCertAsync( this._endPoint, headers, body, mark, token ) : this.CreateEbayStandardPostRequestAsync( this._endPoint, headers, body, mark, token ) ).ConfigureAwait( false );
 
 				TResponse parsedResponse;
-				var timeoutToken = CreateTimeoutLinkedToken( token, this.RequestTimeoutMs );
-				using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, timeoutToken ).ConfigureAwait( false ) )
+				using( var linkedTokenSource = CreateTimeoutLinkedTokenSource( token, this.RequestTimeoutMs ) )
 				{
-					if ( memStream != null ) 
-					{ 
-						parsedResponse = responseParser( memStream );
-					} 
-					else
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, linkedTokenSource.Token ).ConfigureAwait( false ) )
 					{
-						var pageNumberLog = pageNumber != -1 ? $" for page{pageNumber}" : "";
-						throw new EbayCommonException( $"Blank memory stream is returned{pageNumberLog}; Mark:{mark}" );
+						if ( memStream != null ) 
+						{ 
+							parsedResponse = responseParser( memStream );
+						} 
+						else
+						{
+							var pageNumberLog = pageNumber != -1 ? $" for page{pageNumber}" : "";
+							throw new EbayCommonException( $"Blank memory stream is returned{pageNumberLog}; Mark:{mark}" );
+						}
 					}
+
 				}
 
 				if( parsedResponse != null )
@@ -840,13 +843,11 @@ namespace EbayAccess.Services
 			return response;
 		}
 
-		private static CancellationToken CreateTimeoutLinkedToken( CancellationToken token, int timeoutMs = MaxRequestTimeoutMs )
+		private static CancellationTokenSource CreateTimeoutLinkedTokenSource( CancellationToken token, int timeoutMs = MaxRequestTimeoutMs )
 		{
-			using( var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource( token ) )
-			{
-				linkedTokenSource.CancelAfter( timeoutMs );
-				return linkedTokenSource.Token;
-			}
+			var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource( token );
+			linkedTokenSource.CancelAfter( timeoutMs );
+			return linkedTokenSource;
 		}
 
 		private async Task< TResponse > GetEbayMultiPageRequestAsync< TResponse >( Dictionary< string, string > headers, Func< int, string > getRequestBodyByPageNumber, Func< Stream, TResponse > responseParser, CancellationToken cts, string mark = "", bool useCert = false ) where TResponse : EbayBaseResponse, IPaginationResponse< TResponse >, new()

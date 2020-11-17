@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.ReviseFixedPriceItemRequest;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
 using NUnit.Framework;
@@ -340,5 +342,21 @@ namespace EbayAccessTests.Integration
 			Debug.WriteLine( "products2 {0}, t:{1}", products2List.Count(), sw2.Elapsed.ToString() );
 		}
 		#endregion
+
+		[ Test ]
+		public void GetSaleRecordsNumbers_WhenLowTimeOutSet_ThenTimesOut()
+		{
+			const int reallyShortTimeout = 100;
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox(), 
+				new WebRequestServices(), reallyShortTimeout );
+
+			Action act = () =>
+			{
+				var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( new [] { "123 " }.ToArray(), new CancellationToken() );
+				ordersIdsAsync.Wait();
+			};
+
+			act.ShouldThrow< EbayCommonException >();
+		}
 	}
 }

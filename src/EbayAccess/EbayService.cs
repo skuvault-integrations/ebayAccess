@@ -35,9 +35,9 @@ namespace EbayAccess
 
 		private IEbayServiceLowLevel EbayServiceLowLevel { get; set; }
 
-		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices )
+		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices, int requestTimeoutMs = EbayAccess.Services.EbayServiceLowLevel.MaxRequestTimeoutMs )
 		{
-			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayConfig, webRequestServices );
+			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayConfig, webRequestServices, requestTimeoutMs );
 		}
 
 		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig ) : this( credentials, ebayConfig, new WebRequestServices() )
