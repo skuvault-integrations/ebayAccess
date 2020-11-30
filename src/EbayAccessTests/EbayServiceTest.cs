@@ -307,6 +307,54 @@ namespace EbayAccessTests
 		}
 
 		[ Test ]
+		[ Explicit ]
+		public void GivenListingItemWithVariations_WhenUpdateInventoryAsyncIsCalledAndInventoryOperationsArentSupported_ThenExceptionIsNotExpected()
+		{ 
+			var itemId = 110136942332;
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( null, null, CancellationToken.None ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsOperationIsNotAllowedError.ToStream() ) );
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			Action action = () =>
+			{
+				var updateInventoryAsync = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
+				{
+					new UpdateInventoryRequest { ItemId = itemId, Quantity = 3, Sku = "testsku1-1" },
+					new UpdateInventoryRequest { ItemId = itemId, Quantity = 5, Sku = "testsku1-2" },
+					new UpdateInventoryRequest { ItemId = itemId, Quantity = 8, Sku = "testsku1-3" }
+				}, UpdateInventoryAlgorithm.Econom );
+				updateInventoryAsync.Wait();
+			};
+
+			action.ShouldNotThrow< EbayCommonException >();
+		}
+
+		[ Test ]
+		[ Explicit ]
+		public void GivenListingItemWithoutVariations_WhenUpdateInventoryAsyncIsCalledAndInventoryOperationsArentSupported_ThenExceptionIsNotExpected()
+		{ 
+			var itemId = 110136942333;
+			var itemSku = "testsku2";
+			var itemQuantity = 1;
+
+			var stubWebRequestService = Substitute.For< IWebRequestServices >();
+			stubWebRequestService.GetResponseStreamAsync( null, null, CancellationToken.None ).ReturnsForAnyArgs( ( x ) => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsOperationIsNotAllowedError.ToStream() ) );
+			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
+
+			Action action = () =>
+			{
+				var updateInventoryAsync = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
+				{
+					new UpdateInventoryRequest { ItemId = itemId, Quantity = itemQuantity, Sku = itemSku }
+				}, UpdateInventoryAlgorithm.Econom );
+				updateInventoryAsync.Wait();
+			};
+
+			action.ShouldNotThrow< EbayCommonException >();
+		}
+
+		[ Test ]
 		public void GetProductsDetailsAsync_EbayServiceReturnError_Only1CallExecuted()
 		{
 			//A

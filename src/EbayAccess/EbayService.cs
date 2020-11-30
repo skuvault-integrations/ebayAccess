@@ -579,7 +579,8 @@ namespace EbayAccess
 							EbayErrors.UnsupportedListingType, 
 							EbayErrors.ReplaceableValue,
 							EbayErrors.MpnHasAnInvalidValue,
-							EbayErrors.DuplicateListingPolicy
+							EbayErrors.DuplicateListingPolicy,
+							EbayErrors.OperationIsNotAllowedForInventoryItems
 						} );
 
 					if( res.Errors == null || !res.Errors.Any() )
@@ -619,7 +620,7 @@ namespace EbayAccess
 
 				var inventoryStatusResponses = reviseInventoriesStatus as IList< InventoryStatusResponse > ?? reviseInventoriesStatus.ToList();
 
-				var errorsToSkip = new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue, EbayErrors.VariationLevelSKUAndItemIDShouldBeSupplied };
+				var errorsToSkip = new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue, EbayErrors.VariationLevelSKUAndItemIDShouldBeSupplied, EbayErrors.OperationIsNotAllowedForInventoryItems };
 				var errorsThatMustBeSkipped = inventoryStatusResponses.CollectAllErros().Where( x => errorsToSkip.Any( y => y.ErrorCode == x.ErrorCode ) ).ToList();
 				EbayLogger.LogTraceInnerError( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, errorsThatMustBeSkipped.ToJson() ) );
 
@@ -742,7 +743,7 @@ namespace EbayAccess
 						var reviseInventoryStatusResponsesList = temp.ToList();
 						EbayLogger.LogTrace( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, methodResult : reviseInventoryStatusResponsesList.ToJson(), additionalInfo : "ReviseInventoryStatus responses." ) );
 
-						var errorsToSkip = new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue, EbayErrors.VariationLevelSKUAndItemIDShouldBeSupplied };
+						var errorsToSkip = new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.ReplaceableValue, EbayErrors.VariationLevelSKUAndItemIDShouldBeSupplied, EbayErrors.OperationIsNotAllowedForInventoryItems };
 						var errorsFromResponsesThatMustBeSkipped = reviseInventoryStatusResponsesList.CollectAllErros().Where( x => errorsToSkip.Any( y => y.ErrorCode == x.ErrorCode ) ).ToList();
 						EbayLogger.LogTraceInnerErrorSkipped( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, errorsFromResponsesThatMustBeSkipped.ToJson() ) );
 

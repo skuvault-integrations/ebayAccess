@@ -156,5 +156,19 @@ namespace EbayAccess.Models
 				};
 			}
 		}
+
+		public static ResponseError OperationIsNotAllowedForInventoryItems
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "21919474",
+					LongMessage = "Inventory-based listing management is not currently supported by this tool. Please refer to the tool used to create this listing.",
+					ShortMessage = "This operation is not allowed for inventory items.",
+					SeverityCode = "Error"
+				};
+			}
+		}
 	}
 }
