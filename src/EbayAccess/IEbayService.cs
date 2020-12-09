@@ -9,14 +9,15 @@ using EbayAccess.Models.ReviseInventoryStatusResponse;
 using Item = EbayAccess.Models.GetSellerListCustomResponse.Item;
 using EbayAccess.Misc;
 using EbayAccess.Models.GetSellerListCustomResponse;
+using Netco.Logging;
 
 namespace EbayAccess
 {
 	public interface IEbayService
 	{
-		Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo, CancellationToken token );
+		Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo, CancellationToken token, Mark mark = null );
 
-		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products );
+		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products, CancellationToken token, Mark mark = null );
 
 		Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo );
 
@@ -24,9 +25,9 @@ namespace EbayAccess
 
 		Task< IEnumerable< Models.GetSellerListResponse.Item > > GetProductsDetailsAsync();
 
-		Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow = null, string mark = null );
+		Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken token, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow = null, Mark mark = null );
 
-		Task< IEnumerable< Product > > GetActiveProductPullItemsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow = null, string mark = null );
+		Task< IEnumerable< Product > > GetActiveProductPullItemsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow = null, Mark mark = null );
 
 		string GetUserToken();
 
@@ -36,11 +37,11 @@ namespace EbayAccess
 
 		string FetchUserToken( string sessionId );
 
-		Task< List< string > > GetOrdersIdsAsync( CancellationToken token, params string[] sourceOrdersIds );
+		Task< List< string > > GetOrdersIdsAsync( CancellationToken token, Mark mark = null, params string[] sourceOrdersIds );
 
-		Task< List< string > > GetSaleRecordsNumbersAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token, GetSaleRecordsNumbersAlgorithm usealgorithm );
+		Task< List< string > > GetSaleRecordsNumbersAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token, GetSaleRecordsNumbersAlgorithm useAlgorithm, Mark mark );
 
-		Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, UpdateInventoryAlgorithm usealgorithm = UpdateInventoryAlgorithm.Old, string mark = null );
+		Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, CancellationToken token, UpdateInventoryAlgorithm useAlgorithm = UpdateInventoryAlgorithm.Old, Mark mark = null );
 
 		Func< string > AdditionalLogInfo { get; set; }
 	}

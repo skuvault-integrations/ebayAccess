@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
@@ -13,6 +12,7 @@ using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
+using Netco.Logging;
 using NUnit.Framework;
 
 namespace EbayAccessTests.Integration
@@ -42,7 +42,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetOrdersIdsAsync( CancellationToken.None, ExistingOrdersIds.OrdersIds.ToArray() );
+			var ordersIdsAsync = service.GetOrdersIdsAsync( CancellationToken.None, Mark.Blank(), ExistingOrdersIds.OrdersIds.ToArray() );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
@@ -56,7 +56,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetOrdersIdsAsync( CancellationToken.None, NotExistingBecauseOfCombinedOrdersIds.OrdersIds.ToArray() );
+			var ordersIdsAsync = service.GetOrdersIdsAsync( CancellationToken.None, Mark.Blank(), NotExistingBecauseOfCombinedOrdersIds.OrdersIds.ToArray() );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
@@ -70,7 +70,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersTask = service.GetOrdersAsync( DateTime.Now.AddMonths( 0 ).AddDays( -29 ), DateTime.Now.AddMonths( 0 ), CancellationToken.None );
+			var ordersTask = service.GetOrdersAsync( DateTime.Now.AddMonths( 0 ).AddDays( -29 ), DateTime.Now.AddMonths( 0 ), CancellationToken.None, Mark.Blank() );
 			ordersTask.Wait();
 
 			//------------ Assert
@@ -90,14 +90,14 @@ namespace EbayAccessTests.Integration
 			{
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation1.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation1.Quantity + this.QtyUpdateFor },
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithVariation2.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation2.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation2.Quantity + this.QtyUpdateFor },
-			} );
+			}, CancellationToken.None );
 			updateProductsAsyncTask1.Wait();
 
 			var updateProductsAsyncTask2 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
 				ExistingProducts.FixedPrice1WithVariation1,
 				ExistingProducts.FixedPrice1WithVariation2,
-			} );
+			}, CancellationToken.None );
 			updateProductsAsyncTask2.Wait();
 
 			//------------ Assert
@@ -124,7 +124,7 @@ namespace EbayAccessTests.Integration
 				new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Sku = ExistingProducts.FixedPrice2WithoutVariations.Sku, Quantity = rand.Next( 1, 100), IsVariation = false },
 			};
 
-			var updateProductsAsyncTask1 = ebayService.UpdateInventoryAsync( requests, UpdateInventoryAlgorithm.Econom );
+			var updateProductsAsyncTask1 = ebayService.UpdateInventoryAsync( requests, CancellationToken.None, UpdateInventoryAlgorithm.Econom );
 			updateProductsAsyncTask1.Wait();
 
 			//------------ Assert
@@ -152,7 +152,7 @@ namespace EbayAccessTests.Integration
 			{
 				new UpdateInventoryRequest { ItemId = activeProductWithVariations1.ItemId.ToLongOrDefault( false ), Sku = activeProductWithVariations1.GetSku().Sku, Quantity = 100500, ConditionID = activeProductWithVariations1.ConditionId, IsVariation = activeProductWithVariations1.IsItemWithVariations() },
 				new UpdateInventoryRequest { ItemId = activeProductWithoutVariations1.ItemId.ToLongOrDefault( false ), Sku = activeProductWithoutVariations1.GetSku().Sku, Quantity = 100500, ConditionID = activeProductWithoutVariations1.ConditionId, IsVariation = activeProductWithoutVariations1.IsItemWithVariations() },
-			}, algorithm );
+			}, CancellationToken.None, algorithm );
 			updayeInventoryTask1.Wait();
 			var updateInventoryResponse1 = updayeInventoryTask1.Result.ToList();
 
@@ -167,7 +167,7 @@ namespace EbayAccessTests.Integration
 			{
 				new UpdateInventoryRequest { ItemId = activeProductWithVariations2.ItemId.ToLongOrDefault( false ), Sku = activeProductWithVariations2.GetSku().Sku, Quantity = 0, ConditionID = activeProductWithVariations2.ConditionId, IsVariation = activeProductWithVariations2.IsItemWithVariations() },
 				new UpdateInventoryRequest { ItemId = activeProductWithoutVariations2.ItemId.ToLongOrDefault( false ), Sku = activeProductWithoutVariations2.GetSku().Sku, Quantity = 0, ConditionID = activeProductWithoutVariations2.ConditionId, IsVariation = activeProductWithoutVariations2.IsItemWithVariations() },
-			}, algorithm );
+			}, CancellationToken.None, algorithm );
 			updateInventoryTask2.Wait();
 			var updateInventoryResponse2 = updateInventoryTask2.Result.ToList();
 
@@ -197,7 +197,7 @@ namespace EbayAccessTests.Integration
 				new ReviseFixedPriceItemRequest { ItemId = ExistingProducts.FixedPrice1WithVariation3.ItemId, Sku = ExistingProducts.FixedPrice1WithVariation3.Sku, Quantity = ExistingProducts.FixedPrice1WithVariation3.Quantity + quantity },
 			};
 
-			var reviseInventoryTask = ebayService.ReviseFixePriceItemsAsync( request );
+			var reviseInventoryTask = ebayService.ReviseFixedPriceItemsAsync( request, CancellationToken.None );
 			reviseInventoryTask.Wait();
 
 			var products = ebayService.GetActiveProductsAsync( CancellationToken.None, true, true ).Result;
@@ -223,7 +223,7 @@ namespace EbayAccessTests.Integration
 			//------------ Act
 			var updateInventoryRequestExistingItem = new UpdateInventoryRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Sku = ExistingProducts.FixedPrice1WithoutVariations.Sku, Quantity = 0 };
 			var updateInventoryRequestNotExistingItem = new UpdateInventoryRequest { ItemId = 0000, Sku = ExistingProducts.FixedPrice1WithVariation1.Sku + "qwe", Quantity = 0 };
-			var updateProductsAsyncTask1 = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest > { updateInventoryRequestNotExistingItem, updateInventoryRequestExistingItem, }, updateInventoryAlgorithm );
+			var updateProductsAsyncTask1 = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest > { updateInventoryRequestNotExistingItem, updateInventoryRequestExistingItem, }, CancellationToken.None, updateInventoryAlgorithm );
 
 			var resp = Enumerable.Empty< UpdateInventoryResponse >();
 			Action act = () =>
@@ -247,14 +247,14 @@ namespace EbayAccessTests.Integration
 			{
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice1WithoutVariations.Quantity + this.QtyUpdateFor },
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice2WithoutVariations.Quantity + this.QtyUpdateFor },
-			} );
+			}, CancellationToken.None );
 			updateProductsAsyncTask1.Wait();
 
 			var updateProductsAsyncTask2 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
 				ExistingProducts.FixedPrice1WithoutVariations,
 				ExistingProducts.FixedPrice2WithoutVariations,
-			} );
+			}, CancellationToken.None );
 			updateProductsAsyncTask2.Wait();
 
 			//------------ Assert
@@ -311,13 +311,13 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		public void GetActiveProductsAsync_ServiceWithExistingProductsCancellationTokenCancelled_ReturnPartOfProductsOrEmptyCollectionImmidiatelly()
+		public void GetActiveProductsAsync_ServiceWithExistingProductsCancellationTokenCancelled_ReturnPartOfProductsOrEmptyCollectionImmediatelly()
 		{
 			//------------ Arrange
 			var ebayService = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			var sw1 = Stopwatch.StartNew();
-			var activeProductsTask1 = ebayService.GetActiveProductsAsync( CancellationToken.None, true, false, null, "" );
+			var activeProductsTask1 = ebayService.GetActiveProductsAsync( CancellationToken.None, true, false, null, Mark.Blank() );
 			activeProductsTask1.Wait();
 			var products1 = activeProductsTask1.Result;
 			sw1.Stop();

@@ -12,45 +12,46 @@ using EbayAccess.Models.ReviseFixedPriceItemResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services.Parsers;
+using Netco.Logging;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services
 {
 	internal interface IEbayServiceLowLevel
 	{
-		Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, CancellationToken cts, string mark = "" );
+		Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, CancellationToken cts, Mark mark = null );
 
-		Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null, string mark = "" );
+		Task< InventoryStatusResponse > ReviseInventoryStatusAsync( CancellationToken token, InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null, Mark mark = null );
 
-		Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark );
+		Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, Mark mark );
 
-		Task< Item > GetItemAsync( string id, string mark );
+		Task< Item > GetItemAsync( string id, Mark mark );
 
-		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses, string mark );
+		Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses, CancellationToken token, Mark mark );
 
-		Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, string mark );
+		Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, CancellationToken token, Mark mark );
 
-		string GetSessionId( string mark );
+		string GetSessionId( Mark mark );
 
 		void AuthenticateUser( string sessionId );
 
-		string FetchToken( string sessionId, string mark );
+		string FetchToken( string sessionId, Mark mark );
 
 		Uri GetAuthenticationUri( string sessionId );
 
-		Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark );
+		Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, Mark mark );
 
-		Task< WebRequest > CreateEbayStandardPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body, string mark );
+		Task< WebRequest > CreateEbayStandardPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body, Mark mark );
 
-		Task< CreateJobResponse > CreateUploadJobAsync( Guid guid, string mark );
+		Task< CreateJobResponse > CreateUploadJobAsync( Guid guid, Mark mark );
 
-		Task< AbortJobResponse > AbortJobAsync( string jobId, string mark );
+		Task< AbortJobResponse > AbortJobAsync( string jobId, Mark mark );
 
-		Task< GetOrdersResponse > GetOrdersAsync( CancellationToken cts, string mark = "", params string[] ordersIds );
+		Task< GetOrdersResponse > GetOrdersAsync( CancellationToken cts, Mark mark = null, params string[] ordersIds );
 
-		Task< GetSellingManagerSoldListingsResponse > GetSellingManagerOrderByRecordNumberAsync( string saleRecordNumber, string mark, CancellationToken cts );
+		Task< GetSellingManagerSoldListingsResponse > GetSellingManagerOrderByRecordNumberAsync( string saleRecordNumber, Mark mark, CancellationToken cts );
 
-		Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, CancellationToken ct, int pageLimit, string mark );
+		Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, CancellationToken ct, int pageLimit, Mark mark );
 
 		string ToJson();
 
@@ -58,8 +59,8 @@ namespace EbayAccess.Services
 
 		Func< string > AdditionalLogInfo { get; set; }
 
-		Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark );
+		Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, Mark mark );
 
-		Task< IEnumerable< GetSellerListCustomProductResponse > > GetSellerListCustomProductResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark );
+		Task< IEnumerable< GetSellerListCustomProductResponse > > GetSellerListCustomProductResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, Mark mark );
 	}
 }
