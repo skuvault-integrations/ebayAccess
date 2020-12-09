@@ -125,7 +125,7 @@ namespace EbayAccessTests.Integration.Services
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//A
-			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( CancellationToken.None, mark: Mark.Blank(), ExistingOrdersIds.OrdersIds.ToArray() );
+			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( CancellationToken.None, Mark.Blank(), ExistingOrdersIds.OrdersIds.ToArray() );
 			ordersTask.Wait();
 			//A
 			ordersTask.Result.Orders.Count().Should().BeGreaterThan( 0 );

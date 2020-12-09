@@ -26,8 +26,8 @@ param
 	$logfile = $null
 )
 
-$project_name = "EbayAccess"
 $project_short_name = "Ebay"
+$project_name = "$($project_short_name)Access"
 
 # Folder structure:
 # \build - Contains all code during the build process
@@ -44,7 +44,7 @@ $release_dir = "$BuildRoot\release"
 $archive_dir = "$release_dir\archive"
 
 $src_dir = "$BuildRoot\src"
-$solution_file = "$src_dir\EbayAccess.sln"
+$solution_file = "$src_dir\$($project_name).sln"
 	
 # Use MSBuild.
 #use Framework\v4.0.30319 MSBuild
@@ -101,19 +101,19 @@ task NuGet Package, Version, {
 <package>
 	<metadata>
 		<id>$project_name</id>
-		<version>$Version</version>
-		<authors>Slav Ivanyuk</authors>
-		<owners>Slav Ivanyuk</owners>
-		<projectUrl>https://github.com/agileharbor/ebayAccess</projectUrl>
-		<licenseUrl>https://raw.github.com/agileharbor/ebayAccess/master/License.txt</licenseUrl>
+		<version>$Version-alpha</version>
+		<authors>SkuVault</authors>
+		<owners>SkuVault</owners>
+		<projectUrl>https://github.com/agileharbor/$project_name</projectUrl>
+		<licenseUrl>https://raw.github.com/agileharbor/$project_name/master/License.txt</licenseUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<copyright>Copyright (C) SkuVault Inc. 2019</copyright>
+		<copyright>Copyright (C) 2020 SkuVault Inc.</copyright>
 		<summary>$text</summary>
 		<description>$text</description>
 		<tags>$project_short_name</tags>
 		<dependencies> 
 			<group targetFramework="net45">
-				<dependency id="Netco" version="1.3.1" />
+				<dependency id="Netco" version="1.5.8" />
 				<dependency id="CuttingEdge.Conditions" version="1.2.0.0" />
 				<dependency id="Newtonsoft.Json" version="7.0.1" />
 			</group>
