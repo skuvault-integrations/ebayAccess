@@ -17,7 +17,7 @@ namespace EbayAccessTests.Services.Parsers
 					FileAccess.Read ) )
 			{
 				//A
-				var orders = new EbayGetSallerListResponseParser().Parse( fs );
+				var orders = new EbayGetSellerListResponseParser().Parse( fs );
 
 				//A
 				orders.Items.Should().HaveCount( 3, "because in source file there is {0} items", 3 );

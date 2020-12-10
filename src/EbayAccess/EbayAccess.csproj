@@ -135,13 +135,13 @@
     <Compile Include="Services\Parsers\EbayGetSellingManagerSoldListingsResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayBulkAbortJobParser.cs" />
     <Compile Include="Services\Parsers\EbayBulkCreateJobParser.cs" />
-    <Compile Include="Services\Parsers\EbayGetSallerListResponseCustomParser.cs" />
+    <Compile Include="Services\Parsers\EbayGetSellerListResponseCustomParser.cs" />
     <Compile Include="Services\Parsers\EbayFetchTokenResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetSessionIdResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetItemResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayXmlParser.cs" />
     <Compile Include="Services\Parsers\EbayReviseInventoryStatusResponseParser.cs" />
-    <Compile Include="Services\Parsers\EbayGetSallerListResponseParser.cs" />
+    <Compile Include="Services\Parsers\EbayGetSellerListResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayGetOrdersResponseParser.cs" />
     <Compile Include="Services\Parsers\EbayPaginationResultResponseParser.cs" />
     <Compile Include="Services\WebRequestServices.cs">

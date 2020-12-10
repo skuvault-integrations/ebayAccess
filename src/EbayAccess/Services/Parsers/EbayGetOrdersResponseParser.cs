@@ -58,7 +58,7 @@ namespace EbayAccess.Services.Parsers
 							resultOrder.CancelStatus = tempCancelStatus;
 					}
 
-					#region ChecoutStatus
+					#region CheckoutStatus
 					if( x.Element( ns + "CheckoutStatus" ) != null )
 					{
 						var elCheckoutStatus = x.Element( ns + "CheckoutStatus" );
@@ -106,10 +106,10 @@ namespace EbayAccess.Services.Parsers
 
 					ebayCurrency tempCurrency;
 					resultOrder.TotalCurrencyId = Enum.TryParse( this.GetElementAttribute( "currencyID", x, ns, "Total" ), out tempCurrency ) ? tempCurrency : default(ebayCurrency);
-					resultOrder.Total = GetElementValue( x, ns, "Total" ).ToDecimalDotOrComaSeparated();
+					resultOrder.Total = GetElementValue( x, ns, "Total" ).ToDecimalDotOrCommaSeparated();
 
 					resultOrder.SubtotalCurrencyId = Enum.TryParse( this.GetElementAttribute( "currencyID", x, ns, "Subtotal" ), out tempCurrency ) ? tempCurrency : default(ebayCurrency);
-					resultOrder.Subtotal = GetElementValue( x, ns, "Subtotal" ).ToDecimalDotOrComaSeparated();
+					resultOrder.Subtotal = GetElementValue( x, ns, "Subtotal" ).ToDecimalDotOrCommaSeparated();
 					#endregion
 
 					#region XXXTime
@@ -128,7 +128,7 @@ namespace EbayAccess.Services.Parsers
 						resultOrder.MonetaryDetails.Refunds = refunds.Select( refund =>
 						{
 							var resRefund = new Refund();
-							resRefund.RefundAmount = GetElementValue( refund, ns, "RefundAmount" ).ToDecimalDotOrComaSeparated();
+							resRefund.RefundAmount = GetElementValue( refund, ns, "RefundAmount" ).ToDecimalDotOrCommaSeparated();
 							resRefund.RefundAmountCurrencyID = this.GetElementAttribute( "CurrencyCodeType", refund, ns, "RefundAmount" );
 							resRefund.RefundTime = GetElementValue( refund, ns, "RefundTime" ).ToDateTime();
 
@@ -153,10 +153,10 @@ namespace EbayAccess.Services.Parsers
 						if( salesTaxEl != null )
 						{
 							var salesTax = new SalesTax();
-							var salesTaxPercent = GetElementValue( salesTaxEl, ns, "SalesTaxPercent" ).ToDecimalDotOrComaSeparatedNullable();
+							var salesTaxPercent = GetElementValue( salesTaxEl, ns, "SalesTaxPercent" ).ToDecimalDotOrCommaSeparatedNullable();
 							var salesTaxState = GetElementValue( salesTaxEl, ns, "SalesTaxState" );
 							var shippingIncludedInTax = GetElementValue( salesTaxEl, ns, "ShippingIncludedInTax" ).ToBoolNullable();
-							var salesTaxAmount = GetElementValue( salesTaxEl, ns, "SalesTaxAmount" ).ToDecimalDotOrComaSeparatedNullable();
+							var salesTaxAmount = GetElementValue( salesTaxEl, ns, "SalesTaxAmount" ).ToDecimalDotOrCommaSeparatedNullable();
 							var salesTaxAmountCurrency = GetElementAttribute( "currencyID", salesTaxEl, ns, "SalesTaxAmount" );
 
 							salesTax.SalesTaxPercent = salesTaxPercent;
@@ -174,7 +174,7 @@ namespace EbayAccess.Services.Parsers
 							var shippingServiceOptions = new ShippingServiceOptions();
 
 							var ShippingService = GetElementValue( shippingService, ns, "ShippingService" );
-							var ShippingServiceCost = GetElementValue( shippingService, ns, "ShippingServiceCost" ).ToDecimalDotOrComaSeparatedNullable();
+							var ShippingServiceCost = GetElementValue( shippingService, ns, "ShippingServiceCost" ).ToDecimalDotOrCommaSeparatedNullable();
 							var ShippingServiceCostCurrency = GetElementAttribute( "currencyID", shippingService, ns, "ShippingServiceCost" );
 							var ShippingServicePriority = GetElementValue( shippingService, ns, "ShippingServicePriority" );
 							var ExpeditedService = GetElementValue( shippingService, ns, "ExpeditedService" ).ToBoolNullable();
@@ -221,7 +221,7 @@ namespace EbayAccess.Services.Parsers
 							}
 
 							resTransaction.CurrencyId = Enum.TryParse( this.GetElementAttribute( "currencyID", transaction, ns, "TransactionPrice" ), out tempCurrency ) ? tempCurrency : default(ebayCurrency);
-							resTransaction.TransactionPrice = GetElementValue( transaction, ns, "TransactionPrice" ).ToDecimalDotOrComaSeparated();
+							resTransaction.TransactionPrice = GetElementValue( transaction, ns, "TransactionPrice" ).ToDecimalDotOrCommaSeparated();
 
 							var elItem = transaction.Element( ns + "Item" );
 							if( elItem != null )
@@ -252,7 +252,7 @@ namespace EbayAccess.Services.Parsers
 							if( elTaxes != null )
 							{
 								ebayCurrency taxCurrency;
-								resTransaction.TotalTaxAmount = GetElementValue( elTaxes, ns, "TotalTaxAmount" ).ToDecimalDotOrComaSeparated();
+								resTransaction.TotalTaxAmount = GetElementValue( elTaxes, ns, "TotalTaxAmount" ).ToDecimalDotOrCommaSeparated();
 								resTransaction.TotalTaxAmountCurrencyId = Enum.TryParse( this.GetElementAttribute( "currencyID", elTaxes, ns, "TotalTaxAmount" ), out taxCurrency ) ? taxCurrency : default( ebayCurrency );
 							}
 

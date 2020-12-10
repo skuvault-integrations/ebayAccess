@@ -333,7 +333,7 @@ namespace EbayAccess.Services
 			return await this.GetEbayMultiPageRequestAsync(
 				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
 				getRequestBodyByPageNumber : page => this.CreateGetSellerListRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, this._itemsPerPage, page ),
-				responseParser : x => new EbayGetSallerListResponseParser().Parse( x ),
+				responseParser : x => new EbayGetSellerListResponseParser().Parse( x ),
 				cts : CancellationToken.None,
 				mark : mark
 			).ConfigureAwait( false );

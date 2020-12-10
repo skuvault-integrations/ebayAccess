@@ -261,14 +261,9 @@ namespace EbayAccess
 			{
 				case GetSaleRecordsNumbersAlgorithm.Econom:
 					var iDs = saleRecordsIDs as IList< string > ?? saleRecordsIDs.ToList();
-					if( iDs.Count() < MinimumCountToUseEconomAlgorithmInGetSaleRecordsNumberMethod )
-					{
-						res = this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( iDs, token, mark );
-					}
-					else
-					{
-						res = this.GetSaleRecordsNumbersEconomAlgorithmAsync( iDs, token, mark );
-					}
+					res = iDs.Count() < MinimumCountToUseEconomAlgorithmInGetSaleRecordsNumberMethod 
+						? this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( iDs, token, mark ) 
+						: this.GetSaleRecordsNumbersEconomAlgorithmAsync( iDs, token, mark );
 					break;
 				case GetSaleRecordsNumbersAlgorithm.Old:
 				case GetSaleRecordsNumbersAlgorithm.Undefined:
