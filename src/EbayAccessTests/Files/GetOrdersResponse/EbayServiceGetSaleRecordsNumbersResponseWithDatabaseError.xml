@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<GetSellingManagerSoldListingsResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+	<Timestamp>2020-11-17T23:10:38.231Z</Timestamp>
+	<Ack>Failure</Ack>
+	<Errors>
+		<ShortMessage>Database Server Error.</ShortMessage>
+		<LongMessage>Database Server exception occurred.</LongMessage>
+		<ErrorCode>248</ErrorCode>
+		<SeverityCode>Error</SeverityCode>
+		<ErrorClassification>RequestError</ErrorClassification>
+	</Errors>
+	<Version>1163</Version>
+	<Build>E1163_CORE_APISELLING_19187371_R1</Build>
+</GetSellingManagerSoldListingsResponse>

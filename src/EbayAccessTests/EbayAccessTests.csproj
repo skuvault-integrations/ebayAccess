@@ -128,6 +128,9 @@
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Files\GetOrdersResponse\EbayServiceGetSaleRecordsNumbersResponseWithDatabaseError.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Files\GetSellerListCustomProductResponse\EbayServiceGetSellerListCustomProductResponse.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
