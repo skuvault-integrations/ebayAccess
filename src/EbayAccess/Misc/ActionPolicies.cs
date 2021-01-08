@@ -33,8 +33,9 @@ namespace EbayAccess.Misc
 				await Task.Delay( TimeSpan.FromSeconds( 0.5 + i ) ).ConfigureAwait( false );
 			} );
 
+		public const int GetAsyncShortMaxRetries = 3;
 		private static readonly ActionPolicyAsync _ebayGetAsyncPolicyShort = ActionPolicyAsync.Handle< Exception >()
-			.RetryAsync( 3, async ( ex, i ) =>
+			.RetryAsync( GetAsyncShortMaxRetries, async ( ex, i ) =>
 			{
 				EbayLogger.Log().Trace( ex, "Retrying Ebay API get call for the {0} time", i );
 				await Task.Delay( TimeSpan.FromSeconds( 0.5 + i ) ).ConfigureAwait( false );

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.ReviseFixedPriceItemRequest;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
+using EbayAccess.Services;
 using EbayAccessTests.Integration.TestEnvironment;
 using FluentAssertions;
 using NUnit.Framework;
@@ -26,36 +28,11 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( ExistingOrdersIds.SaleNumers.ToArray() );
+			var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( ExistingOrdersIds.SaleNumers.ToArray(), CancellationToken.None );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
 			ordersIdsAsync.Result.Should().BeEquivalentTo( ExistingOrdersIds.SaleNumers.ToArray() );
-		}
-
-		[ Test ]
-		public void GetSaleRecordsNumbers_ResponseTooksTooLongTime_Exception()
-		{
-			//------------ Arrange
-			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-			service.DelayForMethod[ "GetSaleRecordsNumbersAsync" ] = 25500;
-
-			var saleNumbers = new List< string >();
-			var existingSaleNumbersArray = ExistingOrdersIds.SaleNumers.ToArray();
-			for( var i = 0; i < 1000; i++ )
-			{
-				saleNumbers.Add( existingSaleNumbersArray[ i % existingSaleNumbersArray.Length ] );
-			}
-
-			//------------ Act
-			Action act = () =>
-			{
-				var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( saleNumbers.ToArray() );
-				ordersIdsAsync.Wait();
-			};
-
-			//------------ Assert
-			act.ShouldThrow< Exception >();
 		}
 
 		[ Test ]
@@ -65,7 +42,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetOrdersIdsAsync( ExistingOrdersIds.OrdersIds.ToArray() );
+			var ordersIdsAsync = service.GetOrdersIdsAsync( CancellationToken.None, ExistingOrdersIds.OrdersIds.ToArray() );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
@@ -79,7 +56,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersIdsAsync = service.GetOrdersIdsAsync( NotExistingBecauseOfCombinedOrdersIds.OrdersIds.ToArray() );
+			var ordersIdsAsync = service.GetOrdersIdsAsync( CancellationToken.None, NotExistingBecauseOfCombinedOrdersIds.OrdersIds.ToArray() );
 			ordersIdsAsync.Wait();
 
 			//------------ Assert
@@ -93,7 +70,7 @@ namespace EbayAccessTests.Integration
 			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
 
 			//------------ Act
-			var ordersTask = service.GetOrdersAsync( DateTime.Now.AddMonths( 0 ).AddDays( -29 ), DateTime.Now.AddMonths( 0 ) );
+			var ordersTask = service.GetOrdersAsync( DateTime.Now.AddMonths( 0 ).AddDays( -29 ), DateTime.Now.AddMonths( 0 ), CancellationToken.None );
 			ordersTask.Wait();
 
 			//------------ Assert
@@ -365,5 +342,21 @@ namespace EbayAccessTests.Integration
 			Debug.WriteLine( "products2 {0}, t:{1}", products2List.Count(), sw2.Elapsed.ToString() );
 		}
 		#endregion
+
+		[ Test ]
+		public void GetSaleRecordsNumbers_WhenLowTimeOutSet_ThenTimesOut()
+		{
+			const int reallyShortTimeout = 100;
+			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox(), 
+				new WebRequestServices(), reallyShortTimeout );
+
+			Action act = () =>
+			{
+				var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( new [] { "123 " }.ToArray(), new CancellationToken() );
+				ordersIdsAsync.Wait();
+			};
+
+			act.ShouldThrow< EbayCommonException >();
+		}
 	}
 }

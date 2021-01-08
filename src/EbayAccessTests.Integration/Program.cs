@@ -24,7 +24,7 @@ namespace EbayAccessTests.Integration
 			var ebayService = ebayFactory.CreateService( this._credentials.GetEbayUserCredentials() );
 
 			//------------ Act
-			var ordersTask = ebayService.GetOrdersAsync( ExistingOrdersModifiedInRange.DateFrom, ExistingOrdersModifiedInRange.DateTo );
+			var ordersTask = ebayService.GetOrdersAsync( ExistingOrdersModifiedInRange.DateFrom, ExistingOrdersModifiedInRange.DateTo, CancellationToken.None );
 			ordersTask.Wait();
 			var orders = ordersTask.Result;
 

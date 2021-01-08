@@ -84,7 +84,7 @@ namespace EbayAccess.Services.Parsers
 				return Parse( stream );
 		}
 
-		public virtual TParseResult Parse( Stream stream, bool keepStremPosition = true )
+		public virtual TParseResult Parse( Stream stream, bool keepStreamPosition = true )
 		{
 			return default( TParseResult );
 		}

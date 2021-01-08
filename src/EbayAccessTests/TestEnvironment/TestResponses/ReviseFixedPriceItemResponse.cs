@@ -87,6 +87,40 @@
 												<Build>E885_UNI_API5_16967625_R1</Build>
 											</ReviseFixedPriceItemResponse>";
 
+		public const string ServerResponseContainsOperationIsNotAllowedError = @"<ReviseFixedPriceItemResponse xmlns=""urn:ebay:apis:eBLBaseComponents"">
+															<Timestamp>2020-09-28T14:00:00.722Z</Timestamp>
+															<Ack>Failure</Ack>
+															<Errors>
+																<ShortMessage>Return Policy Attribute Not Valid</ShortMessage>
+																<LongMessage>Return Policy Attribute returnDescription Not Valid On This Site</LongMessage>
+																<ErrorCode>21920200</ErrorCode>
+																<SeverityCode>Warning</SeverityCode>
+																<ErrorParameters ParamID=""0"">
+																	<Value>returnDescription</Value>
+																</ErrorParameters>
+																<ErrorClassification>RequestError</ErrorClassification>
+															</Errors>
+															<Errors>
+																<ShortMessage>PayPal not applicable for managed payments.</ShortMessage>
+																<LongMessage>This selling account is enabled for payments managed by eBay. PayPal is not currently accepted as a payment method and has been removed from the listing.</LongMessage>
+																<ErrorCode>21920208</ErrorCode>
+																<SeverityCode>Warning</SeverityCode>
+																<ErrorParameters ParamID=""0"">
+																	<Value>PayPal</Value>
+																</ErrorParameters>
+																<ErrorClassification>RequestError</ErrorClassification>
+															</Errors>
+															<Errors>
+																<ShortMessage>This operation is not allowed for inventory items.</ShortMessage>
+																<LongMessage>Inventory-based listing management is not currently supported by this tool. Please refer to the tool used to create this listing.</LongMessage>
+																<ErrorCode>21919474</ErrorCode>
+																<SeverityCode>Error</SeverityCode>
+																<ErrorClassification>RequestError</ErrorClassification>
+															</Errors>
+															<Version>1169</Version>
+															<Build>E1169_UNI_API5_19247202_R1</Build>
+														</ReviseFixedPriceItemResponse>";
+
 		public const string Success = @"<ReviseFixedPriceItemResponse xmlns=""urn:ebay:apis:eBLBaseComponents"">
 										  <Timestamp>2014-08-21T10:03:39.623Z</Timestamp>
 										  <Ack>Success</Ack>
