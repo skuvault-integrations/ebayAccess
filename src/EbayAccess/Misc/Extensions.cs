@@ -67,7 +67,7 @@ namespace EbayAccess.Misc
 			return parsedBool;
 		}
 
-		public static decimal ToDecimalDotOrComaSeparated( this string source, bool throwException = false )
+		public static decimal ToDecimalDotOrCommaSeparated( this string source, bool throwException = false )
 		{
 			var parsedNumber = default ( decimal );
 			try
@@ -90,7 +90,7 @@ namespace EbayAccess.Misc
 			return parsedNumber;
 		}
 
-		public static decimal? ToDecimalDotOrComaSeparatedNullable( this string source, bool throwException = false )
+		public static decimal? ToDecimalDotOrCommaSeparatedNullable( this string source, bool throwException = false )
 		{
 			decimal? parsedNumber = null;
 			try

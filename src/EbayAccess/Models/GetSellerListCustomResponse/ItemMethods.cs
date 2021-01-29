@@ -44,17 +44,6 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 			return clonedItem;
 		}
 
-		private Item DeepClone()
-		{
-			using( var ms = new MemoryStream() )
-			{
-				var formstter = new BinaryFormatter(); // don't use BinaryFormatter due to performance
-				formstter.Serialize( ms, this );
-				ms.Position = 0;
-				return ( Item )formstter.Deserialize( ms );
-			}
-		}
-
 		public ItemSku GetSku( bool throwException = true )
 		{
 			if( this.IsItemWithVariations() && this.Variations.Count == 1 && !string.IsNullOrWhiteSpace( this.Variations[ 0 ].Sku ) )

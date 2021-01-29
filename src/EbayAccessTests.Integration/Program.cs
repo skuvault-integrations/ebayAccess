@@ -61,14 +61,14 @@ namespace EbayAccessTests.Integration
 			{
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice1WithoutVariations.Quantity + this.QtyUpdateFor },
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice2WithoutVariations.Quantity + this.QtyUpdateFor },
-			} );
+			}, CancellationToken.None );
 			updateProductsAsyncTask1.Wait();
 
 			var updateProductsAsyncTask2 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
 				ExistingProducts.FixedPrice1WithoutVariations,
 				ExistingProducts.FixedPrice2WithoutVariations,
-			} );
+			}, CancellationToken.None );
 			updateProductsAsyncTask2.Wait();
 
 			//------------ Assert
@@ -90,14 +90,14 @@ namespace EbayAccessTests.Integration
 			{
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice1WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice1WithoutVariations.Quantity + this.QtyUpdateFor },
 				new InventoryStatusRequest { ItemId = ExistingProducts.FixedPrice2WithoutVariations.ItemId, Quantity = ExistingProducts.FixedPrice2WithoutVariations.Quantity + this.QtyUpdateFor },
-			} );
+			}, CancellationToken.None );
 			updateProductsAsyncTask1.Wait();
 
 			var updateProductsAsyncTask2 = ebayService.ReviseInventoriesStatusAsync( new List< InventoryStatusRequest >
 			{
 				ExistingProducts.FixedPrice1WithoutVariations,
 				ExistingProducts.FixedPrice2WithoutVariations,
-			} );
+			}, CancellationToken.None );
 			updateProductsAsyncTask2.Wait();
 
 			//------------ Assert
@@ -258,7 +258,7 @@ namespace EbayAccessTests.Integration
 			//activeProducts = activeProducts.Where( x => ids.Contains( x.ItemId ) );
 			activeProducts = activeProducts.Take( 10 );
 
-			var updateResultsaTask12 = ebayService.UpdateInventoryAsync( activeProducts.Where( x => x.GetSku( false ) != null ).Select( x => new UpdateInventoryRequest { ItemId = x.ItemId.ToLong(), Quantity = 1, Sku = x.GetSku( false ).Sku, ConditionID = x.ConditionId, IsVariation = x.IsItemWithVariations() } ) );
+			var updateResultsaTask12 = ebayService.UpdateInventoryAsync( activeProducts.Where( x => x.GetSku( false ) != null ).Select( x => new UpdateInventoryRequest { ItemId = x.ItemId.ToLong(), Quantity = 1, Sku = x.GetSku( false ).Sku, ConditionID = x.ConditionId, IsVariation = x.IsItemWithVariations() } ), CancellationToken.None );
 			updateResultsaTask12.Wait();
 			var updateResultsa12 = updateResultsaTask12.Result;
 

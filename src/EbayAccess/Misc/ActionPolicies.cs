@@ -7,13 +7,13 @@ namespace EbayAccess.Misc
 {
 	public static class ActionPolicies
 	{
-		private static readonly ActionPolicy _ebaySumbitPolicy = ActionPolicy.Handle< Exception >().Retry( 10, ( ex, i ) =>
+		private static readonly ActionPolicy _ebaySubmitPolicy = ActionPolicy.Handle< Exception >().Retry( 10, ( ex, i ) =>
 		{
 			EbayLogger.Log().Trace( ex, "Retrying Ebay API submit call for the {0} time", i );
 			SystemUtil.Sleep( TimeSpan.FromSeconds( 0.5 + i ) );
 		} );
 
-		private static readonly ActionPolicyAsync _ebaySumbitAsyncPolicy = ActionPolicyAsync.Handle< Exception >()
+		private static readonly ActionPolicyAsync _ebaySubmitAsyncPolicy = ActionPolicyAsync.Handle< Exception >()
 			.RetryAsync( 10, async ( ex, i ) =>
 			{
 				EbayLogger.Log().Trace( ex, "Retrying Ebay API submit call for the {0} time", i );
@@ -43,12 +43,12 @@ namespace EbayAccess.Misc
 
 		public static ActionPolicy Submit
 		{
-			get { return _ebaySumbitPolicy; }
+			get { return _ebaySubmitPolicy; }
 		}
 
 		public static ActionPolicyAsync SubmitAsync
 		{
-			get { return _ebaySumbitAsyncPolicy; }
+			get { return _ebaySubmitAsyncPolicy; }
 		}
 
 		public static ActionPolicy Get

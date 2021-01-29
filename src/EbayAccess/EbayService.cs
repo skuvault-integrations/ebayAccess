@@ -19,6 +19,7 @@ using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services;
 using Netco.Extensions;
+using Netco.Logging;
 using Item = EbayAccess.Models.GetSellerListCustomResponse.Item;
 using Order = EbayAccess.Models.GetOrdersResponse.Order;
 
@@ -53,11 +54,14 @@ namespace EbayAccess
 		}
 
 		#region GetOrders
-		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo, CancellationToken token )
+		public async Task< IEnumerable< Order > > GetOrdersAsync( DateTime dateFrom, DateTime dateTo, CancellationToken token, Mark mark = null )
 		{
+			mark = mark ?? Mark.CreateNew();
+			if( token.IsCancellationRequested )
+				throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
 			var intervals = GetTimeIntervals( dateFrom, dateTo );
 
-			var orders = await intervals.ProcessInBatchAsync( 3, async x => await this.GetOrdersInIntervalAsync( x.Item1, x.Item2, token ).ConfigureAwait( false ) ).ConfigureAwait( false );
+			var orders = await intervals.ProcessInBatchAsync( 3, async x => await this.GetOrdersInIntervalAsync( x.Item1, x.Item2, token, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
 
 			var ordersFlatten = orders.SelectMany( x => x as IList< Order > ?? x.ToList() );
 
@@ -88,10 +92,9 @@ namespace EbayAccess
 			return intervals;
 		}
 
-		private async Task< IEnumerable< Order > > GetOrdersInIntervalAsync( DateTime dateFrom, DateTime dateTo, CancellationToken token )
+		private async Task< IEnumerable< Order > > GetOrdersInIntervalAsync( DateTime dateFrom, DateTime dateTo, CancellationToken token, Mark mark )
 		{
 			var methodParameters = string.Format( "{{dateFrom:{0},dateTo:{1}}}", dateFrom, dateTo );
-			var mark = Guid.NewGuid().ToString();
 			try
 			{
 				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) );
@@ -118,10 +121,10 @@ namespace EbayAccess
 			}
 		}
 
-		protected async Task< List< string > > GetSaleRecordsNumbersExpensiveAlgorithmAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token )
+		protected async Task< List< string > > GetSaleRecordsNumbersExpensiveAlgorithmAsync( IEnumerable< string > saleRecordsIDs, 
+			CancellationToken token, Mark mark )
 		{
 			var methodParameters = saleRecordsIDs.ToJson();
-			var mark = Guid.NewGuid().ToString();
 			try
 			{
 				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) );
@@ -161,10 +164,9 @@ namespace EbayAccess
 			}
 		}
 
-		protected async Task< List< string > > GetSaleRecordsNumbersEconomAlgorithmAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token )
+		protected async Task< List< string > > GetSaleRecordsNumbersEconomAlgorithmAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token, Mark mark = null )
 		{
 			var methodParameters = saleRecordsIDs.ToJson();
-			var mark = Guid.NewGuid().ToString();
 
 			try
 			{
@@ -219,7 +221,7 @@ namespace EbayAccess
 				if( getSellngManagerSoldListingsResponse.IsLimitedResponse )
 				{
 					var listToSearch = salerecordIds.Where( id => ( !saleRecordsIdsFilteredOnlyExisting.Contains( id ) ) && ( !saleRecordsIdsNotExisting.Contains( id ) ) );
-					var expensiveSearchIds = await this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( listToSearch, token ).ConfigureAwait( false );
+					var expensiveSearchIds = await this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( listToSearch, token, mark ).ConfigureAwait( false );
 					saleRecordsIdsFilteredOnlyExisting.AddRange( expensiveSearchIds.Where( id => salerecordIds.Contains( id ) && ( !saleRecordsIdsFilteredOnlyExisting.Contains( id ) ) ) );
 				}
 				else
@@ -229,7 +231,7 @@ namespace EbayAccess
 
 					if( missingRecordsIds.Count > 0 )
 					{
-						var expensiveSearchIds = await this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( missingRecordsIds, token ).ConfigureAwait( false );
+						var expensiveSearchIds = await this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( missingRecordsIds, token, mark ).ConfigureAwait( false );
 						saleRecordsIdsFilteredOnlyExisting.AddRange( expensiveSearchIds.Where( id => salerecordIds.Contains( id ) && ( !saleRecordsIdsFilteredOnlyExisting.Contains( id ) ) ) );
 					}
 				}
@@ -247,38 +249,40 @@ namespace EbayAccess
 			}
 		}
 
-		public async Task< List< string > > GetSaleRecordsNumbersAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token, GetSaleRecordsNumbersAlgorithm usealgorithm = GetSaleRecordsNumbersAlgorithm.Old )
+		public async Task< List< string > > GetSaleRecordsNumbersAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token, GetSaleRecordsNumbersAlgorithm usealgorithm = GetSaleRecordsNumbersAlgorithm.Old, Mark mark = null )
 		{
+			mark = mark ?? Mark.CreateNew();
 			Task< List< string > > res;
+
+			if( token.IsCancellationRequested )
+				throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
+
 			switch( usealgorithm )
 			{
 				case GetSaleRecordsNumbersAlgorithm.Econom:
 					var iDs = saleRecordsIDs as IList< string > ?? saleRecordsIDs.ToList();
-					if( iDs.Count() < MinimumCountToUseEconomAlgorithmInGetSaleRecordsNumberMethod )
-					{
-						res = this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( iDs, token );
-					}
-					else
-					{
-						res = this.GetSaleRecordsNumbersEconomAlgorithmAsync( iDs, token );
-					}
+					res = iDs.Count() < MinimumCountToUseEconomAlgorithmInGetSaleRecordsNumberMethod 
+						? this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( iDs, token, mark ) 
+						: this.GetSaleRecordsNumbersEconomAlgorithmAsync( iDs, token, mark );
 					break;
 				case GetSaleRecordsNumbersAlgorithm.Old:
 				case GetSaleRecordsNumbersAlgorithm.Undefined:
 				default:
-					res = this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( saleRecordsIDs, token );
+					res = this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( saleRecordsIDs, token, mark );
 					break;
 			}
 			return await res.ConfigureAwait( false );
 		}
 
-		public async Task< List< string > > GetOrdersIdsAsync( CancellationToken token, params string[] sourceOrdersIds )
+		public async Task< List< string > > GetOrdersIdsAsync( CancellationToken token, Mark mark = null, params string[] sourceOrdersIds )
 		{
+			mark = mark ?? Mark.CreateNew();
 			var methodParameters = sourceOrdersIds.ToJson();
-			var mark = Guid.NewGuid().ToString();
 			try
 			{
 				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) );
+				if( token.IsCancellationRequested )
+					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
 
 				if( sourceOrdersIds == null || !sourceOrdersIds.Any() )
 					return new List< string >();
@@ -334,18 +338,18 @@ namespace EbayAccess
 		#endregion
 
 		#region GetProducts
-		public async Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow = null, string mark = null )
+		public async Task< IEnumerable< Item > > GetActiveProductsAsync( CancellationToken token, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow = null, Mark mark = null )
 		{
-			var methodParameters = new Func< string >( () => string.Format( "{{getOnlyGtcDuration: {0}, cancellationTokenIsCancelled:{1}}}", getOnlyGtcDuration, ct.IsCancellationRequested ) );
-			mark = mark ?? Guid.NewGuid().ToString();
+			var methodParameters = new Func< string >( () => string.Format( "{{getOnlyGtcDuration: {0}, cancellationTokenIsCancelled:{1}}}", getOnlyGtcDuration, token.IsCancellationRequested ) );
+			mark = mark ?? Mark.CreateNew();
 			try
 			{
-				if( ct.IsCancellationRequested )
+				if( token.IsCancellationRequested )
 					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
 
 				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters(), mark ) );
 
-				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( ct, DateTime.UtcNow, DateTime.UtcNow.AddDays( MaxTimeRange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false )
+				var sellerListsAsync = await this.EbayServiceLowLevel.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( token, DateTime.UtcNow, DateTime.UtcNow.AddDays( MaxTimeRange ), GetSellerListTimeRangeEnum.EndTime, mark ).ConfigureAwait( false )
 				                       ?? new List< GetSellerListCustomResponse >();
 
 				var getSellerListCustomResponses = sellerListsAsync as IList< GetSellerListCustomResponse > ?? sellerListsAsync.ToList();
@@ -372,10 +376,9 @@ namespace EbayAccess
 			}
 		}
 
-		public async Task< IEnumerable< Product > > GetActiveProductPullItemsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow = null, string mark = null )
+		public async Task< IEnumerable< Product > > GetActiveProductPullItemsAsync( CancellationToken ct, bool getOnlyGtcDuration = false, bool throwExceptionOnErrors = true, List< IgnoreExceptionType > exceptionsForIgnoreAndThrow = null, Mark mark = null )
 		{
 			var methodParameters = new Func< string >( () => string.Format( "{{getOnlyGtcDuration: {0}, cancellationTokenIsCancelled:{1}}}", getOnlyGtcDuration, ct.IsCancellationRequested ) );
-			mark = mark ?? Guid.NewGuid().ToString();
 			try
 			{
 				if( ct.IsCancellationRequested )
@@ -412,7 +415,7 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Item > > GetProductsByEndDateAsync( DateTime endDateFrom, DateTime endDateTo )
 		{
-			var mark = new Guid().ToString();
+			var mark = Mark.CreateNew();
 			var methodParameters = string.Format( "EndDateFrom:{0},EndDateTo:{1}", endDateFrom, endDateTo );
 			try
 			{
@@ -450,7 +453,7 @@ namespace EbayAccess
 
 		public async Task< IEnumerable< Models.GetSellerListResponse.Item > > GetProductsDetailsAsync( DateTime createTimeFromStart, DateTime createTimeFromTo )
 		{
-			var mark = new Guid().ToString();
+			var mark = Mark.CreateNew();
 			var methodParameters = string.Format( "CreateTimeFrom:{0},CreateTimeTo:{1}", createTimeFromStart, createTimeFromTo );
 			try
 			{
@@ -520,7 +523,7 @@ namespace EbayAccess
 			return quartalsStart;
 		}
 
-		protected async Task< IEnumerable< Models.GetSellerListResponse.Item > > GetItemsAsync( IEnumerable< Models.GetSellerListResponse.Item > items, string mark )
+		protected async Task< IEnumerable< Models.GetSellerListResponse.Item > > GetItemsAsync( IEnumerable< Models.GetSellerListResponse.Item > items, Mark mark )
 		{
 			var itemsDetailsTasks = items.Select( x => this.EbayServiceLowLevel.GetItemAsync( x.ItemId, mark ) );
 
@@ -550,8 +553,9 @@ namespace EbayAccess
 		#endregion
 
 		#region UpdateProducts
-		internal async Task< IEnumerable< ReviseFixedPriceItemResponse > > ReviseFixedPriceItemAsync( IEnumerable< ReviseFixedPriceItemRequest > products, string mark )
+		internal async Task< IEnumerable< ReviseFixedPriceItemResponse > > ReviseFixedPriceItemsAsync( IEnumerable< ReviseFixedPriceItemRequest > products, CancellationToken token, Mark mark = null )
 		{
+			mark = mark ?? Mark.CreateNew();
 			var productsWithVariations = products.GroupBy( i => i.ItemId ).Select( gr => gr.ToReviseFixedPriceItemRequestWithVariations() ).ToList();
 			var methodParameters = productsWithVariations.ToJson();
 			EbayLogger.LogTraceInnerStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) );
@@ -562,7 +566,7 @@ namespace EbayAccess
 				var repeatCount = 0;
 				await ActionPolicies.GetAsyncShort.Do( async () =>
 				{
-					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, mark ).ConfigureAwait( false );
+					res = await this.EbayServiceLowLevel.ReviseFixedPriceItemAsync( x, token, mark ).ConfigureAwait( false );
 
 					if( res.Item == null )
 						res.Item = new Models.ReviseFixedPriceItemResponse.Item();
@@ -608,7 +612,7 @@ namespace EbayAccess
 			return fixedPriceItemResponses;
 		}
 
-		internal async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products, string mark )
+		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products, CancellationToken token, Mark mark = null )
 		{
 			var methodParameters = products.ToJson();
 
@@ -616,7 +620,7 @@ namespace EbayAccess
 			{
 				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) );
 
-				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products, mark ).ConfigureAwait( false );
+				var reviseInventoriesStatus = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( products, token, mark ).ConfigureAwait( false );
 
 				var inventoryStatusResponses = reviseInventoriesStatus as IList< InventoryStatusResponse > ?? reviseInventoriesStatus.ToList();
 
@@ -641,21 +645,11 @@ namespace EbayAccess
 			}
 		}
 
-		public async Task< IEnumerable< ReviseFixedPriceItemResponse > > ReviseFixePriceItemsAsync( IEnumerable< ReviseFixedPriceItemRequest > products )
-		{
-			return await this.ReviseFixedPriceItemAsync( products, Guid.NewGuid().ToString() );
-		}
-
-		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > products )
-		{
-			return await this.ReviseInventoriesStatusAsync( products, Guid.NewGuid().ToString() ).ConfigureAwait( false );
-		}
-
-		protected async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallExpensiveAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products, string mark = null )
+		protected async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallExpensiveAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products,
+			CancellationToken token, Mark mark )
 		{
 			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
 			var methodParameters = updateInventoryRequests.ToJson();
-			mark = mark ?? Guid.NewGuid().ToString();
 
 			try
 			{
@@ -672,7 +666,7 @@ namespace EbayAccess
 				var updateProductsResponses = Enumerable.Empty< InventoryStatusResponse >();
 				try
 				{
-					updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests, mark ).ConfigureAwait( false );
+					updateProductsResponses = await this.ReviseInventoriesStatusAsync( inventoryStatusRequests, token, mark ).ConfigureAwait( false );
 				}
 				catch( Exception exc )
 				{
@@ -682,7 +676,7 @@ namespace EbayAccess
 				var updateFixedPriceItemResponses = Enumerable.Empty< ReviseFixedPriceItemResponse >();
 				try
 				{
-					updateFixedPriceItemResponses = await this.ReviseFixedPriceItemAsync( reviseFixedPriceItemWithVariationsRequests, mark ).ConfigureAwait( false );
+					updateFixedPriceItemResponses = await this.ReviseFixedPriceItemsAsync( reviseFixedPriceItemWithVariationsRequests, token, mark ).ConfigureAwait( false );
 				}
 				catch( Exception exc )
 				{
@@ -708,11 +702,11 @@ namespace EbayAccess
 			}
 		}
 
-		protected async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallEconomAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products, string mark = null )
+		protected async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryCallEconomAlgorithmAsync( IEnumerable< UpdateInventoryRequest > products, 
+			CancellationToken token, Mark mark = null )
 		{
 			var updateInventoryRequests = products as IList< UpdateInventoryRequest > ?? products.ToList();
 			var methodParameters = updateInventoryRequests.ToJson();
-			mark = mark ?? Guid.NewGuid().ToString();
 
 			try
 			{
@@ -738,7 +732,7 @@ namespace EbayAccess
 					try
 					{
 						var reviseInventoryStatusRequests = updateInventoryItemsWithoutVariations.Select( x => new InventoryStatusRequest { ItemId = x.ItemId, Sku = x.Sku, Quantity = x.Quantity } ).ToList();
-						var temp = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( reviseInventoryStatusRequests, mark ).ConfigureAwait( false );
+						var temp = await this.EbayServiceLowLevel.ReviseInventoriesStatusAsync( reviseInventoryStatusRequests, token, mark ).ConfigureAwait( false );
 						reviseInventoryStatusResponses = temp.ToList();
 						var reviseInventoryStatusResponsesList = temp.ToList();
 						EbayLogger.LogTrace( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, methodResult : reviseInventoryStatusResponsesList.ToJson(), additionalInfo : "ReviseInventoryStatus responses." ) );
@@ -780,7 +774,7 @@ namespace EbayAccess
 					{
 						EbayLogger.LogTrace( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), updateInventoryItemsWithVariations.ToJson(), mark, additionalInfo : "Trying to update products with helpof ReviseFixedPriseItem." ) );
 
-						var reviseFixedPriceItemsResponse = await this.ReviseFixePriceItemsAsync( updateInventoryItemsWithVariations ).ConfigureAwait( false );
+						var reviseFixedPriceItemsResponse = await this.ReviseFixedPriceItemsAsync( updateInventoryItemsWithVariations, token, mark ).ConfigureAwait( false );
 						reviseFixedPriceItemResponses.AddRange( reviseFixedPriceItemsResponse );
 					}
 					catch( Exception exc )
@@ -809,19 +803,22 @@ namespace EbayAccess
 			}
 		}
 
-		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, UpdateInventoryAlgorithm usealgorithm = UpdateInventoryAlgorithm.Old, string mark = null )
+		public async Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, CancellationToken token, UpdateInventoryAlgorithm useAlgorithm = UpdateInventoryAlgorithm.Old,
+			Mark mark = null )
 		{
 			Task< IEnumerable< UpdateInventoryResponse > > res;
-			switch( usealgorithm )
+			mark = mark ?? Mark.CreateNew();
+			if( token.IsCancellationRequested )
+				throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
+
+			switch( useAlgorithm )
 			{
-				case UpdateInventoryAlgorithm.Old:
-					res = this.UpdateInventoryCallExpensiveAlgorithmAsync( products, mark );
-					break;
 				case UpdateInventoryAlgorithm.Econom:
-					res = this.UpdateInventoryCallEconomAlgorithmAsync( products, mark );
+					res = this.UpdateInventoryCallEconomAlgorithmAsync( products, token, mark );
 					break;
+				case UpdateInventoryAlgorithm.Old:
 				default:
-					res = this.UpdateInventoryCallExpensiveAlgorithmAsync( products, mark );
+					res = this.UpdateInventoryCallExpensiveAlgorithmAsync( products, token, mark );
 					break;
 			}
 			return await res.ConfigureAwait( false );
@@ -831,7 +828,7 @@ namespace EbayAccess
 		#region Authentication
 		public string GetUserToken()
 		{
-			var mark = new Guid().ToString();
+			var mark = Mark.CreateNew();
 			try
 			{
 				var sessionId = this.EbayServiceLowLevel.GetSessionId( mark );
@@ -849,7 +846,7 @@ namespace EbayAccess
 
 		public string GetUserSessionId()
 		{
-			var mark = new Guid().ToString();
+			var mark = Mark.CreateNew();
 			try
 			{
 				var sessionId = this.EbayServiceLowLevel.GetSessionId( mark );
@@ -880,7 +877,7 @@ namespace EbayAccess
 
 		public string FetchUserToken( string sessionId )
 		{
-			var mark = new Guid().ToString();
+			var mark = Mark.CreateNew();
 			try
 			{
 				var userToken = this.EbayServiceLowLevel.FetchToken( sessionId, mark );
@@ -895,14 +892,14 @@ namespace EbayAccess
 		}
 		#endregion
 
-		public static string CreateMethodCallInfo( string restInfo, string methodParameters = "", string mark = "", string errors = "", string methodResult = "", string additionalInfo = "", [ CallerMemberName ] string memberName = "" )
+		public static string CreateMethodCallInfo( string restInfo, string methodParameters = "", Mark mark = null, string errors = "", string methodResult = "", string additionalInfo = "", [ CallerMemberName ] string memberName = "" )
 		{
 			var str = string.Format(
 				"{{MethodName:{0}, Mark:'{3}', RestInfo:{1}, MethodParameters:{2}{4}{5}{6}}}",
 				memberName,
 				restInfo,
 				methodParameters.LimitBodyLogSize(),
-				mark,
+				mark ?? Mark.Blank(),
 				string.IsNullOrWhiteSpace( errors ) ? string.Empty : ", Errors:" + errors.LimitResponseLogSize(),
 				string.IsNullOrWhiteSpace( methodResult ) ? string.Empty : ", Result:" + methodResult.LimitResponseLogSize(),
 				string.IsNullOrWhiteSpace( additionalInfo ) ? string.Empty : ", " + additionalInfo

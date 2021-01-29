@@ -48,7 +48,7 @@ namespace EbayAccess.Services.Parsers
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "BuyItNowPrice" ) ) )
 					{
-						res.BuyItNowPrice = temp.ToDecimalDotOrComaSeparated();
+						res.BuyItNowPrice = temp.ToDecimalDotOrCommaSeparated();
 						res.BuyItNowPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "BuyItNowPrice" );
 					}
 
@@ -68,7 +68,7 @@ namespace EbayAccess.Services.Parsers
 					if( sellingStatus != null )
 					{
 						res.SellingStatus = new SellingStatus();
-						res.SellingStatus.CurrentPrice = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToDecimalDotOrComaSeparated();
+						res.SellingStatus.CurrentPrice = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToDecimalDotOrCommaSeparated();
 						res.SellingStatus.CurrentPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "CurrentPrice" );
 						res.SellingStatus.QuantitySold = GetElementValue( x, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault( false );
 					}
@@ -85,7 +85,7 @@ namespace EbayAccess.Services.Parsers
 							var tempVariation = new Variation();
 
 							tempVariation.Sku = GetElementValue( variat, ns, "SKU" );
-							tempVariation.StartPrice = GetElementValue( variat, ns, "StartPrice" ).ToDecimalDotOrComaSeparated();
+							tempVariation.StartPrice = GetElementValue( variat, ns, "StartPrice" ).ToDecimalDotOrCommaSeparated();
 							tempVariation.StartPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "StartPrice" );
 							tempVariation.Quantity = GetElementValue( variat, ns, "Quantity" ).ToIntOrDefault( false );
 							tempVariation.SellingStatus = new SellingStatus { QuantitySold = GetElementValue( variat, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault( false ) };

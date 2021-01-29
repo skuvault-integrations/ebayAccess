@@ -36,7 +36,7 @@ namespace EbayAccess.Services.Parsers
 
 				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "BuyItNowPrice" ) ) )
 				{
-					res.BuyItNowPrice = temp.ToDecimalDotOrComaSeparated();
+					res.BuyItNowPrice = temp.ToDecimalDotOrCommaSeparated();
 					res.BuyItNowPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "BuyItNowPrice" );
 				}
 
@@ -54,7 +54,7 @@ namespace EbayAccess.Services.Parsers
 
 				if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ReservePrice" ) ) )
 				{
-					res.ReservePrice = temp.ToDecimalDotOrComaSeparated();
+					res.ReservePrice = temp.ToDecimalDotOrCommaSeparated();
 					res.ReservePriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "ReservePrice" );
 				}
 
@@ -68,7 +68,7 @@ namespace EbayAccess.Services.Parsers
 				if( sellingStatus != null )
 				{
 					res.SellingStatus = new SellingStatus();
-					res.SellingStatus.CurrentPrice = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToDecimalDotOrComaSeparated();
+					res.SellingStatus.CurrentPrice = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToDecimalDotOrCommaSeparated();
 					res.SellingStatus.CurrentPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "CurrentPrice" );
 				}
 
@@ -83,11 +83,11 @@ namespace EbayAccess.Services.Parsers
 
 					res.ListingDetails.CheckoutEnabled = GetElementValue( x, ns, "ListingDetails", "CheckoutEnabled" ).ToBool();
 
-					res.ListingDetails.ConvertedBuyItNowPrice = GetElementValue( x, ns, "ListingDetails", "ConvertedBuyItNowPrice" ).ToDecimalDotOrComaSeparated();
+					res.ListingDetails.ConvertedBuyItNowPrice = GetElementValue( x, ns, "ListingDetails", "ConvertedBuyItNowPrice" ).ToDecimalDotOrCommaSeparated();
 
-					res.ListingDetails.ConvertedReservePrice = GetElementValue( x, ns, "ListingDetails", "ConvertedReservePrice" ).ToDecimalDotOrComaSeparated();
+					res.ListingDetails.ConvertedReservePrice = GetElementValue( x, ns, "ListingDetails", "ConvertedReservePrice" ).ToDecimalDotOrCommaSeparated();
 
-					res.ListingDetails.ConvertedStartPrice = GetElementValue( x, ns, "ListingDetails", "ConvertedStartPrice" ).ToDecimalDotOrComaSeparated();
+					res.ListingDetails.ConvertedStartPrice = GetElementValue( x, ns, "ListingDetails", "ConvertedStartPrice" ).ToDecimalDotOrCommaSeparated();
 
 					if( !string.IsNullOrWhiteSpace( temp = GetElementValue( x, ns, "ListingDetails", "EndTime" ) ) )
 						res.ListingDetails.EndTime = ( DateTime.Parse( temp ) );

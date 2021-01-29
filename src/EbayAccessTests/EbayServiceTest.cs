@@ -17,6 +17,7 @@ using EbayAccessTests.TestEnvironment;
 using EbayAccessTests.TestEnvironment.TestResponses;
 using FluentAssertions;
 using Moq;
+using Netco.Logging;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -38,7 +39,7 @@ namespace EbayAccessTests
 			};
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >(), It.IsAny< CancellationToken >() ) ).Returns( () =>
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >() ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
 				var buf = new UTF8Encoding().GetBytes( serverResponsePages[ stubCallCounter ] );
@@ -50,7 +51,7 @@ namespace EbayAccessTests
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
 			//A
-			var ordersTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), GetSellerListTimeRangeEnum.StartTime, new Guid().ToString() );
+			var ordersTask = ebayService.GetSellerListAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ), new DateTime( 2014, 1, 28, 10, 0, 0 ), GetSellerListTimeRangeEnum.StartTime, Mark.Blank() );
 			ordersTask.Wait();
 			var orders = ordersTask.Result;
 			//A
@@ -65,7 +66,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), Arg.Any< CancellationToken >() ).Returns( x =>
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( x =>
 			{
 				var ms = new MemoryStream();
 				var utf8Encoding = new UTF8Encoding();
@@ -79,7 +80,7 @@ namespace EbayAccessTests
 
 			//A
 			var getOrdersResponseTask = ebayServiceLowLevel.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None, new Guid().ToString() );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None, Mark.Blank() );
 			getOrdersResponseTask.Wait();
 			var getOrdersResponse = getOrdersResponseTask.Result;
 
@@ -94,15 +95,15 @@ namespace EbayAccessTests
 		{
 			//A
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), Arg.Any< CancellationToken >() ).Returns( x => Task.FromResult( GetSellingManagerSoldListingsResponse.ResponseWithInternalError.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( x => Task.FromResult( GetSellingManagerSoldListingsResponse.ResponseWithInternalError.ToStream() ) );
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var sellingManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellingManagerOrderByRecordNumberAsync( "123", new Guid().ToString(), CancellationToken.None );
+			var sellingManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellingManagerOrderByRecordNumberAsync( "123", Mark.Blank(), CancellationToken.None );
 			sellingManagerOrderByRecordNumberAsync.Wait();
 
 			//A
-			stubWebRequestService.ReceivedWithAnyArgs( 4 ).GetResponseStreamAsync( null, new Guid().ToString(), CancellationToken.None );
+			stubWebRequestService.ReceivedWithAnyArgs( 4 ).GetResponseStreamAsync( null, Mark.Blank(), CancellationToken.None );
 			sellingManagerOrderByRecordNumberAsync.Result.Errors.Count().Should().Be( 1 );
 			sellingManagerOrderByRecordNumberAsync.Result.Errors.Count( x => x.ErrorCode == "10007" ).Should().Be( 1 );
 		}
@@ -113,15 +114,15 @@ namespace EbayAccessTests
 			//A
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 			var callCounter = 0;
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), Arg.Any< CancellationToken >() ).Returns( x => Task.FromResult( callCounter++ == 0 ? GetSellingManagerSoldListingsResponse.ResponseWithInternalError.ToStream() : GetSellingManagerSoldListingsResponse.ResponseWithSoldRecord.ToStream() ) );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( x => Task.FromResult( callCounter++ == 0 ? GetSellingManagerSoldListingsResponse.ResponseWithInternalError.ToStream() : GetSellingManagerSoldListingsResponse.ResponseWithSoldRecord.ToStream() ) );
 			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
 			//A
-			var sellingManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellingManagerOrderByRecordNumberAsync( "123", new Guid().ToString(), CancellationToken.None );
+			var sellingManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellingManagerOrderByRecordNumberAsync( "123", Mark.Blank(), CancellationToken.None );
 			sellingManagerOrderByRecordNumberAsync.Wait();
 
 			//A
-			stubWebRequestService.ReceivedWithAnyArgs( 2 ).GetResponseStreamAsync( null, new Guid().ToString(), CancellationToken.None );
+			stubWebRequestService.ReceivedWithAnyArgs( 2 ).GetResponseStreamAsync( null, Mark.Blank(), CancellationToken.None );
 			sellingManagerOrderByRecordNumberAsync.Result.Errors.Should().BeNull();
 		}
 
@@ -133,7 +134,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), Arg.Any< CancellationToken >() ).Returns( x =>
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( x =>
 			{
 				var ms = new MemoryStream();
 				var utf8Encoding = new UTF8Encoding();
@@ -147,7 +148,7 @@ namespace EbayAccessTests
 
 			//A
 			var ordersTask = ebayServiceLowLevel.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None, new Guid().ToString() );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None, Mark.Blank() );
 			ordersTask.Wait();
 			var orders = ordersTask.Result;
 			//A
@@ -169,7 +170,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
 
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >(), It.IsAny< CancellationToken >() ) ).Returns( () =>
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >() ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
 				var encoding = new UTF8Encoding();
@@ -183,7 +184,7 @@ namespace EbayAccessTests
 
 			//A
 			var getOrdersResponseTask = ebayServiceLowLevel.GetOrdersAsync( new DateTime( 2014, 1, 1, 0, 0, 0 ),
-				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None, new Guid().ToString() );
+				new DateTime( 2014, 1, 28, 10, 0, 0 ), GetOrdersTimeRangeEnum.CreateTime, CancellationToken.None, Mark.Blank() );
 			getOrdersResponseTask.Wait();
 			var getOrdersResponse = getOrdersResponseTask.Result;
 
@@ -202,7 +203,7 @@ namespace EbayAccessTests
 			const string serverResponse = "<ReviseInventoryStatusResponse xmlns=\"urn:ebay:apis:eBLBaseComponents\"><Timestamp>2014-02-17T18:49:00.346Z</Timestamp><Ack>Failure</Ack><Errors><ShortMessage>FixedPrice item ended.</ShortMessage><LongMessage>You are not allowed to revise an ended item \"110136942332\".</LongMessage><ErrorCode>21916750</ErrorCode><SeverityCode>Error</SeverityCode><ErrorParameters ParamID=\"0\"><Value>110136942332</Value></ErrorParameters><ErrorClassification>RequestError</ErrorClassification></Errors><Version>859</Version><Build>E859_UNI_API5_16675060_R1</Build></ReviseInventoryStatusResponse>";
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >(), It.IsAny< CancellationToken >() ) ).Returns(
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >() ) ).Returns(
 				() =>
 				{
 					var ms = new MemoryStream();
@@ -219,7 +220,7 @@ namespace EbayAccessTests
 			{
 				new InventoryStatusRequest { ItemId = item1Id, Quantity = itemsQty1 },
 				new InventoryStatusRequest { ItemId = item2Id, Quantity = itemsQty1 }
-			}, new Guid().ToString() ).ConfigureAwait( false ) ).ToArray();
+			}, CancellationToken.None, Mark.Blank() ).ConfigureAwait( false ) ).ToArray();
 
 			//A
 			inventoryStat[ 0 ].Errors.Any( x => !string.IsNullOrWhiteSpace( x.ErrorCode ) ).Should().BeTrue();
@@ -235,7 +236,7 @@ namespace EbayAccessTests
 			const long item2Id = 110137091582;
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< string >(), It.IsAny< CancellationToken >() ) ).Returns( () => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsPictureError.ToStream() ) );
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >() ) ).Returns( () => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsPictureError.ToStream() ) );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
@@ -244,7 +245,7 @@ namespace EbayAccessTests
 			{
 				new UpdateInventoryRequest { ItemId = item1Id, Quantity = itemsQty1, Sku = "123" },
 				new UpdateInventoryRequest { ItemId = item2Id, Quantity = itemsQty1, Sku = "qwe" }
-			} );
+			}, CancellationToken.None );
 			updateInventoryAsync.Wait();
 
 			//A
@@ -270,7 +271,7 @@ namespace EbayAccessTests
 				{
 					new UpdateInventoryRequest { ItemId = item1Id, Quantity = itemsQty1, Sku = "123" },
 					new UpdateInventoryRequest { ItemId = item2Id, Quantity = itemsQty1, Sku = "qwe" }
-				} );
+				}, CancellationToken.None );
 				updateInventoryAsync.Wait();
 			};
 
@@ -298,7 +299,7 @@ namespace EbayAccessTests
 				{
 					new UpdateInventoryRequest { ItemId = item1Id, Quantity = itemsQty1, Sku = "123" },
 					new UpdateInventoryRequest { ItemId = item2Id, Quantity = itemsQty1, Sku = "qwe" }
-				} );
+				}, CancellationToken.None );
 				updateInventoryAsync.Wait();
 			};
 
@@ -323,7 +324,7 @@ namespace EbayAccessTests
 					new UpdateInventoryRequest { ItemId = itemId, Quantity = 3, Sku = "testsku1-1" },
 					new UpdateInventoryRequest { ItemId = itemId, Quantity = 5, Sku = "testsku1-2" },
 					new UpdateInventoryRequest { ItemId = itemId, Quantity = 8, Sku = "testsku1-3" }
-				}, UpdateInventoryAlgorithm.Econom );
+				}, CancellationToken.None, UpdateInventoryAlgorithm.Econom );
 				updateInventoryAsync.Wait();
 			};
 
@@ -347,7 +348,7 @@ namespace EbayAccessTests
 				var updateInventoryAsync = ebayService.UpdateInventoryAsync( new List< UpdateInventoryRequest >
 				{
 					new UpdateInventoryRequest { ItemId = itemId, Quantity = itemQuantity, Sku = itemSku }
-				}, UpdateInventoryAlgorithm.Econom );
+				}, CancellationToken.None, UpdateInventoryAlgorithm.Econom );
 				updateInventoryAsync.Wait();
 			};
 
@@ -364,7 +365,7 @@ namespace EbayAccessTests
 			var getResponseStreamAsyncCallCounter = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< string >(), Arg.Any< CancellationToken >() ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -409,7 +410,7 @@ namespace EbayAccessTests
 			//A
 			Action action = () =>
 			{
-				var updateInventoryAsync = ebayService.UpdateInventoryAsync( itemsToUpdateToZero.Concat( itemsToUpdateToGreaterZero ).ToList() );
+				var updateInventoryAsync = ebayService.UpdateInventoryAsync( itemsToUpdateToZero.Concat( itemsToUpdateToGreaterZero ).ToList(), CancellationToken.None );
 				updateInventoryAsync.Wait();
 			};
 
@@ -417,9 +418,9 @@ namespace EbayAccessTests
 			action.ShouldThrow< EbayCommonException >();
 
 			stubWebRequestService.Received().CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
-				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), Arg.Any< CancellationToken >(), Arg.Any< string >() );
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), Arg.Any< CancellationToken >(), Arg.Any< Mark >() );
 			stubWebRequestService.Received().CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
-				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseInventoryStatus ), Arg.Any< CancellationToken >(), Arg.Any< string >() );
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseInventoryStatus ), Arg.Any< CancellationToken >(), Arg.Any< Mark >() );
 		}
 
 		[ Test ]
@@ -445,7 +446,7 @@ namespace EbayAccessTests
 			//A
 			Action action = () =>
 			{
-				var updateInventoryAsync = ebayService.ReviseFixePriceItemsAsync( reviseFixedPriceItemRequests );
+				var updateInventoryAsync = ebayService.ReviseFixedPriceItemsAsync( reviseFixedPriceItemRequests, CancellationToken.None );
 				updateInventoryAsync.Wait();
 			};
 
@@ -453,7 +454,7 @@ namespace EbayAccessTests
 			action.ShouldThrow< Exception >();
 
 			stubWebRequestService.Received( requiredNumberOfCalls ).CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
-				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), Arg.Any< CancellationToken >(), Arg.Any< string >() );
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), Arg.Any< CancellationToken >(), Arg.Any< Mark >() );
 		}
 
 		[ Test ]
@@ -476,7 +477,7 @@ namespace EbayAccessTests
 			//A
 			Action action = () =>
 			{
-				var updateInventoryAsync = ebayService.ReviseInventoriesStatusAsync( inventoryStatusRequests );
+				var updateInventoryAsync = ebayService.ReviseInventoriesStatusAsync( inventoryStatusRequests, CancellationToken.None );
 				updateInventoryAsync.Wait();
 			};
 
@@ -485,7 +486,7 @@ namespace EbayAccessTests
 
 			var requiredNumberOfCalls = inventoryStatusRequests.Count / 4 + ( inventoryStatusRequests.Count % 4 > 0 ? 1 : 0 );
 			stubWebRequestService.Received( requiredNumberOfCalls ).CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
-				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseInventoryStatus ), Arg.Any< CancellationToken >(), Arg.Any< string >() );
+				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseInventoryStatus ), Arg.Any< CancellationToken >(), Arg.Any< Mark >() );
 		}
 
 		[ Test ]
@@ -507,7 +508,7 @@ namespace EbayAccessTests
 				{
 					new UpdateInventoryRequest { ItemId = item1Id, Quantity = 0, Sku = "123" },
 					new UpdateInventoryRequest { ItemId = item2Id, Quantity = 1, Sku = "qwe" }
-				} );
+				}, CancellationToken.None );
 				updateInventoryAsync.Wait();
 			};
 
@@ -534,7 +535,7 @@ namespace EbayAccessTests
 				{
 					new UpdateInventoryRequest { ItemId = item1Id, Quantity = 0, Sku = "123" },
 					new UpdateInventoryRequest { ItemId = item2Id, Quantity = 1, Sku = "qwe" }
-				} );
+				}, CancellationToken.None );
 				updateInventoryAsync.Wait();
 			};
 
@@ -561,7 +562,7 @@ namespace EbayAccessTests
 			{
 				new UpdateInventoryRequest { ItemId = item1Id, Quantity = 0, Sku = "123" },
 				new UpdateInventoryRequest { ItemId = item2Id, Quantity = 1, Sku = "qwe" }
-			} );
+			}, CancellationToken.None );
 			updateInventoryAsync.Wait();
 
 			//A

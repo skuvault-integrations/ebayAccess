@@ -23,6 +23,7 @@ using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services.Parsers;
 using Netco.Extensions;
+using Netco.Logging;
 using Item = EbayAccess.Models.GetSellerListResponse.Item;
 
 namespace EbayAccess.Services
@@ -66,7 +67,7 @@ namespace EbayAccess.Services
 		}
 
 		#region EbayStandartRequest
-		private async Task< WebRequest > CreateEbayStandardPostRequestAsync( string url, Dictionary< string, string > headers, string body, string mark, CancellationToken cts )
+		private async Task< WebRequest > CreateEbayStandardPostRequestAsync( string url, Dictionary< string, string > headers, string body, Mark mark, CancellationToken cts )
 		{
 			if( cts.IsCancellationRequested )
 				throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
@@ -86,14 +87,14 @@ namespace EbayAccess.Services
 			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, cts, mark ).ConfigureAwait( false );
 		}
 
-		public WebRequest CreateEbayStandardPostRequest( string url, Dictionary< string, string > headers, string body, string mark )
+		public WebRequest CreateEbayStandardPostRequest( string url, Dictionary< string, string > headers, string body, Mark mark )
 		{
 			var resultTask = this.CreateEbayStandardPostRequestAsync( url, headers, body, mark, CancellationToken.None );
 			resultTask.Wait();
 			return resultTask.Result;
 		}
 
-		public async Task< WebRequest > CreateEbayStandardPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body, string mark, CancellationToken cts )
+		public async Task< WebRequest > CreateEbayStandardPostRequestWithCertAsync( string url, Dictionary< string, string > headers, string body, Mark mark, CancellationToken cts )
 		{
 			if( !headers.Exists( keyValuePair => keyValuePair.Key == EbayHeaders.XEbayApiCertName ) )
 				headers.Add( EbayHeaders.XEbayApiCertName, this._ebayConfig.CertName );
@@ -102,12 +103,12 @@ namespace EbayAccess.Services
 			return ebayStandardPostRequestAsync;
 		}
 
-		public async Task< WebRequest > CreateEbayStandardPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body, string mark = "" )
+		public async Task< WebRequest > CreateEbayStandardPostRequestToBulkExchangeServerAsync( string url, Dictionary< string, string > headers, string body, Mark mark = null )
 		{
 			return await this._webRequestServices.CreateServicePostRequestAsync( url, body, headers, CancellationToken.None, mark ).ConfigureAwait( false );
 		}
 
-		public WebRequest CreateEbayStandardPostRequestWithCert( string url, Dictionary< string, string > headers, string body, string mark )
+		public WebRequest CreateEbayStandardPostRequestWithCert( string url, Dictionary< string, string > headers, string body, Mark mark )
 		{
 			var requestTask = this.CreateEbayStandardPostRequestWithCertAsync( url, headers, body, mark, CancellationToken.None );
 			requestTask.Wait();
@@ -175,17 +176,17 @@ namespace EbayAccess.Services
 			};
 		}
 
-		public async Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, CancellationToken cts, string mark = "" )
+		public async Task< GetOrdersResponse > GetOrdersAsync( DateTime createTimeFrom, DateTime createTimeTo, GetOrdersTimeRangeEnum getOrdersTimeRangeEnum, CancellationToken cts, Mark mark = null )
 		{
 			return await this.GetOrdersTemplateAsync( page => this.CreateGetOrdersRequestBody( createTimeFrom, createTimeTo, this._itemsPerPage, page, getOrdersTimeRangeEnum ), cts, mark ).ConfigureAwait( false );
 		}
 
-		public async Task< GetOrdersResponse > GetOrdersAsync( CancellationToken cts, string mark = "", params string[] ordersIds )
+		public async Task< GetOrdersResponse > GetOrdersAsync( CancellationToken cts, Mark mark = null, params string[] ordersIds )
 		{
 			return await this.GetOrdersTemplateAsync( page => this.CreateGetOrdersRequestBody( this._itemsPerPage, page, ordersIds ), cts, mark ).ConfigureAwait( false );
 		}
 
-		private async Task< GetOrdersResponse > GetOrdersTemplateAsync( Func< int, string > getRequestBody, CancellationToken cts, string mark = "" )
+		private async Task< GetOrdersResponse > GetOrdersTemplateAsync( Func< int, string > getRequestBody, CancellationToken cts, Mark mark = null )
 		{
 			return await this.GetEbayMultiPageRequestAsync(
 				headers : CreateEbayGetOrdersRequestHeadersWithApiCallName(),
@@ -197,7 +198,7 @@ namespace EbayAccess.Services
 			).ConfigureAwait( false );
 		}
 
-		public async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerOrderByRecordNumberAsync( string saleRecordNumber, string mark, CancellationToken cts )
+		public async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerOrderByRecordNumberAsync( string saleRecordNumber, Mark mark, CancellationToken cts )
 		{
 			return await this.GetEbaySingleRequestAsync(
 				headers : CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName(),
@@ -209,7 +210,7 @@ namespace EbayAccess.Services
 			).ConfigureAwait( false );
 		}
 
-		public async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, CancellationToken ct, int pageLimit = 0, string mark = "" )
+		public async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, CancellationToken ct, int pageLimit = 0, Mark mark = null )
 		{
 			if( ct.IsCancellationRequested )
 				throw new TaskCanceledException( "Task was canceled" );
@@ -262,7 +263,7 @@ namespace EbayAccess.Services
 			return sellingManagerSoldListings;
 		}
 
-		private async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodSinglePageAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, int recordsPerPage, int pageNumber, string mark = "" )
+		private async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodSinglePageAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, int recordsPerPage, int pageNumber, Mark mark = null )
 		{
 			return await this.GetEbaySingleRequestAsync(
 				headers : CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName(),
@@ -327,18 +328,18 @@ namespace EbayAccess.Services
 				"<DetailLevel>ItemReturnDescription</DetailLevel><OutputSelector>ItemArray.Item.ItemID,ItemArray.Item.SKU,ItemArray.Item.Title,ItemArray.Item.PrimaryCategory.CategoryName,ItemArray.Item.PictureDetails.PictureURL,ItemArray.Item.Description,ItemArray.Item.ShippingPackageDetails.WeightMajor,ItemArray.Item.ShippingPackageDetails.WeightMinor,ItemArray.Item.Variations,PaginationResult,HasMoreItems,ItemArray.Item.ListingDuration</OutputSelector> </GetSellerListRequest>​​​";
 		}
 
-		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
+		public async Task< GetSellerListResponse > GetSellerListAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, Mark mark )
 		{
 			return await this.GetEbayMultiPageRequestAsync(
 				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
 				getRequestBodyByPageNumber : page => this.CreateGetSellerListRequestBody( timeFrom, timeTo, getSellerListTimeRangeEnum, this._itemsPerPage, page ),
-				responseParser : x => new EbayGetSallerListResponseParser().Parse( x ),
+				responseParser : x => new EbayGetSellerListResponseParser().Parse( x ),
 				cts : CancellationToken.None,
 				mark : mark
 			).ConfigureAwait( false );
 		}
 
-		public async Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
+		public async Task< GetSellerListCustomResponse > GetSellerListCustomAsync( DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, Mark mark )
 		{
 			return await this.GetEbayMultiPageRequestAsync(
 				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
@@ -349,7 +350,7 @@ namespace EbayAccess.Services
 			).ConfigureAwait( false );
 		}
 
-		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
+		public async Task< IEnumerable< GetSellerListCustomResponse > > GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, Mark mark )
 		{
 			if( ct.IsCancellationRequested )
 				throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
@@ -378,7 +379,7 @@ namespace EbayAccess.Services
 			return getSellerListCustomResponses.Where( x => x != null ).ToList();
 		}
 
-		public async Task< IEnumerable< GetSellerListCustomProductResponse > > GetSellerListCustomProductResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, string mark )
+		public async Task< IEnumerable< GetSellerListCustomProductResponse > > GetSellerListCustomProductResponsesWithMaxThreadsRestrictionAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, Mark mark )
 		{
 			if( ct.IsCancellationRequested )
 				throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
@@ -407,7 +408,7 @@ namespace EbayAccess.Services
 			return getSellerListCustomResponses.Where( x => x != null ).ToList();
 		}
 
-		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, string mark )
+		private async Task< GetSellerListCustomResponse > GetSellerListCustomResponseAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, Mark mark )
 		{
 			return await this.GetEbaySingleRequestAsync< GetSellerListCustomResponse >(
 				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
@@ -418,7 +419,7 @@ namespace EbayAccess.Services
 			).ConfigureAwait( false );
 		}
 
-		private async Task< GetSellerListCustomProductResponse > GetSellerListCustomProductResponseAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, string mark )
+		private async Task< GetSellerListCustomProductResponse > GetSellerListCustomProductResponseAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, GetSellerListTimeRangeEnum getSellerListTimeRangeEnum, int recordsPerPage, int pageNumber, Mark mark )
 		{
 			return await this.GetEbaySingleRequestAsync< GetSellerListCustomProductResponse >(
 				headers : CreateGetSellerListRequestHeadersWithApiCallName(),
@@ -447,14 +448,14 @@ namespace EbayAccess.Services
 				id );
 		}
 
-		public async Task< Item > GetItemAsync( string id, string mark )
+		public async Task< Item > GetItemAsync( string id, Mark mark = null )
 		{
 			var response = await this.GetEbaySingleRequestAsync< Models.GetItemResponse.GetItemResponse >(
 				headers : CreateGetItemRequestHeadersWithApiCallName(),
 				body : this.CreateGetItemByIdRequestBody( id ),
 				responseParser : x => new EbayGetItemResponseParser().Parse( x ),
 				token : CancellationToken.None,
-				mark : mark
+				mark : mark ?? Mark.Blank()
 			).ConfigureAwait( false );
 
 			return response != null ? response.Item : new Item();
@@ -497,13 +498,13 @@ namespace EbayAccess.Services
 			return body;
 		}
 
-		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null, string mark = "" )
+		public async Task< InventoryStatusResponse > ReviseInventoryStatusAsync( CancellationToken token, InventoryStatusRequest inventoryStatusReq, InventoryStatusRequest inventoryStatusReq2 = null, InventoryStatusRequest inventoryStatusReq3 = null, InventoryStatusRequest inventoryStatusReq4 = null, Mark mark = null )
 		{
 			var response = await this.GetEbaySingleRequestAsync(
 				headers : CreateReviseInventoryStatusHeadersWithApiCallName(),
 				body : this.CreateReviseInventoryStatusRequestBody( inventoryStatusReq, inventoryStatusReq2, inventoryStatusReq3, inventoryStatusReq4 ),
 				responseParser : x => new EbayReviseInventoryStatusResponseParser().Parse( x ),
-				token : CancellationToken.None,
+				token : token,
 				mark : mark,
 				useCert: true
 			).ConfigureAwait( false );
@@ -512,7 +513,7 @@ namespace EbayAccess.Services
 			return response;
 		}
 
-		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses, string mark )
+		public async Task< IEnumerable< InventoryStatusResponse > > ReviseInventoriesStatusAsync( IEnumerable< InventoryStatusRequest > inventoryStatuses, CancellationToken token, Mark mark = null )
 		{
 			const int maxItemsPerCall = 4;
 
@@ -522,24 +523,24 @@ namespace EbayAccess.Services
 
 			var chunks = new List< Tuple< InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest > >();
 
-			var inventoriyStatusesCount = inventoryStatuses.Count();
-			for( var i = 0; i < inventoriyStatusesCount; i += maxItemsPerCall )
+			var inventoryStatusesCount = inventoryStatuses.Count();
+			for( var i = 0; i < inventoryStatusesCount; i += maxItemsPerCall )
 			{
-				var statusReq = i < inventoriyStatusesCount ? inventoryStatusRequests[ i ] : null;
+				var statusReq = i < inventoryStatusesCount ? inventoryStatusRequests[ i ] : null;
 
 				var secondInCortege = i + 1;
-				var statusReq2 = secondInCortege < inventoriyStatusesCount ? inventoryStatusRequests[ secondInCortege ] : null;
+				var statusReq2 = secondInCortege < inventoryStatusesCount ? inventoryStatusRequests[ secondInCortege ] : null;
 
 				var thirdInCortege = i + 2;
-				var statusReq3 = thirdInCortege < inventoriyStatusesCount ? inventoryStatusRequests[ thirdInCortege ] : null;
+				var statusReq3 = thirdInCortege < inventoryStatusesCount ? inventoryStatusRequests[ thirdInCortege ] : null;
 
 				var fourthInCortege = i + 3;
-				var statusReq4 = fourthInCortege < inventoriyStatusesCount ? inventoryStatusRequests[ fourthInCortege ] : null;
+				var statusReq4 = fourthInCortege < inventoryStatusesCount ? inventoryStatusRequests[ fourthInCortege ] : null;
 
 				chunks.Add( new Tuple< InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest, InventoryStatusRequest >( statusReq, statusReq2, statusReq3, statusReq4 ) );
 			}
 
-			var reviseInventoryStatusResponses = await chunks.ProcessInBatchAsync( this.MaxThreadsCount, x => this.ReviseInventoryStatusAsync( x.Item1, x.Item2, x.Item3, x.Item4, mark ) ).ConfigureAwait( false );
+			var reviseInventoryStatusResponses = await chunks.ProcessInBatchAsync( this.MaxThreadsCount, x => this.ReviseInventoryStatusAsync( token, x.Item1, x.Item2, x.Item3, x.Item4, mark ) ).ConfigureAwait( false );
 			resultResponses.AddRange( reviseInventoryStatusResponses.ToList() );
 
 			return resultResponses;
@@ -590,13 +591,14 @@ namespace EbayAccess.Services
 			};
 		}
 
-		public async Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, string mark )
+		public async Task< ReviseFixedPriceItemResponse > ReviseFixedPriceItemAsync( ReviseFixedPriceItemRequest fixedPriceItem, 
+			CancellationToken token, Mark mark )
 		{
 			return await this.GetEbaySingleRequestAsync(
 				headers : CreateReviseFixedPriceItemHeadersWithApiCallName(),
 				body : this.CreateReviseFixedPriceItemRequestBody( fixedPriceItem ),
 				responseParser : x => new EbayReviseFixedPriceItemResponseParser().Parse( x ),
-				token : CancellationToken.None,
+				token : token,
 				mark : mark,
 				useCert: true
 			).ConfigureAwait( false );
@@ -634,7 +636,7 @@ namespace EbayAccess.Services
 				sessionId );
 		}
 
-		public string GetSessionId( string mark )
+		public string GetSessionId( Mark mark )
 		{
 			string result = null;
 
@@ -669,7 +671,7 @@ namespace EbayAccess.Services
 			Process.Start( uri.AbsoluteUri );
 		}
 
-		public string FetchToken( string sessionId, string mark )
+		public string FetchToken( string sessionId, Mark mark )
 		{
 			string result = null;
 
@@ -689,7 +691,7 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region JobService
-		public async Task< CreateJobResponse > CreateUploadJobAsync( Guid guid, string mark )
+		public async Task< CreateJobResponse > CreateUploadJobAsync( Guid guid, Mark mark )
 		{
 			var result = new CreateJobResponse();
 
@@ -720,7 +722,7 @@ namespace EbayAccess.Services
 			return result;
 		}
 
-		public async Task< AbortJobResponse > AbortJobAsync( string jobId, string mark )
+		public async Task< AbortJobResponse > AbortJobAsync( string jobId, Mark mark )
 		{
 			var result = new AbortJobResponse();
 
@@ -783,7 +785,7 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region Generic requests
-		public async Task< TResponse > GetEbaySingleRequestAsync< TResponse >( Dictionary< string, string > headers, string body, Func< Stream, TResponse > responseParser, CancellationToken token, string mark = "", bool useCert = false, int pageNumber = -1 ) where TResponse : EbayBaseResponse, new()
+		public async Task< TResponse > GetEbaySingleRequestAsync< TResponse >( Dictionary< string, string > headers, string body, Func< Stream, TResponse > responseParser, CancellationToken token, Mark mark = null, bool useCert = false, int pageNumber = -1 ) where TResponse : EbayBaseResponse, new()
 		{
 			if( token.IsCancellationRequested )
 				throw new TaskCanceledException( "Task was canceled" );
@@ -850,7 +852,7 @@ namespace EbayAccess.Services
 			return linkedTokenSource;
 		}
 
-		private async Task< TResponse > GetEbayMultiPageRequestAsync< TResponse >( Dictionary< string, string > headers, Func< int, string > getRequestBodyByPageNumber, Func< Stream, TResponse > responseParser, CancellationToken cts, string mark = "", bool useCert = false ) where TResponse : EbayBaseResponse, IPaginationResponse< TResponse >, new()
+		private async Task< TResponse > GetEbayMultiPageRequestAsync< TResponse >( Dictionary< string, string > headers, Func< int, string > getRequestBodyByPageNumber, Func< Stream, TResponse > responseParser, CancellationToken cts, Mark mark = null, bool useCert = false ) where TResponse : EbayBaseResponse, IPaginationResponse< TResponse >, new()
 		{
 			var response = new TResponse();
 			var errorList = new List< ResponseError >();

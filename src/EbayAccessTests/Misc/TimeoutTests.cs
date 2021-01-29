@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EbayAccess.Services;
 using FluentAssertions;
+using Netco.Logging;
 using NUnit.Framework;
 
 namespace EbayAccessTests.Misc
@@ -21,7 +22,7 @@ namespace EbayAccessTests.Misc
 			Action act = () =>
 			{
 				var request = webRequestServices.CreateServiceGetRequest( "http://localhost", new Dictionary< string, string >() );
-				var orderTask = webRequestServices.GetResponseStreamAsync( request, "", token.Token );
+				var orderTask = webRequestServices.GetResponseStreamAsync( request, Mark.Blank(), token.Token );
 				orderTask.Wait();
 			};
 			

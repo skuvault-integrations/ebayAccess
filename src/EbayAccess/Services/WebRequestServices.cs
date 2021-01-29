@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EbayAccess.Misc;
+using Netco.Logging;
 
 namespace EbayAccess.Services
 {
@@ -41,14 +42,14 @@ namespace EbayAccess.Services
 			return serviceRequest;
 		}
 
-		public async Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders, CancellationToken cts, string mark = "" )
+		public async Task< WebRequest > CreateServicePostRequestAsync( string serviceUrl, string body, Dictionary< string, string > rawHeaders, CancellationToken cts, Mark mark = null )
 		{
 			try
 			{
 				if( cts.IsCancellationRequested )
 					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
 
-				EbayLogger.LogTraceInnerStarted( CreateMethodCallInfo( ( new { ServiceUrl = serviceUrl, Body = body, Headers = rawHeaders.ToJson() } ).ToJson(), mark ) );
+				EbayLogger.LogTraceInnerStarted( CreateMethodCallInfo( mark, ( new { ServiceUrl = serviceUrl, Body = body, Headers = rawHeaders.ToJson() } ).ToJson() ) );
 
 				var encoding = new UTF8Encoding();
 				var encodedBody = encoding.GetBytes( body );
@@ -79,7 +80,7 @@ namespace EbayAccess.Services
 			}
 			catch( Exception )
 			{
-				EbayLogger.LogTraceInnerError( CreateMethodCallInfo( ( new { ServiceUrl = serviceUrl, Body = body, Headers = rawHeaders.ToJson() } ).ToJson(), mark ) );
+				EbayLogger.LogTraceInnerError( CreateMethodCallInfo( mark,( new { ServiceUrl = serviceUrl, Body = body, Headers = rawHeaders.ToJson() } ).ToJson() ) );
 				throw;
 			}
 		}
@@ -107,13 +108,11 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region ResponseHanding
-		public Stream GetResponseStream( WebRequest webRequest, string mark )
+		public Stream GetResponseStream( WebRequest webRequest, Mark mark )
 		{
-			const string currentMethodName = "GetResponseStream";
-
 			try
 			{
-				EbayLogger.LogTraceInnerStarted( string.Format( "MethodName:{0},From:{2},MethodParameters:{1}", currentMethodName, webRequest.RequestUri, mark ?? PredefinedValues.NotAvailable ) );
+				EbayLogger.LogTraceInnerStarted( this.CreateMethodCallInfo( mark, webRequest.RequestUri.ToString() ) );
 
 				using( var response = ( HttpWebResponse )webRequest.GetResponse() )
 				using( var dataStream = response.GetResponseStream() )
@@ -123,31 +122,26 @@ namespace EbayAccess.Services
 						dataStream.CopyTo( memoryStream, 0x100 );
 					memoryStream.Position = 0;
 
-					EbayLogger.LogTraceInnerEnded( string.Format(
-						"MethodName:{0},From:{2},MethodParameters:{1},Result:{3}",
-						currentMethodName,
-						webRequest.RequestUri,
-						mark ?? PredefinedValues.NotAvailable,
-						memoryStream.ToStringSafe() ) );
+					EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( mark, webRequest.RequestUri.ToString(), methodResult: memoryStream.ToStringSafe() ) );
 
 					return memoryStream;
 				}
 			}
 			catch
 			{
-				EbayLogger.LogTraceInnerError( string.Format( "MethodName:{0},Mark:{2},MethodParameters:{1}", currentMethodName, webRequest.RequestUri, mark ?? PredefinedValues.NotAvailable ) );
+				EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( mark, webRequest.RequestUri.ToString() ) );
 				throw;
 			}
 		}
 
-		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest, string mark, CancellationToken token )
+		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest, Mark mark, CancellationToken token )
 		{
 			try
 			{
 				if( token.IsCancellationRequested )
 					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
 
-				EbayLogger.LogTraceInnerStarted( this.CreateMethodCallInfo( webRequest.RequestUri.ToString(), mark ) );
+				EbayLogger.LogTraceInnerStarted( this.CreateMethodCallInfo( mark, webRequest.RequestUri.ToString() ) );
 
 				using( token.Register( () => webRequest.Abort() ) )
 				using( var response = ( HttpWebResponse )await webRequest.GetResponseAsync().ConfigureAwait( false ) )
@@ -157,20 +151,20 @@ namespace EbayAccess.Services
 					await dataStream.CopyToAsync( memoryStream, 0x100, token ).ConfigureAwait( false );
 					memoryStream.Position = 0;
 
-					EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( webRequest.RequestUri.ToString(), mark, methodResult: memoryStream.ToStringSafe() ) );
+					EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( mark, webRequest.RequestUri.ToString(), methodResult: memoryStream.ToStringSafe() ) );
 
 					return memoryStream;
 				}
 			}
 			catch
 			{
-				EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( webRequest.RequestUri.ToString(), mark ) );
+				EbayLogger.LogTraceInnerError( this.CreateMethodCallInfo( mark, webRequest.RequestUri.ToString() ) );
 				throw;
 			}
 		}
 		#endregion
 
-		private string CreateMethodCallInfo( string methodParameters = "", string mark = "", string errors = "", string methodResult = "", string additionalInfo = "", [ CallerMemberName ] string memberName = "" )
+		private string CreateMethodCallInfo( Mark mark, string methodParameters = "", string errors = "", string methodResult = "", string additionalInfo = "", [ CallerMemberName ] string memberName = "" )
 		{
 			var str = string.Format(
 				"{{MethodName:{0}, Mark:'{2}', MethodParameters:{1}{3}{4}{5}}}",
