@@ -172,7 +172,7 @@ namespace EbayAccess.Services
 			return new Dictionary< string, string >
 			{
 				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.GetOrders },
-				{  EbayHeaders.XEbayApiCompatibilityLevel, "1057"}
+				{ EbayHeaders.XEbayApiCompatibilityLevel, "1113" }
 			};
 		}
 
