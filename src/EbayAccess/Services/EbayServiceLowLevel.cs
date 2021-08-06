@@ -194,7 +194,8 @@ namespace EbayAccess.Services
 				responseParser : x => new EbayGetOrdersResponseParser().Parse( x ),
 				cts : cts,
 				mark : mark,
-				useCert: true
+				useCert: true,
+				removePersonalInfoFromLog: true
 			).ConfigureAwait( false );
 		}
 
@@ -785,7 +786,7 @@ namespace EbayAccess.Services
 		#endregion
 
 		#region Generic requests
-		public async Task< TResponse > GetEbaySingleRequestAsync< TResponse >( Dictionary< string, string > headers, string body, Func< Stream, TResponse > responseParser, CancellationToken token, Mark mark = null, bool useCert = false, int pageNumber = -1 ) where TResponse : EbayBaseResponse, new()
+		public async Task< TResponse > GetEbaySingleRequestAsync< TResponse >( Dictionary< string, string > headers, string body, Func< Stream, TResponse > responseParser, CancellationToken token, Mark mark = null, bool useCert = false, int pageNumber = -1, bool removePersonalInfoFromLog = false ) where TResponse : EbayBaseResponse, new()
 		{
 			if( token.IsCancellationRequested )
 				throw new TaskCanceledException( "Task was canceled" );
@@ -801,7 +802,7 @@ namespace EbayAccess.Services
 				TResponse parsedResponse;
 				using( var linkedTokenSource = CreateTimeoutLinkedTokenSource( token, this.RequestTimeoutMs ) )
 				{
-					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, linkedTokenSource.Token ).ConfigureAwait( false ) )
+					using( var memStream = await this._webRequestServices.GetResponseStreamAsync( webRequest, mark, linkedTokenSource.Token, removePersonalInfoFromLog ).ConfigureAwait( false ) )
 					{
 						if ( memStream != null ) 
 						{ 
@@ -852,7 +853,7 @@ namespace EbayAccess.Services
 			return linkedTokenSource;
 		}
 
-		private async Task< TResponse > GetEbayMultiPageRequestAsync< TResponse >( Dictionary< string, string > headers, Func< int, string > getRequestBodyByPageNumber, Func< Stream, TResponse > responseParser, CancellationToken cts, Mark mark = null, bool useCert = false ) where TResponse : EbayBaseResponse, IPaginationResponse< TResponse >, new()
+		private async Task< TResponse > GetEbayMultiPageRequestAsync< TResponse >( Dictionary< string, string > headers, Func< int, string > getRequestBodyByPageNumber, Func< Stream, TResponse > responseParser, CancellationToken cts, Mark mark = null, bool useCert = false, bool removePersonalInfoFromLog = false ) where TResponse : EbayBaseResponse, IPaginationResponse< TResponse >, new()
 		{
 			var response = new TResponse();
 			var errorList = new List< ResponseError >();
@@ -869,7 +870,8 @@ namespace EbayAccess.Services
 					token : cts,
 					mark : mark,
 					useCert : useCert,
-					pageNumber: pageNumber
+					pageNumber: pageNumber,
+					removePersonalInfoFromLog: removePersonalInfoFromLog
 				).ConfigureAwait( false );
 
 				if( page.Errors != null )

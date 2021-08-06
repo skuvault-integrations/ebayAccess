@@ -39,7 +39,7 @@ namespace EbayAccessTests
 			};
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >() ) ).Returns( () =>
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >(), It.IsAny< bool >() ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
 				var buf = new UTF8Encoding().GetBytes( serverResponsePages[ stubCallCounter ] );
@@ -170,7 +170,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
 
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >() ) ).Returns( () =>
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >(), It.IsAny< bool >() ) ).Returns( () =>
 			{
 				var ms = new MemoryStream();
 				var encoding = new UTF8Encoding();
@@ -203,7 +203,7 @@ namespace EbayAccessTests
 			const string serverResponse = "<ReviseInventoryStatusResponse xmlns=\"urn:ebay:apis:eBLBaseComponents\"><Timestamp>2014-02-17T18:49:00.346Z</Timestamp><Ack>Failure</Ack><Errors><ShortMessage>FixedPrice item ended.</ShortMessage><LongMessage>You are not allowed to revise an ended item \"110136942332\".</LongMessage><ErrorCode>21916750</ErrorCode><SeverityCode>Error</SeverityCode><ErrorParameters ParamID=\"0\"><Value>110136942332</Value></ErrorParameters><ErrorClassification>RequestError</ErrorClassification></Errors><Version>859</Version><Build>E859_UNI_API5_16675060_R1</Build></ReviseInventoryStatusResponse>";
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >() ) ).Returns(
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >(), It.IsAny< bool >() ) ).Returns(
 				() =>
 				{
 					var ms = new MemoryStream();
@@ -236,7 +236,7 @@ namespace EbayAccessTests
 			const long item2Id = 110137091582;
 
 			var stubWebRequestService = new Mock< IWebRequestServices >();
-			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >() ) ).Returns( () => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsPictureError.ToStream() ) );
+			stubWebRequestService.Setup( x => x.GetResponseStreamAsync( It.IsAny< WebRequest >(), It.IsAny< Mark >(), It.IsAny< CancellationToken >(), It.IsAny< bool >() ) ).Returns( () => Task.FromResult( ReviseFixedPriceItemResponse.ServerResponseContainsPictureError.ToStream() ) );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService.Object );
 
