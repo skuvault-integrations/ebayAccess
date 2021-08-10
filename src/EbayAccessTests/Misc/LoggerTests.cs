@@ -59,7 +59,7 @@ namespace EbayAccessTests.Misc
 			foreach( var personalField in EbayLogger.PersonalFieldNames )
 			{
 				//Assert that the field has been masked or is already empty (in which case it is left as is)
-				result.Should().Match< string >( x => x.Contains( $"<{personalField}>{mask}</{personalField}>") || x.Contains($"<{personalField}></{personalField}>" ) );
+				result.Should().Match< string >( x => x.Contains( $"<{personalField}>{mask}</{personalField}>" ) || x.Contains( $"<{personalField}></{personalField}>" ) );
 			}
 		}
 	}
