@@ -1,4 +1,6 @@
-﻿using Netco.Logging;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Netco.Logging;
 
 namespace EbayAccess.Misc
 {
@@ -6,6 +8,16 @@ namespace EbayAccess.Misc
 	{
 		private const string EbayIntegrationMarker = "ebay";
 		public static int MaxLogLineSize = 100000;
+
+		public static readonly List<string> PersonalFieldNames = new List< string >
+		{
+			//<Order>
+			"SellerEmail", 
+			//<ShippingAddress>
+			"Name", "Street1", "Street2", "CityName", "StateOrProvince", "Country", "CountryName", "Phone",
+			//<Buyer>
+			"Email", "UserFirstName", "UserLastName"
+		};
 
 		public static ILogger Log()
 		{
@@ -55,6 +67,24 @@ namespace EbayAccess.Misc
 			}
 
 			Log().Trace( "[{channel}] {type}:{info}", EbayIntegrationMarker, type, info );
+		}
+
+		/// <summary>This will remove personal info</summary>
+		/// <param name="replaceWith">Text to replace personal information with</param>
+		public static string RemovePersonalInfoFromXML( this string xmlString, string replaceWith = "***" )
+		{
+			return MaskFields( xmlString, PersonalFieldNames, replaceWith );
+		}
+
+		private static string MaskFields( string xmlString, List< string > fieldNames, string replaceWith )
+		{
+			var maskedString = xmlString;
+			foreach( var fieldName in fieldNames )
+			{
+				var regexPattern = $"<{fieldName}>.+?</{fieldName}>";	//One or more characters inside the tags. "?" means non-greedy (will match minimal string)
+				maskedString = Regex.Replace( maskedString, regexPattern, $"<{fieldName}>{replaceWith}</{fieldName}>" );
+			}
+			return maskedString;
 		}
 	}
 }

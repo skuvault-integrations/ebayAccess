@@ -11,7 +11,7 @@ namespace EbayAccess.Services
 	{
 		Stream GetResponseStream( WebRequest webRequest, Mark mark );
 
-		Task< Stream > GetResponseStreamAsync( WebRequest webRequest, Mark mark, CancellationToken cts );
+		Task< Stream > GetResponseStreamAsync( WebRequest webRequest, Mark mark, CancellationToken cts, bool removePersonalInfoFromLog = false );
 
 		WebRequest CreateServiceGetRequest( string serviceUrl, IDictionary< string, string > rawUrlParameters );
 

@@ -134,7 +134,7 @@ namespace EbayAccess.Services
 			}
 		}
 
-		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest, Mark mark, CancellationToken token )
+		public async Task< Stream > GetResponseStreamAsync( WebRequest webRequest, Mark mark, CancellationToken token, bool removePersonalInfoFromLog = false )
 		{
 			try
 			{
@@ -151,7 +151,8 @@ namespace EbayAccess.Services
 					await dataStream.CopyToAsync( memoryStream, 0x100, token ).ConfigureAwait( false );
 					memoryStream.Position = 0;
 
-					EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( mark, webRequest.RequestUri.ToString(), methodResult: memoryStream.ToStringSafe() ) );
+					var methodResult = removePersonalInfoFromLog ? memoryStream.ToStringSafe().RemovePersonalInfoFromXML() : memoryStream.ToStringSafe();
+					EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( mark, webRequest.RequestUri.ToString(), methodResult: methodResult ) );
 
 					return memoryStream;
 				}
