@@ -278,11 +278,13 @@ namespace EbayAccess
 		{
 			mark = mark ?? Mark.CreateNew();
 			var methodParameters = sourceOrdersIds.ToJson();
+			var childMark = Mark.CreateNew(mark);
+
 			try
 			{
-				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) );
+				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, additionalInfo: $"GetOrdersIds Session Marker: {childMark}" ) );
 				if( token.IsCancellationRequested )
-					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
+					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}, GetOrdersIds Session Marker: {childMark}" );
 
 				if( sourceOrdersIds == null || !sourceOrdersIds.Any() )
 					return new List< string >();
@@ -299,13 +301,13 @@ namespace EbayAccess
 
 				var existsOrders = ( from s in sourceOrdersIds join d in distinctOrdersIds on s equals d select s ).ToList();
 
-				EbayLogger.LogTraceEnded( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, methodResult : existsOrders.ToJson() ) );
+				EbayLogger.LogTraceEnded( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, methodResult : existsOrders.ToJson(), additionalInfo: $"GetOrdersIds Session Marker: {childMark}, RlogId: {getOrdersResponse.RlogId}"  ) );
 
 				return existsOrders;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, additionalInfo: $"GetOrdersIds Session Marker: {childMark}"  ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}

@@ -15,6 +15,8 @@ namespace EbayAccess.Models.BaseResponse
 		public string Ack { get; set; }
 
 		public string Version { get; set; }
+		
+		public string RlogId { get; set; }
 
 		public string Build { get; set; }
 

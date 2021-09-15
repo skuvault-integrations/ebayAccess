@@ -21,6 +21,17 @@ namespace EbayAccessTests.Services.Parsers
 				orders.Orders[ 0 ].Status.ShouldBeEquivalentTo( EbayOrderStatusEnum.Active );
 			}
 		}
+		
+		[ Test ]
+		public void FileStreamWithCorrectXml_ParseOrdersResponse_ContainsRlogId()
+		{
+			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSkuAndRlogIdHeader.xml", FileMode.Open, FileAccess.Read ) )
+			{
+				var parser = new EbayGetOrdersResponseParser();
+				var orders = parser.Parse( fs );
+				orders.RlogId.Should().Equals("SomeRLogIdFromResponseHeader");
+			}
+		}
 
 		[ Test ]
 		public void Parse_OrdersResponseWithoutItems_ThereisNoErrorsAndExceptions()

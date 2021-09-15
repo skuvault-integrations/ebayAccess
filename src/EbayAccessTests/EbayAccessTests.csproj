@@ -110,6 +110,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSkuAndRlogIdHeader.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTaxes.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
