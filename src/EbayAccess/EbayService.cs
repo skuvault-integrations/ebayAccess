@@ -278,7 +278,7 @@ namespace EbayAccess
 		{
 			mark = mark ?? Mark.CreateNew();
 			var methodParameters = sourceOrdersIds.ToJson();
-			var childMark = Mark.CreateNew(mark);
+			var childMark = Mark.CreateNew( mark );
 
 			try
 			{
