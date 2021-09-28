@@ -28,7 +28,7 @@ namespace EbayAccess.Services.Parsers
 
 				var error = this.ResponseContainsErrors( root, ns );
 				
-				getOrdersResponse.RlogId = GetElementValue( root, ns, "RlogId" );
+				getOrdersResponse.rlogid = GetElementValue( root, ns, "rlogid" );
 
 				if( error != null )
 				{

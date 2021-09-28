@@ -23,13 +23,13 @@ namespace EbayAccessTests.Services.Parsers
 		}
 		
 		[ Test ]
-		public void FileStreamWithCorrectXml_ParseOrdersResponse_ContainsRlogId()
+		public void FileStreamWithCorrectXml_ParseOrdersResponse_Containsrlogid()
 		{
 			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSkuAndRlogIdHeader.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
-				orders.RlogId.Should().Equals("SomeRLogIdFromResponseHeader");
+				orders.rlogid.Should().Equals("SomeRLogIdFromResponseHeader");
 			}
 		}
 

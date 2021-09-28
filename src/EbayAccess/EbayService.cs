@@ -301,7 +301,7 @@ namespace EbayAccess
 
 				var existsOrders = ( from s in sourceOrdersIds join d in distinctOrdersIds on s equals d select s ).ToList();
 
-				EbayLogger.LogTraceEnded( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, childMark, methodResult : existsOrders.ToJson(), additionalInfo: $"RlogId: {getOrdersResponse.RlogId}"  ) );
+				EbayLogger.LogTraceEnded( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, childMark, methodResult : existsOrders.ToJson(), additionalInfo: $"rlogid: {getOrdersResponse.rlogid}"  ) );
 
 				return existsOrders;
 			}

@@ -5,7 +5,7 @@
 	<Ack>Success</Ack>
 	<Version>853</Version>
 	<Build>E853_CORE_API_16609591_R1</Build>
-	<RlogId>SomeRLogIdFromResponseHeader</RlogId>
+	<rlogid>SomeRLogIdFromResponseHeader</rlogid>
 	<PaginationResult>
 		<TotalNumberOfPages>1</TotalNumberOfPages>
 		<TotalNumberOfEntries>1</TotalNumberOfEntries>
