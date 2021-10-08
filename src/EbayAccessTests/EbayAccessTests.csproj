@@ -67,6 +67,7 @@
     <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\LoggerTests.cs" />
     <Compile Include="Misc\TimeoutTests.cs" />
+    <Compile Include="Models\BaseResponse\EbayBaseResponseTests.cs" />
     <Compile Include="Models\CredentialsAndConfig\EbayConfigTest.cs" />
     <Compile Include="Models\GetSellerListResponse\ItemExtendedTest.cs" />
     <Compile Include="Models\GetSellerListResponse\ProductTests.cs" />
