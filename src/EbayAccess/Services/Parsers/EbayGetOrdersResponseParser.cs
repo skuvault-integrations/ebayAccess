@@ -149,6 +149,16 @@ namespace EbayAccess.Services.Parsers
 						resultOrder.ShippingDetails.SellingManagerSalesRecordNumber = GetElementValue( x, ns, "ShippingDetails", "SellingManagerSalesRecordNumber" ).ToIntOrDefault();
 						resultOrder.ShippingDetails.GetItFast = GetElementValue( x, ns, "ShippingDetails", "GetItFast" ).ToBoolNullable();
 
+						var shipmentTrackingDetails = shippingDetails.Element( ns + "ShipmentTrackingDetails" );
+						if( shipmentTrackingDetails != null )
+						{
+							resultOrder.ShippingDetails.ShipmentTrackingDetails = new ShipmentTrackingDetails
+							{
+								ShipmentTrackingNumber = GetElementValue( shipmentTrackingDetails, ns, "ShipmentTrackingNumber" ),
+								ShippingCarrierUsed = GetElementValue( shipmentTrackingDetails, ns, "ShippingCarrierUsed" )
+							};
+						}
+
 						var salesTaxEl = shippingDetails.Element( ns + "SalesTax" );
 						if( salesTaxEl != null )
 						{
@@ -165,7 +175,7 @@ namespace EbayAccess.Services.Parsers
 							salesTax.SalesTaxAmount = salesTaxAmount;
 							salesTax.SalesTaxAmountCurrencyId = salesTaxAmountCurrency;
 
-							resultOrder.ShippingDetails.SalesTax = salesTax;
+							resultOrder.ShippingDetails.SalesTax = salesTax;							
 						}
 
 						var shippingService = shippingDetails.Element( ns + "ShippingServiceOptions" );

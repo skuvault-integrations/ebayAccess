@@ -99,6 +99,21 @@ namespace EbayAccessTests.Services.Parsers
 		}
 
 		[ Test ]
+		public void GivenGetOrdersResponseWithTrackingNumber_WhenResponseIsParsed_ThenReceiveOrderWithTrackingNumber()
+		{
+			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithTrackingNumber.xml", FileMode.Open, FileAccess.Read ) )
+			{
+				var parser = new EbayGetOrdersResponseParser();
+
+				var orders = parser.Parse( fs );
+
+				var shipmentTrackingDetails = orders.Orders.First().ShippingDetails.ShipmentTrackingDetails;
+				shipmentTrackingDetails.ShipmentTrackingNumber.Should().Be( "1BE110060398488804" );
+				shipmentTrackingDetails.ShippingCarrierUsed.Should().Be( "UPS" );
+			}
+		}
+
+		[ Test ]
 		public void Parse_GetOrdersResponseWithTaxes_HookupTaxes()
 		{
 			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTaxes.xml", FileMode.Open, FileAccess.Read ) )
