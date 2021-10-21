@@ -12,5 +12,11 @@ namespace EbayAccess.Models.GetOrdersResponse
 
 		//The ScheduledDeliveryTimeMin value indicates the earliest time that the buyer can expect to receive the order. 
 		public DateTime ScheduledDeliveryTimeMin { get; set; }
+
+		// The EstimatedDeliveryTimeMax value indicates the latest time that the buyer can expect to take delivery of an order not being delivered
+		public DateTime EstimatedDeliveryTimeMax { get; set; }
+
+		// The EstimatedDeliveryTimeMin value indicates the earliest time that the buyer can expect to take delivery of an order not being delivered		
+		public DateTime EstimatedDeliveryTimeMin { get; set; }
 	}
 }

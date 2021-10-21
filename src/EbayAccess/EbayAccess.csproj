@@ -75,6 +75,7 @@
     <Compile Include="Models\BaseResponse\ResponseError.cs" />
     <Compile Include="Models\CredentialsAndConfig\EbayConfigSandBox.cs" />
     <Compile Include="Models\EbayErrors.cs" />
+    <Compile Include="Models\GetOrdersResponse\ShippingServiceSelected.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\GetSellerListCustomProductResponse.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\Product.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\ProductBase.cs" />

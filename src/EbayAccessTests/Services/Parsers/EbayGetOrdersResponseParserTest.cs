@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Services.Parsers;
@@ -107,9 +108,16 @@ namespace EbayAccessTests.Services.Parsers
 
 				var orders = parser.Parse( fs );
 
-				var shipmentTrackingDetails = orders.Orders.First().ShippingDetails.ShipmentTrackingDetails;
-				shipmentTrackingDetails.ShipmentTrackingNumber.Should().Be( "1BE110060398488804" );
-				shipmentTrackingDetails.ShippingCarrierUsed.Should().Be( "UPS" );
+				var transaction = orders.Orders.First().TransactionArray.First();
+				transaction.TransactionId.Should().Be( "1911656401014" );
+				transaction.OrderLineItemId.Should().Be( "333418491244-1911656401014" );
+				transaction.CreatedDate.ToUniversalTime().Should().Be( DateTime.Parse("2021-09-01T08:47:21.000Z").ToUniversalTime() );
+				transaction.ShippingDetails.ShipmentTrackingDetails.ShipmentTrackingNumber.Should().Be( "1ZE610060392761333" );
+				transaction.ShippingDetails.ShipmentTrackingDetails.ShippingCarrierUsed.Should().Be( "UPS" );
+				var shippingPackageInfo = transaction.ShippingServiceSelected.ShippingPackageInfo;
+				shippingPackageInfo.ActualDeliveryTime.ToUniversalTime().Should().Be( DateTime.Parse( "2021-10-04T21:06:47.000Z" ).ToUniversalTime() );
+				shippingPackageInfo.EstimatedDeliveryTimeMax.ToUniversalTime().Should().Be( DateTime.Parse( "2021-09-16T07:00:00.000Z" ).ToUniversalTime() );
+				shippingPackageInfo.EstimatedDeliveryTimeMin.ToUniversalTime().Should().Be( DateTime.Parse( "2021-09-13T07:00:00.000Z" ).ToUniversalTime() );
 			}
 		}
 
