@@ -8,8 +8,10 @@ namespace EbayAccess.Models.BaseResponse
 	public class EbayBaseResponse
 	{
 		private static readonly List< ResponseError > _internalErrors = new List< ResponseError > { new ResponseError { ErrorCode = "10007" }, new ResponseError { ErrorCode = "16100" }, new ResponseError { ErrorCode = "248" } };
-		private static readonly List< ResponseError > _invalidTokenErrors = new List< ResponseError > { new ResponseError { ErrorCode = "931" }, new ResponseError { ErrorCode = "932" } };
-
+		private static readonly List< ResponseError > _invalidTokenErrors = new List< ResponseError > { new ResponseError { ErrorCode = "931" }, new ResponseError { ErrorCode = "932" },
+			new ResponseError { ErrorCode = "21916013" }	//<ShortMessage>This Token has been revoked by App.</ShortMessage><LongMessage>This Token has been revoked by App. The end user must complete the Auth &amp; Auth consent flow again to generate a valid token.</LongMessage><ErrorCode>21916013</ErrorCode><SeverityCode>Error</SeverityCode><ErrorClassification>RequestError</ErrorClassification></Errors>
+		};
+		
 		public DateTime Timestamp { get; set; }
 
 		public string Ack { get; set; }
@@ -35,9 +37,9 @@ namespace EbayAccess.Models.BaseResponse
 			return new List< ResponseError >();
 		}
 
-		public void IfThereAreErrorsDo( Action< EbayBaseResponse > action, List< ResponseError > updateInventoryErrorsToSkip )
+		public void IfThereAreErrorsDo( Action< EbayBaseResponse > action, List< ResponseError > errorsToActOn )
 		{
-			if( this.DoesResponseContainErrors( updateInventoryErrorsToSkip.ToArray() ) )
+			if( this.DoesResponseContainErrors( errorsToActOn.ToArray() ) )
 			{
 				if( action != null )
 					action( this );
