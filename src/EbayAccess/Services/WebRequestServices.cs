@@ -152,8 +152,7 @@ namespace EbayAccess.Services
 					memoryStream.Position = 0;
 
 					var methodResult = removePersonalInfoFromLog ? memoryStream.ToStringSafe().RemovePersonalInfoFromXML() : memoryStream.ToStringSafe();
-					EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( mark, webRequest.RequestUri.ToString(), methodResult: methodResult ) );
-
+					EbayLogger.LogTraceInnerEnded( this.CreateMethodCallInfo( mark, webRequest.RequestUri.ToString(), methodResult: methodResult, additionalInfo: response.Headers.ToString() ) );
 					return memoryStream;
 				}
 			}

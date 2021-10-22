@@ -27,6 +27,9 @@ namespace EbayAccess.Services.Parsers
 				var xmlOrders = root.Descendants( ns + "Order" );
 
 				var error = this.ResponseContainsErrors( root, ns );
+				
+				getOrdersResponse.rlogid = GetElementValue( root, ns, "rlogid" );
+
 				if( error != null )
 				{
 					getOrdersResponse.Errors = error;

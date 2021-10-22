@@ -278,18 +278,20 @@ namespace EbayAccess
 		{
 			mark = mark ?? Mark.CreateNew();
 			var methodParameters = sourceOrdersIds.ToJson();
+			var childMark = Mark.CreateNew( mark );
+
 			try
 			{
-				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) );
+				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, childMark ) );
 				if( token.IsCancellationRequested )
-					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
+					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {childMark}" );
 
 				if( sourceOrdersIds == null || !sourceOrdersIds.Any() )
 					return new List< string >();
 
-				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( token, mark, sourceOrdersIds ).ConfigureAwait( false );
+				var getOrdersResponse = await this.EbayServiceLowLevel.GetOrdersAsync( token, childMark, sourceOrdersIds ).ConfigureAwait( false );
 
-				getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, getOrdersResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
+				getOrdersResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, childMark, getOrdersResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
 				getOrdersResponse.ThrowOnError();
 
 				if( getOrdersResponse.Orders == null )
@@ -299,13 +301,13 @@ namespace EbayAccess
 
 				var existsOrders = ( from s in sourceOrdersIds join d in distinctOrdersIds on s equals d select s ).ToList();
 
-				EbayLogger.LogTraceEnded( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, methodResult : existsOrders.ToJson() ) );
+				EbayLogger.LogTraceEnded( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, childMark, methodResult : existsOrders.ToJson(), additionalInfo: $"rlogid: {getOrdersResponse.rlogid}"  ) );
 
 				return existsOrders;
 			}
 			catch( Exception exception )
 			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) ), exception );
+				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, childMark ) ), exception );
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
