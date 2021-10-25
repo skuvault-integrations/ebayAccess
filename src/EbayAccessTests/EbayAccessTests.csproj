@@ -67,6 +67,7 @@
     <Compile Include="Misc\Extensions.cs" />
     <Compile Include="Misc\LoggerTests.cs" />
     <Compile Include="Misc\TimeoutTests.cs" />
+    <Compile Include="Models\BaseResponse\EbayBaseResponseTests.cs" />
     <Compile Include="Models\CredentialsAndConfig\EbayConfigTest.cs" />
     <Compile Include="Models\GetSellerListResponse\ItemExtendedTest.cs" />
     <Compile Include="Models\GetSellerListResponse\ProductTests.cs" />
@@ -113,6 +114,10 @@
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTrackingNumber.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSkuAndRlogIdHeader.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTaxes.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
