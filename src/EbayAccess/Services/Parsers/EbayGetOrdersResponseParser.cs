@@ -79,7 +79,7 @@ namespace EbayAccess.Services.Parsers
 					}
 					#endregion
 
-					#region Shipping
+					#region Shipping Address
 					if( x.Element( ns + "ShippingAddress" ) != null )
 					{
 						var shipToAddress = x.Element( ns + "ShippingAddress" );
@@ -94,6 +94,16 @@ namespace EbayAccess.Services.Parsers
 						address.Street1 = GetElementValue( shipToAddress, ns, "Street1" );
 						address.Street2 = GetElementValue( shipToAddress, ns, "Street2" );
 						resultOrder.ShippingAddress = address;
+					}
+					#endregion
+
+					#region Shipping Selected
+					if (x.Element(ns + "ShippingServiceSelected") != null)
+					{
+						var shippingSelectedElement = x.Element(ns + "ShippingServiceSelected");
+						var shippingSelected = new ShippingServiceSelected();
+						shippingSelected.ShippingService = GetElementValue(shippingSelectedElement, ns, "ShippingService");						
+						resultOrder.ShippingServiceSelected = shippingSelected;
 					}
 					#endregion
 

@@ -24,6 +24,8 @@ namespace EbayAccess.Models.GetOrdersResponse
 
 		public ShippingAddress ShippingAddress { get; set; }
 
+		public ShippingServiceSelected ShippingServiceSelected { get; set; }
+
 		public DateTime PaidTime { get; set; }
 
 		public DateTime ShippedTime { get; set; }

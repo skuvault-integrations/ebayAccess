@@ -133,6 +133,29 @@ namespace EbayAccessTests.Services.Parsers
 		}
 
 		[ Test ]
+		public void GivenGetOrdersResponseWithShippingCarrier_WhenResponseIsParsed_ThenReceiveOrderWithShippingCarrier()
+		{
+			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithShippingCarrier.xml", FileMode.Open, FileAccess.Read ) )
+			{
+				var parser = new EbayGetOrdersResponseParser();
+				var orders = parser.Parse( fs );
+				var order = orders.Orders.First();							
+				order.ShippingServiceSelected.ShippingService.Should().Be( "Fedex" );
+
+				var transaction = order.TransactionArray.First();
+				transaction.TransactionId.Should().Be( "1911656401014" );
+				transaction.OrderLineItemId.Should().Be( "333418491244-1911656401014" );
+				transaction.CreatedDate.ToUniversalTime().Should().Be( DateTime.Parse("2021-09-01T08:47:21.000Z").ToUniversalTime() );				
+				transaction.ShippingDetails.ShipmentTrackingDetails.ShippingCarrierUsed.Should().Be( "UPS" );
+
+				var shippingPackageInfo = transaction.ShippingServiceSelected.ShippingPackageInfo;
+				shippingPackageInfo.ActualDeliveryTime.ToUniversalTime().Should().Be( DateTime.Parse( "2021-10-04T21:06:47.000Z" ).ToUniversalTime() );
+				shippingPackageInfo.EstimatedDeliveryTimeMax.ToUniversalTime().Should().Be( DateTime.Parse( "2021-09-16T07:00:00.000Z" ).ToUniversalTime() );
+				shippingPackageInfo.EstimatedDeliveryTimeMin.ToUniversalTime().Should().Be( DateTime.Parse( "2021-09-13T07:00:00.000Z" ).ToUniversalTime() );
+			}
+		}
+
+		[ Test ]
 		public void Parse_GetOrdersResponseWithTaxes_HookupTaxes()
 		{
 			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTaxes.xml", FileMode.Open, FileAccess.Read ) )

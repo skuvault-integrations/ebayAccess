@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<GetOrdersResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+	<Timestamp>2014-01-20T16:50:23.400Z</Timestamp>
+	<Ack>Success</Ack>
+	<Version>853</Version>
+	<Build>E853_CORE_API_16609591_R1</Build>
+	<PaginationResult>
+		<TotalNumberOfPages>1</TotalNumberOfPages>
+		<TotalNumberOfEntries>1</TotalNumberOfEntries>
+	</PaginationResult>
+	<HasMoreOrders>false</HasMoreOrders>
+	<OrderArray>    
+    <Order>
+      <OrderID>24-07558-27052</OrderID>
+      <OrderStatus>Completed</OrderStatus>
+      <AdjustmentAmount currencyID="USD">0.0</AdjustmentAmount>
+      <AmountPaid currencyID="USD">34.45</AmountPaid>
+      <AmountSaved currencyID="USD">0.0</AmountSaved>
+      <CheckoutStatus>
+        <eBayPaymentStatus>NoPaymentFailure</eBayPaymentStatus>
+        <LastModifiedTime>2021-10-04T18:19:57.000Z</LastModifiedTime>
+        <PaymentMethod>CreditCard</PaymentMethod>
+        <Status>Complete</Status>
+        <IntegratedMerchantCreditCardEnabled>true</IntegratedMerchantCreditCardEnabled>
+        <PaymentInstrument>CreditCard</PaymentInstrument>
+      </CheckoutStatus>
+      <ShippingDetails>
+        <SalesTax>
+          <ShippingIncludedInTax>false</ShippingIncludedInTax>
+        </SalesTax>
+        <ShippingServiceOptions>
+          <ShippingService>ShippingMethodStandard</ShippingService>
+          <ShippingServiceCost currencyID="USD">0.0</ShippingServiceCost>
+          <ShippingServicePriority>1</ShippingServicePriority>
+          <ExpeditedService>false</ExpeditedService>
+          <ShippingTimeMin>1</ShippingTimeMin>
+          <ShippingTimeMax>5</ShippingTimeMax>
+        </ShippingServiceOptions>
+        <InternationalShippingServiceOption>
+          <ShippingService>USPSPriorityMailInternational</ShippingService>
+          <ShippingServicePriority>1</ShippingServicePriority>
+          <ShipToLocation>Worldwide</ShipToLocation>
+        </InternationalShippingServiceOption>
+        <SellingManagerSalesRecordNumber>858336</SellingManagerSalesRecordNumber>
+        <GetItFast>false</GetItFast>
+      </ShippingDetails>
+      <CreatedTime>2021-09-01T08:47:21.000Z</CreatedTime>
+      <SellerEmail></SellerEmail>
+      <ShippingAddress>
+        <Name>AAA</Name>
+        <Street1>BBB</Street1>
+        <Street2></Street2>
+        <CityName>CCC</CityName>
+        <StateOrProvince>NY</StateOrProvince>
+        <Country>DDD</Country>
+        <CountryName>US</CountryName>
+        <Phone>0022222</Phone>
+        <PostalCode>01844-1938</PostalCode>
+        <AddressID>2900549214013</AddressID>
+        <AddressOwner>eBay</AddressOwner>
+        <ExternalAddressID></ExternalAddressID>
+      </ShippingAddress>
+      <ShippingServiceSelected>
+        <ShippingService>Fedex</ShippingService>
+        <ShippingServiceCost currencyID="USD">0.0</ShippingServiceCost>
+        <ShippingPackageInfo>
+          <ActualDeliveryTime>2021-10-04T21:06:47.000Z</ActualDeliveryTime>
+        </ShippingPackageInfo>
+      </ShippingServiceSelected>
+      <Subtotal currencyID="USD">34.45</Subtotal>
+      <Total currencyID="USD">34.45</Total>
+      <eBayCollectAndRemitTax>true</eBayCollectAndRemitTax>
+      <TransactionArray>
+        <Transaction>
+          <Buyer>
+            <Email>a@a.com</Email>
+            <VATStatus>NoVATTax</VATStatus>
+            <UserFirstName>Ann</UserFirstName>
+            <UserLastName>Brown</UserLastName>
+          </Buyer>
+          <ShippingDetails>
+            <SellingManagerSalesRecordNumber>858336</SellingManagerSalesRecordNumber>
+            <ShipmentTrackingDetails>
+              <ShippingCarrierUsed>UPS</ShippingCarrierUsed>
+              <ShipmentTrackingNumber>1ZE610060392761333</ShipmentTrackingNumber>
+            </ShipmentTrackingDetails>
+          </ShippingDetails>
+          <CreatedDate>2021-09-01T08:47:21.000Z</CreatedDate>
+          <Item>
+            <ItemID>333418491244</ItemID>
+            <Site>eBayMotors</Site>
+            <Title>1966 66 GTO Upper Radiator Hose Tri Power &amp; Power Steering OE CODED 9782940 New</Title>
+            <SKU>DET 9782940</SKU>
+            <ConditionID>1000</ConditionID>
+            <ConditionDisplayName>New</ConditionDisplayName>
+          </Item>
+          <QuantityPurchased>1</QuantityPurchased>
+          <Status>
+            <PaymentHoldStatus>None</PaymentHoldStatus>
+            <InquiryStatus>NotApplicable</InquiryStatus>
+            <ReturnStatus>NotApplicable</ReturnStatus>
+          </Status>
+          <TransactionID>1911656401014</TransactionID>
+          <TransactionPrice currencyID="USD">34.45</TransactionPrice>
+          <eBayCollectAndRemitTax>true</eBayCollectAndRemitTax>
+          <ShippingServiceSelected>
+            <ShippingPackageInfo>
+              <ActualDeliveryTime>2021-10-04T21:06:47.000Z</ActualDeliveryTime>
+              <EstimatedDeliveryTimeMin>2021-09-13T07:00:00.000Z</EstimatedDeliveryTimeMin>
+              <EstimatedDeliveryTimeMax>2021-09-16T07:00:00.000Z</EstimatedDeliveryTimeMax>
+              <HandleByTime>2021-09-03T04:59:59.000Z</HandleByTime>
+              <MinNativeEstimatedDeliveryTime>2021-09-03T07:00:00.000Z</MinNativeEstimatedDeliveryTime>
+              <MaxNativeEstimatedDeliveryTime>2021-09-10T07:00:00.000Z</MaxNativeEstimatedDeliveryTime>
+            </ShippingPackageInfo>
+          </ShippingServiceSelected>
+          <ShippedTime>2021-09-30T20:55:36.000Z</ShippedTime>
+          <TransactionSiteID>US</TransactionSiteID>
+          <Platform>eBay</Platform>
+          <eBayCollectAndRemitTaxes>
+            <TotalTaxAmount currencyID="USD">2.15</TotalTaxAmount>
+            <TaxDetails>
+              <Imposition>SalesTax</Imposition>
+              <TaxDescription>SalesTax</TaxDescription>
+              <TaxAmount currencyID="USD">2.15</TaxAmount>
+              <TaxOnSubtotalAmount currencyID="USD">2.15</TaxOnSubtotalAmount>
+              <TaxOnShippingAmount currencyID="USD">0.0</TaxOnShippingAmount>
+              <TaxOnHandlingAmount currencyID="USD">0.0</TaxOnHandlingAmount>
+              <CollectionMethod>NET</CollectionMethod>
+            </TaxDetails>
+          </eBayCollectAndRemitTaxes>
+          <ActualShippingCost currencyID="USD">0.0</ActualShippingCost>
+          <ActualHandlingCost currencyID="USD">0.0</ActualHandlingCost>
+          <OrderLineItemID>333418491244-1911656401014</OrderLineItemID>
+          <ExtendedOrderID>24-07558-27052</ExtendedOrderID>
+          <eBayPlusTransaction>false</eBayPlusTransaction>
+          <GuaranteedShipping>false</GuaranteedShipping>
+          <GuaranteedDelivery>false</GuaranteedDelivery>
+        </Transaction>
+      </TransactionArray>
+      <BuyerUserID>witku-2015</BuyerUserID>
+      <PaidTime>2021-09-01T08:47:21.000Z</PaidTime>
+      <ShippedTime>2021-09-30T20:55:36.000Z</ShippedTime>
+      <IntegratedMerchantCreditCardEnabled>false</IntegratedMerchantCreditCardEnabled>
+      <BuyerCheckoutMessage>
+        Item Id: 333418491244
+        Buyer&apos;s Vehicle: 1966 Pontiac
+      </BuyerCheckoutMessage>
+      <EIASToken>nY+23423+54223+seQ==</EIASToken>
+      <PaymentHoldStatus>None</PaymentHoldStatus>
+      <IsMultiLegShipping>false</IsMultiLegShipping>
+      <SellerUserID>tamraz</SellerUserID>
+      <SellerEIASToken>nY+23423+5432324+seQ==</SellerEIASToken>
+      <CancelStatus>NotApplicable</CancelStatus>
+      <ExtendedOrderID>24-07558-27052</ExtendedOrderID>
+      <ContainseBayPlusTransaction>false</ContainseBayPlusTransaction>
+    </Order>
+	</OrderArray>
+	<OrdersPerPage>100</OrdersPerPage>
+	<PageNumber>1</PageNumber>
+	<ReturnedOrderCountActual>1</ReturnedOrderCountActual>
+</GetOrdersResponse>
