@@ -260,9 +260,10 @@ namespace EbayAccess.Services.Parsers
 			var shippingDetails = x.Element( ns + "ShippingDetails" );
 			if ( shippingDetails != null )
 			{
+				var salesRecordNumberValue = GetElementValue( x, ns, "ShippingDetails", "SellingManagerSalesRecordNumber" );
 				var result = new ShippingDetails
 				{
-					SellingManagerSalesRecordNumber = GetElementValue( x, ns, "ShippingDetails", "SellingManagerSalesRecordNumber" ).ToIntOrDefault(),
+					SellingManagerSalesRecordNumber = salesRecordNumberValue.ToIntOrDefault(),
 					GetItFast = GetElementValue( x, ns, "ShippingDetails", "GetItFast" ).ToBoolNullable()
 				};
 

@@ -172,5 +172,17 @@ namespace EbayAccessTests.Services.Parsers
 				transaction.TotalTaxAmountCurrencyId.ToString().Should().Be( "AUD" );
 			}
 		}
+
+		[ Test ]
+		public void Parse_GetOrdersResponse_ShouldReturnDefaultSalesRecordNumber_WhenSalesRecordNumberIsMissing()
+		{
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutSellingManagerSalesRecordNumber.xml", FileMode.Open, FileAccess.Read ) )
+			{
+				var orders = new EbayGetOrdersResponseParser().Parse( fs );
+
+				var order = orders.Orders.Single();
+				order.ShippingDetails.SellingManagerSalesRecordNumber.Should().Be( default( int ) );
+			}
+		}
 	}
 }

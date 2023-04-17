@@ -64,11 +64,12 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="EbayServiceTest.cs" />
-    <Compile Include="Misc\Extensions.cs" />
+    <Compile Include="Misc\ExtensionsTests.cs" />
     <Compile Include="Misc\LoggerTests.cs" />
     <Compile Include="Misc\TimeoutTests.cs" />
     <Compile Include="Models\BaseResponse\EbayBaseResponseTests.cs" />
     <Compile Include="Models\CredentialsAndConfig\EbayConfigTest.cs" />
+    <Compile Include="Models\GetOrdersResponse\OrderExtendedTests.cs" />
     <Compile Include="Models\GetSellerListResponse\ItemExtendedTest.cs" />
     <Compile Include="Models\GetSellerListResponse\ProductTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -144,6 +145,9 @@
     <Content Include="Files\GetOrdersResponse\EbayServiceGetSaleRecordsNumbersResponseWithDatabaseError.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutSellingManagerSalesRecordNumber.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Files\GetSellerListCustomProductResponse\EbayServiceGetSellerListCustomProductResponse.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -164,7 +168,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

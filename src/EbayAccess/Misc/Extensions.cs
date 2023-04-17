@@ -117,14 +117,17 @@ namespace EbayAccess.Misc
 		{
 			try
 			{
-				return int.Parse( source, CultureInfo.InvariantCulture );
+				if ( !string.IsNullOrWhiteSpace( source ) )
+				{
+					return int.Parse( source, CultureInfo.InvariantCulture );
+				}
 			}
 			catch( Exception )
 			{
 				if( throwException )
 					throw;
 			}
-
+			
 			return default( int );
 		}
 
