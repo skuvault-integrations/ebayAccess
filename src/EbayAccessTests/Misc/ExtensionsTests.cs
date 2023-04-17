@@ -14,7 +14,7 @@ using Item = EbayAccess.Models.ReviseFixedPriceItemResponse.Item;
 namespace EbayAccessTests.Misc
 {
 	[ TestFixture ]
-	public class Extensions
+	public class ExtensionsTests
 	{
 		/// <summary>
 		/// Ebay accepts format: YYYY-MM-DDTHH:MM:SS.SSSZ
@@ -330,6 +330,15 @@ namespace EbayAccessTests.Misc
 			var truncatedBody = body.LimitBodyLogSize();
 
 			truncatedBody.Length.Should().Be( EbayAccess.Misc.Extensions.MaxBodyLogSize );
+		}
+
+		[ TestCase( null ) ]
+		[ TestCase( "" ) ]
+		public void ToIntOrDefault_ShouldReturnDefault_WhenSourceIsEmpty( string source )
+		{
+			var result = source.ToIntOrDefault();
+
+			result.Should().Be( default );
 		}
 	}
 }

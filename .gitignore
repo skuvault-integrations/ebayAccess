@@ -27,6 +27,9 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *.ReSharper
 *.docstates
+
+# JetBrains Rider
+.idea/
 *.csv
 #Ignore common build files
 build

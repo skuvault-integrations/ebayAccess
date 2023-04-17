@@ -27,8 +27,10 @@ namespace EbayAccess.Models.GetOrdersResponse
 			string result = null;
 			if( useSellingManagerRecordNumberInstead )
 			{
-				if( sourceOrder.ShippingDetails != null )
+				if( sourceOrder.ShippingDetails != null && sourceOrder.ShippingDetails.SellingManagerSalesRecordNumber != default( int ) )
+				{
 					result = sourceOrder.ShippingDetails.SellingManagerSalesRecordNumber.ToString();
+				}
 			}
 			else
 				result = sourceOrder.OrderId;
