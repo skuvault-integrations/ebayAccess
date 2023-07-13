@@ -184,5 +184,20 @@ namespace EbayAccessTests.Services.Parsers
 				order.ShippingDetails.SellingManagerSalesRecordNumber.Should().Be( default( int ) );
 			}
 		}
+
+		[ Test ]
+		public void Parse_GetOrdersResponse_ShouldReturnDefaultOptionalShippingAddressAndShippingServiceFieldValues_WhenTheseFieldsAreMissing()
+		{
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutShippingAddressAndShippingServiceOptionalFields.xml", FileMode.Open, FileAccess.Read ) )
+			{
+				var orders = new EbayGetOrdersResponseParser().Parse( fs );
+
+				var order = orders.Orders.Single();
+				order.ShippingAddress.Name.Should().Be( string.Empty );
+				order.ShippingAddress.City.Should().Be( string.Empty );
+				order.ShippingAddress.State.Should().Be( string.Empty );
+				order.ShippingServiceSelected.ShippingService.Should().Be( string.Empty );
+			}
+		}
 	}
 }
