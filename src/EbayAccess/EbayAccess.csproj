@@ -105,7 +105,6 @@
     <Compile Include="Models\GetOrdersResponse\RefundStatus.cs" />
     <Compile Include="Models\GetOrdersResponse\ShippingAddress.cs" />
     <Compile Include="Models\GetOrdersResponse\ShippingDetails.cs" />
-    <Compile Include="Models\GetOrdersResponse\ShippingPackageInfo.cs" />
     <Compile Include="Models\GetOrdersResponse\ShippingServiceOptions.cs" />
     <Compile Include="Models\GetOrdersResponse\Transaction.cs" />
     <Compile Include="Models\GetOrdersResponse\Variation.cs" />

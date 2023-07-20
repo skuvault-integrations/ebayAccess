@@ -182,10 +182,7 @@ namespace EbayAccess.Services.Parsers
 								var shippingServiceSelectedPackageInfo = shippingServiceSelected.Element( ns + "ShippingPackageInfo" );
 								if ( shippingServiceSelectedPackageInfo != null ) 
 								{
-									resTransaction.ShippingServiceSelected = new ShippingServiceSelected
-									{
-										ShippingPackageInfo = ParseShippingPackageInfo( shippingServiceSelectedPackageInfo, ns )
-									};
+									resTransaction.ShippingServiceSelected = new ShippingServiceSelected();
 								}
 							}
 
@@ -257,7 +254,6 @@ namespace EbayAccess.Services.Parsers
 				var result = new ShippingDetails
 				{
 					SellingManagerSalesRecordNumber = salesRecordNumberValue.ToIntOrDefault(),
-					GetItFast = GetElementValue( x, ns, "ShippingDetails", "GetItFast" ).ToBoolNullable()
 				};
 
 				var shipmentTrackingDetails = shippingDetails.Element( ns + "ShipmentTrackingDetails" );
@@ -299,22 +295,14 @@ namespace EbayAccess.Services.Parsers
 					var ShippingServiceCostCurrency = GetElementAttribute( "currencyID", shippingService, ns, "ShippingServiceCost" );
 					var ShippingServicePriority = GetElementValue( shippingService, ns, "ShippingServicePriority" );
 					var ExpeditedService = GetElementValue( shippingService, ns, "ExpeditedService" ).ToBoolNullable();
-					var ShippingTimeMin = GetElementValue( shippingService, ns, "ShippingTimeMin" ).ToLongOrNull();
-					var ShippingTimeMax = GetElementValue( shippingService, ns, "ShippingTimeMax" ).ToLongOrNull();
 
 					shippingServiceOptions.ShippingService = ShippingService;
 					shippingServiceOptions.ShippingServiceCost = ShippingServiceCost;
 					shippingServiceOptions.ShippingServiceCostCurrency = ShippingServiceCostCurrency;
 					shippingServiceOptions.ShippingServicePriority = ShippingServicePriority;
 					shippingServiceOptions.ExpeditedService = ExpeditedService;
-					shippingServiceOptions.ShippingTimeMin = ShippingTimeMin;
-					shippingServiceOptions.ShippingTimeMax = ShippingTimeMax;
 
 					result.ShippingServiceOptions = shippingServiceOptions;
-					if ( shippingService.Element( ns + "ShippingPackageInfo" ) != null )
-					{
-                        shippingServiceOptions.ShippingPackageInfo = ParseShippingPackageInfo( shippingService, ns );
-                    }
 
 					result.ShippingServiceOptions = shippingServiceOptions;
 				}
@@ -323,18 +311,6 @@ namespace EbayAccess.Services.Parsers
 			}
 
 			return null;
-		}
-
-		private ShippingPackageInfo ParseShippingPackageInfo( XElement x, XNamespace ns )
-		{			
-			return new ShippingPackageInfo
-			{
-				ActualDeliveryTime = GetElementValue( x, ns, "ActualDeliveryTime" ).ToDateTime(),
-				ScheduledDeliveryTimeMax = GetElementValue( x, ns, "ScheduledDeliveryTimeMax" ).ToDateTime(),
-				ScheduledDeliveryTimeMin = GetElementValue( x, ns, "ScheduledDeliveryTimeMin" ).ToDateTime(),
-				EstimatedDeliveryTimeMax = GetElementValue( x, ns, "EstimatedDeliveryTimeMax" ).ToDateTime(),
-				EstimatedDeliveryTimeMin = GetElementValue( x, ns, "EstimatedDeliveryTimeMin" ).ToDateTime()
-			};
 		}
 	}
 }

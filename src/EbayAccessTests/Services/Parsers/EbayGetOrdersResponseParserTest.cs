@@ -71,21 +71,17 @@ namespace EbayAccessTests.Services.Parsers
 				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ShippingServiceCost.Should().HaveValue( "because in source file there is shipping info" );
 				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ShippingServicePriority.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
 				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ExpeditedService.Should().HaveValue( "because in source file there is shipping info" );
-				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ShippingTimeMin.Should().HaveValue( "because in source file there is shipping info" );
-				orders.Orders.First().ShippingDetails.ShippingServiceOptions.ShippingTimeMax.Should().HaveValue( "because in source file there is shipping info" );
 
 				orders.Orders.First().ShippingDetails.SalesTax.SalesTaxPercent.Should().HaveValue( "because in source file there is shipping info" );
 				orders.Orders.First().ShippingDetails.SalesTax.SalesTaxState.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
 				orders.Orders.First().ShippingDetails.SalesTax.ShippingIncludedInTax.Should().HaveValue( "because in source file there is shipping info" );
 				orders.Orders.First().ShippingDetails.SalesTax.SalesTaxAmount.Should().HaveValue( "because in source file there is shipping info" );
 				orders.Orders.First().ShippingDetails.SalesTax.SalesTaxAmountCurrencyId.Should().NotBeNullOrWhiteSpace( "because in source file there is shipping info" );
-
-				orders.Orders.First().ShippingDetails.GetItFast.Should().HaveValue( "because in source file there is shipping info" );
 			}
 		}
 
 		[ Test ]
-		public void Parse_GetOrders_ReponseWithUserFirstandLastName_Check_That_UserFirst_UserLastName_Parses_Right()
+		public void Parse_GetOrders_ResponseWithUserFirstandLastName_Check_That_UserFirst_UserLastName_Parses_Right()
 		{
 			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithUserFirstandLastName.xml", FileMode.Open, FileAccess.Read ) )
 			{
@@ -126,10 +122,6 @@ namespace EbayAccessTests.Services.Parsers
 				transaction.CreatedDate.ToUniversalTime().Should().Be( DateTime.Parse("2021-09-01T08:47:21.000Z").ToUniversalTime() );
 				transaction.ShippingDetails.ShipmentTrackingDetails.ShipmentTrackingNumber.Should().Be( "1ZE610060392761333" );
 				transaction.ShippingDetails.ShipmentTrackingDetails.ShippingCarrierUsed.Should().Be( "UPS" );
-				var shippingPackageInfo = transaction.ShippingServiceSelected.ShippingPackageInfo;
-				shippingPackageInfo.ActualDeliveryTime.ToUniversalTime().Should().Be( DateTime.Parse( "2021-10-04T21:06:47.000Z" ).ToUniversalTime() );
-				shippingPackageInfo.EstimatedDeliveryTimeMax.ToUniversalTime().Should().Be( DateTime.Parse( "2021-09-16T07:00:00.000Z" ).ToUniversalTime() );
-				shippingPackageInfo.EstimatedDeliveryTimeMin.ToUniversalTime().Should().Be( DateTime.Parse( "2021-09-13T07:00:00.000Z" ).ToUniversalTime() );
 			}
 		}
 
@@ -148,11 +140,6 @@ namespace EbayAccessTests.Services.Parsers
 				transaction.OrderLineItemId.Should().Be( "333418491244-1911656401014" );
 				transaction.CreatedDate.ToUniversalTime().Should().Be( DateTime.Parse("2021-09-01T08:47:21.000Z").ToUniversalTime() );				
 				transaction.ShippingDetails.ShipmentTrackingDetails.ShippingCarrierUsed.Should().Be( "UPS" );
-
-				var shippingPackageInfo = transaction.ShippingServiceSelected.ShippingPackageInfo;
-				shippingPackageInfo.ActualDeliveryTime.ToUniversalTime().Should().Be( DateTime.Parse( "2021-10-04T21:06:47.000Z" ).ToUniversalTime() );
-				shippingPackageInfo.EstimatedDeliveryTimeMax.ToUniversalTime().Should().Be( DateTime.Parse( "2021-09-16T07:00:00.000Z" ).ToUniversalTime() );
-				shippingPackageInfo.EstimatedDeliveryTimeMin.ToUniversalTime().Should().Be( DateTime.Parse( "2021-09-13T07:00:00.000Z" ).ToUniversalTime() );
 			}
 		}
 
@@ -215,6 +202,30 @@ namespace EbayAccessTests.Services.Parsers
 				firstRefundOfSecondOrder.RefundStatus.Should().Be( RefundStatus.CustomCode );	//Missing refund status in the XML
 				var secondRefundOfSecondOrder = orders.Orders[ 1 ].MonetaryDetails.Refunds.Skip( 1 ).First();
 				secondRefundOfSecondOrder.RefundAmountCurrencyID.Should().Be( PredefinedValues.CantBeParsed );	//Missing CurrencyID in the XML
+			}
+		}
+
+		[ Test ]
+		public void Parse_GetOrdersResponse_ShouldReturnDefaultOptionalShippingDetailsFieldValues_WhenTheseFieldsAreMissing()
+		{
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutShippingDetailsOptionalFields.xml", FileMode.Open, FileAccess.Read ) )
+			{
+				var orders = new EbayGetOrdersResponseParser().Parse( fs );
+
+				orders.Orders[ 0 ].ShippingDetails.SellingManagerSalesRecordNumber.Should().Be( default );
+				orders.Orders[ 0 ].ShippingDetails.ShipmentTrackingDetails.ShippingCarrierUsed.Should().BeNullOrWhiteSpace();
+				orders.Orders[ 0 ].ShippingDetails.ShipmentTrackingDetails.ShipmentTrackingNumber.Should().BeNullOrWhiteSpace();
+				orders.Orders[ 0 ].ShippingDetails.SalesTax.SalesTaxAmount.Should().Be( null );
+				orders.Orders[ 0 ].ShippingDetails.SalesTax.SalesTaxPercent.Should().Be( null );
+				orders.Orders[ 0 ].ShippingDetails.SalesTax.SalesTaxState.Should().BeNullOrWhiteSpace();
+				orders.Orders[ 0 ].ShippingDetails.SalesTax.SalesTaxState.Should().BeNullOrWhiteSpace();
+				orders.Orders[ 0 ].ShippingDetails.SalesTax.ShippingIncludedInTax.Should().Be( default );
+				orders.Orders[ 0 ].ShippingDetails.ShippingServiceOptions.ShippingService.Should().BeNullOrWhiteSpace();
+				orders.Orders[ 0 ].ShippingDetails.ShippingServiceOptions.ShippingServiceCost.Should().Be( null );
+				orders.Orders[ 0 ].ShippingDetails.ShippingServiceOptions.ShippingServicePriority.Should().BeNullOrWhiteSpace();
+				orders.Orders[ 1 ].ShippingDetails.ShipmentTrackingDetails.Should().BeNull();
+				orders.Orders[ 1 ].ShippingDetails.SalesTax.Should().BeNull();
+				orders.Orders[ 1 ].ShippingDetails.ShippingServiceOptions.Should().BeNull();
 			}
 		}
 	}
