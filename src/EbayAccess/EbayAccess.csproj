@@ -101,7 +101,6 @@
     <Compile Include="Models\GetOrdersResponse\GetOrdersResponse.cs" />
     <Compile Include="Models\GetOrdersResponse\Order.cs" />
     <Compile Include="Models\GetOrdersResponse\Item.cs" />
-    <Compile Include="Models\GetOrdersResponse\PaymentHoldDetails.cs" />
     <Compile Include="Models\GetOrdersResponse\Refund.cs" />
     <Compile Include="Models\GetOrdersResponse\RefundStatus.cs" />
     <Compile Include="Models\GetOrdersResponse\ShippingAddress.cs" />

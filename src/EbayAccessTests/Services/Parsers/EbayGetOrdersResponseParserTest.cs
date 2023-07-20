@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using EbayAccess.Misc;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
@@ -14,7 +15,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void FileStreamWithCorrectXml_ParseOrdersResponse_HookupCorrectDeserializedObject()
 		{
-			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read ) )
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -26,7 +27,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void FileStreamWithCorrectXml_ParseOrdersResponse_Containsrlogid()
 		{
-			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSkuAndRlogIdHeader.xml", FileMode.Open, FileAccess.Read ) )
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSkuAndRlogIdHeader.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -37,7 +38,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_OrdersResponseWithoutItems_ThereisNoErrorsAndExceptions()
 		{
-			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml", FileMode.Open, FileAccess.Read ) )
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -102,7 +103,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponseWithItemVariationSku_HookupVariationSku()
 		{
-			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemVariationSku.xml", FileMode.Open, FileAccess.Read ) )
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemVariationSku.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -113,7 +114,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void GivenGetOrdersResponseWithTrackingNumber_WhenResponseIsParsed_ThenReceiveOrderWithTrackingNumber()
 		{
-			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithTrackingNumber.xml", FileMode.Open, FileAccess.Read ) )
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTrackingNumber.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 
@@ -135,7 +136,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void GivenGetOrdersResponseWithShippingCarrier_WhenResponseIsParsed_ThenReceiveOrderWithShippingCarrier()
 		{
-			using( var fs = new FileStream( @".\FIles\GetOrdersResponse\EbayServiceGetOrdersResponseWithShippingCarrier.xml", FileMode.Open, FileAccess.Read ) )
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithShippingCarrier.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -197,6 +198,23 @@ namespace EbayAccessTests.Services.Parsers
 				order.ShippingAddress.City.Should().Be( string.Empty );
 				order.ShippingAddress.State.Should().Be( string.Empty );
 				order.ShippingServiceSelected.ShippingService.Should().Be( string.Empty );
+			}
+		}
+
+		[ Test ]
+		public void Parse_GetOrdersResponse_ShouldReturnDefaultOptionalMonetaryDetailsRefundFieldValues_WhenTheseFieldsAreMissing()
+		{
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutMonetaryDetailsRefundOptionalFields.xml", FileMode.Open, FileAccess.Read ) )
+			{
+				var orders = new EbayGetOrdersResponseParser().Parse( fs );
+
+				orders.Orders[ 0 ].MonetaryDetails.Refunds.Should().BeEmpty();
+				var firstRefundOfSecondOrder = orders.Orders[ 1 ].MonetaryDetails.Refunds.First();
+				firstRefundOfSecondOrder.RefundAmount.Should().Be( default );
+				firstRefundOfSecondOrder.RefundTime.Should().Be( default );
+				firstRefundOfSecondOrder.RefundStatus.Should().Be( RefundStatus.CustomCode );	//Missing refund status in the XML
+				var secondRefundOfSecondOrder = orders.Orders[ 1 ].MonetaryDetails.Refunds.Skip( 1 ).First();
+				secondRefundOfSecondOrder.RefundAmountCurrencyID.Should().Be( PredefinedValues.CantBeParsed );	//Missing CurrencyID in the XML
 			}
 		}
 	}

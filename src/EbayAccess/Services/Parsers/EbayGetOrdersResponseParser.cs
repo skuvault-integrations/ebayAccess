@@ -108,13 +108,6 @@ namespace EbayAccess.Services.Parsers
 					#endregion
 
 					#region Payment
-					if( x.Element( ns + "PaymentHoldDetails" ) != null )
-					{
-						var paymentHoldDetails = x.Element( ns + "PaymentHoldDetails" );
-						var address = new PaymentHoldDetails();
-						address.ExpectedReleaseDate = GetElementValue( paymentHoldDetails, ns, "ExpectedReleaseDate" ).ToDateTime();
-					}
-
 					resultOrder.PaymentMethods = GetElementValue( x, ns, "PaymentMethods" );
 
 					ebayCurrency tempCurrency;
