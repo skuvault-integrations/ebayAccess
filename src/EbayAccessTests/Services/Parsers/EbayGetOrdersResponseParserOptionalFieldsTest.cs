@@ -59,11 +59,8 @@ namespace EbayAccessTests.Services.Parsers
 
 				orders.Orders[ 0 ].MonetaryDetails.Refunds.Should().BeEmpty();
 				var firstRefundOfSecondOrder = orders.Orders[ 1 ].MonetaryDetails.Refunds.First();
-				firstRefundOfSecondOrder.RefundAmount.Should().Be( default );
 				firstRefundOfSecondOrder.RefundTime.Should().Be( default );
 				firstRefundOfSecondOrder.RefundStatus.Should().Be( RefundStatus.CustomCode );	//Missing refund status in the XML
-				var secondRefundOfSecondOrder = orders.Orders[ 1 ].MonetaryDetails.Refunds.Skip( 1 ).First();
-				secondRefundOfSecondOrder.RefundAmountCurrencyID.Should().Be( PredefinedValues.CantBeParsed );	//Missing CurrencyID in the XML
 			}
 		}
 

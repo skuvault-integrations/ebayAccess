@@ -134,8 +134,6 @@ namespace EbayAccess.Services.Parsers
 						resultOrder.MonetaryDetails.Refunds = refunds.Select( refund =>
 						{
 							var resRefund = new Refund();
-							resRefund.RefundAmount = GetElementValue( refund, ns, "RefundAmount" ).ToDecimalDotOrCommaSeparated();
-							resRefund.RefundAmountCurrencyID = this.GetElementAttribute( "CurrencyCodeType", refund, ns, "RefundAmount" );
 							resRefund.RefundTime = GetElementValue( refund, ns, "RefundTime" ).ToDateTime();
 
 							if( !string.IsNullOrWhiteSpace( temp = GetElementValue( refund, ns, "RefundStatus" ) ) )
