@@ -74,6 +74,7 @@
     <Compile Include="Models\GetSellerListResponse\ProductTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EbayServiceLowLevelTest.cs" />
+    <Compile Include="Services\Parsers\EbayGetOrdersResponseParserOptionalFieldsTest.cs" />
     <Compile Include="Services\Parsers\EbayXmlParserTest.cs" />
     <Compile Include="Services\Parsers\EbayGetItemResponseParserTest.cs" />
     <Compile Include="Services\Parsers\EbayGetOrdersResponseParserTest.cs" />
@@ -121,6 +122,10 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutShippingDetailsOptionalFields.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutTransactionArrayOptionalFields.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>

@@ -25,24 +25,13 @@ namespace EbayAccessTests.Services.Parsers
 		}
 		
 		[ Test ]
-		public void FileStreamWithCorrectXml_ParseOrdersResponse_Containsrlogid()
+		public void FileStreamWithCorrectXml_ParseOrdersResponse_ContainsRlogid()
 		{
 			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSkuAndRlogIdHeader.xml", FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
 				orders.rlogid.Should().Equals("SomeRLogIdFromResponseHeader");
-			}
-		}
-
-		[ Test ]
-		public void Parse_OrdersResponseWithoutItems_ThereisNoErrorsAndExceptions()
-		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml", FileMode.Open, FileAccess.Read ) )
-			{
-				var parser = new EbayGetOrdersResponseParser();
-				var orders = parser.Parse( fs );
-				orders.Orders.Should().HaveCount( 0, "because in source file there is {0} orders", 0 );
 			}
 		}
 
@@ -81,7 +70,7 @@ namespace EbayAccessTests.Services.Parsers
 		}
 
 		[ Test ]
-		public void Parse_GetOrders_ResponseWithUserFirstandLastName_Check_That_UserFirst_UserLastName_Parses_Right()
+		public void Parse_GetOrders_ResponseWithUserFirstAndLastName_Check_That_UserFirst_UserLastName_Parses_Right()
 		{
 			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithUserFirstandLastName.xml", FileMode.Open, FileAccess.Read ) )
 			{
@@ -158,74 +147,6 @@ namespace EbayAccessTests.Services.Parsers
 				var transaction = order.TransactionArray.First();
 				transaction.TotalTaxAmount.Should().Be( 2.34m );
 				transaction.TotalTaxAmountCurrencyId.ToString().Should().Be( "AUD" );
-			}
-		}
-
-		[ Test ]
-		public void Parse_GetOrdersResponse_ShouldReturnDefaultSalesRecordNumber_WhenSalesRecordNumberIsMissing()
-		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutSellingManagerSalesRecordNumber.xml", FileMode.Open, FileAccess.Read ) )
-			{
-				var orders = new EbayGetOrdersResponseParser().Parse( fs );
-
-				var order = orders.Orders.Single();
-				order.ShippingDetails.SellingManagerSalesRecordNumber.Should().Be( default( int ) );
-			}
-		}
-
-		[ Test ]
-		public void Parse_GetOrdersResponse_ShouldReturnDefaultOptionalShippingAddressAndShippingServiceFieldValues_WhenTheseFieldsAreMissing()
-		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutShippingAddressAndShippingServiceOptionalFields.xml", FileMode.Open, FileAccess.Read ) )
-			{
-				var orders = new EbayGetOrdersResponseParser().Parse( fs );
-
-				var order = orders.Orders.Single();
-				order.ShippingAddress.Name.Should().Be( string.Empty );
-				order.ShippingAddress.City.Should().Be( string.Empty );
-				order.ShippingAddress.State.Should().Be( string.Empty );
-				order.ShippingServiceSelected.ShippingService.Should().Be( string.Empty );
-			}
-		}
-
-		[ Test ]
-		public void Parse_GetOrdersResponse_ShouldReturnDefaultOptionalMonetaryDetailsRefundFieldValues_WhenTheseFieldsAreMissing()
-		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutMonetaryDetailsRefundOptionalFields.xml", FileMode.Open, FileAccess.Read ) )
-			{
-				var orders = new EbayGetOrdersResponseParser().Parse( fs );
-
-				orders.Orders[ 0 ].MonetaryDetails.Refunds.Should().BeEmpty();
-				var firstRefundOfSecondOrder = orders.Orders[ 1 ].MonetaryDetails.Refunds.First();
-				firstRefundOfSecondOrder.RefundAmount.Should().Be( default );
-				firstRefundOfSecondOrder.RefundTime.Should().Be( default );
-				firstRefundOfSecondOrder.RefundStatus.Should().Be( RefundStatus.CustomCode );	//Missing refund status in the XML
-				var secondRefundOfSecondOrder = orders.Orders[ 1 ].MonetaryDetails.Refunds.Skip( 1 ).First();
-				secondRefundOfSecondOrder.RefundAmountCurrencyID.Should().Be( PredefinedValues.CantBeParsed );	//Missing CurrencyID in the XML
-			}
-		}
-
-		[ Test ]
-		public void Parse_GetOrdersResponse_ShouldReturnDefaultOptionalShippingDetailsFieldValues_WhenTheseFieldsAreMissing()
-		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutShippingDetailsOptionalFields.xml", FileMode.Open, FileAccess.Read ) )
-			{
-				var orders = new EbayGetOrdersResponseParser().Parse( fs );
-
-				orders.Orders[ 0 ].ShippingDetails.SellingManagerSalesRecordNumber.Should().Be( default );
-				orders.Orders[ 0 ].ShippingDetails.ShipmentTrackingDetails.ShippingCarrierUsed.Should().BeNullOrWhiteSpace();
-				orders.Orders[ 0 ].ShippingDetails.ShipmentTrackingDetails.ShipmentTrackingNumber.Should().BeNullOrWhiteSpace();
-				orders.Orders[ 0 ].ShippingDetails.SalesTax.SalesTaxAmount.Should().Be( null );
-				orders.Orders[ 0 ].ShippingDetails.SalesTax.SalesTaxPercent.Should().Be( null );
-				orders.Orders[ 0 ].ShippingDetails.SalesTax.SalesTaxState.Should().BeNullOrWhiteSpace();
-				orders.Orders[ 0 ].ShippingDetails.SalesTax.SalesTaxState.Should().BeNullOrWhiteSpace();
-				orders.Orders[ 0 ].ShippingDetails.SalesTax.ShippingIncludedInTax.Should().Be( default );
-				orders.Orders[ 0 ].ShippingDetails.ShippingServiceOptions.ShippingService.Should().BeNullOrWhiteSpace();
-				orders.Orders[ 0 ].ShippingDetails.ShippingServiceOptions.ShippingServiceCost.Should().Be( null );
-				orders.Orders[ 0 ].ShippingDetails.ShippingServiceOptions.ShippingServicePriority.Should().BeNullOrWhiteSpace();
-				orders.Orders[ 1 ].ShippingDetails.ShipmentTrackingDetails.Should().BeNull();
-				orders.Orders[ 1 ].ShippingDetails.SalesTax.Should().BeNull();
-				orders.Orders[ 1 ].ShippingDetails.ShippingServiceOptions.Should().BeNull();
 			}
 		}
 	}
