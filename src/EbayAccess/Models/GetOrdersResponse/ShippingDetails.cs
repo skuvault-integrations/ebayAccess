@@ -5,7 +5,6 @@
 		public ShippingServiceOptions ShippingServiceOptions { get; set; }
 		public int SellingManagerSalesRecordNumber { get; set; }
 		public SalesTax SalesTax { get; set; }
-		public bool? GetItFast { get; set; }
 		public ShipmentTrackingDetails ShipmentTrackingDetails { get; set; }
 	}
 
