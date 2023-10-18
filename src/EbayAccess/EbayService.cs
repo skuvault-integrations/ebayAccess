@@ -771,11 +771,4 @@ namespace EbayAccess
 		Old = 1,
 		Econom = 2
 	}
-
-	public enum GetSaleRecordsNumbersAlgorithm
-	{
-		Undefined = 0,
-		Old = 1,
-		Econom = 2
-	}
 }
