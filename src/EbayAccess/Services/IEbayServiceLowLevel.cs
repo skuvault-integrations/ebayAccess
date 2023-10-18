@@ -49,10 +49,6 @@ namespace EbayAccess.Services
 
 		Task< GetOrdersResponse > GetOrdersAsync( CancellationToken cts, Mark mark = null, params string[] ordersIds );
 
-		Task< GetSellingManagerSoldListingsResponse > GetSellingManagerOrderByRecordNumberAsync( string saleRecordNumber, Mark mark, CancellationToken cts );
-
-		Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, CancellationToken ct, int pageLimit, Mark mark );
-
 		string ToJson();
 
 		int MaxThreadsCount { get; }

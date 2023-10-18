@@ -90,13 +90,11 @@
 			GetItem = "GetItem";
 			ReviseInventoryStatus = "ReviseInventoryStatus";
 			FetchToken = "FetchToken";
-			GetSellingManagerSoldListings = "GetSellingManagerSoldListings";
 			ReviseFixedPriceItem = "ReviseFixedPriceItem";
 		}
 
 		public static string GetSessionID { get; private set; }
 		public static string GetOrders { get; set; }
-		public static string GetSellingManagerSoldListings { get; set; }
 		public static string GetSellerList { get; set; }
 		public static string GetItem { get; set; }
 		public static string ReviseInventoryStatus { get; set; }

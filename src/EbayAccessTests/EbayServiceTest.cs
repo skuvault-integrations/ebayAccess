@@ -91,42 +91,6 @@ namespace EbayAccessTests
 		}
 
 		[ Test ]
-		public void GetOrdersBySellingManagerNumbers_EbayServiceResponseContainsInternalError_CallRepeatsAndGetResponseWith2Errors()
-		{
-			//A
-			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( x => Task.FromResult( GetSellingManagerSoldListingsResponse.ResponseWithInternalError.ToStream() ) );
-			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
-
-			//A
-			var sellingManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellingManagerOrderByRecordNumberAsync( "123", Mark.Blank(), CancellationToken.None );
-			sellingManagerOrderByRecordNumberAsync.Wait();
-
-			//A
-			stubWebRequestService.ReceivedWithAnyArgs( 4 ).GetResponseStreamAsync( null, Mark.Blank(), CancellationToken.None );
-			sellingManagerOrderByRecordNumberAsync.Result.Errors.Count().Should().Be( 1 );
-			sellingManagerOrderByRecordNumberAsync.Result.Errors.Count( x => x.ErrorCode == "10007" ).Should().Be( 1 );
-		}
-
-		[ Test ]
-		public void GetOrdersBySellingManagerNumbers_EbayServiceFirstResponseContainsInternalErrorSecondSuccess_GetSoldListingWithoutExceptions()
-		{
-			//A
-			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			var callCounter = 0;
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( x => Task.FromResult( callCounter++ == 0 ? GetSellingManagerSoldListingsResponse.ResponseWithInternalError.ToStream() : GetSellingManagerSoldListingsResponse.ResponseWithSoldRecord.ToStream() ) );
-			var ebayServiceLowLevel = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
-
-			//A
-			var sellingManagerOrderByRecordNumberAsync = ebayServiceLowLevel.GetSellingManagerOrderByRecordNumberAsync( "123", Mark.Blank(), CancellationToken.None );
-			sellingManagerOrderByRecordNumberAsync.Wait();
-
-			//A
-			stubWebRequestService.ReceivedWithAnyArgs( 2 ).GetResponseStreamAsync( null, Mark.Blank(), CancellationToken.None );
-			sellingManagerOrderByRecordNumberAsync.Result.Errors.Should().BeNull();
-		}
-
-		[ Test ]
 		public void GetOrdersAsync_EbayServiceResponseContains2KindOrdersHasMultipleQty_GetRightTotalPriceWitOutShippingAndTax()
 		{
 			//A

@@ -22,20 +22,6 @@ namespace EbayAccessTests.Integration
 	{
 		#region GetOrders
 		[ Test ]
-		public void GetSaleRecordsNumbers_ServiceWithExistingOrders_HookupOrdersIds()
-		{
-			//------------ Arrange
-			var service = new EbayService( this._credentials.GetEbayUserCredentials(), this._credentials.GetEbayConfigSandbox() );
-
-			//------------ Act
-			var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( ExistingOrdersIds.SaleNumers.ToArray(), CancellationToken.None );
-			ordersIdsAsync.Wait();
-
-			//------------ Assert
-			ordersIdsAsync.Result.Should().BeEquivalentTo( ExistingOrdersIds.SaleNumers.ToArray() );
-		}
-
-		[ Test ]
 		public void GetOrdersIds_ServiceWithExistingOrders_HookupOrdersIds()
 		{
 			//------------ Arrange
@@ -352,7 +338,7 @@ namespace EbayAccessTests.Integration
 
 			Action act = () =>
 			{
-				var ordersIdsAsync = service.GetSaleRecordsNumbersAsync( new [] { "123 " }.ToArray(), new CancellationToken() );
+				var ordersIdsAsync = service.GetOrdersIdsAsync( new CancellationToken(), Mark.CreateNew(), new [] { "123 " }.ToArray() );
 				ordersIdsAsync.Wait();
 			};
 

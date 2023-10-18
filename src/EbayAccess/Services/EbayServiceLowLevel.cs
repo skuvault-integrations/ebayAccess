@@ -140,33 +140,6 @@ namespace EbayAccess.Services
 				pageNumber );
 		}
 
-		private string CreateGetSellingManagerSoldListingsRequestBody( string orderSellingManagerRecordNumber )
-		{
-			return string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellingManagerSoldListingsRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Search><SearchType>SaleRecordID</SearchType><SearchValue>{1}</SearchValue></Search></GetSellingManagerSoldListingsRequest>​",
-				this._userCredentials.Token,
-				orderSellingManagerRecordNumber );
-		}
-
-		private string CreateGetSellingManagerSoldListingsRequestBody( DateTime timeRangeFrom, DateTime timeRangeTo, int recordsPerPage, int pageNumber )
-		{
-			return string.Format(
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?><GetSellingManagerSoldListingsRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\"><RequesterCredentials><eBayAuthToken>{0}</eBayAuthToken></RequesterCredentials><Pagination><EntriesPerPage>{1}</EntriesPerPage><PageNumber>{2}</PageNumber></Pagination><SaleDateRange><TimeFrom>{3}</TimeFrom><TimeTo>{4}</TimeTo></SaleDateRange></GetSellingManagerSoldListingsRequest>​",
-				this._userCredentials.Token,
-				recordsPerPage,
-				pageNumber,
-				timeRangeFrom.ToStringUtcIso8601(),
-				timeRangeTo.ToStringUtcIso8601() );
-		}
-
-		private static Dictionary< string, string > CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName()
-		{
-			return new Dictionary< string, string >
-			{
-				{ EbayHeaders.XEbayApiCallName, EbayHeadersMethodnames.GetSellingManagerSoldListings },
-			};
-		}
-
 		private static Dictionary< string, string > CreateEbayGetOrdersRequestHeadersWithApiCallName()
 		{
 			return new Dictionary< string, string >
@@ -196,83 +169,6 @@ namespace EbayAccess.Services
 				mark : mark,
 				useCert: true,
 				removePersonalInfoFromLog: true
-			).ConfigureAwait( false );
-		}
-
-		public async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerOrderByRecordNumberAsync( string saleRecordNumber, Mark mark, CancellationToken cts )
-		{
-			return await this.GetEbaySingleRequestAsync(
-				headers : CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName(),
-				body : this.CreateGetSellingManagerSoldListingsRequestBody( saleRecordNumber ),
-				responseParser : x => new EbayGetSellingManagerSoldListingsResponseParser().Parse( x ),
-				token : cts,
-				mark : mark,
-				useCert: true
-			).ConfigureAwait( false );
-		}
-
-		public async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodAsync( DateTime timeFrom, DateTime timeTo, CancellationToken ct, int pageLimit = 0, Mark mark = null )
-		{
-			if( ct.IsCancellationRequested )
-				throw new TaskCanceledException( "Task was canceled" );
-
-			var recordsPerPage = this._itemsPerPage;
-			const int pageNumber = 1;
-
-			var sellingManagerSoldListings = await this.GetSellingManagerSoldListingsByPeriodSinglePageAsync( ct, timeFrom, timeTo, recordsPerPage, pageNumber, mark ).ConfigureAwait( false );
-
-			if( sellingManagerSoldListings == null || sellingManagerSoldListings.Errors != null )
-				return sellingManagerSoldListings;
-
-			var totalPages = sellingManagerSoldListings.PaginationResult?.TotalNumberOfPages ?? 0;
-
-			if( ( pageLimit > 0 ) && ( totalPages > pageLimit ) )
-			{
-				sellingManagerSoldListings.IsLimitedResponse = true;
-				return sellingManagerSoldListings;
-			}
-
-			if( totalPages <= 1 )
-				return sellingManagerSoldListings;
-
-			if( ct.IsCancellationRequested )
-				throw new TaskCanceledException( "Task was canceled" );
-
-			var errorList = new List< ResponseError >();
-			var pages = new List< int >();
-			for( var i = 2; i <= sellingManagerSoldListings.PaginationResult?.TotalNumberOfPages; i++ )
-			{
-				pages.Add( i );
-			}
-
-			var sellingManagerSoldListingsTempList = await pages.ProcessInBatchAsync( this.MaxThreadsCount, async x => await this.GetSellingManagerSoldListingsByPeriodSinglePageAsync( ct, timeFrom, timeTo, recordsPerPage, x, mark ).ConfigureAwait( false ) ).ConfigureAwait( false );
-
-			sellingManagerSoldListingsTempList.ForEach( x =>
-			{
-				if( x.Errors != null )
-				{
-					errorList.AddRange( x.Errors );
-				}
-				else
-				{
-					sellingManagerSoldListings.Orders.AddRange( x.Orders );
-				}
-			} );
-
-			sellingManagerSoldListings.Errors = errorList;
-
-			return sellingManagerSoldListings;
-		}
-
-		private async Task< GetSellingManagerSoldListingsResponse > GetSellingManagerSoldListingsByPeriodSinglePageAsync( CancellationToken ct, DateTime timeFrom, DateTime timeTo, int recordsPerPage, int pageNumber, Mark mark = null )
-		{
-			return await this.GetEbaySingleRequestAsync(
-				headers : CreateEbayGetSellingManagerSoldListingsRequestHeadersWithApiCallName(),
-				body : this.CreateGetSellingManagerSoldListingsRequestBody( timeFrom, timeTo, recordsPerPage, pageNumber ),
-				responseParser : x => new EbayGetSellingManagerSoldListingsResponseParser().Parse( x ),
-				token : ct,
-				mark : mark,
-				useCert : true
 			).ConfigureAwait( false );
 		}
 
