@@ -17,6 +17,10 @@ using NUnit.Framework;
 
 namespace EbayAccessTests.Integration
 {
+	// 10/19/2023: Integration tests fail since it appears that we no longer have a sandbox eBay account.
+	//	We should be able to make calls to a production test seller: just do this._credentials.GetEbayConfigProduction(),
+	//	and copy the ApiToken from a working channel account to ebay_test_credentials.csv.
+	//TODO GUARD-3137 Find out if we're allowed to use the LinnWorks production test seller for this, then update the tests accordingly
 	[ TestFixture ]
 	public class EbayServiceTest: TestBase
 	{
