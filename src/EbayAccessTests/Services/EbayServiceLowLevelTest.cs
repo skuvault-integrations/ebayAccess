@@ -54,7 +54,8 @@ namespace EbayAccessTests.Services
 			var getResponseStreamAsyncCallCounter = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( Task.FromResult( respString.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >(), Arg.Any< bool >() )
+				.Returns( Task.FromResult( respString.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
 			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -124,26 +125,6 @@ namespace EbayAccessTests.Services
 				Arg.Any< string >(),
 				Arg.Is< string >( x => new XmlDocument().TryParse( x ) ),
 				Arg.Any< Dictionary< string, string > >(), Arg.Any< CancellationToken >(), Arg.Any< Mark >() );
-		}
-
-		[ Test ]
-		public async Task GivenSaleRecordNumbers_WhenGetEbaySingleRequestAsyncIsCalledWithDatabaseError_ThenRetryAttemptsExpected()
-		{
-			var sellingManagerSaleRecordNumber = "879";
-			string ebayServerResponse;
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetSaleRecordsNumbersResponseWithDatabaseError.xml", FileMode.Open, FileAccess.Read ) )
-				ebayServerResponse = new StreamReader( fs ).ReadToEnd();
-			var getResponseStreamAsyncCallCounter = 0;
-
-			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() )
-				.Returns( x => Task.FromResult( ebayServerResponse.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
-			var ebayService = new EbayServiceLowLevel( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
-
-			var ordersRecordsResponse = await ebayService.GetSellingManagerOrderByRecordNumberAsync( sellingManagerSaleRecordNumber, Mark.Blank(), CancellationToken.None );
-
-			ordersRecordsResponse.Errors.Count().Should().BeGreaterThan( 0 );
-			getResponseStreamAsyncCallCounter.Should().Be( 4 );
 		}
 	}
 }

@@ -86,7 +86,6 @@
     <Compile Include="TestEnvironment\TestBase.cs" />
     <Compile Include="TestEnvironment\TestEmptyCredentials.cs" />
     <Compile Include="TestEnvironment\TestResponses\ReviseInventoryStatusResponse.cs" />
-    <Compile Include="TestEnvironment\TestResponses\GetSellingManagerSoldListingsResponse.cs" />
     <Compile Include="TestEnvironment\TestResponses\ReviseFixedPriceItemResponse.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -157,9 +156,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Files\GetOrdersResponse\EbayServiceGetSaleRecordsNumbersResponseWithDatabaseError.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutSellingManagerSalesRecordNumber.xml">

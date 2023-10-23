@@ -39,8 +39,6 @@ namespace EbayAccess
 
 		Task< List< string > > GetOrdersIdsAsync( CancellationToken token, Mark mark = null, params string[] sourceOrdersIds );
 
-		Task< List< string > > GetSaleRecordsNumbersAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token, GetSaleRecordsNumbersAlgorithm useAlgorithm, Mark mark );
-
 		Task< IEnumerable< UpdateInventoryResponse > > UpdateInventoryAsync( IEnumerable< UpdateInventoryRequest > products, CancellationToken token, UpdateInventoryAlgorithm useAlgorithm = UpdateInventoryAlgorithm.Old, Mark mark = null );
 
 		Func< string > AdditionalLogInfo { get; set; }

@@ -12,7 +12,6 @@ using EbayAccess.Models.CredentialsAndConfig;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.GetSellerListResponse;
-using EbayAccess.Models.GetSellingManagerSoldListingsResponse;
 using EbayAccess.Models.ReviseFixedPriceItemRequest;
 using EbayAccess.Models.ReviseFixedPriceItemResponse;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
@@ -29,8 +28,6 @@ namespace EbayAccess
 	{
 		private const int MaxTimeRange = 119;
 		private const int MaximumTimeWindowAllowed = 29;
-		private const int MaximumServerTimeVariationSeconds = 60;
-		private const int MinimumCountToUseEconomAlgorithmInGetSaleRecordsNumberMethod = 15;
 		private const string DurationGTC = "GTC";
 		private readonly DateTime _ebayWorkingStart = new DateTime( 1995, 1, 1, 0, 0, 0 );
 
@@ -119,159 +116,6 @@ namespace EbayAccess
 				LogTraceException( ebayException.Message, ebayException );
 				throw ebayException;
 			}
-		}
-
-		protected async Task< List< string > > GetSaleRecordsNumbersExpensiveAlgorithmAsync( IEnumerable< string > saleRecordsIDs, 
-			CancellationToken token, Mark mark )
-		{
-			var methodParameters = saleRecordsIDs.ToJson();
-			try
-			{
-				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) );
-
-				var seleRecordsIdsFilteredOnlyExisting = new List< string >();
-
-				if( saleRecordsIDs == null || !saleRecordsIDs.Any() )
-					return seleRecordsIdsFilteredOnlyExisting;
-
-				var salerecordIds = saleRecordsIDs.ToList();
-
-				var getSellingManagerSoldListingsResponses = await salerecordIds.ProcessInBatchAsync( this.EbayServiceLowLevel.MaxThreadsCount, async x => await this.EbayServiceLowLevel.GetSellingManagerOrderByRecordNumberAsync( x, mark, token ).ConfigureAwait( false ) ).ConfigureAwait( false );
-
-				var sellingManagerSoldListingsResponses = getSellingManagerSoldListingsResponses as IList< GetSellingManagerSoldListingsResponse > ?? getSellingManagerSoldListingsResponses.ToList();
-				sellingManagerSoldListingsResponses.SkipErrorsAndDo( x => EbayLogger.LogTraceInnerError( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, x.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
-				sellingManagerSoldListingsResponses.ThrowOnError();
-
-				if( !sellingManagerSoldListingsResponses.Any() )
-					return seleRecordsIdsFilteredOnlyExisting;
-
-				var allReceivedOrders = sellingManagerSoldListingsResponses.SelectMany( x => x.Orders ).ToList();
-
-				var alllReceivedOrdersDistinct = allReceivedOrders.Distinct( new OrderEqualityComparerByRecordId() ).Select( x => x.SaleRecordID ).ToList();
-
-				seleRecordsIdsFilteredOnlyExisting = ( from s in saleRecordsIDs join d in alllReceivedOrdersDistinct on s equals d select s ).ToList();
-
-				var resultSaleRecordNumbersBriefInfo = seleRecordsIdsFilteredOnlyExisting.ToJson();
-				EbayLogger.LogTraceEnded( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, methodResult : resultSaleRecordNumbersBriefInfo ) );
-
-				return seleRecordsIdsFilteredOnlyExisting;
-			}
-			catch( Exception exception )
-			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) ), exception );
-				LogTraceException( ebayException.Message, ebayException );
-				throw ebayException;
-			}
-		}
-
-		protected async Task< List< string > > GetSaleRecordsNumbersEconomAlgorithmAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token, Mark mark = null )
-		{
-			var methodParameters = saleRecordsIDs.ToJson();
-
-			try
-			{
-				EbayLogger.LogTraceStarted( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) );
-
-				var saleRecordsIdsFilteredOnlyExisting = new List< string >();
-				var saleRecordsIdsNotExisting = new List< string >();
-
-				if( saleRecordsIDs == null || !saleRecordsIDs.Any() )
-					return saleRecordsIdsFilteredOnlyExisting;
-
-				var salerecordIds = saleRecordsIDs.ToList();
-				salerecordIds.Sort( ( s1, s2 ) => ( s1.Length != s2.Length ) ? s1.Length - s2.Length : String.CompareOrdinal( s1, s2 ) );
-
-				DateTime? timeFrom = null;
-				var timeTo = DateTime.UtcNow.AddSeconds( -1 * MaximumServerTimeVariationSeconds );
-
-				#region Find CreationTime for first sale
-				foreach( var salerecordId in salerecordIds )
-				{
-					var sellingManagerSoldListingsResponse = await this.EbayServiceLowLevel.GetSellingManagerOrderByRecordNumberAsync( salerecordId, mark, token ).ConfigureAwait( false );
-					sellingManagerSoldListingsResponse.SkipErrorsAndDo( x => EbayLogger.LogTraceInnerError( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, x.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.EbayPixelSizeError, EbayErrors.LvisBlockedError, EbayErrors.UnsupportedListingType, EbayErrors.RequestedUserIsSuspended } );
-					sellingManagerSoldListingsResponse.ThrowOnError();
-
-					if( !sellingManagerSoldListingsResponse.Orders.Any() )
-					{
-						saleRecordsIdsNotExisting.Add( salerecordId );
-						continue;
-					}
-
-					timeFrom = sellingManagerSoldListingsResponse.Orders.First().CreationTime;
-					break;
-				}
-				#endregion
-
-				if( timeFrom == null )
-				{
-					return saleRecordsIdsFilteredOnlyExisting;
-				}
-
-				#region Get all sales since first sale to current time
-				var getSellngManagerSoldListingsResponse = await this.EbayServiceLowLevel.GetSellingManagerSoldListingsByPeriodAsync( ( DateTime )timeFrom, timeTo, token, 0, mark ).ConfigureAwait( false );
-				getSellngManagerSoldListingsResponse.SkipErrorsAndDo( c => EbayLogger.LogTraceInnerError( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, getSellngManagerSoldListingsResponse.Errors.ToJson() ) ), new List< ResponseError > { EbayErrors.RequestedUserIsSuspended } );
-				getSellngManagerSoldListingsResponse.ThrowOnError();
-				var saleRecordInPeriodIds = getSellngManagerSoldListingsResponse.Orders.Select( o => o.SaleRecordID );
-				saleRecordsIdsFilteredOnlyExisting.AddRange( saleRecordInPeriodIds.Where( id => salerecordIds.Contains( id ) && ( !saleRecordsIdsFilteredOnlyExisting.Contains( id ) ) ) );
-				#endregion
-
-				if( token.IsCancellationRequested )
-					throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
-
-				if( getSellngManagerSoldListingsResponse.IsLimitedResponse )
-				{
-					var listToSearch = salerecordIds.Where( id => ( !saleRecordsIdsFilteredOnlyExisting.Contains( id ) ) && ( !saleRecordsIdsNotExisting.Contains( id ) ) );
-					var expensiveSearchIds = await this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( listToSearch, token, mark ).ConfigureAwait( false );
-					saleRecordsIdsFilteredOnlyExisting.AddRange( expensiveSearchIds.Where( id => salerecordIds.Contains( id ) && ( !saleRecordsIdsFilteredOnlyExisting.Contains( id ) ) ) );
-				}
-				else
-				{
-					// Check missing ids
-					var missingRecordsIds = salerecordIds.Where( id => ( !saleRecordsIdsFilteredOnlyExisting.Contains( id ) ) && ( !saleRecordsIdsNotExisting.Contains( id ) ) ).ToList();
-
-					if( missingRecordsIds.Count > 0 )
-					{
-						var expensiveSearchIds = await this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( missingRecordsIds, token, mark ).ConfigureAwait( false );
-						saleRecordsIdsFilteredOnlyExisting.AddRange( expensiveSearchIds.Where( id => salerecordIds.Contains( id ) && ( !saleRecordsIdsFilteredOnlyExisting.Contains( id ) ) ) );
-					}
-				}
-
-				var resultSaleRecordNumbersBriefInfo = saleRecordsIdsFilteredOnlyExisting.ToJson();
-				EbayLogger.LogTraceEnded( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark, methodResult : resultSaleRecordNumbersBriefInfo ) );
-
-				return saleRecordsIdsFilteredOnlyExisting;
-			}
-			catch( Exception exception )
-			{
-				var ebayException = new EbayCommonException( string.Format( "Error. Was called:{0}", CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters, mark ) ), exception );
-				LogTraceException( ebayException.Message, ebayException );
-				throw ebayException;
-			}
-		}
-
-		public async Task< List< string > > GetSaleRecordsNumbersAsync( IEnumerable< string > saleRecordsIDs, CancellationToken token, GetSaleRecordsNumbersAlgorithm usealgorithm = GetSaleRecordsNumbersAlgorithm.Old, Mark mark = null )
-		{
-			mark = mark ?? Mark.CreateNew();
-			Task< List< string > > res;
-
-			if( token.IsCancellationRequested )
-				throw new TaskCanceledException( $"Request was cancelled or timed out, Mark: {mark}" );
-
-			switch( usealgorithm )
-			{
-				case GetSaleRecordsNumbersAlgorithm.Econom:
-					var iDs = saleRecordsIDs as IList< string > ?? saleRecordsIDs.ToList();
-					res = iDs.Count() < MinimumCountToUseEconomAlgorithmInGetSaleRecordsNumberMethod 
-						? this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( iDs, token, mark ) 
-						: this.GetSaleRecordsNumbersEconomAlgorithmAsync( iDs, token, mark );
-					break;
-				case GetSaleRecordsNumbersAlgorithm.Old:
-				case GetSaleRecordsNumbersAlgorithm.Undefined:
-				default:
-					res = this.GetSaleRecordsNumbersExpensiveAlgorithmAsync( saleRecordsIDs, token, mark );
-					break;
-			}
-			return await res.ConfigureAwait( false );
 		}
 
 		public async Task< List< string > > GetOrdersIdsAsync( CancellationToken token, Mark mark = null, params string[] sourceOrdersIds )
@@ -922,13 +766,6 @@ namespace EbayAccess
 	}
 
 	public enum UpdateInventoryAlgorithm
-	{
-		Undefined = 0,
-		Old = 1,
-		Econom = 2
-	}
-
-	public enum GetSaleRecordsNumbersAlgorithm
 	{
 		Undefined = 0,
 		Old = 1,
