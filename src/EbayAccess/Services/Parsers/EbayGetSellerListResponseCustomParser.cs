@@ -6,6 +6,7 @@ using System.Text;
 using System.Xml.Linq;
 using EbayAccess.Misc;
 using EbayAccess.Models.GetSellerListCustomResponse;
+using Netco.Extensions;
 
 namespace EbayAccess.Services.Parsers
 {
@@ -71,6 +72,7 @@ namespace EbayAccess.Services.Parsers
 						res.SellingStatus.CurrentPrice = GetElementValue( x, ns, "SellingStatus", "CurrentPrice" ).ToDecimalDotOrCommaSeparated();
 						res.SellingStatus.CurrentPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "CurrentPrice" );
 						res.SellingStatus.QuantitySold = GetElementValue( x, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault( false );
+						res.SellingStatus.ListingStatus = GetElementValue( x, ns, "SellingStatus", "ListingStatus" ).ToEnum< ListingStatusCodeTypeEnum >();
 					}
 
 					var variations = x.Element( ns + "Variations" );
@@ -88,7 +90,10 @@ namespace EbayAccess.Services.Parsers
 							tempVariation.StartPrice = GetElementValue( variat, ns, "StartPrice" ).ToDecimalDotOrCommaSeparated();
 							tempVariation.StartPriceCurrencyId = this.GetElementAttribute( "currencyID", x, ns, "SellingStatus", "StartPrice" );
 							tempVariation.Quantity = GetElementValue( variat, ns, "Quantity" ).ToIntOrDefault( false );
-							tempVariation.SellingStatus = new SellingStatus { QuantitySold = GetElementValue( variat, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault( false ) };
+							tempVariation.SellingStatus = new SellingStatus { 
+								QuantitySold = GetElementValue( variat, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault( false ),
+								ListingStatus = GetElementValue( variat, ns, "SellingStatus", "ListingStatus" ).ToEnum< ListingStatusCodeTypeEnum >()
+							};
 
 							return tempVariation;
 						} ).ToList();
