@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 [ assembly : AssemblyConfiguration( "" ) ]
 [ assembly : InternalsVisibleTo( "EbayAccessTests" ) ]
 [ assembly : InternalsVisibleTo( "EbayAccessTests.Integration" ) ]
+[ assembly : InternalsVisibleToAttribute("DynamicProxyGenAssembly2")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
