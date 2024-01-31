@@ -5,10 +5,11 @@
 	/// </summary>
 	public enum ListingStatusCodeTypeEnum
 	{
-		Active = 0,
-		Completed = 1,
-		Custom = 2,
-		CustomCode = 3,
-		Ended = 4
+		Undefined = 0,
+		Active = 1,
+		Completed = 2,
+		Custom = 3,
+		CustomCode = 4,
+		Ended = 5
 	}
 }

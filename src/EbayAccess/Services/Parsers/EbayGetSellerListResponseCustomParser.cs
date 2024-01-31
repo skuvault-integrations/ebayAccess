@@ -92,7 +92,7 @@ namespace EbayAccess.Services.Parsers
 							tempVariation.Quantity = GetElementValue( variat, ns, "Quantity" ).ToIntOrDefault( false );
 							tempVariation.SellingStatus = new SellingStatus { 
 								QuantitySold = GetElementValue( variat, ns, "SellingStatus", "QuantitySold" ).ToIntOrDefault( false ),
-								ListingStatus = GetElementValue( variat, ns, "SellingStatus", "ListingStatus" ).ToEnum< ListingStatusCodeTypeEnum >()
+								ListingStatus = GetElementValue( variat, ns, "SellingStatus", "ListingStatus" ).ToEnum( ListingStatusCodeTypeEnum.Undefined )
 							};
 
 							return tempVariation;
