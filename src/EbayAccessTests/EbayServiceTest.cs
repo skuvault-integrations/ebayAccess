@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
+using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.ReviseFixedPriceItemRequest;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
 using EbayAccess.Services;
@@ -531,6 +532,45 @@ namespace EbayAccessTests
 
 			//A
 			callsCount.Should().Be( 8 );
+		}
+
+		[ Test ]
+		public async Task GetActiveProductsAsync_ReturnsItemsWhereListingStatusIsNotEnded()
+		{
+			// Arrange
+			var itemActive = new Item { SellingStatus = new SellingStatus { ListingStatus = ListingStatusCodeTypeEnum.Active } };
+			var itemCompleted = new Item { SellingStatus = new SellingStatus { ListingStatus = ListingStatusCodeTypeEnum.Completed } };
+			var itemCustom = new Item { SellingStatus = new SellingStatus { ListingStatus = ListingStatusCodeTypeEnum.Custom } };
+			var itemCustomCode = new Item { SellingStatus = new SellingStatus { ListingStatus = ListingStatusCodeTypeEnum.CustomCode } };
+			var itemEnded = new Item { SellingStatus = new SellingStatus { ListingStatus = ListingStatusCodeTypeEnum.Ended } };
+
+			var ebayServiceLowLevel = Substitute.For< IEbayServiceLowLevel >();
+			ebayServiceLowLevel
+				.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync(
+					Arg.Any< CancellationToken >(),
+					Arg.Any< DateTime >(),
+					Arg.Any< DateTime >(),
+					Arg.Any< GetSellerListTimeRangeEnum >(),
+					Arg.Any< Mark >() )
+				.Returns( x => Task.FromResult( ( IEnumerable< GetSellerListCustomResponse > )new List< GetSellerListCustomResponse >
+				{
+					new GetSellerListCustomResponse
+					{
+						Items = new List< Item > { itemActive, itemCompleted, itemCustom, itemCustomCode, itemEnded }
+					}
+				} ) );
+
+			var ebayService = new EbayService( ebayServiceLowLevel );
+
+			// Act
+			var response = ( await ebayService.GetActiveProductsAsync( CancellationToken.None ) ).ToList();
+
+			// Asserts
+			response.Count( x => x.SellingStatus.ListingStatus == ListingStatusCodeTypeEnum.Active ).Should().Be( 1 );
+			response.Count( x => x.SellingStatus.ListingStatus == ListingStatusCodeTypeEnum.Completed ).Should().Be( 1 );
+			response.Count( x => x.SellingStatus.ListingStatus == ListingStatusCodeTypeEnum.Custom ).Should().Be( 1 );
+			response.Count( x => x.SellingStatus.ListingStatus == ListingStatusCodeTypeEnum.CustomCode ).Should().Be( 1 );
+			response.Count( x => x.SellingStatus.ListingStatus == ListingStatusCodeTypeEnum.Ended ).Should().Be( 0 );
 		}
 	}
 }

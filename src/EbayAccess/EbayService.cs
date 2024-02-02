@@ -37,6 +37,11 @@ namespace EbayAccess
 		{
 			this.EbayServiceLowLevel = new EbayServiceLowLevel( credentials, ebayConfig, webRequestServices, requestTimeoutMs );
 		}
+		
+		internal EbayService( IEbayServiceLowLevel ebayServiceLowLevel )
+		{
+			this.EbayServiceLowLevel = ebayServiceLowLevel;
+		}
 
 		public EbayService( EbayUserCredentials credentials, EbayConfig ebayConfig ) : this( credentials, ebayConfig, new WebRequestServices() )
 		{
@@ -208,6 +213,9 @@ namespace EbayAccess
 					getSellerListCustomResponses.ForEach( x => x.Items = x.Items.Where( y => y.Duration.ToUpper().Equals( DurationGTC ) ).ToList() );
 
 				var items = getSellerListCustomResponses.SelectMany( x => x.ItemsSplitedByVariations );
+
+				// VT-6325 : We should filter items by ListingStatus and don't work with items where ListingStatus is Ended
+				items = items.Where( x => x.SellingStatus.ListingStatus != ListingStatusCodeTypeEnum.Ended );
 
 				var resultSellerListBriefInfo = items.ToJson();
 				EbayLogger.LogTraceEnded( CreateMethodCallInfo( this.EbayServiceLowLevel.ToJson(), methodParameters(), mark, methodResult : resultSellerListBriefInfo ) );

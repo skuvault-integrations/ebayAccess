@@ -38,7 +38,8 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 				{
 					CurrentPrice = this.SellingStatus.CurrentPrice,
 					CurrentPriceCurrencyId = this.SellingStatus.CurrentPriceCurrencyId,
-					QuantitySold = this.SellingStatus.QuantitySold
+					QuantitySold = this.SellingStatus.QuantitySold,
+					ListingStatus = this.SellingStatus.ListingStatus
 				};
 
 			return clonedItem;

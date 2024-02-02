@@ -10,5 +10,7 @@ namespace EbayAccess.Models.GetSellerListCustomResponse
 		public string CurrentPriceCurrencyId { get; set; }
 
 		public int QuantitySold { get; set; }
+		
+		public ListingStatusCodeTypeEnum ListingStatus { get; set; }
 	}
 }

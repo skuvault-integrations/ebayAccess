@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EbayAccess</RootNamespace>
     <AssemblyName>EbayAccess</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -77,6 +77,7 @@
     <Compile Include="Models\EbayErrors.cs" />
     <Compile Include="Models\GetOrdersResponse\ShippingServiceSelected.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\GetSellerListCustomProductResponse.cs" />
+    <Compile Include="Models\GetSellerListCustomResponse\ListingStatusCodeTypeEnum.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\Product.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\ProductBase.cs" />
     <Compile Include="Models\GetSellerListCustomResponse\ProductVariation.cs" />
@@ -149,6 +150,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(AssemblyName)Tests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
