@@ -170,5 +170,33 @@ namespace EbayAccess.Models
 				};
 			}
 		}
+
+		public static ResponseError InvalidMultiSkuItemId
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "21916635",
+					LongMessage = "Invalid Multi-SKU item id supplied with variations.",
+					ShortMessage = "Invalid Multi-SKU item id.",
+					SeverityCode = "Error"
+				};
+			}
+		}
+
+		public static ResponseError AuctionEnded
+		{
+			get
+			{
+				return new ResponseError
+				{
+					ErrorCode = "291",
+					LongMessage = "You are not allowed to revise ended listings.",
+					ShortMessage = "Auction ended.",
+					SeverityCode = "Error"
+				};
+			}
+		}
 	}
 }
