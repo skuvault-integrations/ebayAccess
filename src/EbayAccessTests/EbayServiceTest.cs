@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Misc;
 using EbayAccess.Models;
+using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Models.ReviseFixedPriceItemRequest;
 using EbayAccess.Models.ReviseInventoryStatusRequest;
@@ -27,6 +28,8 @@ namespace EbayAccessTests
 	[ TestFixture ]
 	public class EbayServiceTest : TestBase
 	{
+		private Random _random = new Random();
+		
 		[ Test ]
 		public void GetSellerListAsync_EbayServiceExistingItemsDividedIntoMultiplePages_HookUpItemsFromAllPages()
 		{
@@ -571,6 +574,52 @@ namespace EbayAccessTests
 			response.Count( x => x.SellingStatus.ListingStatus == ListingStatusCodeTypeEnum.Custom ).Should().Be( 1 );
 			response.Count( x => x.SellingStatus.ListingStatus == ListingStatusCodeTypeEnum.CustomCode ).Should().Be( 1 );
 			response.Count( x => x.SellingStatus.ListingStatus == ListingStatusCodeTypeEnum.Ended ).Should().Be( 0 );
+		}
+
+		[ TestCase( EbayErrors.EbayPixelSizeErrorCode ) ]
+		[ TestCase( EbayErrors.LvisBlockedErrorCode ) ]
+		[ TestCase( EbayErrors.UnsupportedListingTypeErrorCode ) ]
+		[ TestCase( EbayErrors.ReplaceableValueErrorCode ) ]
+		[ TestCase( EbayErrors.MpnHasAnInvalidValueErrorCode ) ]
+		[ TestCase( EbayErrors.DuplicateListingPolicyErrorCode ) ]
+		[ TestCase( EbayErrors.OperationIsNotAllowedForInventoryItemsErrorCode ) ]
+		[ TestCase( EbayErrors.InvalidMultiSkuItemIdErrorCode ) ]
+		[ TestCase( EbayErrors.AuctionEndedErrorCode ) ]
+		public void ReviseFixedPriceItemsAsync_DoesNotThrowException( string errorCode )
+		{
+			// Arrange
+			var request = new List<ReviseFixedPriceItemRequest>
+			{
+				new()
+				{
+					Sku = Guid.NewGuid().ToString(),
+					Quantity = this._random.Next(),
+					StartPrice = this._random.NextDouble(),
+					ConditionID = this._random.Next()
+				}
+			};
+			
+			var response = new EbayAccess.Models.ReviseFixedPriceItemResponse.ReviseFixedPriceItemResponse
+			{
+				Errors = new[]
+				{
+					new ResponseError
+					{
+						ErrorCode = errorCode
+					}
+				}
+			};
+			var ebayServiceLowLevel = Substitute.For< IEbayServiceLowLevel >();
+			ebayServiceLowLevel.MaxThreadsCount.Returns( 1 );
+			ebayServiceLowLevel.ReviseFixedPriceItemAsync( Arg.Any< ReviseFixedPriceItemRequest >(), Arg.Any< CancellationToken >(), Arg.Any< Mark >() )
+				.ReturnsForAnyArgs( Task.FromResult( response ) );
+
+			var ebayService = new EbayService( ebayServiceLowLevel );
+
+			// Act / Assert
+			Assert.DoesNotThrow( () => ebayService.ReviseFixedPriceItemsAsync(
+				request,
+				CancellationToken.None ).Wait() );
 		}
 	}
 }
