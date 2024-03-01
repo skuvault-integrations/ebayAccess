@@ -63,6 +63,7 @@
     <Compile Include="..\Global\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="EbayBaseResponseTest.cs" />
     <Compile Include="EbayServiceTest.cs" />
     <Compile Include="Misc\ExtensionsTests.cs" />
     <Compile Include="Misc\LoggerTests.cs" />
