@@ -438,7 +438,9 @@ namespace EbayAccess
 							EbayErrors.ReplaceableValue,
 							EbayErrors.MpnHasAnInvalidValue,
 							EbayErrors.DuplicateListingPolicy,
-							EbayErrors.OperationIsNotAllowedForInventoryItems
+							EbayErrors.OperationIsNotAllowedForInventoryItems,
+							EbayErrors.InvalidMultiSkuItemId,
+							EbayErrors.AuctionEnded
 						} );
 
 					if( res.Errors == null || !res.Errors.Any() )
