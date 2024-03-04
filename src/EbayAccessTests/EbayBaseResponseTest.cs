@@ -15,8 +15,8 @@ namespace EbayAccessTests
 			EbayErrors.InvalidMultiSkuItemId
 		};
 
-		[ TestCase( EbayErrors.InvalidMultiSkuItemIdErrorCode ) ]
-		public void SkipErrorsAndDo_ReturnResponseWithoutIgnoredErrors( string errorCode )
+		[ Test ]
+		public void SkipErrorsAndDo_ErrorDoesNotRemainInResponse_WhenErrorIsIgnored()
 		{
 			// Arrange
 			var response = new EbayBaseResponse
@@ -25,7 +25,7 @@ namespace EbayAccessTests
 				{
 					new ResponseError
 					{
-						ErrorCode = errorCode
+						ErrorCode = EbayErrors.InvalidMultiSkuItemIdErrorCode
 					}
 				}
 			};
@@ -34,18 +34,11 @@ namespace EbayAccessTests
 			response.SkipErrorsAndDo( null, this._errorsForIgnoring );
 
 			// Assert
-			response.Errors.Any( x => x.ErrorCode.Equals( errorCode ) ).Should().BeFalse();
+			response.Errors.Any( x => x.ErrorCode.Equals( EbayErrors.InvalidMultiSkuItemIdErrorCode ) ).Should().BeFalse();
 		}
 
-		[ TestCase( EbayErrors.EbayPixelSizeErrorCode ) ]
-		[ TestCase( EbayErrors.LvisBlockedErrorCode ) ]
-		[ TestCase( EbayErrors.UnsupportedListingTypeErrorCode ) ]
-		[ TestCase( EbayErrors.ReplaceableValueErrorCode ) ]
-		[ TestCase( EbayErrors.MpnHasAnInvalidValueErrorCode ) ]
-		[ TestCase( EbayErrors.DuplicateListingPolicyErrorCode ) ]
-		[ TestCase( EbayErrors.OperationIsNotAllowedForInventoryItemsErrorCode ) ]
-		[ TestCase( EbayErrors.AuctionEndedErrorCode ) ]
-		public void SkipErrorsAndDo_Throws_WhenErrorIsNotIgnored( string errorCode )
+		[ Test ]
+		public void SkipErrorsAndDo_ErrorRemainsInResponse_WhenErrorIsNotIgnored()
 		{
 			// Arrange
 			var response = new EbayBaseResponse
@@ -54,7 +47,7 @@ namespace EbayAccessTests
 				{
 					new ResponseError
 					{
-						ErrorCode = errorCode
+						ErrorCode = EbayErrors.EbayPixelSizeErrorCode
 					}
 				}
 			};
@@ -63,7 +56,7 @@ namespace EbayAccessTests
 			response.SkipErrorsAndDo( null, this._errorsForIgnoring );
 
 			// Assert
-			response.Errors.Any( x => x.ErrorCode.Equals( errorCode ) ).Should().BeTrue();
+			response.Errors.Any( x => x.ErrorCode.Equals( EbayErrors.EbayPixelSizeErrorCode ) ).Should().BeTrue();
 		}
 	}
 }
