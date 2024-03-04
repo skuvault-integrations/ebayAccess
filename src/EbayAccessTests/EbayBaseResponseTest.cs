@@ -10,29 +10,13 @@ namespace EbayAccessTests
 	[ TestFixture ]
 	public class EbayBaseResponseTest
 	{
-		private readonly List< ResponseError > _errorsForIgnoring = new List< ResponseError >
+		private readonly List< ResponseError > _errorsForIgnoring = new()
 		{
-			EbayErrors.EbayPixelSizeError,
-			EbayErrors.LvisBlockedError,
-			EbayErrors.UnsupportedListingType,
-			EbayErrors.ReplaceableValue,
-			EbayErrors.MpnHasAnInvalidValue,
-			EbayErrors.DuplicateListingPolicy,
-			EbayErrors.OperationIsNotAllowedForInventoryItems,
-			EbayErrors.InvalidMultiSkuItemId,
-			EbayErrors.AuctionEnded
+			EbayErrors.InvalidMultiSkuItemId
 		};
 
-		[ TestCase( EbayErrors.EbayPixelSizeErrorCode ) ]
-		[ TestCase( EbayErrors.LvisBlockedErrorCode ) ]
-		[ TestCase( EbayErrors.UnsupportedListingTypeErrorCode ) ]
-		[ TestCase( EbayErrors.ReplaceableValueErrorCode ) ]
-		[ TestCase( EbayErrors.MpnHasAnInvalidValueErrorCode ) ]
-		[ TestCase( EbayErrors.DuplicateListingPolicyErrorCode ) ]
-		[ TestCase( EbayErrors.OperationIsNotAllowedForInventoryItemsErrorCode ) ]
 		[ TestCase( EbayErrors.InvalidMultiSkuItemIdErrorCode ) ]
-		[ TestCase( EbayErrors.AuctionEndedErrorCode ) ]
-		public void SkipErrorsAndDo_ReturnResponseWithoutIgnoringErrors( string errorCode )
+		public void SkipErrorsAndDo_ReturnResponseWithoutIgnoredErrors( string errorCode )
 		{
 			// Arrange
 			var response = new EbayBaseResponse
@@ -51,6 +35,35 @@ namespace EbayAccessTests
 
 			// Assert
 			response.Errors.Any( x => x.ErrorCode.Equals( errorCode ) ).Should().BeFalse();
+		}
+
+		[ TestCase( EbayErrors.EbayPixelSizeErrorCode ) ]
+		[ TestCase( EbayErrors.LvisBlockedErrorCode ) ]
+		[ TestCase( EbayErrors.UnsupportedListingTypeErrorCode ) ]
+		[ TestCase( EbayErrors.ReplaceableValueErrorCode ) ]
+		[ TestCase( EbayErrors.MpnHasAnInvalidValueErrorCode ) ]
+		[ TestCase( EbayErrors.DuplicateListingPolicyErrorCode ) ]
+		[ TestCase( EbayErrors.OperationIsNotAllowedForInventoryItemsErrorCode ) ]
+		[ TestCase( EbayErrors.AuctionEndedErrorCode ) ]
+		public void SkipErrorsAndDo_Throws_WhenErrorIsNotIgnored( string errorCode )
+		{
+			// Arrange
+			var response = new EbayBaseResponse
+			{
+				Errors = new[]
+				{
+					new ResponseError
+					{
+						ErrorCode = errorCode
+					}
+				}
+			};
+
+			// Act
+			response.SkipErrorsAndDo( null, this._errorsForIgnoring );
+
+			// Assert
+			response.Errors.Any( x => x.ErrorCode.Equals( errorCode ) ).Should().BeTrue();
 		}
 	}
 }
