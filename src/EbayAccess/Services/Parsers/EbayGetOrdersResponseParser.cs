@@ -29,9 +29,8 @@ namespace EbayAccess.Services.Parsers
 				// \a is the escape sequence for ASCII code 7, which is a non-printable "bell" character.
 				// This character can appear unexpectedly in input and cause XML parsing errors.
 				xml = xml.Replace( "\a", " " );
-
-				var sanitizedStream = new MemoryStream( Encoding.UTF8.GetBytes( xml ) );
-				var root = XElement.Load( sanitizedStream );
+				
+				var root = XElement.Parse(xml);
 
 				var xmlOrders = root.Descendants( ns + "Order" );
 
