@@ -115,5 +115,19 @@ namespace EbayAccessTests.Services.Parsers
 				secondTransaction.TotalTaxAmountCurrencyId.Should().Be( ebayCurrency.Unknown );
 			}
 		}
+
+		[ Test ]
+		public void Parse_GetOrdersResponse_ShouldRemoveBelCharactersFromShippingAddressName()
+		{
+			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithBelInShippingAddressName.xml", FileMode.Open, FileAccess.Read ) )
+			{
+				var parser = new EbayGetOrdersResponseParser();
+				var response = parser.Parse( fs );
+
+				var name = response.Orders.Single().ShippingAddress.Name;
+
+				Assert.IsFalse( name.Contains( "\a" ), "Name should not contain BEL (\\a) character" );
+			}
+		}
 	}
 }

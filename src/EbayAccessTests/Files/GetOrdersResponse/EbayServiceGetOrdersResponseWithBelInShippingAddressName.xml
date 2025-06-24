@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GetOrdersResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+    <OrderArray>
+        <Order>
+            <OrderID>12345</OrderID>
+            <BuyerUserID>test_user</BuyerUserID>
+            <ShippingAddress>
+                <Name>TestAddress</Name>
+                <Street1>123 Test St</Street1>
+                <CityName>Test</CityName>
+                <StateOrProvince>TS</StateOrProvince>
+                <Country>US</Country>
+                <CountryName>United States</CountryName>
+                <Phone>1234567890</Phone>
+                <PostalCode>12345</PostalCode>
+            </ShippingAddress>
+        </Order>
+    </OrderArray>
+</GetOrdersResponse>

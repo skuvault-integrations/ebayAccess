@@ -115,6 +115,9 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithBelInShippingAddressName.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutMonetaryDetailsRefundOptionalFields.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
