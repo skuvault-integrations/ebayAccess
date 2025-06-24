@@ -28,6 +28,7 @@ namespace EbayAccess.Services.Parsers
 				// Replace BEL (Bell) control characters with space
 				// \a is the escape sequence for ASCII code 7, which is a non-printable "bell" character.
 				// This character can appear unexpectedly in input and cause XML parsing errors.
+				// See PBL-9420 for context
 				xml = xml.Replace( "\a", " " );
 
 				var root = XElement.Parse( xml );
