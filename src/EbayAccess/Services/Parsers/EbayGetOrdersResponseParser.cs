@@ -22,7 +22,16 @@ namespace EbayAccess.Services.Parsers
 
 				var streamStartPos = stream.Position;
 
-				var root = XElement.Load( stream );
+				// Read stream content and remove BEL characters
+				var reader = new StreamReader( stream, Encoding.UTF8, true );
+				var xml = reader.ReadToEnd();
+				// Replace BEL (Bell) control characters with space
+				// \a is the escape sequence for ASCII code 7, which is a non-printable "bell" character.
+				// This character can appear unexpectedly in input and cause XML parsing errors.
+				// See PBL-9420 for context
+				xml = xml.Replace( "\a", " " );
+
+				var root = XElement.Parse( xml );
 
 				var xmlOrders = root.Descendants( ns + "Order" );
 
