@@ -7,7 +7,7 @@
 		<Copyright>SkuVault © 2025</Copyright>
 		<PackageProjectUrl>https://github.com/skuvault-integrations/ebayaccess</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/skuvault-integrations/ebayaccess</RepositoryUrl>
-		<PackageVersion>1.16.3-alpha.1</PackageVersion>
+		<PackageVersion>1.16.3</PackageVersion>
 		<AssemblyVersion>1.16.3</AssemblyVersion>
 		<FileVersion>1.16.3</FileVersion>
 		<TargetFramework>net48</TargetFramework>
