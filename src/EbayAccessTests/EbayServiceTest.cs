@@ -536,6 +536,66 @@ namespace EbayAccessTests
 			//A
 			callsCount.Should().Be( 8 );
 		}
+		
+		[Test]
+		public async Task GetActiveProductsAsync_ShouldFilterOutItem_WhenParentAndVariationShareSameSku()
+		{
+			// Arrange
+			var sku = "AN4034-Black-OS";
+
+			var variation = new Variation
+			{
+				Sku = sku,
+				Quantity = 3,
+				SellingStatus = new SellingStatus
+				{
+					QuantitySold = 0
+				}
+			};
+
+			var parentItem = new Item
+			{
+				Sku = sku,
+				Title = "Some Stockings",
+				Quantity = 3,
+				Variations = new List<Variation> { variation },
+				SellingStatus = new SellingStatus
+				{
+					ListingStatus = ListingStatusCodeTypeEnum.Active,
+					CurrentPrice = 35.95m,
+					CurrentPriceCurrencyId = "USD",
+					QuantitySold = 0
+				},
+				BuyItNowPrice = 35.95m,
+				BuyItNowPriceCurrencyId = "USD"
+			};
+
+			var response = new GetSellerListCustomResponse
+			{
+				Items = new List<Item> { parentItem },
+				PaginationResult = new PaginationResult { TotalNumberOfPages = 1 }
+			};
+
+			var ebayServiceLowLevel = Substitute.For<IEbayServiceLowLevel>();
+			ebayServiceLowLevel
+				.GetSellerListCustomResponsesWithMaxThreadsRestrictionAsync(
+					Arg.Any<CancellationToken>(),
+					Arg.Any<DateTime>(),
+					Arg.Any<DateTime>(),
+					Arg.Any<GetSellerListTimeRangeEnum>(),
+					Arg.Any<Mark>())
+				.Returns(Task.FromResult((IEnumerable<GetSellerListCustomResponse>)new List<GetSellerListCustomResponse> { response }));
+
+			var ebayService = new EbayService(ebayServiceLowLevel);
+
+			// Act
+			var result = (await ebayService.GetActiveProductsAsync(CancellationToken.None)).ToList();
+
+			// Assert
+			// This won’t work because the mocked method includes the SplitByVariations() logic that filters out the SKUs.
+			result.Should().BeEmpty("because the parent item with variation of the same SKU is filtered out");
+		}
+
 
 		[ Test ]
 		public async Task GetActiveProductsAsync_ReturnsItemsWhereListingStatusIsNotEnded()
