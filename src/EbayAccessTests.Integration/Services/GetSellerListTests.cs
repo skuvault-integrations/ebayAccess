@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -6,6 +8,7 @@ using System.Threading.Tasks;
 using EbayAccess;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
+using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Services;
 using FluentAssertions;
 using Netco.Logging;
@@ -107,6 +110,37 @@ namespace EbayAccessTests.Integration.Services
 			// Assert
 			result.Should().NotBeNull();
 			result.Should().NotContain(i => i.GetSku(false).Sku == "AN4034-Black-OS");
+		}
+		
+		[Test]
+		public void SplitByVariations_ShouldReturnSingleItem_WithSameSkuAsParent()
+		{
+			// Arrange
+			var sku = "AN4034-Black-OS";
+
+			var item = new Item
+			{
+				Sku = sku, // parent SKU
+				Title = "Parent Item",
+				Variations = new List<Variation>
+				{
+					new Variation
+					{
+						Sku = sku, // same SKU as parent
+						StartPrice = 35.95m,
+						Quantity = 3,
+						SellingStatus = new SellingStatus { QuantitySold = 0 }
+					}
+				}
+			};
+
+			// Act
+			var result = item.SplitByVariations().ToList();
+
+			// Assert
+			result.Should().HaveCount(1);
+			result[0].Sku.Should().Be(sku);
+			result[0].Variations[0].Sku.Should().Be(sku);
 		}
 	}
 }
