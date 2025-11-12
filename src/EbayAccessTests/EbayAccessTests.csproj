@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ebayAccess\EbayAccess.csproj" />
+    <ProjectReference Include="..\EbayAccess\EbayAccess.csproj" />
   </ItemGroup>
 
   <ItemGroup>

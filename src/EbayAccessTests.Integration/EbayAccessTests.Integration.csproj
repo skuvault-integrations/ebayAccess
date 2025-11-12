@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EbayAccessTests\EbayAccessTests.csproj" />
-    <ProjectReference Include="..\ebayAccess\EbayAccess.csproj" />
+    <ProjectReference Include="..\EbayAccess\EbayAccess.csproj" />
   </ItemGroup>
 
   <ItemGroup>
