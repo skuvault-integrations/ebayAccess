@@ -13,6 +13,7 @@ using NUnit.Framework;
 
 namespace EbayAccessTests.Integration
 {
+	[ Explicit ]
 	[ TestFixture ]
 	public class Program : TestBase
 	{
@@ -126,7 +127,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		[ Ignore ]
+		[ Ignore("") ]
 		public void GetProductsDetailsAsync_EbayServiceWithProducts_HookupProductsThatEitherSingleVariationEitherNonVariation()
 		{
 			//------------ Arrange
@@ -145,7 +146,7 @@ namespace EbayAccessTests.Integration
 		#endregion
 
 		[ Test ]
-		[ Ignore ]
+		[ Ignore( "" ) ]
 		public void GetUserToken_EbaySandBoxServiceWithCorrectRuName_HookupToken()
 		{
 			////Attention!!! This code will regenerate youe credentials!!!
@@ -164,7 +165,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		[ Ignore ]
+		[ Ignore( "" ) ]
 		public void GetUserToken_EbayProductionServiceWithCorrectRuName_HookupToken()
 		{
 			////Attention!!! This code will regenerate youe credentials!!!
@@ -182,7 +183,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		[ Ignore ]
+		[ Ignore( "" ) ]
 		public void GetUserTokenManually_EbaySandBoxServiceWithCorrectRuName_HookupToken()
 		{
 			////Attention!!! This code will regenerate youe credentials!!!
@@ -204,7 +205,7 @@ namespace EbayAccessTests.Integration
 		}
 
 		[ Test ]
-		[ Ignore ]
+		[ Ignore( "" ) ]
 		public void UpdateQty_UpdateForAllActiveProducts_AllActiveUpdated()
 		{
 			//------------ Arrange

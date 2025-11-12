@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using EbayAccess.Misc;
 using EbayAccess.Models.GetOrdersResponse;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
@@ -20,7 +19,7 @@ namespace EbayAccessTests.Services.Parsers
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
 				orders.Orders.Should().HaveCount( 1, "because in source file there is {0} order", 1 );
-				orders.Orders[ 0 ].Status.ShouldBeEquivalentTo( EbayOrderStatusEnum.Active );
+				orders.Orders[ 0 ].Status.Should().Be( EbayOrderStatusEnum.Active );
 			}
 		}
 		
@@ -31,7 +30,7 @@ namespace EbayAccessTests.Services.Parsers
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
-				orders.rlogid.Should().Equals("SomeRLogIdFromResponseHeader");
+				orders.rlogid.Should().Be("SomeRLogIdFromResponseHeader");
 			}
 		}
 

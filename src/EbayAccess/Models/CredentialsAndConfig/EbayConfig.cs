@@ -1,4 +1,4 @@
-﻿using CuttingEdge.Conditions;
+﻿using System;
 
 namespace EbayAccess.Models.CredentialsAndConfig
 {
@@ -14,9 +14,12 @@ namespace EbayAccess.Models.CredentialsAndConfig
 
 		public EbayConfig( string appName, string devName, string certName )
 		{
-			Condition.Requires( appName, "appName" ).IsNotNullOrWhiteSpace();
-			Condition.Requires( devName, "devName" ).IsNotNullOrWhiteSpace();
-			Condition.Requires( certName, "certName" ).IsNotNullOrWhiteSpace();
+			if( string.IsNullOrWhiteSpace( appName ) )
+				throw new ArgumentException( "Value cannot be null or whitespace.", nameof( appName ) );
+			if( string.IsNullOrWhiteSpace( devName ) )
+				throw new ArgumentException( "Value cannot be null or whitespace.", nameof( devName ) );
+			if( string.IsNullOrWhiteSpace( certName ) )
+				throw new ArgumentException( "Value cannot be null or whitespace.", nameof( certName ) );
 
 			this.AppName = appName;
 			this.DevName = devName;
@@ -29,7 +32,8 @@ namespace EbayAccess.Models.CredentialsAndConfig
 		public EbayConfig( string appName, string devName, string certName, string ruName )
 			: this( appName, devName, certName )
 		{
-			Condition.Requires( ruName, "ruName" ).IsNotNullOrWhiteSpace();
+			if( string.IsNullOrWhiteSpace( ruName ) )
+				throw new ArgumentException( "Value cannot be null or whitespace.", nameof( ruName ) );
 			this.RuName = ruName;
 		}
 	}

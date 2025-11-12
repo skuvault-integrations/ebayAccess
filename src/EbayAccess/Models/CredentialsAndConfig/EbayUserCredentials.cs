@@ -1,4 +1,4 @@
-﻿using CuttingEdge.Conditions;
+﻿using System;
 
 namespace EbayAccess.Models.Credentials
 {
@@ -10,8 +10,10 @@ namespace EbayAccess.Models.Credentials
 
 		public EbayUserCredentials( string accountName, string token, int siteId = ( int )ebaySites.US )
 		{
-			Condition.Requires( accountName, "accountName" ).IsNotNullOrWhiteSpace();
-			Condition.Requires( token, "token" ).IsNotNullOrWhiteSpace();
+			if( string.IsNullOrWhiteSpace( accountName ) )
+				throw new ArgumentException( "Value cannot be null or whitespace.", nameof( accountName ) );
+			if( string.IsNullOrWhiteSpace( token ) )
+				throw new ArgumentException( "Value cannot be null or whitespace.", nameof( token ) );
 
 			this.AccountName = accountName;
 			this.Token = token;

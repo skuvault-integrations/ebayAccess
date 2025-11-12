@@ -16,10 +16,9 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="CuttingEdge.Conditions" Version="1.2.0"/>
 		<PackageReference Include="Netco" Version="3.0.0"/>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-		<PackageReference Include="NSubstitute" Version="1.9.2" />
+		<PackageReference Include="NSubstitute" Version="5.3.0" />
 		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0"/>
 	</ItemGroup>
 	<ItemGroup>

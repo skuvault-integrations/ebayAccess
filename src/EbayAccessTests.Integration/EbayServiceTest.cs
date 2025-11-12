@@ -21,6 +21,7 @@ namespace EbayAccessTests.Integration
 	//	We should be able to make calls to a production test seller: just do this._credentials.GetEbayConfigProduction(),
 	//	and copy the ApiToken from a working channel account to ebay_test_credentials.csv.
 	//TODO TD-316 If we're allowed to use the LinnWorks production test seller for this, then update the tests accordingly
+	[ Explicit ]
 	[ TestFixture ]
 	public class EbayServiceTest: TestBase
 	{
@@ -223,7 +224,7 @@ namespace EbayAccessTests.Integration
 			};
 
 			//------------ Assert
-			act.ShouldThrow< Exception >();
+			act.Should().Throw< Exception >();
 		}
 
 		[ Test ]
@@ -255,7 +256,7 @@ namespace EbayAccessTests.Integration
 
 		#region GetProductsDetails
 		[ Test ]
-		[ Ignore ]
+		[ Ignore("") ]
 		public void GetProductsDetailsAsync_ServiceWithExistingProducts_HookupProducts()
 		{
 			//------------ Arrange
@@ -346,7 +347,7 @@ namespace EbayAccessTests.Integration
 				ordersIdsAsync.Wait();
 			};
 
-			act.ShouldThrow< EbayCommonException >();
+			act.Should().Throw< EbayCommonException >();
 		}
 	}
 }

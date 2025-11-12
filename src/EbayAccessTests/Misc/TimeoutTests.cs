@@ -26,7 +26,7 @@ namespace EbayAccessTests.Misc
 				orderTask.Wait();
 			};
 			
-			act.ShouldThrow< TaskCanceledException >();
+			act.Should().Throw< TaskCanceledException >();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using CuttingEdge.Conditions;
+﻿using System;
 using EbayAccess.Models.Credentials;
 using EbayAccess.Models.CredentialsAndConfig;
 
@@ -10,7 +10,8 @@ namespace EbayAccess
 
 		public EbayFactory( EbayConfig config )
 		{
-			Condition.Requires( config, "config" ).IsNotNull();
+			if( config == null )
+				throw new ArgumentNullException( nameof( config ) );
 			this._config = config;
 		}
 

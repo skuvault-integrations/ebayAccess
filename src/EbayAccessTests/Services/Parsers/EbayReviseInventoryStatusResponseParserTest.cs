@@ -20,7 +20,7 @@ namespace EbayAccessTests.Services.Parsers
 				var inventoryStatus = new EbayReviseInventoryStatusResponseParser().Parse( fs );
 
 				//A
-				inventoryStatus.ShouldBeEquivalentTo( new InventoryStatusResponse
+				inventoryStatus.Should().BeEquivalentTo( new InventoryStatusResponse
 				{
 					Items = new List< Item >
 					{
