@@ -26,7 +26,8 @@ namespace EbayAccessTests.Services
 		public void GetSellerListAsync_EbayServiceWithExistingItems_NotEmptyItemsCollection()
 		{
 			//A
-			using( var fs = new FileStream( @".\Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith5ItemsWithSku_DetailLevelAll.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetSellerListResponse", "EbayServiceGetSellerListResponseWith5ItemsWithSku_DetailLevelAll.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
@@ -49,7 +50,8 @@ namespace EbayAccessTests.Services
 		{
 			//A
 			string respString;
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTotalNumberOfEntities0AndHasMoreOrdersFalse.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithTotalNumberOfEntities0AndHasMoreOrdersFalse.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 				respString = new StreamReader( fs ).ReadToEnd();
 			var getResponseStreamAsyncCallCounter = 0;
 

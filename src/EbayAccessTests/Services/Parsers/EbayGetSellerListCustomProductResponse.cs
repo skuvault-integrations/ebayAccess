@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
@@ -12,7 +13,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void ParseProduct()
 		{
-			const string filePath = @".\Files\GetSellerListCustomProductResponse\EbayServiceGetSellerListCustomProductResponse.xml";
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetSellerListCustomProductResponse", "EbayServiceGetSellerListCustomProductResponse.xml" );
 			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var products = new EbayGetSellerListCustomProductResponseParser().Parse( fs ).Items;
@@ -34,7 +35,7 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void ParseVariations()
 		{
-			const string filePath = @".\Files\GetSellerListCustomProductResponse\EbayServiceGetSellerListCustomProductResponse.xml";
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetSellerListCustomProductResponse", "EbayServiceGetSellerListCustomProductResponse.xml" );
 			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var products = new EbayGetSellerListCustomProductResponseParser().Parse( fs );

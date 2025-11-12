@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using EbayAccess.Models.GetSellerListCustomResponse;
 using EbayAccess.Services.Parsers;
@@ -14,9 +15,8 @@ namespace EbayAccessTests.Services.Parsers
 		public void Parse_CorrectValuesListingStatus()
 		{
 			// Arrange
-			using(
-				var fs = new FileStream( @".\Files\GetSellerListCustomResponse\EbayServiceGetSellerListCustomResponse.xml", FileMode.Open,
-					FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetSellerListCustomResponse", "EbayServiceGetSellerListCustomResponse.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				// Act
 				var orders = new EbayGetSellerListCustomResponseParser().Parse( fs );
@@ -34,9 +34,8 @@ namespace EbayAccessTests.Services.Parsers
 		public void Parse_CorrectValuesListingStatusForVariations()
 		{
 			// Arrange
-			using(
-				var fs = new FileStream( @".\Files\GetSellerListCustomResponse\EbayServiceGetSellerListCustomResponse.xml", FileMode.Open,
-					FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetSellerListCustomResponse", "EbayServiceGetSellerListCustomResponse.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				// Act
 				var orders = new EbayGetSellerListCustomResponseParser().Parse( fs );

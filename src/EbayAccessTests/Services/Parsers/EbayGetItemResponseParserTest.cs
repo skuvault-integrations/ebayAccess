@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
@@ -12,7 +13,8 @@ namespace EbayAccessTests.Services.Parsers
 		public void Parse_GetItemResponseWithSku_HookupSku()
 		{
 			//A
-			using( var fs = new FileStream( @".\Files\GetItemResponse\EbayServiceGetItemResponseWithItemSku.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetItemResponse", "EbayServiceGetItemResponseWithItemSku.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				//A
 				var orders = new EbayGetItemResponseParser().Parse( fs );
@@ -26,7 +28,8 @@ namespace EbayAccessTests.Services.Parsers
 		public void Parse_GetItemResponseWithVariationsSku_HookupVariationSkus()
 		{
 			//A
-			using( var fs = new FileStream( @".\Files\GetItemResponse\EbayServiceGetItemResponseWithItemVariations.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetItemResponse", "EbayServiceGetItemResponseWithItemVariations.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				//A
 				var orders = new EbayGetItemResponseParser().Parse( fs );

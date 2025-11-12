@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
@@ -12,9 +13,8 @@ namespace EbayAccessTests.Services.Parsers
 		public void FileStreamWithCorrectXml_ParseItemsResponse_HookupCorrectDeserializedObject()
 		{
 			//A
-			using(
-				var fs = new FileStream( @".\Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml", FileMode.Open,
-					FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetSellerListResponse", "EbayServiceGetSellerListResponseWith3Items_DetailLevelAll.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				//A
 				var orders = new EbayGetSellerListResponseParser().Parse( fs );

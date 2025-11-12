@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using EbayAccess;
 using EbayAccess.Misc;
@@ -15,7 +16,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_OrdersResponseWithoutItems_ThereAreNoErrorsAndExceptions()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithOutItems.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithOutItems.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -26,7 +28,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponse_ShouldReturnDefaultSalesRecordNumber_WhenSalesRecordNumberIsMissing()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutSellingManagerSalesRecordNumber.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithoutSellingManagerSalesRecordNumber.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var orders = new EbayGetOrdersResponseParser().Parse( fs );
 
@@ -38,7 +41,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponse_ShouldReturnDefaultOptionalShippingAddressAndShippingServiceFieldValues_WhenTheseFieldsAreMissing()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutShippingAddressAndShippingServiceOptionalFields.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithoutShippingAddressAndShippingServiceOptionalFields.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var orders = new EbayGetOrdersResponseParser().Parse( fs );
 
@@ -53,7 +57,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponse_ShouldReturnDefaultOptionalMonetaryDetailsRefundFieldValues_WhenTheseFieldsAreMissing()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutMonetaryDetailsRefundOptionalFields.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithoutMonetaryDetailsRefundOptionalFields.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var orders = new EbayGetOrdersResponseParser().Parse( fs );
 
@@ -67,7 +72,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponse_ShouldReturnDefaultOptionalShippingDetailsFieldValues_WhenTheseFieldsAreMissing()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutShippingDetailsOptionalFields.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithoutShippingDetailsOptionalFields.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var orders = new EbayGetOrdersResponseParser().Parse( fs );
 
@@ -93,7 +99,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponse_ShouldReturnDefaultOptionalTransactionArrayFieldValues_WhenTheseFieldsAreMissing()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithoutTransactionArrayOptionalFields.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithoutTransactionArrayOptionalFields.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var orders = new EbayGetOrdersResponseParser().Parse( fs );
 
@@ -119,7 +126,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponse_ShouldRemoveBelCharactersFromShippingAddressName()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithBelInShippingAddressName.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithBelInShippingAddressName.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var response = parser.Parse( fs );

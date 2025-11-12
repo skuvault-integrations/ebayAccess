@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using EbayAccess.Models.ReviseInventoryStatusResponse;
 using EbayAccess.Services.Parsers;
@@ -14,7 +15,8 @@ namespace EbayAccessTests.Services.Parsers
 		public void CorrectReviseInventoryStatusResponseWithInventory_ParseInventoryStatusResponse_HookupCorrectDeserializedObject()
 		{
 			//A
-			using( var fs = new FileStream( @".\Files\ReviseInventoryStatusResponse.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "ReviseInventoryStatusResponse.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				//A
 				var inventoryStatus = new EbayReviseInventoryStatusResponseParser().Parse( fs );

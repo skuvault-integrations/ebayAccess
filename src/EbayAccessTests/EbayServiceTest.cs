@@ -328,7 +328,8 @@ namespace EbayAccessTests
 		{
 			//A
 			string respstring;
-			using( var fs = new FileStream( @".\Files\AuthTokenIsInvalidResponse.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "AuthTokenIsInvalidResponse.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 				respstring = new StreamReader( fs ).ReadToEnd();
 			var getResponseStreamAsyncCallCounter = 0;
 

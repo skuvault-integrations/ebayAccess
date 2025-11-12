@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using EbayAccess.Services.Parsers;
 using FluentAssertions;
 using NUnit.Framework;
@@ -12,8 +13,8 @@ namespace EbayAccessTests.Services.Parsers
 		public void ParsePaginationResultResponse_ResultContainsMultiplePages_AllPagesHandled()
 		{
 			//A
-			using(
-				var fs = new FileStream( @".\Files\GetSellerListResponse\EbayServiceGetSellerListResponseWith1PageOf4Contains1Item.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetSellerListResponse", "EbayServiceGetSellerListResponseWith1PageOf4Contains1Item.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				const int itemCount = 4;
 				const int pagesCount = 4;

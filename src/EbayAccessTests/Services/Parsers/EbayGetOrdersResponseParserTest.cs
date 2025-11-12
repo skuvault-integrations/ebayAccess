@@ -14,7 +14,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void FileStreamWithCorrectXml_ParseOrdersResponse_HookupCorrectDeserializedObject()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithItemsSku.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -26,7 +27,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void FileStreamWithCorrectXml_ParseOrdersResponse_ContainsRlogid()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSkuAndRlogIdHeader.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithItemsSkuAndRlogIdHeader.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -37,7 +39,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponse_HookupOrderDetails()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemsSku.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithItemsSku.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				//A
 				var parser = new EbayGetOrdersResponseParser();
@@ -71,7 +74,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrders_ResponseWithUserFirstAndLastName_Check_That_UserFirst_UserLastName_Parses_Right()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithUserFirstandLastName.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithUserFirstandLastName.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				//A
 				var parser = new EbayGetOrdersResponseParser();
@@ -87,7 +91,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponseWithItemVariationSku_HookupVariationSku()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithItemVariationSku.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithItemVariationSku.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -98,7 +103,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void GivenGetOrdersResponseWithTrackingNumber_WhenResponseIsParsed_ThenReceiveOrderWithTrackingNumber()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTrackingNumber.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithTrackingNumber.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 
@@ -116,7 +122,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void GivenGetOrdersResponseWithShippingCarrier_WhenResponseIsParsed_ThenReceiveOrderWithShippingCarrier()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithShippingCarrier.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithShippingCarrier.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
@@ -134,7 +141,8 @@ namespace EbayAccessTests.Services.Parsers
 		[ Test ]
 		public void Parse_GetOrdersResponseWithTaxes_HookupTaxes()
 		{
-			using( var fs = new FileStream( @".\Files\GetOrdersResponse\EbayServiceGetOrdersResponseWithTaxes.xml", FileMode.Open, FileAccess.Read ) )
+			var filePath = Path.Combine( AppContext.BaseDirectory, "Files", "GetOrdersResponse", "EbayServiceGetOrdersResponseWithTaxes.xml" );
+			using( var fs = new FileStream( filePath, FileMode.Open, FileAccess.Read ) )
 			{
 				var parser = new EbayGetOrdersResponseParser();
 				var orders = parser.Parse( fs );
