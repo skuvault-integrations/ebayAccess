@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Web;
+using System.Net;
 
 namespace EbayAccess.Models.GetOrdersResponse
 {
@@ -38,7 +38,7 @@ namespace EbayAccess.Models.GetOrdersResponse
 			if( string.IsNullOrEmpty( sku ) )
 				return sku;
 
-			return HttpUtility.HtmlDecode( sku );
+			return WebUtility.HtmlDecode( sku );
 		}
 	}
 

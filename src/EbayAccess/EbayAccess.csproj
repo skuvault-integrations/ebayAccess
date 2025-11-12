@@ -1,25 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<OutputType>Library</OutputType>
-		<Company>SkuVault</Company>
-		<Authors>SkuVault</Authors>
-		<Description>Ebay webservices API wrapper.</Description>
-		<Copyright>SkuVault © 2025</Copyright>
-		<PackageProjectUrl>https://github.com/skuvault-integrations/ebayaccess</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/skuvault-integrations/ebayaccess</RepositoryUrl>
-		<PackageVersion>1.16.3</PackageVersion>
-		<AssemblyVersion>1.16.3</AssemblyVersion>
-		<FileVersion>1.16.3</FileVersion>
-		<TargetFramework>net48</TargetFramework>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>EbayAccess</RootNamespace>
+        <AssemblyName>SkuVault.Ebay.Access</AssemblyName>
+        <LangVersion>latest</LangVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>SkuVault.Ebay.Access</Title>
+        <Authors>Skuvault Inc.</Authors>
+        <Company>SkuVault Inc.</Company>
+        <Summary>A library that provides tools to issue requests to the EBay API</Summary>
+        <Description>A library that provides tools to issue requests to the EBay API</Description>
+        <RepositoryUrl>https://github.com/skuvault-integrations/ebayAccess</RepositoryUrl>
+        <PackageTags>requests, skuvault, ebay</PackageTags>
+        <PackageId>SkuVault.Ebay.Access</PackageId>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="CuttingEdge.Conditions" Version="1.2.0"/>
-		<PackageReference Include="Netco" Version="1.5.8"/>
-		<PackageReference Include="Newtonsoft.Json" Version="7.0.1"/>
-	</ItemGroup>
-	<ItemGroup>
-		<Reference Include="System.Web"/>
+		<PackageReference Include="Netco" Version="3.0.0"/>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="NSubstitute" Version="1.9.2" />
+		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0"/>
 	</ItemGroup>
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

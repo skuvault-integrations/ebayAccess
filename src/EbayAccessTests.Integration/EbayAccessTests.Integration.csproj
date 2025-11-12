@@ -14,14 +14,14 @@
 
   <ItemGroup>
     <PackageReference Include="CuttingEdge.Conditions" Version="1.2.0" />
-    <PackageReference Include="FluentAssertions" Version="2.2.0" />
+    <PackageReference Include="FluentAssertions" Version="6.12.2" />
     <PackageReference Include="LINQtoCSV" Version="1.3.0" />
-    <PackageReference Include="Moq" Version="4.2.1312.1622" />
-    <PackageReference Include="Netco" Version="1.5.8" />
-    <PackageReference Include="Netco.NLog" Version="1.3.1" />
-    <PackageReference Include="NLog" Version="2.0.1.2" />
-    <PackageReference Include="NSubstitute" Version="1.7.2" />
-    <PackageReference Include="NUnit" Version="2.6.3" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="Netco" Version="3.0.0" />
+    <PackageReference Include="Netco.NLog" Version="1.5.8" />
+    <PackageReference Include="NLog" Version="6.0.6" />
+    <PackageReference Include="NSubstitute" Version="1.9.2" />
+    <PackageReference Include="NUnit" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>

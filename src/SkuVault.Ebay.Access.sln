@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbayAccess", "ebayAccess\EbayAccess.csproj", "{25DA5572-4236-469B-8E26-AEEF31810EB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbayAccessTests", "EbayAccessTests\EbayAccessTests.csproj", "{5818F5C0-DABA-4C7E-B2BA-43EF8DDF56DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EbayAccessTests.Integration", "EbayAccessTests.Integration\EbayAccessTests.Integration.csproj", "{4C5A419C-0173-44A6-9170-E200CACDEB6D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{25DA5572-4236-469B-8E26-AEEF31810EB4} = {25DA5572-4236-469B-8E26-AEEF31810EB4}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1ABAD981-5EB7-454E-9E01-2E750C6F113F}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{25DA5572-4236-469B-8E26-AEEF31810EB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25DA5572-4236-469B-8E26-AEEF31810EB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25DA5572-4236-469B-8E26-AEEF31810EB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25DA5572-4236-469B-8E26-AEEF31810EB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5818F5C0-DABA-4C7E-B2BA-43EF8DDF56DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5818F5C0-DABA-4C7E-B2BA-43EF8DDF56DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5818F5C0-DABA-4C7E-B2BA-43EF8DDF56DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5818F5C0-DABA-4C7E-B2BA-43EF8DDF56DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C5A419C-0173-44A6-9170-E200CACDEB6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C5A419C-0173-44A6-9170-E200CACDEB6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C5A419C-0173-44A6-9170-E200CACDEB6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C5A419C-0173-44A6-9170-E200CACDEB6D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
