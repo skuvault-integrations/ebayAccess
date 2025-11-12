@@ -15,10 +15,10 @@ namespace EbayAccessTests.Integration.TestEnvironment
 		protected TestCredentials _credentials;
 		internal IEbayServiceLowLevel _ebayService;
 
-		protected string FilesEbayTestCredentialsCsv = @"..\..\Files\ebay_test_credentials.csv";
-		protected string FilesEbayTestDevcredentialsCsv = @"..\..\Files\ebay_test_devcredentials.csv";
-		protected string FilesEbayTestSaleitemsidsCsv = @"..\..\Files\ebay_test_saleitemsids.csv";
-		protected string FilesEbayTestRunameCsv = @"..\..\Files\ebay_test_runame.csv";
+		protected string FilesEbayTestCredentialsCsv = @"Files\ebay_test_credentials.csv";
+		protected string FilesEbayTestDevcredentialsCsv = @"Files\ebay_test_devcredentials.csv";
+		protected string FilesEbayTestSaleitemsidsCsv = @"Files\ebay_test_saleitemsids.csv";
+		protected string FilesEbayTestRunameCsv = @"Files\ebay_test_runame.csv";
 
 		protected uint QtyUpdateFor = 500;
 

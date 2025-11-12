@@ -89,7 +89,7 @@ namespace EbayAccessTests.Services
 			};
 
 			//A
-			act.ShouldNotThrow< Exception >();
+			act.Should().NotThrow< Exception >();
 			stubWebRequestService.Received().CreateServicePostRequestAsync(
 				Arg.Any< string >(),
 				Arg.Is< string >( x => new XmlDocument().TryParse( x ) ),
@@ -120,7 +120,7 @@ namespace EbayAccessTests.Services
 			};
 
 			//A
-			act.ShouldNotThrow< Exception >();
+			act.Should().NotThrow< Exception >();
 			stubWebRequestService.Received( 1 ).CreateServicePostRequestAsync(
 				Arg.Any< string >(),
 				Arg.Is< string >( x => new XmlDocument().TryParse( x ) ),

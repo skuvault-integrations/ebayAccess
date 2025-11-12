@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
-using CuttingEdge.Conditions;
 using EbayAccess.Misc;
 using EbayAccess.Models.BaseResponse;
 using EbayAccess.Models.Credentials;
@@ -47,9 +46,12 @@ namespace EbayAccess.Services
 
 		public EbayServiceLowLevel( EbayUserCredentials credentials, EbayConfig ebayConfig, IWebRequestServices webRequestServices, int requestTimeoutMs = MaxRequestTimeoutMs )
 		{
-			Condition.Requires( credentials, "credentials" ).IsNotNull();
-			Condition.Requires( webRequestServices, "webRequestServices" ).IsNotNull();
-			Condition.Requires( ebayConfig, "ebayDevCredentials" ).IsNotNull();
+			if( credentials == null )
+				throw new ArgumentNullException( nameof( credentials ) );
+			if( webRequestServices == null )
+				throw new ArgumentNullException( nameof( webRequestServices ) );
+			if( ebayConfig == null )
+				throw new ArgumentNullException( nameof( ebayConfig ) );
 
 			this._userCredentials = credentials;
 			this._webRequestServices = webRequestServices;

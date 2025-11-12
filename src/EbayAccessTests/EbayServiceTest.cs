@@ -70,7 +70,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( x =>
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >(), Arg.Any<bool>() ).Returns( x =>
 			{
 				var ms = new MemoryStream();
 				var utf8Encoding = new UTF8Encoding();
@@ -102,7 +102,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( x =>
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >(), Arg.Any<bool>() ).Returns( x =>
 			{
 				var ms = new MemoryStream();
 				var utf8Encoding = new UTF8Encoding();
@@ -244,7 +244,7 @@ namespace EbayAccessTests
 			};
 
 			//A
-			action.ShouldNotThrow< EbayCommonException >();
+			action.Should().NotThrow< EbayCommonException >();
 		}
 
 		[ Test ]
@@ -272,7 +272,7 @@ namespace EbayAccessTests
 			};
 
 			//A
-			action.ShouldNotThrow< EbayCommonException >();
+			action.Should().NotThrow< EbayCommonException >();
 		}
 
 		[ Test ]
@@ -296,7 +296,7 @@ namespace EbayAccessTests
 				updateInventoryAsync.Wait();
 			};
 
-			action.ShouldNotThrow< EbayCommonException >();
+			action.Should().NotThrow< EbayCommonException >();
 		}
 
 		[ Test ]
@@ -320,11 +320,11 @@ namespace EbayAccessTests
 				updateInventoryAsync.Wait();
 			};
 
-			action.ShouldNotThrow< EbayCommonException >();
+			action.Should().NotThrow< EbayCommonException >();
 		}
 
 		[ Test ]
-		public void GetProductsDetailsAsync_EbayServiceReturnError_Only1CallExecuted()
+		public void GetProductsDetailsAsync_EbayServiceReturnError_RetriesThreeTimes()
 		{
 			//A
 			string respstring;
@@ -333,7 +333,7 @@ namespace EbayAccessTests
 			var getResponseStreamAsyncCallCounter = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >(), Arg.Any<bool>() ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -349,7 +349,7 @@ namespace EbayAccessTests
 			}
 
 			//A
-			getResponseStreamAsyncCallCounter.Should().Be( 1 );
+			getResponseStreamAsyncCallCounter.Should().Be( 4 );
 		}
 
 		[ Test ]
@@ -383,7 +383,7 @@ namespace EbayAccessTests
 			};
 
 			//A
-			action.ShouldThrow< EbayCommonException >();
+			action.Should().Throw< EbayCommonException >();
 
 			stubWebRequestService.Received().CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
 				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), Arg.Any< CancellationToken >(), Arg.Any< Mark >() );
@@ -419,7 +419,7 @@ namespace EbayAccessTests
 			};
 
 			//A
-			action.ShouldThrow< Exception >();
+			action.Should().Throw< Exception >();
 
 			stubWebRequestService.Received( requiredNumberOfCalls ).CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
 				x[ EbayHeaders.XEbayApiCallName ] == EbayHeadersMethodnames.ReviseFixedPriceItem ), Arg.Any< CancellationToken >(), Arg.Any< Mark >() );
@@ -450,7 +450,7 @@ namespace EbayAccessTests
 			};
 
 			//A
-			action.ShouldThrow< Exception >();
+			action.Should().Throw< Exception >();
 
 			var requiredNumberOfCalls = inventoryStatusRequests.Count / 4 + ( inventoryStatusRequests.Count % 4 > 0 ? 1 : 0 );
 			stubWebRequestService.Received( requiredNumberOfCalls ).CreateServicePostRequestAsync( Arg.Any< string >(), Arg.Any< string >(), Arg.Is< Dictionary< string, string > >( x =>
@@ -481,7 +481,7 @@ namespace EbayAccessTests
 			};
 
 			//A
-			action.ShouldNotThrow< Exception >();
+			action.Should().NotThrow< Exception >();
 		}
 
 		[ Test ]
@@ -508,7 +508,7 @@ namespace EbayAccessTests
 			};
 
 			//A
-			action.ShouldNotThrow< Exception >();
+			action.Should().NotThrow< Exception >();
 		}
 
 		[ Test ]

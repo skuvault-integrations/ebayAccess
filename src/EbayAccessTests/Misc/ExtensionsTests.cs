@@ -49,9 +49,9 @@ namespace EbayAccessTests.Misc
 			Action act3 = () => str3 = OrderListWithNullOrder.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
-			act3.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
+			act3.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
@@ -74,9 +74,9 @@ namespace EbayAccessTests.Misc
 			Action act3 = () => str3 = listWithNullString.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
-			act3.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
+			act3.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
@@ -96,8 +96,8 @@ namespace EbayAccessTests.Misc
 			Action act2 = () => str2 = listWithEmptyString.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 		}
@@ -119,9 +119,9 @@ namespace EbayAccessTests.Misc
 			Action act3 = () => str3 = listWithNullString.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
-			act3.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
+			act3.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
@@ -144,9 +144,9 @@ namespace EbayAccessTests.Misc
 			Action act3 = () => str3 = listWithNullItem.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
-			act3.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
+			act3.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
@@ -169,9 +169,9 @@ namespace EbayAccessTests.Misc
 			Action act3 = () => str3 = listWithNullRequest.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
-			act3.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
+			act3.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
@@ -194,9 +194,9 @@ namespace EbayAccessTests.Misc
 			Action act3 = () => str3 = listWithNullString.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
-			act3.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
+			act3.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
@@ -219,9 +219,9 @@ namespace EbayAccessTests.Misc
 			Action act3 = () => str3 = listWithNullRequest.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
-			act3.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
+			act3.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
@@ -244,9 +244,9 @@ namespace EbayAccessTests.Misc
 			Action act3 = () => str3 = listWithNullRequests.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
-			act3.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
+			act3.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
@@ -269,9 +269,9 @@ namespace EbayAccessTests.Misc
 			Action act3 = () => str3 = listWithNullString.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
-			act3.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
+			act3.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();
@@ -294,9 +294,9 @@ namespace EbayAccessTests.Misc
 			Action act3 = () => str3 = listWithNullItem.ToJson();
 
 			//A
-			act1.ShouldNotThrow< Exception >();
-			act2.ShouldNotThrow< Exception >();
-			act3.ShouldNotThrow< Exception >();
+			act1.Should().NotThrow< Exception >();
+			act2.Should().NotThrow< Exception >();
+			act3.Should().NotThrow< Exception >();
 			str1.Should().NotBeNullOrWhiteSpace();
 			str2.Should().NotBeNullOrWhiteSpace();
 			str3.Should().NotBeNullOrWhiteSpace();

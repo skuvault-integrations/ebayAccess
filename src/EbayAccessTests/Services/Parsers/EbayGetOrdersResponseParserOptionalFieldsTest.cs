@@ -126,7 +126,7 @@ namespace EbayAccessTests.Services.Parsers
 
 				var name = response.Orders.Single().ShippingAddress.Name;
 
-				Assert.IsFalse( name.Contains( "\a" ), "Name should not contain BEL (\\a) character" );
+				Assert.That( name.Contains( "\a" ), Is.False, "Name should not contain BEL (\\a) character" );
 			}
 		}
 	}

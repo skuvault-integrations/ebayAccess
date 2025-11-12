@@ -60,8 +60,7 @@ namespace EbayAccess.Misc
 
 		private static void TraceLog( string type, string info )
 		{
-			if ( info != null 
-				&& info.Length > MaxLogLineSize )
+			if ( info != null && info.Length > MaxLogLineSize )
 			{
 				info = info.Substring( 0, MaxLogLineSize );
 			}
@@ -70,6 +69,7 @@ namespace EbayAccess.Misc
 		}
 
 		/// <summary>This will remove personal info</summary>
+		/// <param name="xmlString"></param>
 		/// <param name="replaceWith">Text to replace personal information with</param>
 		public static string RemovePersonalInfoFromXML( this string xmlString, string replaceWith = "***" )
 		{
