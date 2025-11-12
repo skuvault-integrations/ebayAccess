@@ -70,7 +70,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( x =>
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >(), Arg.Any<bool>() ).Returns( x =>
 			{
 				var ms = new MemoryStream();
 				var utf8Encoding = new UTF8Encoding();
@@ -102,7 +102,7 @@ namespace EbayAccessTests
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
 
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( x =>
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >(), Arg.Any<bool>() ).Returns( x =>
 			{
 				var ms = new MemoryStream();
 				var utf8Encoding = new UTF8Encoding();
@@ -324,7 +324,7 @@ namespace EbayAccessTests
 		}
 
 		[ Test ]
-		public void GetProductsDetailsAsync_EbayServiceReturnError_Only1CallExecuted()
+		public void GetProductsDetailsAsync_EbayServiceReturnError_RetriesThreeTimes()
 		{
 			//A
 			string respstring;
@@ -333,7 +333,7 @@ namespace EbayAccessTests
 			var getResponseStreamAsyncCallCounter = 0;
 
 			var stubWebRequestService = Substitute.For< IWebRequestServices >();
-			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >() ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
+			stubWebRequestService.GetResponseStreamAsync( Arg.Any< WebRequest >(), Arg.Any< Mark >(), Arg.Any< CancellationToken >(), Arg.Any<bool>() ).Returns( Task.FromResult( respstring.ToStream() ) ).AndDoes( x => getResponseStreamAsyncCallCounter++ );
 
 			var ebayService = new EbayService( this._testEmptyCredentials.GetEbayUserCredentials(), this._testEmptyCredentials.GetEbayDevCredentials(), stubWebRequestService );
 
@@ -349,7 +349,7 @@ namespace EbayAccessTests
 			}
 
 			//A
-			getResponseStreamAsyncCallCounter.Should().Be( 1 );
+			getResponseStreamAsyncCallCounter.Should().Be( 4 );
 		}
 
 		[ Test ]
